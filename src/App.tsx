@@ -6,7 +6,7 @@ import { RefreshCw } from '@phosphor-icons/react';
 import { Toaster } from '@/components/ui/sonner';
 import { RuleGrid } from '@/components/RuleGrid';
 import { RuleData } from '@/lib/types';
-import { generateMockRuleData } from '@/lib/mockRuleData';
+import { parseDraftCY2026 } from '@/lib/pdfParser';
 import { toast } from 'sonner';
 
 function App() {
@@ -16,12 +16,12 @@ function App() {
   const loadRuleData = async () => {
     setIsLoading(true);
     try {
-      const data = await generateMockRuleData();
+      const data = await parseDraftCY2026();
       setRules(data);
-      toast.success('Rule data loaded successfully');
+      toast.success(`Loaded ${data.length} rules from CY2026 draft document`);
     } catch (error) {
-      toast.error('Failed to load rule data');
-      console.error('Failed to load rule data:', error);
+      toast.error('Failed to load CY2026 draft data');
+      console.error('Failed to load CY2026 draft data:', error);
     } finally {
       setIsLoading(false);
     }
@@ -51,7 +51,7 @@ function App() {
           <div>
             <h1 className="text-2xl font-semibold text-foreground">DocuGen</h1>
             <p className="text-sm text-muted-foreground">
-              Document Configuration Management
+              CY2026 Draft Document Configuration Management
             </p>
           </div>
           <Button
@@ -62,7 +62,7 @@ function App() {
             className="flex items-center gap-2"
           >
             <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
-            Refresh Data
+            Load CY2026 Data
           </Button>
         </div>
 
@@ -72,7 +72,7 @@ function App() {
             <CardContent className="p-8 text-center">
               <div className="flex items-center justify-center gap-2 text-muted-foreground">
                 <RefreshCw size={16} className="animate-spin" />
-                <span>Loading configuration data...</span>
+                <span>Loading CY2026 draft document data...</span>
               </div>
             </CardContent>
           </Card>
