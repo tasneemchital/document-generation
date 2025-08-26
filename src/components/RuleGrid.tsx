@@ -221,110 +221,113 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
         <Input placeholder="" className="w-48 h-8 text-xs" />
       </div>
 
-      {/* Table */}
-      <div className="border border-border bg-card">
-        {/* Column Headers */}
-        <div className="flex bg-muted/50 border-b text-xs font-medium">
-          <div className="w-8 p-2 border-r border-border flex items-center justify-center">
-            <Checkbox 
-              checked={filteredRules.length > 0 && selectedRows.size === filteredRules.length}
-              onCheckedChange={handleSelectAll}
-            />
-          </div>
-          <div className="w-16 p-2 border-r border-border flex items-center justify-center">
-            <LockSimpleOpen size={12} />
-          </div>
-          <div className="flex-1 p-2 border-r border-border flex items-center justify-between min-w-[140px]">
-            <span>Template Name</span>
-            <div className="flex items-center gap-1">
-              <CaretDown size={12} />
-              <FunnelSimple size={12} />
+      {/* Table with Horizontal Scroll */}
+      <div className="border border-border bg-card overflow-hidden">
+        <div className="overflow-x-auto">
+          <div className="min-w-[1200px]">
+            {/* Column Headers */}
+            <div className="flex bg-muted/50 border-b text-xs font-medium">
+              <div className="w-12 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
+                <Checkbox 
+                  checked={filteredRules.length > 0 && selectedRows.size === filteredRules.length}
+                  onCheckedChange={handleSelectAll}
+                />
+              </div>
+              <div className="w-16 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
+                <LockSimpleOpen size={12} />
+              </div>
+              <div className="w-48 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+                <span>Template Name</span>
+                <div className="flex items-center gap-1">
+                  <CaretDown size={12} />
+                  <FunnelSimple size={12} />
+                </div>
+              </div>
+              <div className="w-32 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
+                <span>CMS Regulated</span>
+              </div>
+              <div className="w-48 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+                <span>Chapter Name</span>
+                <div className="flex items-center gap-1">
+                  <CaretDown size={12} />
+                  <FunnelSimple size={12} />
+                </div>
+              </div>
+              <div className="w-48 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+                <span>Section Name</span>
+                <div className="flex items-center gap-1">
+                  <CaretDown size={12} />
+                  <FunnelSimple size={12} />
+                </div>
+              </div>
+              <div className="w-48 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+                <span>Sub Section Name</span>
+                <div className="flex items-center gap-1">
+                  <CaretDown size={12} />
+                  <FunnelSimple size={12} />
+                </div>
+              </div>
+              <div className="w-48 p-2 flex items-center justify-between flex-shrink-0">
+                <span>Service Group</span>
+                <div className="flex items-center gap-1">
+                  <CaretDown size={12} />
+                  <FunnelSimple size={12} />
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="w-24 p-2 border-r border-border flex items-center justify-center">
-            <span>CMS Regulated</span>
-          </div>
-          <div className="flex-1 p-2 border-r border-border flex items-center justify-between min-w-[140px]">
-            <span>Chapter Name</span>
-            <div className="flex items-center gap-1">
-              <CaretDown size={12} />
-              <FunnelSimple size={12} />
-            </div>
-          </div>
-          <div className="flex-1 p-2 border-r border-border flex items-center justify-between min-w-[140px]">
-            <span>Section Name</span>
-            <div className="flex items-center gap-1">
-              <CaretDown size={12} />
-              <FunnelSimple size={12} />
-            </div>
-          </div>
-          <div className="flex-1 p-2 border-r border-border flex items-center justify-between min-w-[140px]">
-            <span>Sub Section Name</span>
-            <div className="flex items-center gap-1">
-              <CaretDown size={12} />
-              <FunnelSimple size={12} />
-            </div>
-          </div>
-          <div className="flex-1 p-2 border-r border-border flex items-center justify-between min-w-[140px]">
-            <span>Service Group</span>
-            <div className="flex items-center gap-1">
-              <CaretDown size={12} />
-              <FunnelSimple size={12} />
-            </div>
+
+            {/* Data Rows */}
+            <ScrollArea className="h-[500px]">
+              {filteredRules.map((rule, index) => (
+                <div 
+                  key={rule.id} 
+                  className={`flex border-b border-border hover:bg-muted/30 group ${
+                    selectedRows.has(rule.id) ? 'bg-blue-50' : index % 2 === 1 ? 'bg-muted/20' : 'bg-card'
+                  }`}
+                >
+                  <div className="w-12 p-2 border-r border-border flex items-center justify-center text-xs flex-shrink-0">
+                    {index + 1}
+                  </div>
+                  <div className="w-16 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
+                    <Checkbox 
+                      checked={selectedRows.has(rule.id)}
+                      onCheckedChange={(checked) => handleRowSelect(rule.id, checked as boolean)}
+                    />
+                  </div>
+                  <div className="w-48 p-2 border-r border-border text-xs flex items-center flex-shrink-0">
+                    <span className="truncate">{rule.documentName}</span>
+                  </div>
+                  <div className="w-32 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
+                    <Checkbox 
+                      checked={rule.cmsRegulated}
+                      onCheckedChange={(checked) => {
+                        const updatedRule = {
+                          ...rule,
+                          cmsRegulated: checked as boolean,
+                          lastModified: new Date()
+                        };
+                        onRuleUpdate(updatedRule);
+                      }}
+                      disabled={isLocked}
+                    />
+                  </div>
+                  <div className="w-48 p-2 border-r border-border text-xs flex items-center flex-shrink-0">
+                    <span className="truncate">{rule.chapterName}</span>
+                  </div>
+                  <div className="w-48 p-2 border-r border-border text-xs flex items-center flex-shrink-0">
+                    <span className="truncate">{rule.sectionName}</span>
+                  </div>
+                  <div className="w-48 p-2 border-r border-border text-xs flex items-center flex-shrink-0">
+                    <span className="truncate">{rule.subSectionName}</span>
+                  </div>
+                  <div className="w-48 p-2 text-xs flex items-center flex-shrink-0">
+                    <span className="truncate">Service Group {index + 1}</span>
+                  </div>
+                </div>
+              ))}
+            </ScrollArea>
           </div>
         </div>
-
-        {/* Data Rows */}
-        <ScrollArea className="h-[500px]">
-          {filteredRules.map((rule, index) => (
-            <div 
-              key={rule.id} 
-              className={`flex border-b border-border hover:bg-muted/30 group ${
-                selectedRows.has(rule.id) ? 'bg-blue-50' : index % 2 === 1 ? 'bg-muted/20' : 'bg-card'
-              }`}
-            >
-              <div className="w-8 p-2 border-r border-border flex items-center justify-center text-xs">
-                {index + 1}
-              </div>
-              <div className="w-16 p-2 border-r border-border flex items-center justify-center">
-                <Checkbox 
-                  checked={selectedRows.has(rule.id)}
-                  onCheckedChange={(checked) => handleRowSelect(rule.id, checked as boolean)}
-                />
-              </div>
-              <div className="flex-1 p-2 border-r border-border text-xs min-w-[140px]">
-                {rule.documentName}
-              </div>
-              <div className="w-24 p-2 border-r border-border flex items-center justify-center">
-                <Checkbox 
-                  checked={rule.cmsRegulated}
-                  onCheckedChange={(checked) => {
-                    const updatedRule = {
-                      ...rule,
-                      cmsRegulated: checked as boolean,
-                      lastModified: new Date()
-                    };
-                    onRuleUpdate(updatedRule);
-                  }}
-                  disabled={isLocked}
-                />
-              </div>
-              <div className="flex-1 p-2 border-r border-border text-xs min-w-[140px]">
-                {rule.chapterName}
-              </div>
-              <div className="flex-1 p-2 border-r border-border text-xs min-w-[140px]">
-                {rule.sectionName}
-              </div>
-              <div className="flex-1 p-2 border-r border-border text-xs min-w-[140px]">
-                {rule.subSectionName}
-              </div>
-              <div className="flex-1 p-2 text-xs min-w-[140px]">
-                {/* Service Group placeholder */}
-                Service Group {index + 1}
-              </div>
-            </div>
-          ))}
-        </ScrollArea>
       </div>
 
       {/* Bottom Section Selector */}
