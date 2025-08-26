@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { 
@@ -14,7 +14,6 @@ import {
   Edit, 
   Save, 
   X, 
-  Eye,
   LockSimple,
   LockSimpleOpen
 } from '@phosphor-icons/react';
@@ -32,18 +31,18 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [isLocked, setIsLocked] = useState(false);
   
-  // Filter states matching DCM snapshot
+  // Filter states
   const [templateFilter, setTemplateFilter] = useState('[Select One]');
   const [chapterFilter, setChapterFilter] = useState('[Select One]');
   const [sectionFilter, setSectionFilter] = useState('[Select One]');
   
   // Get unique filter options
-  const templateOptions = Array.from(new Set(rules.map(r => r.documentName))).sort();
+  const templateOptions = Array.from(new Set(rules.map(r => r.templateName))).sort();
   const chapterOptions = Array.from(new Set(rules.map(r => r.chapterName))).sort();
   const sectionOptions = Array.from(new Set(rules.map(r => r.sectionName))).sort();
 
   const filteredRules = rules.filter(rule => {
-    if (templateFilter !== '[Select One]' && rule.documentName !== templateFilter) return false;
+    if (templateFilter !== '[Select One]' && rule.templateName !== templateFilter) return false;
     if (chapterFilter !== '[Select One]' && rule.chapterName !== chapterFilter) return false;
     if (sectionFilter !== '[Select One]' && rule.sectionName !== sectionFilter) return false;
     return true;
@@ -68,7 +67,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   };
 
   const handleCellClick = (rule: RuleData, field: keyof RuleData) => {
-    if (['createdAt', 'lastModified', 'id'].includes(field)) return;
+    if (['createdAt', 'lastModified', 'id'].includes(field) || isLocked) return;
     
     setEditingRule({ id: rule.id, field, value: rule[field] as string });
     setEditValue(rule[field] as string);
@@ -97,14 +96,14 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
     setEditValue('');
   };
 
-  const renderCell = (rule: RuleData, field: keyof RuleData, content: string) => {
+  const renderCell = (rule: RuleData, field: keyof RuleData, content: string, width: string) => {
     const isEditing = editingRule?.id === rule.id && editingRule?.field === field;
     const isEditable = !['createdAt', 'lastModified', 'id'].includes(field) && !isLocked;
     
     if (isEditing) {
       return (
-        <div className="flex items-center gap-2 min-w-0 p-1">
-          {field === 'rule' || field === 'richText' || field === 'translatedText' ? (
+        <div className={`${width} p-1 border-r border-border flex items-center gap-2 min-w-0 flex-shrink-0`}>
+          {field === 'rule' || field === 'english' || field === 'spanish' ? (
             <Textarea
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
@@ -133,7 +132,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
     return (
       <div 
-        className={`text-xs p-2 min-h-[32px] flex items-center border-r border-border last:border-r-0 ${
+        className={`${width} text-xs p-2 min-h-[32px] flex items-center border-r border-border last:border-r-0 flex-shrink-0 ${
           isEditable ? 'hover:bg-blue-50 cursor-pointer' : ''
         } ${selectedRows.has(rule.id) ? 'bg-blue-50' : ''}`}
         onClick={() => isEditable && handleCellClick(rule, field)}
@@ -161,7 +160,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
             {isLocked ? <LockSimple size={14} /> : <LockSimpleOpen size={14} />}
             {isLocked ? 'Locked' : 'Unlocked'}
           </Button>
-          {/* Toolbar buttons matching DCM */}
+          {/* Toolbar buttons */}
           <div className="flex items-center gap-1 text-muted-foreground">
             <Button variant="ghost" size="sm" className="h-6 w-6 p-0">🔍</Button>
             <Button variant="ghost" size="sm" className="h-6 w-6 p-0">⚙️</Button>
@@ -224,7 +223,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
       {/* Table with Horizontal Scroll */}
       <div className="border border-border bg-card overflow-hidden">
         <div className="overflow-x-auto">
-          <div className="min-w-[1200px]">
+          <div className="min-w-[2400px]">
             {/* Column Headers */}
             <div className="flex bg-muted/50 border-b text-xs font-medium">
               <div className="w-12 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
@@ -236,7 +235,28 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
               <div className="w-16 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
                 <LockSimpleOpen size={12} />
               </div>
-              <div className="w-48 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+              <div className="w-20 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+                <span>Rule ID</span>
+                <div className="flex items-center gap-1">
+                  <CaretDown size={12} />
+                  <FunnelSimple size={12} />
+                </div>
+              </div>
+              <div className="w-32 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+                <span>Effective Date</span>
+                <div className="flex items-center gap-1">
+                  <CaretDown size={12} />
+                  <FunnelSimple size={12} />
+                </div>
+              </div>
+              <div className="w-20 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+                <span>Version</span>
+                <div className="flex items-center gap-1">
+                  <CaretDown size={12} />
+                  <FunnelSimple size={12} />
+                </div>
+              </div>
+              <div className="w-40 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
                 <span>Template Name</span>
                 <div className="flex items-center gap-1">
                   <CaretDown size={12} />
@@ -246,29 +266,67 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
               <div className="w-32 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
                 <span>CMS Regulated</span>
               </div>
-              <div className="w-48 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+              <div className="w-40 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
                 <span>Chapter Name</span>
                 <div className="flex items-center gap-1">
                   <CaretDown size={12} />
                   <FunnelSimple size={12} />
                 </div>
               </div>
-              <div className="w-48 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+              <div className="w-40 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
                 <span>Section Name</span>
                 <div className="flex items-center gap-1">
                   <CaretDown size={12} />
                   <FunnelSimple size={12} />
                 </div>
               </div>
-              <div className="w-48 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
-                <span>Sub Section Name</span>
+              <div className="w-40 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+                <span>Subsection Name</span>
                 <div className="flex items-center gap-1">
                   <CaretDown size={12} />
                   <FunnelSimple size={12} />
                 </div>
               </div>
-              <div className="w-48 p-2 flex items-center justify-between flex-shrink-0">
+              <div className="w-40 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
                 <span>Service Group</span>
+                <div className="flex items-center gap-1">
+                  <CaretDown size={12} />
+                  <FunnelSimple size={12} />
+                </div>
+              </div>
+              <div className="w-48 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+                <span>Rule</span>
+                <div className="flex items-center gap-1">
+                  <CaretDown size={12} />
+                  <FunnelSimple size={12} />
+                </div>
+              </div>
+              <div className="w-24 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
+                <span>Is Tabular</span>
+              </div>
+              <div className="w-48 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+                <span>English</span>
+                <div className="flex items-center gap-1">
+                  <CaretDown size={12} />
+                  <FunnelSimple size={12} />
+                </div>
+              </div>
+              <div className="w-24 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+                <span>Status</span>
+                <div className="flex items-center gap-1">
+                  <CaretDown size={12} />
+                  <FunnelSimple size={12} />
+                </div>
+              </div>
+              <div className="w-48 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+                <span>Spanish</span>
+                <div className="flex items-center gap-1">
+                  <CaretDown size={12} />
+                  <FunnelSimple size={12} />
+                </div>
+              </div>
+              <div className="w-24 p-2 flex items-center justify-between flex-shrink-0">
+                <span>Status</span>
                 <div className="flex items-center gap-1">
                   <CaretDown size={12} />
                   <FunnelSimple size={12} />
@@ -294,9 +352,10 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                       onCheckedChange={(checked) => handleRowSelect(rule.id, checked as boolean)}
                     />
                   </div>
-                  <div className="w-48 p-2 border-r border-border text-xs flex items-center flex-shrink-0">
-                    <span className="truncate">{rule.documentName}</span>
-                  </div>
+                  {renderCell(rule, 'ruleId', rule.ruleId, 'w-20')}
+                  {renderCell(rule, 'effectiveDate', rule.effectiveDate, 'w-32')}
+                  {renderCell(rule, 'version', rule.version, 'w-20')}
+                  {renderCell(rule, 'templateName', rule.templateName, 'w-40')}
                   <div className="w-32 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
                     <Checkbox 
                       checked={rule.cmsRegulated}
@@ -311,18 +370,29 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                       disabled={isLocked}
                     />
                   </div>
-                  <div className="w-48 p-2 border-r border-border text-xs flex items-center flex-shrink-0">
-                    <span className="truncate">{rule.chapterName}</span>
+                  {renderCell(rule, 'chapterName', rule.chapterName, 'w-40')}
+                  {renderCell(rule, 'sectionName', rule.sectionName, 'w-40')}
+                  {renderCell(rule, 'subsectionName', rule.subsectionName, 'w-40')}
+                  {renderCell(rule, 'serviceGroup', rule.serviceGroup, 'w-40')}
+                  {renderCell(rule, 'rule', rule.rule, 'w-48')}
+                  <div className="w-24 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
+                    <Checkbox 
+                      checked={rule.isTabular}
+                      onCheckedChange={(checked) => {
+                        const updatedRule = {
+                          ...rule,
+                          isTabular: checked as boolean,
+                          lastModified: new Date()
+                        };
+                        onRuleUpdate(updatedRule);
+                      }}
+                      disabled={isLocked}
+                    />
                   </div>
-                  <div className="w-48 p-2 border-r border-border text-xs flex items-center flex-shrink-0">
-                    <span className="truncate">{rule.sectionName}</span>
-                  </div>
-                  <div className="w-48 p-2 border-r border-border text-xs flex items-center flex-shrink-0">
-                    <span className="truncate">{rule.subSectionName}</span>
-                  </div>
-                  <div className="w-48 p-2 text-xs flex items-center flex-shrink-0">
-                    <span className="truncate">Service Group {index + 1}</span>
-                  </div>
+                  {renderCell(rule, 'english', rule.english, 'w-48')}
+                  {renderCell(rule, 'englishStatus', rule.englishStatus, 'w-24')}
+                  {renderCell(rule, 'spanish', rule.spanish, 'w-48')}
+                  {renderCell(rule, 'spanishStatus', rule.spanishStatus, 'w-24')}
                 </div>
               ))}
             </ScrollArea>
@@ -364,8 +434,8 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
               <div className="space-y-4 p-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-semibold text-muted-foreground">Document</label>
-                    <p className="text-sm">{previewRule.documentName}</p>
+                    <label className="text-sm font-semibold text-muted-foreground">Template</label>
+                    <p className="text-sm">{previewRule.templateName}</p>
                   </div>
                   <div>
                     <label className="text-sm font-semibold text-muted-foreground">CMS Regulated</label>
@@ -380,8 +450,12 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                     <p className="text-sm">{previewRule.sectionName}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-muted-foreground">Sub-section</label>
-                    <p className="text-sm">{previewRule.subSectionName}</p>
+                    <label className="text-sm font-semibold text-muted-foreground">Subsection</label>
+                    <p className="text-sm">{previewRule.subsectionName}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-muted-foreground">Service Group</label>
+                    <p className="text-sm">{previewRule.serviceGroup}</p>
                   </div>
                 </div>
                 
@@ -391,21 +465,22 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                 </div>
                 
                 <div>
-                  <label className="text-sm font-semibold text-muted-foreground">Rich Text</label>
-                  <div 
-                    className="mt-1 p-3 bg-muted rounded prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{ __html: previewRule.richText }}
-                  />
+                  <label className="text-sm font-semibold text-muted-foreground">English</label>
+                  <p className="text-sm mt-1 p-3 bg-muted rounded">{previewRule.english}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Status: {previewRule.englishStatus}</p>
                 </div>
                 
                 <div>
-                  <label className="text-sm font-semibold text-muted-foreground">Translated Text</label>
-                  <p className="text-sm mt-1 p-3 bg-muted rounded">{previewRule.translatedText}</p>
+                  <label className="text-sm font-semibold text-muted-foreground">Spanish</label>
+                  <p className="text-sm mt-1 p-3 bg-muted rounded">{previewRule.spanish}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Status: {previewRule.spanishStatus}</p>
                 </div>
                 
                 <div className="flex gap-4 text-xs text-muted-foreground">
                   <span>Created: {previewRule.createdAt.toLocaleDateString()}</span>
                   <span>Modified: {previewRule.lastModified.toLocaleDateString()}</span>
+                  <span>Version: {previewRule.version}</span>
+                  <span>Effective: {previewRule.effectiveDate}</span>
                 </div>
               </div>
             </ScrollArea>

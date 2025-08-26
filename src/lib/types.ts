@@ -1,24 +1,30 @@
 export interface RuleData {
   id: string;
   ruleId: string;
-  documentName: string;
+  effectiveDate: string;
+  version: string;
+  templateName: string;
   cmsRegulated: boolean;
   chapterName: string;
   sectionName: string;
-  subSectionName: string;
+  subsectionName: string;
+  serviceGroup: string;
   rule: string;
-  richText: string;
-  translatedText: string;
+  isTabular: boolean;
+  english: string;
+  englishStatus: string;
+  spanish: string;
+  spanishStatus: string;
   createdAt: Date;
   lastModified: Date;
 }
 
 export interface RuleFilter {
-  documentName?: string;
+  templateName?: string;
   chapterName?: string;
   sectionName?: string;
   searchQuery?: string;
-  sortBy?: 'ruleId' | 'documentName' | 'lastModified';
+  sortBy?: 'ruleId' | 'templateName' | 'lastModified';
   sortOrder?: 'asc' | 'desc';
 }
 

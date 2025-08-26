@@ -1,6 +1,6 @@
 import { RuleData } from './types';
 
-const documentNames = [
+const templateNames = [
   'ANOC',
   'EOC'
 ];
@@ -17,13 +17,22 @@ const sectionNames = {
   'Chapter 5': ['Section 2', 'Section 3', 'Section 4']
 };
 
-const subSectionNames = {
+const subsectionNames = {
   'Cover Page': [''],
   'Section 1': ['1.1', 'Section 1.2', 'Section 1.3'],
   'Section 2': ['Section 2.1'],
   'Section 3': ['Section 3.1'],
   'Section 4': ['Section 4.1']
 };
+
+const serviceGroups = [
+  'Medical Services',
+  'Pharmacy Services',
+  'Behavioral Health',
+  'Emergency Services',
+  'Preventive Care',
+  'Specialty Services'
+];
 
 const sampleRules = [
   'All employees must complete safety training within 30 days of employment',
@@ -38,85 +47,104 @@ const sampleRules = [
   'Data backup procedures must be executed daily'
 ];
 
-const sampleRichText = [
-  '<p>This requirement ensures <strong>compliance</strong> with industry standards and <em>regulatory guidelines</em>.</p>',
-  '<p>The procedure involves multiple steps:<br/>1. Initial assessment<br/>2. Documentation review<br/>3. Final approval</p>',
-  '<p>Special attention must be paid to <u>critical safety measures</u> during this process.</p>',
-  '<p><strong>Note:</strong> Exceptions require <em>management approval</em> and proper documentation.</p>',
-  '<p>Regular monitoring ensures <strong>continuous compliance</strong> with established protocols.</p>'
+const sampleEnglishText = [
+  'This requirement ensures compliance with industry standards and regulatory guidelines.',
+  'The procedure involves multiple steps: Initial assessment, Documentation review, Final approval.',
+  'Special attention must be paid to critical safety measures during this process.',
+  'Note: Exceptions require management approval and proper documentation.',
+  'Regular monitoring ensures continuous compliance with established protocols.'
 ];
 
-const sampleTranslations = [
-  'Todos los empleados deben completar el entrenamiento de seguridad dentro de 30 días del empleo',
-  'Les inspections d\'équipement doivent être effectuées hebdomadairement par du personnel certifié',
-  'Die Dokumentation muss innerhalb von 48 Stunden nach Fertigstellung eingereicht werden',
-  '緊急プロトコルは例外なく従わなければならない',
-  'Kontrole kvalitete su potrebne pre puštanja proizvoda'
+const sampleSpanishText = [
+  'Este requisito garantiza el cumplimiento de los estándares de la industria y las pautas regulatorias.',
+  'El procedimiento involucra múltiples pasos: Evaluación inicial, Revisión de documentación, Aprobación final.',
+  'Se debe prestar especial atención a las medidas de seguridad críticas durante este proceso.',
+  'Nota: Las excepciones requieren aprobación de la gerencia y documentación adecuada.',
+  'El monitoreo regular garantiza el cumplimiento continuo de los protocolos establecidos.'
 ];
+
+const statusOptions = ['Draft', 'Review', 'Approved', 'Published', 'Archived'];
+
+function getRandomDate(daysAgo: number): string {
+  const date = new Date(Date.now() - Math.random() * daysAgo * 24 * 60 * 60 * 1000);
+  return date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+}
 
 export function generateMockRuleData(): Promise<RuleData[]> {
   return new Promise((resolve) => {
     setTimeout(() => {
       const rules: RuleData[] = [];
       
-      // Generate data matching the DCM snapshot structure
+      // Generate data matching the new column structure
       const dataStructure = [
-        { doc: 'ANOC', chapter: 'ANOC Cover Page', section: 'Cover Page', subsection: '' },
-        { doc: 'ANOC', chapter: 'ANOC Cover Page', section: 'Cover Page', subsection: '' },
-        { doc: 'EOC', chapter: 'Chapter 1', section: 'Section 1', subsection: 'Section 1.2' },
-        { doc: 'EOC', chapter: 'Chapter 1', section: 'Section 1', subsection: '1.1' },
-        { doc: 'EOC', chapter: 'Chapter 4', section: 'Section 1', subsection: 'Section 1.3' },
-        { doc: 'EOC', chapter: 'Chapter 5', section: 'Section 4', subsection: 'Section 4.1' },
-        { doc: 'EOC', chapter: 'Chapter 4', section: 'Section 1', subsection: 'Section 1.2' },
-        { doc: 'EOC', chapter: 'Chapter 5', section: 'Section 3', subsection: 'Section 3.1' },
-        { doc: 'EOC', chapter: 'Chapter 5', section: 'Section 2', subsection: 'Section 2.1' },
-        { doc: 'EOC', chapter: 'Chapter 4', section: 'Section 1', subsection: 'Section 1.1' }
+        { template: 'ANOC', chapter: 'ANOC Cover Page', section: 'Cover Page', subsection: '' },
+        { template: 'ANOC', chapter: 'ANOC Cover Page', section: 'Cover Page', subsection: '' },
+        { template: 'EOC', chapter: 'Chapter 1', section: 'Section 1', subsection: 'Section 1.2' },
+        { template: 'EOC', chapter: 'Chapter 1', section: 'Section 1', subsection: '1.1' },
+        { template: 'EOC', chapter: 'Chapter 4', section: 'Section 1', subsection: 'Section 1.3' },
+        { template: 'EOC', chapter: 'Chapter 5', section: 'Section 4', subsection: 'Section 4.1' },
+        { template: 'EOC', chapter: 'Chapter 4', section: 'Section 1', subsection: 'Section 1.2' },
+        { template: 'EOC', chapter: 'Chapter 5', section: 'Section 3', subsection: 'Section 3.1' },
+        { template: 'EOC', chapter: 'Chapter 5', section: 'Section 2', subsection: 'Section 2.1' },
+        { template: 'EOC', chapter: 'Chapter 4', section: 'Section 1', subsection: 'Section 1.1' }
       ];
       
       dataStructure.forEach((item, i) => {
         rules.push({
           id: `rule-${i + 1}`,
           ruleId: `R${String(i + 1).padStart(4, '0')}`,
-          documentName: item.doc,
-          cmsRegulated: Math.random() > 0.6, // Random boolean with 40% true chance
+          effectiveDate: getRandomDate(180),
+          version: `${Math.floor(Math.random() * 3) + 1}.${Math.floor(Math.random() * 10)}`,
+          templateName: item.template,
+          cmsRegulated: Math.random() > 0.6,
           chapterName: item.chapter,
           sectionName: item.section,
-          subSectionName: item.subsection,
+          subsectionName: item.subsection,
+          serviceGroup: serviceGroups[Math.floor(Math.random() * serviceGroups.length)],
           rule: sampleRules[Math.floor(Math.random() * sampleRules.length)],
-          richText: sampleRichText[Math.floor(Math.random() * sampleRichText.length)],
-          translatedText: sampleTranslations[Math.floor(Math.random() * sampleTranslations.length)],
+          isTabular: Math.random() > 0.7,
+          english: sampleEnglishText[Math.floor(Math.random() * sampleEnglishText.length)],
+          englishStatus: statusOptions[Math.floor(Math.random() * statusOptions.length)],
+          spanish: sampleSpanishText[Math.floor(Math.random() * sampleSpanishText.length)],
+          spanishStatus: statusOptions[Math.floor(Math.random() * statusOptions.length)],
           createdAt: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000),
           lastModified: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000)
         });
       });
       
-      // Add some additional random entries to fill the table
+      // Add additional random entries
       for (let i = 10; i < 25; i++) {
-        const doc = documentNames[Math.floor(Math.random() * documentNames.length)];
-        const chapters = chapterNames[doc];
+        const template = templateNames[Math.floor(Math.random() * templateNames.length)];
+        const chapters = chapterNames[template];
         const chapter = chapters[Math.floor(Math.random() * chapters.length)];
         const sections = sectionNames[chapter];
         const section = sections[Math.floor(Math.random() * sections.length)];
-        const subsections = subSectionNames[section];
+        const subsections = subsectionNames[section];
         const subsection = subsections[Math.floor(Math.random() * subsections.length)];
         
         rules.push({
           id: `rule-${i + 1}`,
           ruleId: `R${String(i + 1).padStart(4, '0')}`,
-          documentName: doc,
-          cmsRegulated: Math.random() > 0.6, // Random boolean with 40% true chance
+          effectiveDate: getRandomDate(180),
+          version: `${Math.floor(Math.random() * 3) + 1}.${Math.floor(Math.random() * 10)}`,
+          templateName: template,
+          cmsRegulated: Math.random() > 0.6,
           chapterName: chapter,
           sectionName: section,
-          subSectionName: subsection,
+          subsectionName: subsection,
+          serviceGroup: serviceGroups[Math.floor(Math.random() * serviceGroups.length)],
           rule: sampleRules[Math.floor(Math.random() * sampleRules.length)],
-          richText: sampleRichText[Math.floor(Math.random() * sampleRichText.length)],
-          translatedText: sampleTranslations[Math.floor(Math.random() * sampleTranslations.length)],
+          isTabular: Math.random() > 0.7,
+          english: sampleEnglishText[Math.floor(Math.random() * sampleEnglishText.length)],
+          englishStatus: statusOptions[Math.floor(Math.random() * statusOptions.length)],
+          spanish: sampleSpanishText[Math.floor(Math.random() * sampleSpanishText.length)],
+          spanishStatus: statusOptions[Math.floor(Math.random() * statusOptions.length)],
           createdAt: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000),
           lastModified: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000)
         });
       }
       
       resolve(rules);
-    }, 300); // Simulate API delay
+    }, 300);
   });
 }
