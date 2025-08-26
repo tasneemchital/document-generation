@@ -1,3 +1,32 @@
+export interface RuleData {
+  id: string;
+  ruleId: string;
+  documentName: string;
+  chapterName: string;
+  sectionName: string;
+  subSectionName: string;
+  rule: string;
+  richText: string;
+  translatedText: string;
+  createdAt: Date;
+  lastModified: Date;
+}
+
+export interface RuleFilter {
+  documentName?: string;
+  chapterName?: string;
+  sectionName?: string;
+  searchQuery?: string;
+  sortBy?: 'ruleId' | 'documentName' | 'lastModified';
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface EditingRule {
+  id: string;
+  field: keyof RuleData;
+  value: string;
+}
+
 export interface CMSContent {
   id: string;
   title: string;
