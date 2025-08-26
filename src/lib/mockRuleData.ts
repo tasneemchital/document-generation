@@ -1,37 +1,29 @@
 import { RuleData } from './types';
 
 const documentNames = [
-  'Employee Handbook',
-  'Safety Guidelines', 
-  'Quality Standards',
-  'Compliance Manual',
-  'Operations Procedures'
+  'ANOC',
+  'EOC'
 ];
 
-const chapters = [
-  'Introduction',
-  'General Policies',
-  'Specific Requirements',
-  'Implementation Guidelines',
-  'Enforcement Procedures'
-];
+const chapterNames = {
+  'ANOC': ['ANOC Cover Page'],
+  'EOC': ['Chapter 1', 'Chapter 4', 'Chapter 5']
+};
 
-const sections = [
-  'Overview',
-  'Definitions', 
-  'Requirements',
-  'Procedures',
-  'Exceptions',
-  'Penalties'
-];
+const sectionNames = {
+  'ANOC Cover Page': ['Cover Page'],
+  'Chapter 1': ['Section 1'],
+  'Chapter 4': ['Section 1'],
+  'Chapter 5': ['Section 2', 'Section 3', 'Section 4']
+};
 
-const subSections = [
-  'Basic Requirements',
-  'Advanced Criteria',
-  'Special Cases',
-  'Emergency Procedures',
-  'Reporting Guidelines'
-];
+const subSectionNames = {
+  'Cover Page': [''],
+  'Section 1': ['1.1', 'Section 1.2', 'Section 1.3'],
+  'Section 2': ['Section 2.1'],
+  'Section 3': ['Section 3.1'],
+  'Section 4': ['Section 4.1']
+};
 
 const sampleRules = [
   'All employees must complete safety training within 30 days of employment',
@@ -67,19 +59,53 @@ export function generateMockRuleData(): Promise<RuleData[]> {
     setTimeout(() => {
       const rules: RuleData[] = [];
       
-      for (let i = 0; i < 50; i++) {
-        const docName = documentNames[Math.floor(Math.random() * documentNames.length)];
+      // Generate data matching the DCM snapshot structure
+      const dataStructure = [
+        { doc: 'ANOC', chapter: 'ANOC Cover Page', section: 'Cover Page', subsection: '' },
+        { doc: 'ANOC', chapter: 'ANOC Cover Page', section: 'Cover Page', subsection: '' },
+        { doc: 'EOC', chapter: 'Chapter 1', section: 'Section 1', subsection: 'Section 1.2' },
+        { doc: 'EOC', chapter: 'Chapter 1', section: 'Section 1', subsection: '1.1' },
+        { doc: 'EOC', chapter: 'Chapter 4', section: 'Section 1', subsection: 'Section 1.3' },
+        { doc: 'EOC', chapter: 'Chapter 5', section: 'Section 4', subsection: 'Section 4.1' },
+        { doc: 'EOC', chapter: 'Chapter 4', section: 'Section 1', subsection: 'Section 1.2' },
+        { doc: 'EOC', chapter: 'Chapter 5', section: 'Section 3', subsection: 'Section 3.1' },
+        { doc: 'EOC', chapter: 'Chapter 5', section: 'Section 2', subsection: 'Section 2.1' },
+        { doc: 'EOC', chapter: 'Chapter 4', section: 'Section 1', subsection: 'Section 1.1' }
+      ];
+      
+      dataStructure.forEach((item, i) => {
+        rules.push({
+          id: `rule-${i + 1}`,
+          ruleId: `R${String(i + 1).padStart(4, '0')}`,
+          documentName: item.doc,
+          chapterName: item.chapter,
+          sectionName: item.section,
+          subSectionName: item.subsection,
+          rule: sampleRules[Math.floor(Math.random() * sampleRules.length)],
+          richText: sampleRichText[Math.floor(Math.random() * sampleRichText.length)],
+          translatedText: sampleTranslations[Math.floor(Math.random() * sampleTranslations.length)],
+          createdAt: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000),
+          lastModified: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000)
+        });
+      });
+      
+      // Add some additional random entries to fill the table
+      for (let i = 10; i < 25; i++) {
+        const doc = documentNames[Math.floor(Math.random() * documentNames.length)];
+        const chapters = chapterNames[doc];
         const chapter = chapters[Math.floor(Math.random() * chapters.length)];
+        const sections = sectionNames[chapter];
         const section = sections[Math.floor(Math.random() * sections.length)];
-        const subSection = subSections[Math.floor(Math.random() * subSections.length)];
+        const subsections = subSectionNames[section];
+        const subsection = subsections[Math.floor(Math.random() * subsections.length)];
         
         rules.push({
           id: `rule-${i + 1}`,
           ruleId: `R${String(i + 1).padStart(4, '0')}`,
-          documentName: docName,
+          documentName: doc,
           chapterName: chapter,
           sectionName: section,
-          subSectionName: subSection,
+          subSectionName: subsection,
           rule: sampleRules[Math.floor(Math.random() * sampleRules.length)],
           richText: sampleRichText[Math.floor(Math.random() * sampleRichText.length)],
           translatedText: sampleTranslations[Math.floor(Math.random() * sampleTranslations.length)],
