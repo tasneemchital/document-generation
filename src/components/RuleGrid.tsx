@@ -241,6 +241,9 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
               <FunnelSimple size={12} />
             </div>
           </div>
+          <div className="w-24 p-2 border-r border-border flex items-center justify-center">
+            <span>CMS Regulated</span>
+          </div>
           <div className="flex-1 p-2 border-r border-border flex items-center justify-between min-w-[140px]">
             <span>Chapter Name</span>
             <div className="flex items-center gap-1">
@@ -291,6 +294,20 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
               </div>
               <div className="flex-1 p-2 border-r border-border text-xs min-w-[140px]">
                 {rule.documentName}
+              </div>
+              <div className="w-24 p-2 border-r border-border flex items-center justify-center">
+                <Checkbox 
+                  checked={rule.cmsRegulated}
+                  onCheckedChange={(checked) => {
+                    const updatedRule = {
+                      ...rule,
+                      cmsRegulated: checked as boolean,
+                      lastModified: new Date()
+                    };
+                    onRuleUpdate(updatedRule);
+                  }}
+                  disabled={isLocked}
+                />
               </div>
               <div className="flex-1 p-2 border-r border-border text-xs min-w-[140px]">
                 {rule.chapterName}
@@ -346,6 +363,10 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   <div>
                     <label className="text-sm font-semibold text-muted-foreground">Document</label>
                     <p className="text-sm">{previewRule.documentName}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-muted-foreground">CMS Regulated</label>
+                    <p className="text-sm">{previewRule.cmsRegulated ? 'Yes' : 'No'}</p>
                   </div>
                   <div>
                     <label className="text-sm font-semibold text-muted-foreground">Chapter</label>

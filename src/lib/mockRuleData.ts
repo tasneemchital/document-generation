@@ -78,6 +78,7 @@ export function generateMockRuleData(): Promise<RuleData[]> {
           id: `rule-${i + 1}`,
           ruleId: `R${String(i + 1).padStart(4, '0')}`,
           documentName: item.doc,
+          cmsRegulated: Math.random() > 0.6, // Random boolean with 40% true chance
           chapterName: item.chapter,
           sectionName: item.section,
           subSectionName: item.subsection,
@@ -103,6 +104,7 @@ export function generateMockRuleData(): Promise<RuleData[]> {
           id: `rule-${i + 1}`,
           ruleId: `R${String(i + 1).padStart(4, '0')}`,
           documentName: doc,
+          cmsRegulated: Math.random() > 0.6, // Random boolean with 40% true chance
           chapterName: chapter,
           sectionName: section,
           subSectionName: subsection,

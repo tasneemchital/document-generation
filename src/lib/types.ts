@@ -2,6 +2,7 @@ export interface RuleData {
   id: string;
   ruleId: string;
   documentName: string;
+  cmsRegulated: boolean;
   chapterName: string;
   sectionName: string;
   subSectionName: string;
