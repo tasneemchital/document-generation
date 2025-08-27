@@ -8,6 +8,7 @@ import { RuleGrid } from '@/components/RuleGrid';
 import { RuleData } from '@/lib/types';
 import { parseDraftCY2026 } from '@/lib/pdfParser';
 import { toast } from 'sonner';
+import logoSvg from '@/assets/images/logo.svg';
 
 interface DocuGenPageProps {
   onNavigate: (page: string) => void;
@@ -62,11 +63,14 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
               <ArrowLeft size={16} />
               Back to Dashboard
             </Button>
-            <div>
-              <h1 className="text-2xl font-semibold text-foreground">DocuGen - Manage</h1>
-              <p className="text-sm text-muted-foreground">
-                CY2026 Draft Document Configuration Management
-              </p>
+            <div className="flex items-center gap-3">
+              <img src={logoSvg} alt="SimplifyDocs Logo" className="w-8 h-8" />
+              <div>
+                <h1 className="text-2xl font-semibold text-foreground">DocuGen - Manage</h1>
+                <p className="text-sm text-muted-foreground">
+                  CY2026 Draft Document Configuration Management
+                </p>
+              </div>
             </div>
           </div>
           <Button

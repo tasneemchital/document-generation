@@ -7,6 +7,7 @@ import {
   MessageCircle, 
   Users 
 } from '@phosphor-icons/react';
+import logoSvg from '@/assets/images/logo.svg';
 
 interface DashboardProps {
   onNavigate: (page: string) => void;
@@ -61,9 +62,12 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-foreground mb-4">
-            SimplifyDocs
-          </h1>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <img src={logoSvg} alt="SimplifyDocs Logo" className="w-10 h-10" />
+            <h1 className="text-4xl font-bold text-foreground">
+              SimplifyDocs
+            </h1>
+          </div>
         </div>
 
         {/* Dashboard Cards Grid */}
