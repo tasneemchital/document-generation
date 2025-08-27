@@ -245,7 +245,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
         {/* Full Height Table Section with Maximum Scrolling Area */}
         <div className="flex-1 overflow-auto">
-          <div className="min-w-[3200px] h-full">
+          <div className="min-w-[3600px] h-full">
             {/* Table Header */}
             <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500 sticky top-0 z-10">
               <div className="w-12 px-3 py-2 border-r border-gray-200">
@@ -295,6 +295,18 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
               </div>
               <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>Service Group</span>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
+              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
+                <span>Source Mapping</span>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
+                <span>Tiers</span>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
+                <span>Key</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
               <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
@@ -363,6 +375,9 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   {renderCell(rule, 'sectionName', rule.sectionName || 'N/A', 'w-48')}
                   {renderCell(rule, 'subsectionName', rule.subsectionName || 'N/A', 'w-48')}
                   {renderCell(rule, 'serviceGroup', rule.serviceGroup || 'N/A', 'w-32')}
+                  {renderCell(rule, 'sourceMapping', rule.sourceMapping || 'N/A', 'w-40')}
+                  {renderCell(rule, 'tiers', rule.tiers || 'N/A', 'w-32')}
+                  {renderCell(rule, 'key', rule.key || 'N/A', 'w-32')}
                   {renderCell(rule, 'rule', rule.rule || 'N/A', 'w-64')}
                   
                   <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
@@ -417,6 +432,22 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   <div>
                     <label className="text-sm font-semibold text-gray-500">Service ID</label>
                     <p className="text-sm">{previewRule.serviceId || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-gray-500">Service Group</label>
+                    <p className="text-sm">{previewRule.serviceGroup || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-gray-500">Source Mapping</label>
+                    <p className="text-sm">{previewRule.sourceMapping || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-gray-500">Tiers</label>
+                    <p className="text-sm">{previewRule.tiers || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-gray-500">Key</label>
+                    <p className="text-sm">{previewRule.key || 'N/A'}</p>
                   </div>
                   <div>
                     <label className="text-sm font-semibold text-gray-500">CMS Regulated</label>

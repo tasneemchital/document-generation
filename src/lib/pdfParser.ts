@@ -259,6 +259,9 @@ export async function parseDraftCY2026(): Promise<RuleData[]> {
       sectionName: ruleDef.section,
       subsectionName: ruleDef.subsection,
       serviceGroup: ruleDef.serviceGroup,
+      sourceMapping: `SM-${String(ruleCounter).padStart(3, '0')}-${Math.floor(index / 3) + 1}`,
+      tiers: `Tier ${(index % 3) + 1}`,
+      key: `KEY-${String(ruleCounter).padStart(4, '0')}-${String.fromCharCode(65 + (index % 5))}`,
       rule: ruleDef.rule,
       isTabular: index % 7 === 0, // Some are tabular
       english: ruleDef.english,

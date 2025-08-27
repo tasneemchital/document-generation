@@ -11,6 +11,9 @@ export interface RuleData {
   sectionName: string;
   subsectionName: string;
   serviceGroup: string;
+  sourceMapping: string;
+  tiers: string;
+  key: string;
   rule: string;
   isTabular: boolean;
   english: string;
