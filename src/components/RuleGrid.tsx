@@ -9,6 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { ColumnFilter } from '@/components/ColumnFilter';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { TinyMCEEditor } from '@/components/TinyMCEEditor';
 import { 
   ChevronDown, 
   Edit, 
@@ -19,7 +20,8 @@ import {
   CaretLeft,
   CaretRight,
   CaretDoubleLeft,
-  CaretDoubleRight
+  CaretDoubleRight,
+  PencilSimple
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
@@ -33,6 +35,8 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   const [editValue, setEditValue] = useState('');
   const [previewRule, setPreviewRule] = useState<RuleData | null>(null);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
+  const [richTextEditorOpen, setRichTextEditorOpen] = useState(false);
+  const [currentEditingRule, setCurrentEditingRule] = useState<RuleData | null>(null);
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -170,6 +174,13 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   const handleCellClick = (rule: RuleData, field: keyof RuleData) => {
     if (['createdAt', 'lastModified', 'id'].includes(field)) return;
     
+    // Open TinyMCE editor for English and Spanish content
+    if (field === 'english' || field === 'spanish') {
+      setCurrentEditingRule(rule);
+      setRichTextEditorOpen(true);
+      return;
+    }
+    
     const fieldValue = rule[field] as string || '';
     setEditingRule({ id: rule.id, field, value: fieldValue });
     setEditValue(fieldValue);
@@ -193,14 +204,41 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
     toast.success('Rule updated successfully');
   };
 
+  const handleRichTextSave = async (englishContent: string, spanishContent: string) => {
+    if (!currentEditingRule) return;
+
+    const updatedRule = {
+      ...currentEditingRule,
+      english: englishContent,
+      spanish: spanishContent,
+      lastModified: new Date()
+    };
+
+    onRuleUpdate(updatedRule);
+    setRichTextEditorOpen(false);
+    setCurrentEditingRule(null);
+    
+    // Return a promise to work with async save handler
+    return Promise.resolve();
+  };
+
   const handleCancelEdit = () => {
     setEditingRule(null);
     setEditValue('');
   };
 
+  // Helper function to strip HTML tags for display in grid
+  const stripHtmlTags = (html: string): string => {
+    if (!html) return '';
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || '';
+  };
+
   const renderCell = (rule: RuleData, field: keyof RuleData, content: string, className: string = '') => {
     const isEditing = editingRule?.id === rule.id && editingRule?.field === field;
     const isEditable = !['createdAt', 'lastModified', 'id', 'cmsRegulated', 'isTabular'].includes(field);
+    const isRichTextField = field === 'english' || field === 'spanish';
     
     if (isEditing) {
       return (
@@ -240,9 +278,23 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
         onClick={() => isEditable && handleCellClick(rule, field)}
       >
         <div className="flex items-center justify-between">
-          <span className="truncate flex-1 text-gray-900">{content}</span>
+          <span className="truncate flex-1 text-gray-900">
+            {isRichTextField && content ? (
+              <div className="max-w-[200px]">
+                {stripHtmlTags(content).substring(0, 100) + (stripHtmlTags(content).length > 100 ? '...' : '')}
+              </div>
+            ) : (
+              content
+            )}
+          </span>
           {isEditable && (
-            <Edit size={12} className="ml-2 opacity-0 group-hover:opacity-40 text-gray-400 flex-shrink-0" />
+            <div className="flex items-center gap-1 ml-2 opacity-0 group-hover:opacity-100 flex-shrink-0">
+              {isRichTextField ? (
+                <PencilSimple size={12} className="text-blue-500" title="Edit with rich text editor" />
+              ) : (
+                <Edit size={12} className="text-gray-400" />
+              )}
+            </div>
           )}
         </div>
       </div>
@@ -732,6 +784,23 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
             )}
           </div>
         </div>
+
+      {/* TinyMCE Editor Dialog */}
+      {currentEditingRule && (
+        <TinyMCEEditor
+          isOpen={richTextEditorOpen}
+          onClose={() => {
+            setRichTextEditorOpen(false);
+            setCurrentEditingRule(null);
+          }}
+          englishContent={currentEditingRule.english || ''}
+          spanishContent={currentEditingRule.spanish || ''}
+          onSave={handleRichTextSave}
+          title={`Rule ${currentEditingRule.ruleId || 'N/A'} - ${currentEditingRule.templateName || 'Unknown Template'}`}
+          englishStatus={currentEditingRule.englishStatus}
+          spanishStatus={currentEditingRule.spanishStatus}
+        />
+      )}
 
       {/* Preview Dialog */}
       {previewRule && (
