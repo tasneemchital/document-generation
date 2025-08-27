@@ -64,10 +64,6 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           <h1 className="text-4xl font-bold text-foreground mb-4">
             Document Generation Platform
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Streamline your document workflow from creation to collaboration. 
-            Choose a module below to get started.
-          </p>
         </div>
 
         {/* Dashboard Cards Grid */}
