@@ -664,9 +664,9 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
         <div className="bg-white border-t border-gray-200 px-6 py-3 flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">Show</span>
+              <span className="text-sm text-gray-700">Page Size</span>
               <Select value={pageSize.toString()} onValueChange={handlePageSizeChange}>
-                <SelectTrigger className="w-20 h-8">
+                <SelectTrigger className="w-16 h-8 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -677,25 +677,16 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   <SelectItem value="100">100</SelectItem>
                 </SelectContent>
               </Select>
-              <span className="text-sm text-gray-500">records per page</span>
-            </div>
-            
-            <div className="text-sm text-gray-500">
-              {columnFilteredRules.length > 0 ? (
-                `Page ${currentPage} of ${totalPages} • Showing ${startIndex + 1}-${endIndex} of ${columnFilteredRules.length} results`
-              ) : (
-                'No results found'
-              )}
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <Button
               variant="outline"
               size="sm"
               onClick={handleFirstPage}
               disabled={currentPage === 1 || columnFilteredRules.length === 0}
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 border-gray-300"
             >
               <CaretDoubleLeft size={14} />
             </Button>
@@ -704,44 +695,21 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
               size="sm"
               onClick={handlePreviousPage}
               disabled={currentPage === 1 || columnFilteredRules.length === 0}
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 border-gray-300"
             >
               <CaretLeft size={14} />
             </Button>
             
-            <div className="flex items-center gap-1">
-              {columnFilteredRules.length > 0 && Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                let pageNumber;
-                if (totalPages <= 5) {
-                  pageNumber = i + 1;
-                } else if (currentPage <= 3) {
-                  pageNumber = i + 1;
-                } else if (currentPage >= totalPages - 2) {
-                  pageNumber = totalPages - 4 + i;
-                } else {
-                  pageNumber = currentPage - 2 + i;
-                }
-                
-                return (
-                  <Button
-                    key={pageNumber}
-                    variant={currentPage === pageNumber ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setCurrentPage(pageNumber)}
-                    className="h-8 w-8 p-0"
-                  >
-                    {pageNumber}
-                  </Button>
-                );
-              })}
-            </div>
+            <span className="text-sm text-gray-700 px-3">
+              Page {currentPage} of {totalPages}
+            </span>
             
             <Button
               variant="outline"
               size="sm"
               onClick={handleNextPage}
               disabled={currentPage === totalPages || columnFilteredRules.length === 0}
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 border-gray-300"
             >
               <CaretRight size={14} />
             </Button>
@@ -750,10 +718,18 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
               size="sm"
               onClick={handleLastPage}
               disabled={currentPage === totalPages || columnFilteredRules.length === 0}
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 border-gray-300"
             >
               <CaretDoubleRight size={14} />
             </Button>
+          </div>
+
+          <div className="text-sm text-gray-700">
+            {columnFilteredRules.length > 0 ? (
+              `${startIndex + 1} to ${endIndex} of ${columnFilteredRules.length.toLocaleString()}`
+            ) : (
+              '0 to 0 of 0'
+            )}
           </div>
         </div>
 
