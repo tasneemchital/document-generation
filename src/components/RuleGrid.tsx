@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { RuleData, EditingRule } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -8,13 +8,18 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { ColumnFilter } from '@/components/ColumnFilter';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   ChevronDown, 
   Edit, 
   Save, 
   X, 
   Download,
-  Plus
+  Plus,
+  CaretLeft,
+  CaretRight,
+  CaretDoubleLeft,
+  CaretDoubleRight
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
@@ -28,6 +33,10 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   const [editValue, setEditValue] = useState('');
   const [previewRule, setPreviewRule] = useState<RuleData | null>(null);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   
   // Column-specific filters state
   const [columnFilters, setColumnFilters] = useState({
@@ -109,6 +118,28 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
     });
   }, [rules, columnFilters]);
 
+  // Pagination calculations
+  const totalPages = Math.max(1, Math.ceil(columnFilteredRules.length / pageSize));
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, columnFilteredRules.length);
+  const paginatedRules = columnFilteredRules.slice(startIndex, endIndex);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [columnFilters]);
+
+  // Pagination handlers
+  const handlePageSizeChange = (newPageSize: string) => {
+    setPageSize(parseInt(newPageSize));
+    setCurrentPage(1);
+  };
+
+  const handleFirstPage = () => setCurrentPage(1);
+  const handleLastPage = () => setCurrentPage(totalPages);
+  const handlePreviousPage = () => setCurrentPage(Math.max(1, currentPage - 1));
+  const handleNextPage = () => setCurrentPage(Math.min(totalPages, currentPage + 1));
+
 
   // Column filter handlers
   const handleColumnFilter = (column: string, value: any) => {
@@ -130,7 +161,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedRows(new Set(columnFilteredRules.map(r => r.id)));
+      setSelectedRows(new Set(paginatedRules.map(r => r.id)));
     } else {
       setSelectedRows(new Set());
     }
@@ -246,7 +277,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
             <div>
               <h2 className="text-base font-semibold text-gray-900">Rules</h2>
               <p className="text-xs text-gray-500 mt-1">
-                Showing {columnFilteredRules.length} of {rules.length} rules
+                Showing {startIndex + 1}-{endIndex} of {columnFilteredRules.length} rules
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -272,7 +303,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
             <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500 sticky top-0 z-10">
               <div className="w-12 px-3 py-2 border-r border-gray-200">
                 <Checkbox 
-                  checked={columnFilteredRules.length > 0 && selectedRows.size === columnFilteredRules.length}
+                  checked={paginatedRules.length > 0 && selectedRows.size === paginatedRules.length}
                   onCheckedChange={handleSelectAll}
                 />
               </div>
@@ -546,7 +577,8 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
             {/* Table Body - Compact rows */}
             <div className="bg-white">
-              {columnFilteredRules.map((rule, index) => (
+              {paginatedRules.length > 0 ? (
+                paginatedRules.map((rule, index) => (
                 <div 
                   key={rule.id} 
                   className={`flex border-b border-gray-100 hover:bg-gray-50 ${
@@ -615,8 +647,113 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                     {getStatusBadge(rule.spanishStatus)}
                   </div>
                 </div>
-              ))}
+                ))
+              ) : (
+                <div className="flex items-center justify-center py-12 text-gray-500">
+                  <div className="text-center">
+                    <p className="text-sm">No rules found</p>
+                    <p className="text-xs mt-1">Try adjusting your filters</p>
+                  </div>
+                </div>
+              )}
             </div>
+          </div>
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="bg-white border-t border-gray-200 px-6 py-3 flex items-center justify-between flex-shrink-0">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500">Show</span>
+              <Select value={pageSize.toString()} onValueChange={handlePageSizeChange}>
+                <SelectTrigger className="w-20 h-8">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="20">20</SelectItem>
+                  <SelectItem value="40">40</SelectItem>
+                  <SelectItem value="60">60</SelectItem>
+                  <SelectItem value="80">80</SelectItem>
+                  <SelectItem value="100">100</SelectItem>
+                </SelectContent>
+              </Select>
+              <span className="text-sm text-gray-500">records per page</span>
+            </div>
+            
+            <div className="text-sm text-gray-500">
+              {columnFilteredRules.length > 0 ? (
+                `Page ${currentPage} of ${totalPages} • Showing ${startIndex + 1}-${endIndex} of ${columnFilteredRules.length} results`
+              ) : (
+                'No results found'
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleFirstPage}
+              disabled={currentPage === 1 || columnFilteredRules.length === 0}
+              className="h-8 w-8 p-0"
+            >
+              <CaretDoubleLeft size={14} />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1 || columnFilteredRules.length === 0}
+              className="h-8 w-8 p-0"
+            >
+              <CaretLeft size={14} />
+            </Button>
+            
+            <div className="flex items-center gap-1">
+              {columnFilteredRules.length > 0 && Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let pageNumber;
+                if (totalPages <= 5) {
+                  pageNumber = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNumber = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  pageNumber = totalPages - 4 + i;
+                } else {
+                  pageNumber = currentPage - 2 + i;
+                }
+                
+                return (
+                  <Button
+                    key={pageNumber}
+                    variant={currentPage === pageNumber ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setCurrentPage(pageNumber)}
+                    className="h-8 w-8 p-0"
+                  >
+                    {pageNumber}
+                  </Button>
+                );
+              })}
+            </div>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages || columnFilteredRules.length === 0}
+              className="h-8 w-8 p-0"
+            >
+              <CaretRight size={14} />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleLastPage}
+              disabled={currentPage === totalPages || columnFilteredRules.length === 0}
+              className="h-8 w-8 p-0"
+            >
+              <CaretDoubleRight size={14} />
+            </Button>
           </div>
         </div>
 
