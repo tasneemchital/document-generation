@@ -152,7 +152,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
         <div>
           <h2 className="text-lg font-semibold text-foreground">Language Configuration Repeater</h2>
           <p className="text-xs text-muted-foreground mt-1">
-            Source: DRAFT_CY2026_1_HMO_MAPD_ISNP_CSNP_EOC_FINAL.pdf • {filteredRules.length} of {rules.length} rules
+            {filteredRules.length} of {rules.length} rules
           </p>
         </div>
         <div className="flex items-center gap-2">
