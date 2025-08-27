@@ -15,7 +15,6 @@ import {
   Edit, 
   Save, 
   X, 
-  Download,
   Plus,
   CaretLeft,
   CaretRight,
@@ -387,10 +386,6 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
               <h2 className="text-base font-semibold text-gray-900">Digital Content Manager - ANOC-EOC</h2>
             </div>
             <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50">
-                <Download size={14} />
-                Download PDF
-              </Button>
               <Button size="sm" className="flex items-center gap-2 bg-purple-600 text-white hover:bg-purple-700">
                 <Plus size={14} />
                 New Rule
