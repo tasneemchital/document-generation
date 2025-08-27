@@ -151,6 +151,16 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
       ...prev,
       [column]: value
     }));
+    
+    // Log filter activity
+    if ((window as any).addActivityLog) {
+      (window as any).addActivityLog({
+        user: 'Current User',
+        action: 'filter',
+        target: `Column: ${column}`,
+        details: `Applied filter to ${column} column`,
+      });
+    }
   };
 
   const handleRowSelect = (ruleId: string, checked: boolean) => {
@@ -174,6 +184,17 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   const handleCellClick = (rule: RuleData, field: keyof RuleData) => {
     if (['createdAt', 'lastModified', 'id'].includes(field)) return;
     
+    // Log cell click activity
+    if ((window as any).addActivityLog) {
+      (window as any).addActivityLog({
+        user: 'Current User',
+        action: 'view',
+        target: `Rule ${rule.ruleId || 'N/A'} - ${field}`,
+        details: `Clicked to edit ${field} field`,
+        ruleId: rule.ruleId,
+      });
+    }
+    
     // Open TinyMCE editor for English and Spanish content
     if (field === 'english' || field === 'spanish') {
       setCurrentEditingRule(rule);
@@ -192,6 +213,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
     const ruleToUpdate = rules.find(r => r.id === editingRule.id);
     if (!ruleToUpdate) return;
 
+    const oldValue = ruleToUpdate[editingRule.field] as string || '';
     const updatedRule = {
       ...ruleToUpdate,
       [editingRule.field]: editValue,
@@ -199,6 +221,20 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
     };
 
     onRuleUpdate(updatedRule);
+    
+    // Log the edit activity with before/after values
+    if ((window as any).addActivityLog) {
+      (window as any).addActivityLog({
+        user: 'Current User',
+        action: 'edit',
+        target: `Rule ${ruleToUpdate.ruleId || 'N/A'} - ${editingRule.field}`,
+        details: `Updated ${editingRule.field} field`,
+        ruleId: ruleToUpdate.ruleId,
+        oldValue: oldValue,
+        newValue: editValue,
+      });
+    }
+    
     setEditingRule(null);
     setEditValue('');
     toast.success('Rule updated successfully');
@@ -207,6 +243,9 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   const handleRichTextSave = async (englishContent: string, spanishContent: string) => {
     if (!currentEditingRule) return;
 
+    const oldEnglish = currentEditingRule.english || '';
+    const oldSpanish = currentEditingRule.spanish || '';
+    
     const updatedRule = {
       ...currentEditingRule,
       english: englishContent,
@@ -215,6 +254,24 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
     };
 
     onRuleUpdate(updatedRule);
+    
+    // Log the rich text edit activity
+    if ((window as any).addActivityLog) {
+      const changes = [];
+      if (oldEnglish !== englishContent) changes.push('English content');
+      if (oldSpanish !== spanishContent) changes.push('Spanish content');
+      
+      (window as any).addActivityLog({
+        user: 'Current User',
+        action: 'edit',
+        target: `Rule ${currentEditingRule.ruleId || 'N/A'} - Rich Text`,
+        details: `Updated ${changes.join(' and ')} using rich text editor`,
+        ruleId: currentEditingRule.ruleId,
+        oldValue: changes.length > 1 ? `EN: ${oldEnglish.substring(0, 50)}... | ES: ${oldSpanish.substring(0, 50)}...` : (oldEnglish !== englishContent ? oldEnglish : oldSpanish),
+        newValue: changes.length > 1 ? `EN: ${englishContent.substring(0, 50)}... | ES: ${spanishContent.substring(0, 50)}...` : (oldEnglish !== englishContent ? englishContent : spanishContent),
+      });
+    }
+    
     setRichTextEditorOpen(false);
     setCurrentEditingRule(null);
     
@@ -645,6 +702,19 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                           lastModified: new Date()
                         };
                         onRuleUpdate(updatedRule);
+                        
+                        // Log the checkbox change activity
+                        if ((window as any).addActivityLog) {
+                          (window as any).addActivityLog({
+                            user: 'Current User',
+                            action: 'edit',
+                            target: `Rule ${rule.ruleId || 'N/A'} - CMS Regulated`,
+                            details: `${checked ? 'Enabled' : 'Disabled'} CMS regulation`,
+                            ruleId: rule.ruleId,
+                            oldValue: rule.cmsRegulated ? 'Yes' : 'No',
+                            newValue: checked ? 'Yes' : 'No',
+                          });
+                        }
                       }}
                     />
                   </div>
@@ -668,6 +738,19 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                           lastModified: new Date()
                         };
                         onRuleUpdate(updatedRule);
+                        
+                        // Log the checkbox change activity
+                        if ((window as any).addActivityLog) {
+                          (window as any).addActivityLog({
+                            user: 'Current User',
+                            action: 'edit',
+                            target: `Rule ${rule.ruleId || 'N/A'} - Is Tabular`,
+                            details: `${checked ? 'Enabled' : 'Disabled'} tabular format`,
+                            ruleId: rule.ruleId,
+                            oldValue: rule.isTabular ? 'Yes' : 'No',
+                            newValue: checked ? 'Yes' : 'No',
+                          });
+                        }
                       }}
                     />
                   </div>
