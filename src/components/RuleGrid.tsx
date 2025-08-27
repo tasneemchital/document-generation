@@ -244,7 +244,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
         {/* Table Section with Vertical and Horizontal Scrolling */}
         <div className="overflow-auto max-h-[calc(100vh-400px)]">
-          <div className="min-w-[3000px]">
+          <div className="min-w-[3200px]">
             {/* Table Header */}
             <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500 sticky top-0 z-10">
               <div className="w-12 px-3 py-3 border-r border-gray-200">
@@ -267,6 +267,14 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
               </div>
               <div className="w-48 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
                 <span>Template Name</span>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
+              <div className="w-28 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+                <span>Row Version</span>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
+              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+                <span>Service ID</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
               <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
@@ -333,6 +341,8 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   {renderCell(rule, 'effectiveDate', rule.effectiveDate || 'N/A', 'w-32')}
                   {renderCell(rule, 'version', rule.version || 'N/A', 'w-24')}
                   {renderCell(rule, 'templateName', rule.templateName || 'N/A', 'w-48 font-medium')}
+                  {renderCell(rule, 'rowVersion', rule.rowVersion || 'N/A', 'w-28')}
+                  {renderCell(rule, 'serviceId', rule.serviceId || 'N/A', 'w-32')}
                   
                   <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
                     <Checkbox 

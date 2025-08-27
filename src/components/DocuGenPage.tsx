@@ -31,11 +31,8 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
   };
 
   useEffect(() => {
-    if (rules.length === 0) {
-      loadRuleData();
-    } else {
-      setIsLoading(false);
-    }
+    // Always load data on component mount to ensure we get the latest 25 rules
+    loadRuleData();
   }, []);
 
   const handleRuleUpdate = (updatedRule: RuleData) => {
