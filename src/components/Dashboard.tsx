@@ -26,7 +26,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     {
       id: 'generate',
       title: 'Generate',
-      description: 'Create documents from templates using configured rules and data',
+      description: 'Generate documents in Word, Print X, 508 and large print in English and other languages',
       icon: FileText,
       color: 'bg-accent text-accent-foreground',
       action: () => onNavigate('generate')
