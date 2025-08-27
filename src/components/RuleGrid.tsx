@@ -57,7 +57,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
     sourceMapping: [] as string[],
     tiers: [] as string[],
     key: [] as string[],
-    rule: '',
+
     isTabular: 'all' as 'all' | 'true' | 'false',
     english: '',
     englishStatus: [] as string[],
@@ -89,7 +89,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
       // Text filters
       if (columnFilters.ruleId && !rule.ruleId?.toLowerCase().includes(columnFilters.ruleId.toLowerCase())) return false;
       if (columnFilters.effectiveDate && !rule.effectiveDate?.toLowerCase().includes(columnFilters.effectiveDate.toLowerCase())) return false;
-      if (columnFilters.rule && !rule.rule?.toLowerCase().includes(columnFilters.rule.toLowerCase())) return false;
+
       if (columnFilters.english && !rule.english?.toLowerCase().includes(columnFilters.english.toLowerCase())) return false;
       if (columnFilters.spanish && !rule.spanish?.toLowerCase().includes(columnFilters.spanish.toLowerCase())) return false;
 
@@ -243,7 +243,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
     if (isEditing) {
       return (
         <div className={`px-3 py-1 border-r border-gray-200 flex items-center gap-2 ${className}`}>
-          {field === 'rule' || field === 'english' || field === 'spanish' ? (
+          {field === 'english' || field === 'spanish' ? (
             <Textarea
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
@@ -350,7 +350,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
         {/* Full Height Table Section with Maximum Scrolling Area */}
         <div className="flex-1 overflow-auto">
-          <div className="min-w-[3572px] h-full">
+          <div className="min-w-[3316px] h-full">
             {/* Table Header */}
             <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500 sticky top-0 z-10">
               <div className="w-12 px-3 py-2 border-r border-gray-200">
@@ -536,22 +536,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   onFilter={(values) => handleColumnFilter('key', values)}
                 />
               </div>
-              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span>Rules</span>
-                  <ChevronDown size={14} className="text-gray-400" />
-                </div>
-                <ColumnFilter
-                  columnKey="rule"
-                  columnTitle="Rules"
-                  values={[]}
-                  selectedValues={[]}
-                  onFilter={() => {}}
-                  filterType="text"
-                  textValue={columnFilters.rule}
-                  onTextFilter={(value) => handleColumnFilter('rule', value)}
-                />
-              </div>
+
               <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span>Is Tabular</span>
@@ -671,7 +656,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   {renderCell(rule, 'sourceMapping', rule.sourceMapping || 'N/A', 'w-40')}
                   {renderCell(rule, 'tiers', rule.tiers || 'N/A', 'w-32')}
                   {renderCell(rule, 'key', rule.key || 'N/A', 'w-32')}
-                  {renderCell(rule, 'rule', rule.rule || 'N/A', 'w-64')}
+
                   
                   <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
                     <Checkbox 
