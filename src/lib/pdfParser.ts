@@ -252,7 +252,6 @@ export async function parseDraftCY2026(): Promise<RuleData[]> {
       effectiveDate: '2026-01-01',
       version: '1.0',
       templateName: `CY2026 HMO MAPD Template ${Math.floor(index / 5) + 1}`,
-      rowVersion: `R${String(ruleCounter).padStart(3, '0')}`,
       serviceId: `SRV-${String(ruleCounter).padStart(3, '0')}-01`,
       cmsRegulated: index % 3 !== 0, // Most are CMS regulated
       chapterName: ruleDef.chapter,

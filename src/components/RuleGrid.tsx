@@ -245,7 +245,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
         {/* Full Height Table Section with Maximum Scrolling Area */}
         <div className="flex-1 overflow-auto">
-          <div className="min-w-[3600px] h-full">
+          <div className="min-w-[3572px] h-full">
             {/* Table Header */}
             <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500 sticky top-0 z-10">
               <div className="w-12 px-3 py-2 border-r border-gray-200">
@@ -268,10 +268,6 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
               </div>
               <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>Template Name</span>
-                <ChevronDown size={14} className="text-gray-400" />
-              </div>
-              <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Row Version</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
               <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
@@ -354,7 +350,6 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   {renderCell(rule, 'effectiveDate', rule.effectiveDate || 'N/A', 'w-32')}
                   {renderCell(rule, 'version', rule.version || 'N/A', 'w-24')}
                   {renderCell(rule, 'templateName', rule.templateName || 'N/A', 'w-48 font-medium')}
-                  {renderCell(rule, 'rowVersion', rule.rowVersion || 'N/A', 'w-28')}
                   {renderCell(rule, 'serviceId', rule.serviceId || 'N/A', 'w-32')}
                   
                   <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
@@ -424,10 +419,6 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   <div>
                     <label className="text-sm font-semibold text-gray-500">Template</label>
                     <p className="text-sm">{previewRule.templateName || 'N/A'}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-semibold text-gray-500">Row Version</label>
-                    <p className="text-sm">{previewRule.rowVersion || 'N/A'}</p>
                   </div>
                   <div>
                     <label className="text-sm font-semibold text-gray-500">Service ID</label>
