@@ -97,7 +97,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
   const renderCell = (rule: RuleData, field: keyof RuleData, content: string, className: string = '') => {
     const isEditing = editingRule?.id === rule.id && editingRule?.field === field;
-    const isEditable = !['createdAt', 'lastModified', 'id'].includes(field);
+    const isEditable = !['createdAt', 'lastModified', 'id', 'cmsRegulated', 'isTabular'].includes(field);
     
     if (isEditing) {
       return (
@@ -106,18 +106,18 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
             <Textarea
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
-              className="min-h-[32px] text-sm resize-none border-blue-300 focus:border-blue-500"
+              className="min-h-[32px] text-sm resize-none border-blue-300 focus:border-blue-500 flex-1"
               autoFocus
             />
           ) : (
             <Input
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
-              className="text-sm h-8 border-blue-300 focus:border-blue-500"
+              className="text-sm h-8 border-blue-300 focus:border-blue-500 flex-1"
               autoFocus
             />
           )}
-          <div className="flex gap-1">
+          <div className="flex gap-1 flex-shrink-0">
             <Button size="sm" variant="outline" onClick={handleSaveEdit} className="h-7 w-7 p-0 border-green-300 hover:bg-green-50">
               <Save size={12} className="text-green-600" />
             </Button>
@@ -139,7 +139,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
         <div className="flex items-center justify-between">
           <span className="truncate flex-1 text-gray-900">{content}</span>
           {isEditable && (
-            <Edit size={12} className="ml-2 opacity-0 group-hover:opacity-40 text-gray-400" />
+            <Edit size={12} className="ml-2 opacity-0 group-hover:opacity-40 text-gray-400 flex-shrink-0" />
           )}
         </div>
       </div>
@@ -244,7 +244,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
         {/* Table Section with Vertical and Horizontal Scrolling */}
         <div className="overflow-auto max-h-[calc(100vh-400px)]">
-          <div className="min-w-[2200px]">
+          <div className="min-w-[3000px]">
             {/* Table Header */}
             <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500 sticky top-0 z-10">
               <div className="w-12 px-3 py-3 border-r border-gray-200">
@@ -253,20 +253,20 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   onCheckedChange={handleSelectAll}
                 />
               </div>
-              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-24 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
                 <span>Rule ID</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-40 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+                <span>Effective Date</span>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
+              <div className="w-24 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+                <span>Version</span>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
+              <div className="w-48 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
                 <span>Template Name</span>
-                <ChevronDown size={14} className="text-gray-400" />
-              </div>
-              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
-                <span>Row Version</span>
-                <ChevronDown size={14} className="text-gray-400" />
-              </div>
-              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
-                <span>Service ID</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
               <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
@@ -280,20 +280,35 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                 <span>Section Name</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
+              <div className="w-48 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+                <span>Subsection Name</span>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
               <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
-                <span>Start Date</span>
+                <span>Service Group</span>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
+              <div className="w-64 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+                <span>Rule</span>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
+              <div className="w-28 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
+                <span>Is Tabular</span>
+              </div>
+              <div className="w-64 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+                <span>English</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
               <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
                 <span>Status</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
-                <span>Rate Type</span>
+              <div className="w-64 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+                <span>Spanish</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-48 px-3 py-3 flex items-center gap-2">
-                <span>Type</span>
+              <div className="w-32 px-3 py-3 flex items-center gap-2">
+                <span>Status</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
             </div>
@@ -314,22 +329,10 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                     />
                   </div>
                   
-                  <div className="w-32 px-3 py-3 border-r border-gray-200">
-                    <span className="font-medium text-gray-900">{rule.ruleId || 'N/A'}</span>
-                  </div>
-                  
-                  <div className="w-40 px-3 py-3 border-r border-gray-200">
-                    <div className="text-gray-900 font-medium truncate">{rule.templateName || 'N/A'}</div>
-                    <div className="text-xs text-gray-500 truncate">{rule.subsectionName || 'N/A'}</div>
-                  </div>
-                  
-                  <div className="w-32 px-3 py-3 border-r border-gray-200">
-                    <span className="text-gray-600 text-sm">{rule.rowVersion || 'N/A'}</span>
-                  </div>
-                  
-                  <div className="w-32 px-3 py-3 border-r border-gray-200">
-                    <span className="text-gray-600 text-sm">{rule.serviceId || 'N/A'}</span>
-                  </div>
+                  {renderCell(rule, 'ruleId', rule.ruleId || 'N/A', 'w-24 font-medium')}
+                  {renderCell(rule, 'effectiveDate', rule.effectiveDate || 'N/A', 'w-32')}
+                  {renderCell(rule, 'version', rule.version || 'N/A', 'w-24')}
+                  {renderCell(rule, 'templateName', rule.templateName || 'N/A', 'w-48 font-medium')}
                   
                   <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
                     <Checkbox 
@@ -345,28 +348,36 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                     />
                   </div>
                   
-                  <div className="w-48 px-3 py-3 border-r border-gray-200">
-                    <span className="text-gray-600 text-sm">{rule.chapterName || 'N/A'}</span>
+                  {renderCell(rule, 'chapterName', rule.chapterName || 'N/A', 'w-48')}
+                  {renderCell(rule, 'sectionName', rule.sectionName || 'N/A', 'w-48')}
+                  {renderCell(rule, 'subsectionName', rule.subsectionName || 'N/A', 'w-48')}
+                  {renderCell(rule, 'serviceGroup', rule.serviceGroup || 'N/A', 'w-32')}
+                  {renderCell(rule, 'rule', rule.rule || 'N/A', 'w-64')}
+                  
+                  <div className="w-28 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
+                    <Checkbox 
+                      checked={rule.isTabular || false}
+                      onCheckedChange={(checked) => {
+                        const updatedRule = {
+                          ...rule,
+                          isTabular: checked as boolean,
+                          lastModified: new Date()
+                        };
+                        onRuleUpdate(updatedRule);
+                      }}
+                    />
                   </div>
                   
-                  <div className="w-48 px-3 py-3 border-r border-gray-200">
-                    <span className="text-gray-600 text-sm">{rule.sectionName || 'N/A'}</span>
-                  </div>
-                  
-                  <div className="w-32 px-3 py-3 border-r border-gray-200">
-                    <span className="text-gray-600 text-sm">{rule.effectiveDate || 'N/A'}</span>
-                  </div>
+                  {renderCell(rule, 'english', rule.english || 'N/A', 'w-64')}
                   
                   <div className="w-32 px-3 py-3 border-r border-gray-200">
                     {getStatusBadge(rule.englishStatus)}
                   </div>
                   
-                  <div className="w-32 px-3 py-3 border-r border-gray-200">
-                    <span className="text-gray-600 text-sm">Flat Rate</span>
-                  </div>
+                  {renderCell(rule, 'spanish', rule.spanish || 'N/A', 'w-64')}
                   
-                  <div className="w-48 px-3 py-3">
-                    <span className="text-gray-600 text-sm">{rule.serviceGroup || 'N/A'}</span>
+                  <div className="w-32 px-3 py-3">
+                    {getStatusBadge(rule.spanishStatus)}
                   </div>
                 </div>
               ))}
