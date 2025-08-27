@@ -6,10 +6,13 @@ import {
   FileText, 
   Share, 
   Settings, 
-  Palette 
+  Palette,
+  CaretLeft,
+  CaretRight
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useKV } from '@github/spark/hooks';
 
 interface LayoutProps {
   children: ReactNode;
@@ -28,13 +31,32 @@ const navigationItems = [
 ];
 
 export function Layout({ children, currentPage, onNavigate }: LayoutProps) {
+  const [isCollapsed, setIsCollapsed] = useKV('sidebar-collapsed', false);
+
   return (
     <div className="flex h-screen bg-background">
       {/* Left Navigation Pane */}
-      <div className="w-64 bg-card border-r border-border flex flex-col">
+      <div className={cn(
+        "bg-card border-r border-border flex flex-col transition-all duration-300",
+        isCollapsed ? "w-16" : "w-64"
+      )}>
         {/* Logo/Header */}
-        <div className="p-6 border-b border-border">
-          <h1 className="text-xl font-semibold text-foreground">SimplifyDocs</h1>
+        <div className="p-6 border-b border-border flex items-center justify-between">
+          {!isCollapsed && (
+            <h1 className="text-xl font-semibold text-foreground">SimplifyDocs</h1>
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="p-1 h-8 w-8 hover:bg-secondary"
+          >
+            {isCollapsed ? (
+              <CaretRight size={16} className="text-muted-foreground" />
+            ) : (
+              <CaretLeft size={16} className="text-muted-foreground" />
+            )}
+          </Button>
         </div>
         
         {/* Navigation Items */}
@@ -51,12 +73,14 @@ export function Layout({ children, currentPage, onNavigate }: LayoutProps) {
                   "w-full justify-start gap-3 text-left",
                   isActive 
                     ? "bg-primary text-primary-foreground" 
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary",
+                  isCollapsed && "justify-center gap-0"
                 )}
                 onClick={() => onNavigate(item.id)}
+                title={isCollapsed ? item.label : undefined}
               >
                 <Icon size={20} />
-                <span>{item.label}</span>
+                {!isCollapsed && <span>{item.label}</span>}
               </Button>
             );
           })}

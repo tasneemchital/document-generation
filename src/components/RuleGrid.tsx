@@ -166,7 +166,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full overflow-hidden">
       {/* Clean Header Section */}
       <div className="bg-white rounded-lg border border-gray-200 mb-6">
         <div className="px-6 py-4 border-b border-gray-200">
@@ -242,11 +242,11 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
           </div>
         </div>
 
-        {/* Table Section */}
-        <div className="overflow-x-auto">
+        {/* Table Section with Vertical and Horizontal Scrolling */}
+        <div className="overflow-auto max-h-[calc(100vh-400px)]">
           <div className="min-w-[2200px]">
             {/* Table Header */}
-            <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500">
+            <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500 sticky top-0 z-10">
               <div className="w-12 px-3 py-3 border-r border-gray-200">
                 <Checkbox 
                   checked={filteredRules.length > 0 && selectedRows.size === filteredRules.length}
