@@ -2,19 +2,17 @@ import { useState } from 'react';
 import { RuleData, EditingRule } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
+import { AdvancedFilter } from '@/components/AdvancedFilter';
 import { 
   ChevronDown, 
-  Filter, 
   Edit, 
   Save, 
   X, 
-  Search,
   Download,
   Plus
 } from '@phosphor-icons/react';
@@ -30,21 +28,12 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   const [editValue, setEditValue] = useState('');
   const [previewRule, setPreviewRule] = useState<RuleData | null>(null);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
-  const [searchTerm, setSearchTerm] = useState('');
-  
-  // Filter states
-  const [statusFilter, setStatusFilter] = useState('All');
-  const [vendorTypeFilter, setVendorTypeFilter] = useState('All');
-  const [vendorFilter, setVendorFilter] = useState('All');
-  
-  const filteredRules = rules.filter(rule => {
-    if (searchTerm && !(rule.templateName?.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        !(rule.ruleId?.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        !(rule.chapterName?.toLowerCase().includes(searchTerm.toLowerCase()))) {
-      return false;
-    }
-    return true;
-  });
+  const [filteredRules, setFilteredRules] = useState<RuleData[]>(rules);
+
+  // Update filtered rules when rules prop changes
+  const handleFiltersChange = (filtered: RuleData[]) => {
+    setFilteredRules(filtered);
+  };
 
   const handleRowSelect = (ruleId: string, checked: boolean) => {
     const newSelected = new Set(selectedRows);
@@ -190,56 +179,9 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
           </div>
         </div>
 
-        {/* Compact Filter Section */}
-        <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
-          <div className="flex items-center gap-4">
-            <div className="flex-1 max-w-md">
-              <div className="relative">
-                <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <Input
-                  placeholder="Search for Rules"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500 h-9"
-                />
-              </div>
-            </div>
-
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-36 h-9 border-gray-300 focus:border-blue-500">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                  <SelectValue />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All">All</SelectItem>
-                <SelectItem value="Complete">Complete</SelectItem>
-                <SelectItem value="In Progress">In Progress</SelectItem>
-                <SelectItem value="Pending">Pending</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={vendorTypeFilter} onValueChange={setVendorTypeFilter}>
-              <SelectTrigger className="w-36 h-9 border-gray-300 focus:border-blue-500">
-                <SelectValue placeholder="All" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All">All</SelectItem>
-                <SelectItem value="Template">Template</SelectItem>
-                <SelectItem value="Chapter">Chapter</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={vendorFilter} onValueChange={setVendorFilter}>
-              <SelectTrigger className="w-36 h-9 border-gray-300 focus:border-blue-500">
-                <SelectValue placeholder="All" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All">All</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        {/* Advanced Filter Section */}
+        <div className="px-6 py-3">
+          <AdvancedFilter rules={rules} onFiltersChange={handleFiltersChange} />
         </div>
       </div>
 
