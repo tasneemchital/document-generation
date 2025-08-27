@@ -46,6 +46,10 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
     ruleId: '',
     effectiveDate: '',
     version: [] as string[],
+    benefitType: [] as string[],
+    businessArea: [] as string[],
+    subBusinessArea: [] as string[],
+    description: '',
     templateName: [] as string[],
     serviceId: [] as string[],
     cmsRegulated: 'all' as 'all' | 'true' | 'false',
@@ -69,6 +73,9 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
     ruleId: [...new Set(rules.map(r => r.ruleId).filter(Boolean))],
     effectiveDate: [...new Set(rules.map(r => r.effectiveDate).filter(Boolean))],
     version: [...new Set(rules.map(r => r.version).filter(Boolean))],
+    benefitType: [...new Set(rules.map(r => r.benefitType).filter(Boolean))],
+    businessArea: [...new Set(rules.map(r => r.businessArea).filter(Boolean))],
+    subBusinessArea: [...new Set(rules.map(r => r.subBusinessArea).filter(Boolean))],
     templateName: [...new Set(rules.map(r => r.templateName).filter(Boolean))],
     serviceId: [...new Set(rules.map(r => r.serviceId).filter(Boolean))],
     chapterName: [...new Set(rules.map(r => r.chapterName).filter(Boolean))],
@@ -88,12 +95,16 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
       // Text filters
       if (columnFilters.ruleId && !rule.ruleId?.toLowerCase().includes(columnFilters.ruleId.toLowerCase())) return false;
       if (columnFilters.effectiveDate && !rule.effectiveDate?.toLowerCase().includes(columnFilters.effectiveDate.toLowerCase())) return false;
+      if (columnFilters.description && !rule.description?.toLowerCase().includes(columnFilters.description.toLowerCase())) return false;
 
       if (columnFilters.english && !rule.english?.toLowerCase().includes(columnFilters.english.toLowerCase())) return false;
       if (columnFilters.spanish && !rule.spanish?.toLowerCase().includes(columnFilters.spanish.toLowerCase())) return false;
 
       // Multi-select filters
       if (columnFilters.version.length > 0 && !columnFilters.version.includes(rule.version || '')) return false;
+      if (columnFilters.benefitType.length > 0 && !columnFilters.benefitType.includes(rule.benefitType || '')) return false;
+      if (columnFilters.businessArea.length > 0 && !columnFilters.businessArea.includes(rule.businessArea || '')) return false;
+      if (columnFilters.subBusinessArea.length > 0 && !columnFilters.subBusinessArea.includes(rule.subBusinessArea || '')) return false;
       if (columnFilters.templateName.length > 0 && !columnFilters.templateName.includes(rule.templateName || '')) return false;
       if (columnFilters.serviceId.length > 0 && !columnFilters.serviceId.includes(rule.serviceId || '')) return false;
       if (columnFilters.chapterName.length > 0 && !columnFilters.chapterName.includes(rule.chapterName || '')) return false;
@@ -399,7 +410,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
         {/* Full Height Table Section with Maximum Scrolling Area */}
         <div className="flex-1 overflow-auto">
-          <div className="min-w-[3316px] h-full">
+          <div className="min-w-[4100px] h-full">
             {/* Table Header */}
             <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500 sticky top-0 z-10">
               <div className="w-12 px-3 py-2 border-r border-gray-200">
@@ -451,6 +462,61 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   values={uniqueValues.version}
                   selectedValues={columnFilters.version}
                   onFilter={(values) => handleColumnFilter('version', values)}
+                />
+              </div>
+              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Benefit Type</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="benefitType"
+                  columnTitle="Benefit Type"
+                  values={uniqueValues.benefitType}
+                  selectedValues={columnFilters.benefitType}
+                  onFilter={(values) => handleColumnFilter('benefitType', values)}
+                />
+              </div>
+              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Business Area</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="businessArea"
+                  columnTitle="Business Area"
+                  values={uniqueValues.businessArea}
+                  selectedValues={columnFilters.businessArea}
+                  onFilter={(values) => handleColumnFilter('businessArea', values)}
+                />
+              </div>
+              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Sub-Business Area</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="subBusinessArea"
+                  columnTitle="Sub-Business Area"
+                  values={uniqueValues.subBusinessArea}
+                  selectedValues={columnFilters.subBusinessArea}
+                  onFilter={(values) => handleColumnFilter('subBusinessArea', values)}
+                />
+              </div>
+              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Description</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="description"
+                  columnTitle="Description"
+                  values={[]}
+                  selectedValues={[]}
+                  onFilter={() => {}}
+                  filterType="text"
+                  textValue={columnFilters.description}
+                  onTextFilter={(value) => handleColumnFilter('description', value)}
                 />
               </div>
               <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
@@ -681,6 +747,10 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   {renderCell(rule, 'ruleId', rule.ruleId || 'N/A', 'w-24 font-medium')}
                   {renderCell(rule, 'effectiveDate', rule.effectiveDate || 'N/A', 'w-32')}
                   {renderCell(rule, 'version', rule.version || 'N/A', 'w-24')}
+                  {renderCell(rule, 'benefitType', rule.benefitType || 'N/A', 'w-40')}
+                  {renderCell(rule, 'businessArea', rule.businessArea || 'N/A', 'w-40')}
+                  {renderCell(rule, 'subBusinessArea', rule.subBusinessArea || 'N/A', 'w-48')}
+                  {renderCell(rule, 'description', rule.description || 'N/A', 'w-64')}
                   {renderCell(rule, 'templateName', rule.templateName || 'N/A', 'w-48 font-medium')}
                   {renderCell(rule, 'serviceId', rule.serviceId || 'N/A', 'w-32')}
                   
@@ -877,6 +947,22 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                     <p className="text-sm">{previewRule.templateName || 'N/A'}</p>
                   </div>
                   <div>
+                    <label className="text-sm font-semibold text-gray-500">Version</label>
+                    <p className="text-sm">{previewRule.version || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-gray-500">Benefit Type</label>
+                    <p className="text-sm">{previewRule.benefitType || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-gray-500">Business Area</label>
+                    <p className="text-sm">{previewRule.businessArea || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-gray-500">Sub-Business Area</label>
+                    <p className="text-sm">{previewRule.subBusinessArea || 'N/A'}</p>
+                  </div>
+                  <div>
                     <label className="text-sm font-semibold text-gray-500">Service ID</label>
                     <p className="text-sm">{previewRule.serviceId || 'N/A'}</p>
                   </div>
@@ -908,6 +994,11 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                     <label className="text-sm font-semibold text-gray-500">Section</label>
                     <p className="text-sm">{previewRule.sectionName || 'N/A'}</p>
                   </div>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-semibold text-gray-500">Description</label>
+                  <p className="text-sm mt-1 p-3 bg-gray-50 rounded">{previewRule.description || 'N/A'}</p>
                 </div>
                 
                 <div>

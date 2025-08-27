@@ -3,6 +3,10 @@ export interface RuleData {
   ruleId: string;
   effectiveDate: string;
   version: string;
+  benefitType: string;
+  businessArea: string;
+  subBusinessArea: string;
+  description: string;
   templateName: string;
   serviceId: string;
   cmsRegulated: boolean;

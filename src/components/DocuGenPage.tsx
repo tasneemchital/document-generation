@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { RuleGrid } from '@/components/RuleGrid';
 import { ActivityLog } from '@/components/ActivityLog';
 import { RuleData } from '@/lib/types';
+import { generateMockRuleData } from '@/lib/mockRuleData';
 
 interface DocuGenPageProps {
   onNavigate: (page: string) => void;
@@ -21,6 +22,15 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
       onNavigate('digital-content-manager');
     }
   }, [selectedConfig, onNavigate]);
+
+  useEffect(() => {
+    // Load mock data if no rules exist
+    if (rules.length === 0) {
+      generateMockRuleData().then(mockRules => {
+        setRules(mockRules);
+      });
+    }
+  }, [rules.length, setRules]);
 
   const handleRuleUpdate = (updatedRule: RuleData) => {
     setRules(current => 

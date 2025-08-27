@@ -63,7 +63,60 @@ const sampleSpanishText = [
   'El monitoreo regular garantiza el cumplimiento continuo de los protocolos establecidos.'
 ];
 
+const benefitTypes = [
+  'Medical',
+  'Pharmacy',
+  'Dental',
+  'Vision',
+  'Mental Health',
+  'Wellness'
+];
+
+const businessAreas = [
+  'Clinical',
+  'Operational',
+  'Administrative',
+  'Financial',
+  'Regulatory',
+  'Quality'
+];
+
+const subBusinessAreas = [
+  'Primary Care',
+  'Specialty Care',
+  'Emergency Services',
+  'Preventive Care',
+  'Customer Service',
+  'Claims Processing',
+  'Provider Network',
+  'Utilization Management',
+  'Compliance',
+  'Risk Management'
+];
+
+const sampleDescriptions = [
+  'Outlines coverage requirements and member responsibilities for medical services',
+  'Defines eligibility criteria and enrollment procedures for health plan benefits',
+  'Specifies copayment and coinsurance amounts for various healthcare services',
+  'Describes prior authorization requirements for specialty medications',
+  'Details network provider access and referral procedures',
+  'Explains appeal and grievance processes for benefit determinations',
+  'Covers emergency and urgent care access guidelines',
+  'Outlines preventive care services and wellness program benefits'
+];
+
 const statusOptions = ['Draft', 'Review', 'Approved', 'Published', 'Archived'];
+
+const sampleDescriptions = [
+  'Outlines coverage requirements and member responsibilities for medical services',
+  'Defines eligibility criteria and enrollment procedures for health plan benefits',
+  'Specifies copayment and coinsurance amounts for various healthcare services',
+  'Describes prior authorization requirements for specialty medications',
+  'Details network provider access and referral procedures',
+  'Explains appeal and grievance processes for benefit determinations',
+  'Covers emergency and urgent care access guidelines',
+  'Outlines preventive care services and wellness program benefits'
+];
 
 function getRandomDate(daysAgo: number): string {
   const date = new Date(Date.now() - Math.random() * daysAgo * 24 * 60 * 60 * 1000);
@@ -95,12 +148,20 @@ export function generateMockRuleData(): Promise<RuleData[]> {
           ruleId: `R${String(i + 1).padStart(4, '0')}`,
           effectiveDate: getRandomDate(180),
           version: `${Math.floor(Math.random() * 3) + 1}.${Math.floor(Math.random() * 10)}`,
+          benefitType: benefitTypes[Math.floor(Math.random() * benefitTypes.length)],
+          businessArea: businessAreas[Math.floor(Math.random() * businessAreas.length)],
+          subBusinessArea: subBusinessAreas[Math.floor(Math.random() * subBusinessAreas.length)],
+          description: sampleDescriptions[Math.floor(Math.random() * sampleDescriptions.length)],
           templateName: item.template,
+          serviceId: `SRV${String(i + 1).padStart(3, '0')}`,
           cmsRegulated: Math.random() > 0.6,
           chapterName: item.chapter,
           sectionName: item.section,
           subsectionName: item.subsection,
           serviceGroup: serviceGroups[Math.floor(Math.random() * serviceGroups.length)],
+          sourceMapping: `MAP${String(i + 1).padStart(3, '0')}`,
+          tiers: `Tier ${Math.floor(Math.random() * 3) + 1}`,
+          key: `KEY${String(i + 1).padStart(3, '0')}`,
           rule: sampleRules[Math.floor(Math.random() * sampleRules.length)],
           isTabular: Math.random() > 0.7,
           english: sampleEnglishText[Math.floor(Math.random() * sampleEnglishText.length)],
@@ -127,12 +188,20 @@ export function generateMockRuleData(): Promise<RuleData[]> {
           ruleId: `R${String(i + 1).padStart(4, '0')}`,
           effectiveDate: getRandomDate(180),
           version: `${Math.floor(Math.random() * 3) + 1}.${Math.floor(Math.random() * 10)}`,
+          benefitType: benefitTypes[Math.floor(Math.random() * benefitTypes.length)],
+          businessArea: businessAreas[Math.floor(Math.random() * businessAreas.length)],
+          subBusinessArea: subBusinessAreas[Math.floor(Math.random() * subBusinessAreas.length)],
+          description: sampleDescriptions[Math.floor(Math.random() * sampleDescriptions.length)],
           templateName: template,
+          serviceId: `SRV${String(i + 1).padStart(3, '0')}`,
           cmsRegulated: Math.random() > 0.6,
           chapterName: chapter,
           sectionName: section,
           subsectionName: subsection,
           serviceGroup: serviceGroups[Math.floor(Math.random() * serviceGroups.length)],
+          sourceMapping: `MAP${String(i + 1).padStart(3, '0')}`,
+          tiers: `Tier ${Math.floor(Math.random() * 3) + 1}`,
+          key: `KEY${String(i + 1).padStart(3, '0')}`,
           rule: sampleRules[Math.floor(Math.random() * sampleRules.length)],
           isTabular: Math.random() > 0.7,
           english: sampleEnglishText[Math.floor(Math.random() * sampleEnglishText.length)],
