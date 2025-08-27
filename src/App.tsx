@@ -17,6 +17,8 @@ function App() {
       case 'master-list':
       case 'manage':
         return <DocuGenPage onNavigate={handleNavigate} />;
+      case 'digital-content-manager':
+        return <DocuGenPage onNavigate={handleNavigate} />;
       case 'collaborate':
         return <PlaceholderPage title="Collaborate" description="Collaboration features coming soon" />;
       case 'generate':

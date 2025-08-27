@@ -37,6 +37,13 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
     loadRuleData();
   }, []);
 
+  useEffect(() => {
+    // Navigate to Digital Content Manager when selected
+    if (selectedConfig === 'digital-content-manager') {
+      onNavigate('digital-content-manager');
+    }
+  }, [selectedConfig, onNavigate]);
+
   const handleRuleUpdate = (updatedRule: RuleData) => {
     setRules(current => 
       current.map(rule => 
