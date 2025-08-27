@@ -486,12 +486,12 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
               </div>
               <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span>Rule</span>
+                  <span>Digital Content Manager - ANOC-EOC</span>
                   <ChevronDown size={14} className="text-gray-400" />
                 </div>
                 <ColumnFilter
                   columnKey="rule"
-                  columnTitle="Rule"
+                  columnTitle="Digital Content Manager - ANOC-EOC"
                   values={[]}
                   selectedValues={[]}
                   onFilter={() => {}}
