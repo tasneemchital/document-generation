@@ -4,6 +4,8 @@ export interface RuleData {
   effectiveDate: string;
   version: string;
   templateName: string;
+  rowVersion: string;
+  serviceId: string;
   cmsRegulated: boolean;
   chapterName: string;
   sectionName: string;

@@ -244,7 +244,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
         {/* Table Section */}
         <div className="overflow-x-auto">
-          <div className="min-w-[1800px]">
+          <div className="min-w-[2200px]">
             {/* Table Header */}
             <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500">
               <div className="w-12 px-3 py-3 border-r border-gray-200">
@@ -259,6 +259,14 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
               </div>
               <div className="w-40 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
                 <span>Template Name</span>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
+              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+                <span>Row Version</span>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
+              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+                <span>Service ID</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
               <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
@@ -313,6 +321,14 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   <div className="w-40 px-3 py-3 border-r border-gray-200">
                     <div className="text-gray-900 font-medium truncate">{rule.templateName || 'N/A'}</div>
                     <div className="text-xs text-gray-500 truncate">{rule.subsectionName || 'N/A'}</div>
+                  </div>
+                  
+                  <div className="w-32 px-3 py-3 border-r border-gray-200">
+                    <span className="text-gray-600 text-sm">{rule.rowVersion || 'N/A'}</span>
+                  </div>
+                  
+                  <div className="w-32 px-3 py-3 border-r border-gray-200">
+                    <span className="text-gray-600 text-sm">{rule.serviceId || 'N/A'}</span>
                   </div>
                   
                   <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
@@ -372,6 +388,14 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   <div>
                     <label className="text-sm font-semibold text-gray-500">Template</label>
                     <p className="text-sm">{previewRule.templateName || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-gray-500">Row Version</label>
+                    <p className="text-sm">{previewRule.rowVersion || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-gray-500">Service ID</label>
+                    <p className="text-sm">{previewRule.serviceId || 'N/A'}</p>
                   </div>
                   <div>
                     <label className="text-sm font-semibold text-gray-500">CMS Regulated</label>
