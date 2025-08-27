@@ -385,9 +385,6 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-base font-semibold text-gray-900">Digital Content Manager - ANOC-EOC</h2>
-              <p className="text-xs text-gray-500 mt-1">
-                Showing {startIndex + 1}-{endIndex} of {columnFilteredRules.length} rules
-              </p>
             </div>
             <div className="flex items-center gap-3">
               <Button variant="outline" size="sm" className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50">
