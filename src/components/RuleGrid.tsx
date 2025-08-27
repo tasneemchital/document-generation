@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { RuleData, EditingRule } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { AdvancedFilter } from '@/components/AdvancedFilter';
+import { ColumnFilter } from '@/components/ColumnFilter';
 import { 
   ChevronDown, 
   Edit, 
@@ -29,10 +30,98 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   const [previewRule, setPreviewRule] = useState<RuleData | null>(null);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [filteredRules, setFilteredRules] = useState<RuleData[]>(rules);
+  
+  // Column-specific filters state
+  const [columnFilters, setColumnFilters] = useState({
+    ruleId: '',
+    effectiveDate: '',
+    version: [] as string[],
+    templateName: [] as string[],
+    serviceId: [] as string[],
+    cmsRegulated: 'all' as 'all' | 'true' | 'false',
+    chapterName: [] as string[],
+    sectionName: [] as string[],
+    subsectionName: [] as string[],
+    serviceGroup: [] as string[],
+    sourceMapping: [] as string[],
+    tiers: [] as string[],
+    key: [] as string[],
+    rule: '',
+    isTabular: 'all' as 'all' | 'true' | 'false',
+    english: '',
+    englishStatus: [] as string[],
+    spanish: '',
+    spanishStatus: [] as string[]
+  });
+
+  // Get unique values for each column
+  const uniqueValues = useMemo(() => ({
+    ruleId: [...new Set(rules.map(r => r.ruleId).filter(Boolean))],
+    effectiveDate: [...new Set(rules.map(r => r.effectiveDate).filter(Boolean))],
+    version: [...new Set(rules.map(r => r.version).filter(Boolean))],
+    templateName: [...new Set(rules.map(r => r.templateName).filter(Boolean))],
+    serviceId: [...new Set(rules.map(r => r.serviceId).filter(Boolean))],
+    chapterName: [...new Set(rules.map(r => r.chapterName).filter(Boolean))],
+    sectionName: [...new Set(rules.map(r => r.sectionName).filter(Boolean))],
+    subsectionName: [...new Set(rules.map(r => r.subsectionName).filter(Boolean))],
+    serviceGroup: [...new Set(rules.map(r => r.serviceGroup).filter(Boolean))],
+    sourceMapping: [...new Set(rules.map(r => r.sourceMapping).filter(Boolean))],
+    tiers: [...new Set(rules.map(r => r.tiers).filter(Boolean))],
+    key: [...new Set(rules.map(r => r.key).filter(Boolean))],
+    englishStatus: [...new Set(rules.map(r => r.englishStatus).filter(Boolean))],
+    spanishStatus: [...new Set(rules.map(r => r.spanishStatus).filter(Boolean))]
+  }), [rules]);
+
+  // Apply column filters
+  const columnFilteredRules = useMemo(() => {
+    return filteredRules.filter(rule => {
+      // Text filters
+      if (columnFilters.ruleId && !rule.ruleId?.toLowerCase().includes(columnFilters.ruleId.toLowerCase())) return false;
+      if (columnFilters.effectiveDate && !rule.effectiveDate?.toLowerCase().includes(columnFilters.effectiveDate.toLowerCase())) return false;
+      if (columnFilters.rule && !rule.rule?.toLowerCase().includes(columnFilters.rule.toLowerCase())) return false;
+      if (columnFilters.english && !rule.english?.toLowerCase().includes(columnFilters.english.toLowerCase())) return false;
+      if (columnFilters.spanish && !rule.spanish?.toLowerCase().includes(columnFilters.spanish.toLowerCase())) return false;
+
+      // Multi-select filters
+      if (columnFilters.version.length > 0 && !columnFilters.version.includes(rule.version || '')) return false;
+      if (columnFilters.templateName.length > 0 && !columnFilters.templateName.includes(rule.templateName || '')) return false;
+      if (columnFilters.serviceId.length > 0 && !columnFilters.serviceId.includes(rule.serviceId || '')) return false;
+      if (columnFilters.chapterName.length > 0 && !columnFilters.chapterName.includes(rule.chapterName || '')) return false;
+      if (columnFilters.sectionName.length > 0 && !columnFilters.sectionName.includes(rule.sectionName || '')) return false;
+      if (columnFilters.subsectionName.length > 0 && !columnFilters.subsectionName.includes(rule.subsectionName || '')) return false;
+      if (columnFilters.serviceGroup.length > 0 && !columnFilters.serviceGroup.includes(rule.serviceGroup || '')) return false;
+      if (columnFilters.sourceMapping.length > 0 && !columnFilters.sourceMapping.includes(rule.sourceMapping || '')) return false;
+      if (columnFilters.tiers.length > 0 && !columnFilters.tiers.includes(rule.tiers || '')) return false;
+      if (columnFilters.key.length > 0 && !columnFilters.key.includes(rule.key || '')) return false;
+      if (columnFilters.englishStatus.length > 0 && !columnFilters.englishStatus.includes(rule.englishStatus || '')) return false;
+      if (columnFilters.spanishStatus.length > 0 && !columnFilters.spanishStatus.includes(rule.spanishStatus || '')) return false;
+
+      // Boolean filters
+      if (columnFilters.cmsRegulated !== 'all') {
+        const expectedValue = columnFilters.cmsRegulated === 'true';
+        if (rule.cmsRegulated !== expectedValue) return false;
+      }
+      
+      if (columnFilters.isTabular !== 'all') {
+        const expectedValue = columnFilters.isTabular === 'true';
+        if (rule.isTabular !== expectedValue) return false;
+      }
+
+      return true;
+    });
+  }, [filteredRules, columnFilters]);
 
   // Update filtered rules when rules prop changes
   const handleFiltersChange = (filtered: RuleData[]) => {
     setFilteredRules(filtered);
+  };
+
+  // Column filter handlers
+  const handleColumnFilter = (column: string, value: any) => {
+    setColumnFilters(prev => ({
+      ...prev,
+      [column]: value
+    }));
   };
 
   const handleRowSelect = (ruleId: string, checked: boolean) => {
@@ -47,7 +136,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedRows(new Set(filteredRules.map(r => r.id)));
+      setSelectedRows(new Set(columnFilteredRules.map(r => r.id)));
     } else {
       setSelectedRows(new Set());
     }
@@ -163,7 +252,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
             <div>
               <h2 className="text-base font-semibold text-gray-900">Rules</h2>
               <p className="text-xs text-gray-500 mt-1">
-                Showing {filteredRules.length} of {rules.length} rules
+                Showing {columnFilteredRules.length} of {rules.length} rules
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -192,89 +281,281 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
             <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500 sticky top-0 z-10">
               <div className="w-12 px-3 py-2 border-r border-gray-200">
                 <Checkbox 
-                  checked={filteredRules.length > 0 && selectedRows.size === filteredRules.length}
+                  checked={columnFilteredRules.length > 0 && selectedRows.size === columnFilteredRules.length}
                   onCheckedChange={handleSelectAll}
                 />
               </div>
-              <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Rule ID</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Rule ID</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="ruleId"
+                  columnTitle="Rule ID"
+                  values={uniqueValues.ruleId}
+                  selectedValues={[]}
+                  onFilter={() => {}}
+                  filterType="text"
+                  textValue={columnFilters.ruleId}
+                  onTextFilter={(value) => handleColumnFilter('ruleId', value)}
+                />
               </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Effective Date</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Effective Date</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="effectiveDate"
+                  columnTitle="Effective Date"
+                  values={uniqueValues.effectiveDate}
+                  selectedValues={[]}
+                  onFilter={() => {}}
+                  filterType="text"
+                  textValue={columnFilters.effectiveDate}
+                  onTextFilter={(value) => handleColumnFilter('effectiveDate', value)}
+                />
               </div>
-              <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Version</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Version</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="version"
+                  columnTitle="Version"
+                  values={uniqueValues.version}
+                  selectedValues={columnFilters.version}
+                  onFilter={(values) => handleColumnFilter('version', values)}
+                />
               </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Template Name</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Template Name</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="templateName"
+                  columnTitle="Template Name"
+                  values={uniqueValues.templateName}
+                  selectedValues={columnFilters.templateName}
+                  onFilter={(values) => handleColumnFilter('templateName', values)}
+                />
               </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Service ID</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Service ID</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="serviceId"
+                  columnTitle="Service ID"
+                  values={uniqueValues.serviceId}
+                  selectedValues={columnFilters.serviceId}
+                  onFilter={(values) => handleColumnFilter('serviceId', values)}
+                />
               </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
-                <span>CMS Regulated</span>
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>CMS Regulated</span>
+                </div>
+                <ColumnFilter
+                  columnKey="cmsRegulated"
+                  columnTitle="CMS Regulated"
+                  values={[]}
+                  selectedValues={[]}
+                  onFilter={() => {}}
+                  filterType="boolean"
+                  booleanValue={columnFilters.cmsRegulated}
+                  onBooleanFilter={(value) => handleColumnFilter('cmsRegulated', value)}
+                />
               </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Chapter Name</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Chapter Name</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="chapterName"
+                  columnTitle="Chapter Name"
+                  values={uniqueValues.chapterName}
+                  selectedValues={columnFilters.chapterName}
+                  onFilter={(values) => handleColumnFilter('chapterName', values)}
+                />
               </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Section Name</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Section Name</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="sectionName"
+                  columnTitle="Section Name"
+                  values={uniqueValues.sectionName}
+                  selectedValues={columnFilters.sectionName}
+                  onFilter={(values) => handleColumnFilter('sectionName', values)}
+                />
               </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Subsection Name</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Subsection Name</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="subsectionName"
+                  columnTitle="Subsection Name"
+                  values={uniqueValues.subsectionName}
+                  selectedValues={columnFilters.subsectionName}
+                  onFilter={(values) => handleColumnFilter('subsectionName', values)}
+                />
               </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Service Group</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Service Group</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="serviceGroup"
+                  columnTitle="Service Group"
+                  values={uniqueValues.serviceGroup}
+                  selectedValues={columnFilters.serviceGroup}
+                  onFilter={(values) => handleColumnFilter('serviceGroup', values)}
+                />
               </div>
-              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Source Mapping</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Source Mapping</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="sourceMapping"
+                  columnTitle="Source Mapping"
+                  values={uniqueValues.sourceMapping}
+                  selectedValues={columnFilters.sourceMapping}
+                  onFilter={(values) => handleColumnFilter('sourceMapping', values)}
+                />
               </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Tiers</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Tiers</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="tiers"
+                  columnTitle="Tiers"
+                  values={uniqueValues.tiers}
+                  selectedValues={columnFilters.tiers}
+                  onFilter={(values) => handleColumnFilter('tiers', values)}
+                />
               </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Key</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Key</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="key"
+                  columnTitle="Key"
+                  values={uniqueValues.key}
+                  selectedValues={columnFilters.key}
+                  onFilter={(values) => handleColumnFilter('key', values)}
+                />
               </div>
-              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Rule</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Rule</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="rule"
+                  columnTitle="Rule"
+                  values={[]}
+                  selectedValues={[]}
+                  onFilter={() => {}}
+                  filterType="text"
+                  textValue={columnFilters.rule}
+                  onTextFilter={(value) => handleColumnFilter('rule', value)}
+                />
               </div>
-              <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
-                <span>Is Tabular</span>
+              <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Is Tabular</span>
+                </div>
+                <ColumnFilter
+                  columnKey="isTabular"
+                  columnTitle="Is Tabular"
+                  values={[]}
+                  selectedValues={[]}
+                  onFilter={() => {}}
+                  filterType="boolean"
+                  booleanValue={columnFilters.isTabular}
+                  onBooleanFilter={(value) => handleColumnFilter('isTabular', value)}
+                />
               </div>
-              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>English</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>English</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="english"
+                  columnTitle="English"
+                  values={[]}
+                  selectedValues={[]}
+                  onFilter={() => {}}
+                  filterType="text"
+                  textValue={columnFilters.english}
+                  onTextFilter={(value) => handleColumnFilter('english', value)}
+                />
               </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Status</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Status</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="englishStatus"
+                  columnTitle="English Status"
+                  values={uniqueValues.englishStatus}
+                  selectedValues={columnFilters.englishStatus}
+                  onFilter={(values) => handleColumnFilter('englishStatus', values)}
+                />
               </div>
-              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
-                <span>Spanish</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Spanish</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="spanish"
+                  columnTitle="Spanish"
+                  values={[]}
+                  selectedValues={[]}
+                  onFilter={() => {}}
+                  filterType="text"
+                  textValue={columnFilters.spanish}
+                  onTextFilter={(value) => handleColumnFilter('spanish', value)}
+                />
               </div>
-              <div className="w-32 px-3 py-2 flex items-center gap-2">
-                <span>Status</span>
-                <ChevronDown size={14} className="text-gray-400" />
+              <div className="w-32 px-3 py-2 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Status</span>
+                  <ChevronDown size={14} className="text-gray-400" />
+                </div>
+                <ColumnFilter
+                  columnKey="spanishStatus"
+                  columnTitle="Spanish Status"
+                  values={uniqueValues.spanishStatus}
+                  selectedValues={columnFilters.spanishStatus}
+                  onFilter={(values) => handleColumnFilter('spanishStatus', values)}
+                />
               </div>
             </div>
 
             {/* Table Body - Compact rows */}
             <div className="bg-white">
-              {filteredRules.map((rule, index) => (
+              {columnFilteredRules.map((rule, index) => (
                 <div 
                   key={rule.id} 
                   className={`flex border-b border-gray-100 hover:bg-gray-50 ${
