@@ -45,12 +45,12 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
 
   return (
     <div className="h-full bg-background overflow-hidden flex flex-col">
-      {/* Clean Header */}
+      {/* Compact Header */}
       <div className="bg-card border-b border-border flex-shrink-0">
-        <div className="px-6 py-4">
+        <div className="px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <h1 className="text-xl font-semibold text-foreground">Language Configuration Repeater</h1>
+              <h1 className="text-lg font-semibold text-foreground">Language Configuration Repeater</h1>
             </div>
             <Button
               onClick={loadRuleData}
@@ -66,10 +66,10 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-hidden p-6">
+      {/* Main Content - Full Height */}
+      <div className="flex-1 overflow-hidden">
         {isLoading ? (
-          <div className="bg-card rounded-lg border border-border p-12 text-center h-full flex items-center justify-center">
+          <div className="bg-card p-12 text-center h-full flex items-center justify-center">
             <div className="flex items-center justify-center gap-3 text-muted-foreground">
               <RefreshCw size={20} className="animate-spin" />
               <span className="text-sm">Loading CY2026 draft document data...</span>

@@ -101,28 +101,28 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
     
     if (isEditing) {
       return (
-        <div className={`px-3 py-2 border-r border-gray-200 flex items-center gap-2 ${className}`}>
+        <div className={`px-3 py-1 border-r border-gray-200 flex items-center gap-2 ${className}`}>
           {field === 'rule' || field === 'english' || field === 'spanish' ? (
             <Textarea
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
-              className="min-h-[32px] text-sm resize-none border-blue-300 focus:border-blue-500 flex-1"
+              className="min-h-[28px] text-sm resize-none border-blue-300 focus:border-blue-500 flex-1"
               autoFocus
             />
           ) : (
             <Input
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
-              className="text-sm h-8 border-blue-300 focus:border-blue-500 flex-1"
+              className="text-sm h-7 border-blue-300 focus:border-blue-500 flex-1"
               autoFocus
             />
           )}
           <div className="flex gap-1 flex-shrink-0">
-            <Button size="sm" variant="outline" onClick={handleSaveEdit} className="h-7 w-7 p-0 border-green-300 hover:bg-green-50">
-              <Save size={12} className="text-green-600" />
+            <Button size="sm" variant="outline" onClick={handleSaveEdit} className="h-6 w-6 p-0 border-green-300 hover:bg-green-50">
+              <Save size={10} className="text-green-600" />
             </Button>
-            <Button size="sm" variant="outline" onClick={handleCancelEdit} className="h-7 w-7 p-0 border-gray-300 hover:bg-gray-50">
-              <X size={12} className="text-gray-500" />
+            <Button size="sm" variant="outline" onClick={handleCancelEdit} className="h-6 w-6 p-0 border-gray-300 hover:bg-gray-50">
+              <X size={10} className="text-gray-500" />
             </Button>
           </div>
         </div>
@@ -131,7 +131,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
     return (
       <div 
-        className={`px-3 py-3 text-sm border-r border-gray-200 last:border-r-0 ${className} ${
+        className={`px-3 py-2 text-sm border-r border-gray-200 last:border-r-0 ${className} ${
           isEditable ? 'hover:bg-blue-50 cursor-pointer group' : ''
         } ${selectedRows.has(rule.id) ? 'bg-blue-50' : ''}`}
         onClick={() => isEditable && handleCellClick(rule, field)}
@@ -166,14 +166,14 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   };
 
   return (
-    <div className="w-full h-full overflow-hidden">
-      {/* Clean Header Section */}
-      <div className="bg-white rounded-lg border border-gray-200 mb-6">
-        <div className="px-6 py-4 border-b border-gray-200">
+    <div className="w-full h-screen flex flex-col overflow-hidden">
+      {/* Compact Header Section */}
+      <div className="bg-white border border-gray-200 flex-shrink-0">
+        <div className="px-6 py-3 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Rules</h2>
-              <p className="text-sm text-gray-500 mt-1">
+              <h2 className="text-base font-semibold text-gray-900">Rules</h2>
+              <p className="text-xs text-gray-500 mt-1">
                 Showing {filteredRules.length} of {rules.length} rules
               </p>
             </div>
@@ -190,8 +190,8 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
           </div>
         </div>
 
-        {/* Filter Section */}
-        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+        {/* Compact Filter Section */}
+        <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
           <div className="flex items-center gap-4">
             <div className="flex-1 max-w-md">
               <div className="relative">
@@ -200,13 +200,13 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   placeholder="Search for Rules"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  className="pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500 h-9"
                 />
               </div>
             </div>
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-40 border-gray-300 focus:border-blue-500">
+              <SelectTrigger className="w-36 h-9 border-gray-300 focus:border-blue-500">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-green-500"></div>
                   <SelectValue />
@@ -221,7 +221,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
             </Select>
 
             <Select value={vendorTypeFilter} onValueChange={setVendorTypeFilter}>
-              <SelectTrigger className="w-40 border-gray-300 focus:border-blue-500">
+              <SelectTrigger className="w-36 h-9 border-gray-300 focus:border-blue-500">
                 <SelectValue placeholder="All" />
               </SelectTrigger>
               <SelectContent>
@@ -232,7 +232,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
             </Select>
 
             <Select value={vendorFilter} onValueChange={setVendorFilter}>
-              <SelectTrigger className="w-40 border-gray-300 focus:border-blue-500">
+              <SelectTrigger className="w-36 h-9 border-gray-300 focus:border-blue-500">
                 <SelectValue placeholder="All" />
               </SelectTrigger>
               <SelectContent>
@@ -241,87 +241,88 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
             </Select>
           </div>
         </div>
+      </div>
 
-        {/* Table Section with Vertical and Horizontal Scrolling */}
-        <div className="overflow-auto max-h-[calc(100vh-400px)]">
-          <div className="min-w-[3200px]">
+        {/* Full Height Table Section with Maximum Scrolling Area */}
+        <div className="flex-1 overflow-auto">
+          <div className="min-w-[3200px] h-full">
             {/* Table Header */}
             <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500 sticky top-0 z-10">
-              <div className="w-12 px-3 py-3 border-r border-gray-200">
+              <div className="w-12 px-3 py-2 border-r border-gray-200">
                 <Checkbox 
                   checked={filteredRules.length > 0 && selectedRows.size === filteredRules.length}
                   onCheckedChange={handleSelectAll}
                 />
               </div>
-              <div className="w-24 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>Rule ID</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>Effective Date</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-24 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>Version</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-48 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>Template Name</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-28 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>Row Version</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>Service ID</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
                 <span>CMS Regulated</span>
               </div>
-              <div className="w-48 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>Chapter Name</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-48 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>Section Name</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-48 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>Subsection Name</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>Service Group</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-64 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>Rule</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-28 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
+              <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
                 <span>Is Tabular</span>
               </div>
-              <div className="w-64 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>English</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>Status</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-64 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center gap-2">
                 <span>Spanish</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-32 px-3 py-3 flex items-center gap-2">
+              <div className="w-32 px-3 py-2 flex items-center gap-2">
                 <span>Status</span>
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
             </div>
 
-            {/* Table Body */}
+            {/* Table Body - Compact rows */}
             <div className="bg-white">
               {filteredRules.map((rule, index) => (
                 <div 
@@ -330,7 +331,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                     selectedRows.has(rule.id) ? 'bg-blue-50' : ''
                   }`}
                 >
-                  <div className="w-12 px-3 py-3 border-r border-gray-200 flex items-center">
+                  <div className="w-12 px-3 py-2 border-r border-gray-200 flex items-center">
                     <Checkbox 
                       checked={selectedRows.has(rule.id)}
                       onCheckedChange={(checked) => handleRowSelect(rule.id, checked as boolean)}
@@ -344,7 +345,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   {renderCell(rule, 'rowVersion', rule.rowVersion || 'N/A', 'w-28')}
                   {renderCell(rule, 'serviceId', rule.serviceId || 'N/A', 'w-32')}
                   
-                  <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
+                  <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
                     <Checkbox 
                       checked={rule.cmsRegulated || false}
                       onCheckedChange={(checked) => {
@@ -364,7 +365,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   {renderCell(rule, 'serviceGroup', rule.serviceGroup || 'N/A', 'w-32')}
                   {renderCell(rule, 'rule', rule.rule || 'N/A', 'w-64')}
                   
-                  <div className="w-28 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
+                  <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
                     <Checkbox 
                       checked={rule.isTabular || false}
                       onCheckedChange={(checked) => {
@@ -380,13 +381,13 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   
                   {renderCell(rule, 'english', rule.english || 'N/A', 'w-64')}
                   
-                  <div className="w-32 px-3 py-3 border-r border-gray-200">
+                  <div className="w-32 px-3 py-2 border-r border-gray-200">
                     {getStatusBadge(rule.englishStatus)}
                   </div>
                   
                   {renderCell(rule, 'spanish', rule.spanish || 'N/A', 'w-64')}
                   
-                  <div className="w-32 px-3 py-3">
+                  <div className="w-32 px-3 py-2">
                     {getStatusBadge(rule.spanishStatus)}
                   </div>
                 </div>
@@ -394,7 +395,6 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
             </div>
           </div>
         </div>
-      </div>
 
       {/* Preview Dialog */}
       {previewRule && (
