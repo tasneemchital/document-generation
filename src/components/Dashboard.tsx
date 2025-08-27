@@ -86,7 +86,11 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                       <IconComponent size={24} weight="bold" />
                     </div>
                     <CardTitle className="text-xl font-semibold">
-                      {card.title}
+                      {card.title === 'Ask BNI (Benny)' ? (
+                        <>Ask BNI (<em>Benny</em>)</>
+                      ) : (
+                        card.title
+                      )}
                     </CardTitle>
                   </div>
                 </CardHeader>
