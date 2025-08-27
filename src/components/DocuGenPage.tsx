@@ -49,49 +49,49 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-4">
-        {/* Header with back navigation */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-4">
-            <Button
-              onClick={() => onNavigate('dashboard')}
-              variant="ghost"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft size={16} />
-              Back to Dashboard
-            </Button>
-            <div className="flex items-center gap-3">
-              <img src={logoSvg} alt="SimplifyDocs Logo" className="w-8 h-8" />
-              <div>
-                <h1 className="text-2xl font-semibold text-foreground">DocuGen - Manage</h1>
+    <div className="min-h-screen bg-gray-50">
+      {/* Clean Header */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <Button
+                onClick={() => onNavigate('dashboard')}
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+              >
+                <ArrowLeft size={16} />
+                Back to Dashboard
+              </Button>
+              <div className="flex items-center gap-3">
+                <img src={logoSvg} alt="SimplifyDocs Logo" className="w-8 h-8" />
+                <h1 className="text-xl font-semibold text-gray-900">DocuGen - Manage</h1>
               </div>
             </div>
+            <Button
+              onClick={loadRuleData}
+              disabled={isLoading}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50"
+            >
+              <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
+              Refresh Data
+            </Button>
           </div>
-          <Button
-            onClick={loadRuleData}
-            disabled={isLoading}
-            variant="outline"
-            size="sm"
-            className="flex items-center gap-2"
-          >
-            <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
-            Load CY2026 Data
-          </Button>
         </div>
+      </div>
 
-        {/* Main Content */}
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-6 py-6">
         {isLoading ? (
-          <Card>
-            <CardContent className="p-8 text-center">
-              <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                <RefreshCw size={16} className="animate-spin" />
-                <span>Loading CY2026 draft document data...</span>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
+            <div className="flex items-center justify-center gap-3 text-gray-500">
+              <RefreshCw size={20} className="animate-spin" />
+              <span className="text-sm">Loading CY2026 draft document data...</span>
+            </div>
+          </div>
         ) : (
           <RuleGrid rules={rules} onRuleUpdate={handleRuleUpdate} />
         )}

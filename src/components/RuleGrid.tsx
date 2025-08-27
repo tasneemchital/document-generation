@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { RuleData, EditingRule } from '@/lib/types';
-import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -8,14 +7,16 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
 import { 
-  CaretDown, 
-  FunnelSimple, 
+  ChevronDown, 
+  Filter, 
   Edit, 
   Save, 
   X, 
-  LockSimple,
-  LockSimpleOpen
+  Search,
+  Download,
+  Plus
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
@@ -29,22 +30,19 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   const [editValue, setEditValue] = useState('');
   const [previewRule, setPreviewRule] = useState<RuleData | null>(null);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
-  const [isLocked, setIsLocked] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   
   // Filter states
-  const [templateFilter, setTemplateFilter] = useState('[Select One]');
-  const [chapterFilter, setChapterFilter] = useState('[Select One]');
-  const [sectionFilter, setSectionFilter] = useState('[Select One]');
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [vendorTypeFilter, setVendorTypeFilter] = useState('All');
+  const [vendorFilter, setVendorFilter] = useState('All');
   
-  // Get unique filter options
-  const templateOptions = Array.from(new Set(rules.map(r => r.templateName))).sort();
-  const chapterOptions = Array.from(new Set(rules.map(r => r.chapterName))).sort();
-  const sectionOptions = Array.from(new Set(rules.map(r => r.sectionName))).sort();
-
   const filteredRules = rules.filter(rule => {
-    if (templateFilter !== '[Select One]' && rule.templateName !== templateFilter) return false;
-    if (chapterFilter !== '[Select One]' && rule.chapterName !== chapterFilter) return false;
-    if (sectionFilter !== '[Select One]' && rule.sectionName !== sectionFilter) return false;
+    if (searchTerm && !rule.templateName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        !rule.ruleId.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        !rule.chapterName.toLowerCase().includes(searchTerm.toLowerCase())) {
+      return false;
+    }
     return true;
   });
 
@@ -67,7 +65,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   };
 
   const handleCellClick = (rule: RuleData, field: keyof RuleData) => {
-    if (['createdAt', 'lastModified', 'id'].includes(field) || isLocked) return;
+    if (['createdAt', 'lastModified', 'id'].includes(field)) return;
     
     setEditingRule({ id: rule.id, field, value: rule[field] as string });
     setEditValue(rule[field] as string);
@@ -96,34 +94,34 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
     setEditValue('');
   };
 
-  const renderCell = (rule: RuleData, field: keyof RuleData, content: string, width: string) => {
+  const renderCell = (rule: RuleData, field: keyof RuleData, content: string, className: string = '') => {
     const isEditing = editingRule?.id === rule.id && editingRule?.field === field;
-    const isEditable = !['createdAt', 'lastModified', 'id'].includes(field) && !isLocked;
+    const isEditable = !['createdAt', 'lastModified', 'id'].includes(field);
     
     if (isEditing) {
       return (
-        <div className={`${width} p-1 border-r border-border flex items-center gap-2 min-w-0 flex-shrink-0`}>
+        <div className={`px-3 py-2 border-r border-gray-200 flex items-center gap-2 ${className}`}>
           {field === 'rule' || field === 'english' || field === 'spanish' ? (
             <Textarea
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
-              className="min-h-[40px] text-xs resize-none"
+              className="min-h-[32px] text-sm resize-none border-blue-300 focus:border-blue-500"
               autoFocus
             />
           ) : (
             <Input
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
-              className="text-xs h-8"
+              className="text-sm h-8 border-blue-300 focus:border-blue-500"
               autoFocus
             />
           )}
           <div className="flex gap-1">
-            <Button size="sm" variant="outline" onClick={handleSaveEdit} className="h-6 w-6 p-0">
-              <Save size={10} />
+            <Button size="sm" variant="outline" onClick={handleSaveEdit} className="h-7 w-7 p-0 border-green-300 hover:bg-green-50">
+              <Save size={12} className="text-green-600" />
             </Button>
-            <Button size="sm" variant="outline" onClick={handleCancelEdit} className="h-6 w-6 p-0">
-              <X size={10} />
+            <Button size="sm" variant="outline" onClick={handleCancelEdit} className="h-7 w-7 p-0 border-gray-300 hover:bg-gray-50">
+              <X size={12} className="text-gray-500" />
             </Button>
           </div>
         </div>
@@ -132,236 +130,185 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
     return (
       <div 
-        className={`${width} text-xs p-2 min-h-[32px] flex items-center border-r border-border last:border-r-0 flex-shrink-0 ${
-          isEditable ? 'hover:bg-blue-50 cursor-pointer' : ''
+        className={`px-3 py-3 text-sm border-r border-gray-200 last:border-r-0 ${className} ${
+          isEditable ? 'hover:bg-blue-50 cursor-pointer group' : ''
         } ${selectedRows.has(rule.id) ? 'bg-blue-50' : ''}`}
         onClick={() => isEditable && handleCellClick(rule, field)}
       >
-        <span className="truncate flex-1">{content}</span>
-        {isEditable && (
-          <Edit size={10} className="ml-1 opacity-0 group-hover:opacity-50 flex-shrink-0" />
-        )}
+        <div className="flex items-center justify-between">
+          <span className="truncate flex-1 text-gray-900">{content}</span>
+          {isEditable && (
+            <Edit size={12} className="ml-2 opacity-0 group-hover:opacity-40 text-gray-400" />
+          )}
+        </div>
       </div>
     );
   };
 
+  const getStatusBadge = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'complete':
+        return <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-100">✓ Complete</Badge>;
+      case 'in progress':
+        return <Badge variant="default" className="bg-blue-100 text-blue-800 hover:bg-blue-100">In Progress</Badge>;
+      case 'pending':
+        return <Badge variant="default" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pending</Badge>;
+      default:
+        return <Badge variant="secondary" className="bg-gray-100 text-gray-800">{status}</Badge>;
+    }
+  };
+
   return (
     <div className="w-full">
-      {/* Header with title and controls */}
-      <div className="flex items-center justify-between mb-4 p-4 bg-card border-b">
-        <div>
-          <h2 className="text-lg font-semibold text-foreground">Language Configuration Repeater</h2>
-          <p className="text-xs text-muted-foreground mt-1">
-            {filteredRules.length} of {rules.length} rules
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsLocked(!isLocked)}
-            className="flex items-center gap-2"
-          >
-            {isLocked ? <LockSimple size={14} /> : <LockSimpleOpen size={14} />}
-            {isLocked ? 'Locked' : 'Unlocked'}
-          </Button>
-          {/* Toolbar buttons */}
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">🔍</Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">⚙️</Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">📋</Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">🗂️</Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">➕</Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">✂️</Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">🗑️</Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">💾</Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">❌</Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">🔍</Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">🔄</Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">⛶</Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">⚙️</Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">💾</Button>
+      {/* Clean Header Section */}
+      <div className="bg-white rounded-lg border border-gray-200 mb-6">
+        <div className="px-6 py-4 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Rules</h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Showing {filteredRules.length} of {rules.length} rules
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50">
+                <Download size={14} />
+                Download PDF
+              </Button>
+              <Button size="sm" className="flex items-center gap-2 bg-purple-600 text-white hover:bg-purple-700">
+                <Plus size={14} />
+                New Rule
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Filter Row */}
-      <div className="flex items-center gap-4 p-2 bg-muted/30 border-b">
-        <div className="flex items-center gap-2">
-          <Checkbox 
-            id="lock-select"
-            checked={isLocked}
-            onCheckedChange={(checked) => setIsLocked(checked as boolean)}
-          />
-          <label htmlFor="lock-select" className="text-xs font-medium">Is Lock</label>
-          <CaretDown size={12} className="text-muted-foreground" />
+        {/* Filter Section */}
+        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+          <div className="flex items-center gap-4">
+            <div className="flex-1 max-w-md">
+              <div className="relative">
+                <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Input
+                  placeholder="Search for Rules"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-40 border-gray-300 focus:border-blue-500">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                  <SelectValue />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All</SelectItem>
+                <SelectItem value="Complete">Complete</SelectItem>
+                <SelectItem value="In Progress">In Progress</SelectItem>
+                <SelectItem value="Pending">Pending</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={vendorTypeFilter} onValueChange={setVendorTypeFilter}>
+              <SelectTrigger className="w-40 border-gray-300 focus:border-blue-500">
+                <SelectValue placeholder="All" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All</SelectItem>
+                <SelectItem value="Template">Template</SelectItem>
+                <SelectItem value="Chapter">Chapter</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={vendorFilter} onValueChange={setVendorFilter}>
+              <SelectTrigger className="w-40 border-gray-300 focus:border-blue-500">
+                <SelectValue placeholder="All" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        <Select value={templateFilter} onValueChange={setTemplateFilter}>
-          <SelectTrigger className="w-48 h-8 text-xs">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="[Select One]">[Select One]</SelectItem>
-            {templateOptions.map(option => (
-              <SelectItem key={option} value={option}>{option}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select value={chapterFilter} onValueChange={setChapterFilter}>
-          <SelectTrigger className="w-48 h-8 text-xs">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="[Select One]">[Select One]</SelectItem>
-            {chapterOptions.map(option => (
-              <SelectItem key={option} value={option}>{option}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Input placeholder="" className="w-32 h-8 text-xs" />
-        <Input placeholder="" className="w-48 h-8 text-xs" />
-      </div>
-
-      {/* Table with Horizontal Scroll */}
-      <div className="border border-border bg-card overflow-hidden">
+        {/* Table Section */}
         <div className="overflow-x-auto">
-          <div className="min-w-[2400px]">
-            {/* Column Headers */}
-            <div className="flex bg-muted/50 border-b text-xs font-medium">
-              <div className="w-12 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
+          <div className="min-w-[1800px]">
+            {/* Table Header */}
+            <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500">
+              <div className="w-12 px-3 py-3 border-r border-gray-200">
                 <Checkbox 
                   checked={filteredRules.length > 0 && selectedRows.size === filteredRules.length}
                   onCheckedChange={handleSelectAll}
                 />
               </div>
-              <div className="w-16 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
-                <LockSimpleOpen size={12} />
-              </div>
-              <div className="w-20 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
                 <span>Rule ID</span>
-                <div className="flex items-center gap-1">
-                  <CaretDown size={12} />
-                  <FunnelSimple size={12} />
-                </div>
+                <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-32 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
-                <span>Effective Date</span>
-                <div className="flex items-center gap-1">
-                  <CaretDown size={12} />
-                  <FunnelSimple size={12} />
-                </div>
-              </div>
-              <div className="w-20 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
-                <span>Version</span>
-                <div className="flex items-center gap-1">
-                  <CaretDown size={12} />
-                  <FunnelSimple size={12} />
-                </div>
-              </div>
-              <div className="w-40 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+              <div className="w-40 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
                 <span>Template Name</span>
-                <div className="flex items-center gap-1">
-                  <CaretDown size={12} />
-                  <FunnelSimple size={12} />
-                </div>
+                <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-32 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
+              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
                 <span>CMS Regulated</span>
               </div>
-              <div className="w-40 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+              <div className="w-48 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
                 <span>Chapter Name</span>
-                <div className="flex items-center gap-1">
-                  <CaretDown size={12} />
-                  <FunnelSimple size={12} />
-                </div>
+                <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-40 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+              <div className="w-48 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
                 <span>Section Name</span>
-                <div className="flex items-center gap-1">
-                  <CaretDown size={12} />
-                  <FunnelSimple size={12} />
-                </div>
+                <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-40 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
-                <span>Subsection Name</span>
-                <div className="flex items-center gap-1">
-                  <CaretDown size={12} />
-                  <FunnelSimple size={12} />
-                </div>
+              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+                <span>Start Date</span>
+                <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-40 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
-                <span>Service Group</span>
-                <div className="flex items-center gap-1">
-                  <CaretDown size={12} />
-                  <FunnelSimple size={12} />
-                </div>
-              </div>
-              <div className="w-48 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
-                <span>Rule</span>
-                <div className="flex items-center gap-1">
-                  <CaretDown size={12} />
-                  <FunnelSimple size={12} />
-                </div>
-              </div>
-              <div className="w-24 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
-                <span>Is Tabular</span>
-              </div>
-              <div className="w-48 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
-                <span>English</span>
-                <div className="flex items-center gap-1">
-                  <CaretDown size={12} />
-                  <FunnelSimple size={12} />
-                </div>
-              </div>
-              <div className="w-24 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
+              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
                 <span>Status</span>
-                <div className="flex items-center gap-1">
-                  <CaretDown size={12} />
-                  <FunnelSimple size={12} />
-                </div>
+                <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-48 p-2 border-r border-border flex items-center justify-between flex-shrink-0">
-                <span>Spanish</span>
-                <div className="flex items-center gap-1">
-                  <CaretDown size={12} />
-                  <FunnelSimple size={12} />
-                </div>
+              <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center gap-2">
+                <span>Rate Type</span>
+                <ChevronDown size={14} className="text-gray-400" />
               </div>
-              <div className="w-24 p-2 flex items-center justify-between flex-shrink-0">
-                <span>Status</span>
-                <div className="flex items-center gap-1">
-                  <CaretDown size={12} />
-                  <FunnelSimple size={12} />
-                </div>
+              <div className="w-48 px-3 py-3 flex items-center gap-2">
+                <span>Type</span>
+                <ChevronDown size={14} className="text-gray-400" />
               </div>
             </div>
 
-            {/* Data Rows */}
-            <ScrollArea className="h-[500px]">
+            {/* Table Body */}
+            <div className="bg-white">
               {filteredRules.map((rule, index) => (
                 <div 
                   key={rule.id} 
-                  className={`flex border-b border-border hover:bg-muted/30 group ${
-                    selectedRows.has(rule.id) ? 'bg-blue-50' : index % 2 === 1 ? 'bg-muted/20' : 'bg-card'
+                  className={`flex border-b border-gray-100 hover:bg-gray-50 ${
+                    selectedRows.has(rule.id) ? 'bg-blue-50' : ''
                   }`}
                 >
-                  <div className="w-12 p-2 border-r border-border flex items-center justify-center text-xs flex-shrink-0">
-                    {index + 1}
-                  </div>
-                  <div className="w-16 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 px-3 py-3 border-r border-gray-200 flex items-center">
                     <Checkbox 
                       checked={selectedRows.has(rule.id)}
                       onCheckedChange={(checked) => handleRowSelect(rule.id, checked as boolean)}
                     />
                   </div>
-                  {renderCell(rule, 'ruleId', rule.ruleId, 'w-20')}
-                  {renderCell(rule, 'effectiveDate', rule.effectiveDate, 'w-32')}
-                  {renderCell(rule, 'version', rule.version, 'w-20')}
-                  {renderCell(rule, 'templateName', rule.templateName, 'w-40')}
-                  <div className="w-32 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
+                  
+                  <div className="w-32 px-3 py-3 border-r border-gray-200">
+                    <span className="font-medium text-gray-900">{rule.ruleId}</span>
+                  </div>
+                  
+                  <div className="w-40 px-3 py-3 border-r border-gray-200">
+                    <div className="text-gray-900 font-medium truncate">{rule.templateName}</div>
+                    <div className="text-xs text-gray-500 truncate">{rule.subsectionName}</div>
+                  </div>
+                  
+                  <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
                     <Checkbox 
                       checked={rule.cmsRegulated}
                       onCheckedChange={(checked) => {
@@ -372,59 +319,36 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                         };
                         onRuleUpdate(updatedRule);
                       }}
-                      disabled={isLocked}
                     />
                   </div>
-                  {renderCell(rule, 'chapterName', rule.chapterName, 'w-40')}
-                  {renderCell(rule, 'sectionName', rule.sectionName, 'w-40')}
-                  {renderCell(rule, 'subsectionName', rule.subsectionName, 'w-40')}
-                  {renderCell(rule, 'serviceGroup', rule.serviceGroup, 'w-40')}
-                  {renderCell(rule, 'rule', rule.rule, 'w-48')}
-                  <div className="w-24 p-2 border-r border-border flex items-center justify-center flex-shrink-0">
-                    <Checkbox 
-                      checked={rule.isTabular}
-                      onCheckedChange={(checked) => {
-                        const updatedRule = {
-                          ...rule,
-                          isTabular: checked as boolean,
-                          lastModified: new Date()
-                        };
-                        onRuleUpdate(updatedRule);
-                      }}
-                      disabled={isLocked}
-                    />
+                  
+                  <div className="w-48 px-3 py-3 border-r border-gray-200">
+                    <span className="text-gray-600 text-sm">{rule.chapterName}</span>
                   </div>
-                  {renderCell(rule, 'english', rule.english, 'w-48')}
-                  {renderCell(rule, 'englishStatus', rule.englishStatus, 'w-24')}
-                  {renderCell(rule, 'spanish', rule.spanish, 'w-48')}
-                  {renderCell(rule, 'spanishStatus', rule.spanishStatus, 'w-24')}
+                  
+                  <div className="w-48 px-3 py-3 border-r border-gray-200">
+                    <span className="text-gray-600 text-sm">{rule.sectionName}</span>
+                  </div>
+                  
+                  <div className="w-32 px-3 py-3 border-r border-gray-200">
+                    <span className="text-gray-600 text-sm">{rule.effectiveDate}</span>
+                  </div>
+                  
+                  <div className="w-32 px-3 py-3 border-r border-gray-200">
+                    {getStatusBadge(rule.englishStatus)}
+                  </div>
+                  
+                  <div className="w-32 px-3 py-3 border-r border-gray-200">
+                    <span className="text-gray-600 text-sm">Flat Rate</span>
+                  </div>
+                  
+                  <div className="w-48 px-3 py-3">
+                    <span className="text-gray-600 text-sm">{rule.serviceGroup}</span>
+                  </div>
                 </div>
               ))}
-            </ScrollArea>
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Bottom Section Selector */}
-      <div className="flex items-center justify-between p-2 bg-primary text-primary-foreground">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">Section</span>
-          <Select value="Language Configuration" onValueChange={() => {}}>
-            <SelectTrigger className="w-48 h-8 text-xs bg-primary-foreground text-foreground">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Language Configuration">Language Configuration</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm" className="h-6 w-6 p-0">
-            💾
-          </Button>
-          <Button variant="secondary" size="sm" className="h-6 w-6 p-0">
-            ⬇️
-          </Button>
         </div>
       </div>
 
@@ -439,53 +363,38 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
               <div className="space-y-4 p-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-semibold text-muted-foreground">Template</label>
+                    <label className="text-sm font-semibold text-gray-500">Template</label>
                     <p className="text-sm">{previewRule.templateName}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-muted-foreground">CMS Regulated</label>
+                    <label className="text-sm font-semibold text-gray-500">CMS Regulated</label>
                     <p className="text-sm">{previewRule.cmsRegulated ? 'Yes' : 'No'}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-muted-foreground">Chapter</label>
+                    <label className="text-sm font-semibold text-gray-500">Chapter</label>
                     <p className="text-sm">{previewRule.chapterName}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-muted-foreground">Section</label>
+                    <label className="text-sm font-semibold text-gray-500">Section</label>
                     <p className="text-sm">{previewRule.sectionName}</p>
                   </div>
-                  <div>
-                    <label className="text-sm font-semibold text-muted-foreground">Subsection</label>
-                    <p className="text-sm">{previewRule.subsectionName}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-semibold text-muted-foreground">Service Group</label>
-                    <p className="text-sm">{previewRule.serviceGroup}</p>
-                  </div>
                 </div>
                 
                 <div>
-                  <label className="text-sm font-semibold text-muted-foreground">Rule Text</label>
-                  <p className="text-sm mt-1 p-3 bg-muted rounded">{previewRule.rule}</p>
+                  <label className="text-sm font-semibold text-gray-500">Rule Text</label>
+                  <p className="text-sm mt-1 p-3 bg-gray-50 rounded">{previewRule.rule}</p>
                 </div>
                 
                 <div>
-                  <label className="text-sm font-semibold text-muted-foreground">English</label>
-                  <p className="text-sm mt-1 p-3 bg-muted rounded">{previewRule.english}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Status: {previewRule.englishStatus}</p>
+                  <label className="text-sm font-semibold text-gray-500">English</label>
+                  <p className="text-sm mt-1 p-3 bg-gray-50 rounded">{previewRule.english}</p>
+                  <p className="text-xs text-gray-500 mt-1">Status: {previewRule.englishStatus}</p>
                 </div>
                 
                 <div>
-                  <label className="text-sm font-semibold text-muted-foreground">Spanish</label>
-                  <p className="text-sm mt-1 p-3 bg-muted rounded">{previewRule.spanish}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Status: {previewRule.spanishStatus}</p>
-                </div>
-                
-                <div className="flex gap-4 text-xs text-muted-foreground">
-                  <span>Created: {previewRule.createdAt.toLocaleDateString()}</span>
-                  <span>Modified: {previewRule.lastModified.toLocaleDateString()}</span>
-                  <span>Version: {previewRule.version}</span>
-                  <span>Effective: {previewRule.effectiveDate}</span>
+                  <label className="text-sm font-semibold text-gray-500">Spanish</label>
+                  <p className="text-sm mt-1 p-3 bg-gray-50 rounded">{previewRule.spanish}</p>
+                  <p className="text-xs text-gray-500 mt-1">Status: {previewRule.spanishStatus}</p>
                 </div>
               </div>
             </ScrollArea>
