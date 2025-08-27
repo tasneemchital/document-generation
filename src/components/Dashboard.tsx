@@ -41,11 +41,11 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     },
     {
       id: 'interact',
-      title: 'Interact',
-      description: 'Engage with published content through comments and feedback systems',
+      title: 'Ask BNI (Benny)',
+      description: 'Interact smartly with your content via your personalized Benefits1™ Native intelligence assistant',
       icon: MessageCircle,
       color: 'bg-muted text-muted-foreground',
-      action: () => console.log('Interact clicked')
+      action: () => console.log('Ask BNI (Benny) clicked')
     },
     {
       id: 'collaborate',
