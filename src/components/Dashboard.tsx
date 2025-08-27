@@ -18,7 +18,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     {
       id: 'master-list',
       title: 'Manage',
-      description: 'Configure and manage document rules, templates, and data structures',
+      description: 'Create, edit and manage your document templates',
       icon: Database,
       color: 'bg-primary text-primary-foreground',
       action: () => onNavigate('master-list')
