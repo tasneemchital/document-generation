@@ -7,7 +7,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { AdvancedFilter } from '@/components/AdvancedFilter';
 import { ColumnFilter } from '@/components/ColumnFilter';
 import { 
   ChevronDown, 
@@ -29,7 +28,6 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   const [editValue, setEditValue] = useState('');
   const [previewRule, setPreviewRule] = useState<RuleData | null>(null);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
-  const [filteredRules, setFilteredRules] = useState<RuleData[]>(rules);
   
   // Column-specific filters state
   const [columnFilters, setColumnFilters] = useState({
@@ -72,9 +70,9 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
     spanishStatus: [...new Set(rules.map(r => r.spanishStatus).filter(Boolean))]
   }), [rules]);
 
-  // Apply column filters
+  // Apply column filters directly to rules
   const columnFilteredRules = useMemo(() => {
-    return filteredRules.filter(rule => {
+    return rules.filter(rule => {
       // Text filters
       if (columnFilters.ruleId && !rule.ruleId?.toLowerCase().includes(columnFilters.ruleId.toLowerCase())) return false;
       if (columnFilters.effectiveDate && !rule.effectiveDate?.toLowerCase().includes(columnFilters.effectiveDate.toLowerCase())) return false;
@@ -109,12 +107,8 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
       return true;
     });
-  }, [filteredRules, columnFilters]);
+  }, [rules, columnFilters]);
 
-  // Update filtered rules when rules prop changes
-  const handleFiltersChange = (filtered: RuleData[]) => {
-    setFilteredRules(filtered);
-  };
 
   // Column filter handlers
   const handleColumnFilter = (column: string, value: any) => {
@@ -268,10 +262,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
           </div>
         </div>
 
-        {/* Advanced Filter Section */}
-        <div className="px-6 py-3">
-          <AdvancedFilter rules={rules} onFiltersChange={handleFiltersChange} />
-        </div>
+
       </div>
 
         {/* Full Height Table Section with Maximum Scrolling Area */}
