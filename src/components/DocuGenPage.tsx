@@ -67,9 +67,6 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
               <img src={logoSvg} alt="SimplifyDocs Logo" className="w-8 h-8" />
               <div>
                 <h1 className="text-2xl font-semibold text-foreground">DocuGen - Manage</h1>
-                <p className="text-sm text-muted-foreground">
-                  CY2026 Draft Document Configuration Management
-                </p>
               </div>
             </div>
           </div>
