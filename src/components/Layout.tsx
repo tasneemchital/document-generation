@@ -25,7 +25,7 @@ const navigationItems = [
   { id: 'master-list', label: 'Master List', icon: List },
   { id: 'collaborate', label: 'Collaborate', icon: Users },
   { id: 'generate', label: 'Generate', icon: FileText },
-  { id: 'publish', label: 'Publish', icon: Share },
+  { id: 'integrate', label: 'Integrate', icon: Share },
   { id: 'admin-settings', label: 'Admin Settings', icon: Settings },
   { id: 'design-studio', label: 'Design Studio', icon: Palette },
 ];

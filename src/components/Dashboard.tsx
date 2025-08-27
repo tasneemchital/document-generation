@@ -32,12 +32,12 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       action: () => onNavigate('generate')
     },
     {
-      id: 'publish',
-      title: 'Publish',
-      description: 'Review, approve, and distribute generated documents to stakeholders',
+      id: 'integrate',
+      title: 'Integrate',
+      description: 'Reuse and stream content across multiple channels seamlessly',
       icon: Share,
       color: 'bg-secondary text-secondary-foreground',
-      action: () => onNavigate('publish')
+      action: () => onNavigate('integrate')
     },
     {
       id: 'interact',

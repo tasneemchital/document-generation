@@ -23,8 +23,8 @@ function App() {
         return <PlaceholderPage title="Collaborate" description="Collaboration features coming soon" />;
       case 'generate':
         return <PlaceholderPage title="Generate" description="Document generation tools coming soon" />;
-      case 'publish':
-        return <PlaceholderPage title="Publish" description="Publishing features coming soon" />;
+      case 'integrate':
+        return <PlaceholderPage title="Integrate" description="Content integration features coming soon" />;
       case 'admin-settings':
         return <PlaceholderPage title="Admin Settings" description="Administrative settings coming soon" />;
       case 'design-studio':
