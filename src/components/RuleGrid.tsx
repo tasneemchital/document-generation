@@ -275,7 +275,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
         <div className="px-6 py-3 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-base font-semibold text-gray-900">Rules</h2>
+              <h2 className="text-base font-semibold text-gray-900">Digital Content Manager - ANOC-EOC</h2>
               <p className="text-xs text-gray-500 mt-1">
                 Showing {startIndex + 1}-{endIndex} of {columnFilteredRules.length} rules
               </p>
