@@ -50,7 +50,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     {
       id: 'collaborate',
       title: 'Collaborate',
-      description: 'Work together with team members on document creation and review',
+      description: 'Collaborate seamlessly with multiple stakeholders via automated workflows, version control and transparent audit',
       icon: Users,
       color: 'bg-destructive text-destructive-foreground',
       action: () => onNavigate('collaborate')
