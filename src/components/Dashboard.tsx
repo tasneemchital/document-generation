@@ -16,12 +16,12 @@ interface DashboardProps {
 export function Dashboard({ onNavigate }: DashboardProps) {
   const dashboardCards = [
     {
-      id: 'manage',
+      id: 'master-list',
       title: 'Manage',
       description: 'Configure and manage document rules, templates, and data structures',
       icon: Database,
       color: 'bg-primary text-primary-foreground',
-      action: () => onNavigate('manage')
+      action: () => onNavigate('master-list')
     },
     {
       id: 'generate',
@@ -29,7 +29,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       description: 'Create documents from templates using configured rules and data',
       icon: FileText,
       color: 'bg-accent text-accent-foreground',
-      action: () => console.log('Generate clicked')
+      action: () => onNavigate('generate')
     },
     {
       id: 'publish',
@@ -37,7 +37,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       description: 'Review, approve, and distribute generated documents to stakeholders',
       icon: Share,
       color: 'bg-secondary text-secondary-foreground',
-      action: () => console.log('Publish clicked')
+      action: () => onNavigate('publish')
     },
     {
       id: 'interact',
@@ -53,22 +53,25 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       description: 'Work together with team members on document creation and review',
       icon: Users,
       color: 'bg-destructive text-destructive-foreground',
-      action: () => console.log('Collaborate clicked')
+      action: () => onNavigate('collaborate')
     }
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
+    <div className="h-full bg-background overflow-auto">
+      <div className="container mx-auto px-6 py-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-foreground mb-4">
-            SimplifyDocs
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Dashboard
           </h1>
+          <p className="text-muted-foreground">
+            Select a module below to get started with your document workflow.
+          </p>
         </div>
 
         {/* Dashboard Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {dashboardCards.map((card) => {
             const IconComponent = card.icon;
             return (
@@ -102,11 +105,6 @@ export function Dashboard({ onNavigate }: DashboardProps) {
               </Card>
             );
           })}
-        </div>
-
-        {/* Footer */}
-        <div className="text-center mt-16 text-sm text-muted-foreground">
-          <p>Select a module above to begin your document workflow journey.</p>
         </div>
       </div>
     </div>

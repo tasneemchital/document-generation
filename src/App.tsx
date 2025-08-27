@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { useKV } from '@github/spark/hooks';
+import { Layout } from '@/components/Layout';
 import { Dashboard } from '@/components/Dashboard';
 import { DocuGenPage } from '@/components/DocuGenPage';
 
@@ -12,15 +12,43 @@ function App() {
 
   const renderCurrentPage = () => {
     switch (currentPage) {
+      case 'dashboard':
+        return <Dashboard onNavigate={handleNavigate} />;
+      case 'master-list':
       case 'manage':
         return <DocuGenPage onNavigate={handleNavigate} />;
-      case 'dashboard':
+      case 'collaborate':
+        return <PlaceholderPage title="Collaborate" description="Collaboration features coming soon" />;
+      case 'generate':
+        return <PlaceholderPage title="Generate" description="Document generation tools coming soon" />;
+      case 'publish':
+        return <PlaceholderPage title="Publish" description="Publishing features coming soon" />;
+      case 'admin-settings':
+        return <PlaceholderPage title="Admin Settings" description="Administrative settings coming soon" />;
+      case 'design-studio':
+        return <PlaceholderPage title="Design Studio" description="Design tools coming soon" />;
       default:
         return <Dashboard onNavigate={handleNavigate} />;
     }
   };
 
-  return renderCurrentPage();
+  return (
+    <Layout currentPage={currentPage} onNavigate={handleNavigate}>
+      {renderCurrentPage()}
+    </Layout>
+  );
+}
+
+// Placeholder component for pages not yet implemented
+function PlaceholderPage({ title, description }: { title: string; description: string }) {
+  return (
+    <div className="flex items-center justify-center h-full bg-background">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold text-foreground mb-4">{title}</h1>
+        <p className="text-muted-foreground">{description}</p>
+      </div>
+    </div>
+  );
 }
 
 export default App;

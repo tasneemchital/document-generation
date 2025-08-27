@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useKV } from '@github/spark/hooks';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, ArrowLeft } from '@phosphor-icons/react';
+import { RefreshCw } from '@phosphor-icons/react';
 import { Toaster } from '@/components/ui/sonner';
 import { RuleGrid } from '@/components/RuleGrid';
 import { RuleData } from '@/lib/types';
 import { parseDraftCY2026 } from '@/lib/pdfParser';
 import { toast } from 'sonner';
-import logoSvg from '@/assets/images/logo.svg';
 
 interface DocuGenPageProps {
   onNavigate: (page: string) => void;
@@ -49,32 +47,20 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-full bg-background overflow-hidden flex flex-col">
       {/* Clean Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+      <div className="bg-card border-b border-border flex-shrink-0">
+        <div className="px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <Button
-                onClick={() => onNavigate('dashboard')}
-                variant="ghost"
-                size="sm"
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
-              >
-                <ArrowLeft size={16} />
-                Back to Dashboard
-              </Button>
-              <div className="flex items-center gap-3">
-                <img src={logoSvg} alt="SimplifyDocs Logo" className="w-8 h-8" />
-                <h1 className="text-xl font-semibold text-gray-900">DocuGen - Manage</h1>
-              </div>
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl font-semibold text-foreground">Language Configuration Repeater</h1>
             </div>
             <Button
               onClick={loadRuleData}
               disabled={isLoading}
               variant="outline"
               size="sm"
-              className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50"
+              className="flex items-center gap-2"
             >
               <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
               Refresh Data
@@ -84,10 +70,10 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-6">
+      <div className="flex-1 overflow-hidden p-6">
         {isLoading ? (
-          <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
-            <div className="flex items-center justify-center gap-3 text-gray-500">
+          <div className="bg-card rounded-lg border border-border p-12 text-center h-full flex items-center justify-center">
+            <div className="flex items-center justify-center gap-3 text-muted-foreground">
               <RefreshCw size={20} className="animate-spin" />
               <span className="text-sm">Loading CY2026 draft document data...</span>
             </div>
