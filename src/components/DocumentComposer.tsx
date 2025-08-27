@@ -37,9 +37,9 @@ export function DocumentComposer({
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredAvailable = availableSnippets.filter(snippet =>
-    snippet.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    snippet.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    snippet.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    (snippet.title?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+    (snippet.content?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+    snippet.tags?.some(tag => tag?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ?? false
   );
 
   const handleReset = () => {
@@ -106,7 +106,7 @@ export function DocumentComposer({
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;
+    link.download = `${(title || 'document').replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;
     link.click();
     URL.revokeObjectURL(url);
 

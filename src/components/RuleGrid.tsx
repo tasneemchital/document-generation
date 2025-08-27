@@ -38,9 +38,9 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   const [vendorFilter, setVendorFilter] = useState('All');
   
   const filteredRules = rules.filter(rule => {
-    if (searchTerm && !rule.templateName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        !rule.ruleId.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        !rule.chapterName.toLowerCase().includes(searchTerm.toLowerCase())) {
+    if (searchTerm && !(rule.templateName?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        !(rule.ruleId?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        !(rule.chapterName?.toLowerCase().includes(searchTerm.toLowerCase()))) {
       return false;
     }
     return true;
@@ -67,8 +67,9 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   const handleCellClick = (rule: RuleData, field: keyof RuleData) => {
     if (['createdAt', 'lastModified', 'id'].includes(field)) return;
     
-    setEditingRule({ id: rule.id, field, value: rule[field] as string });
-    setEditValue(rule[field] as string);
+    const fieldValue = rule[field] as string || '';
+    setEditingRule({ id: rule.id, field, value: fieldValue });
+    setEditValue(fieldValue);
   };
 
   const handleSaveEdit = () => {
@@ -146,6 +147,10 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   };
 
   const getStatusBadge = (status: string) => {
+    if (!status) {
+      return <Badge variant="secondary" className="bg-gray-100 text-gray-800">Unknown</Badge>;
+    }
+    
     switch (status.toLowerCase()) {
       case 'complete':
         return <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-100">✓ Complete</Badge>;
@@ -153,6 +158,8 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
         return <Badge variant="default" className="bg-blue-100 text-blue-800 hover:bg-blue-100">In Progress</Badge>;
       case 'pending':
         return <Badge variant="default" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pending</Badge>;
+      case 'approved':
+        return <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-100">✓ Approved</Badge>;
       default:
         return <Badge variant="secondary" className="bg-gray-100 text-gray-800">{status}</Badge>;
     }
@@ -300,17 +307,17 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   </div>
                   
                   <div className="w-32 px-3 py-3 border-r border-gray-200">
-                    <span className="font-medium text-gray-900">{rule.ruleId}</span>
+                    <span className="font-medium text-gray-900">{rule.ruleId || 'N/A'}</span>
                   </div>
                   
                   <div className="w-40 px-3 py-3 border-r border-gray-200">
-                    <div className="text-gray-900 font-medium truncate">{rule.templateName}</div>
-                    <div className="text-xs text-gray-500 truncate">{rule.subsectionName}</div>
+                    <div className="text-gray-900 font-medium truncate">{rule.templateName || 'N/A'}</div>
+                    <div className="text-xs text-gray-500 truncate">{rule.subsectionName || 'N/A'}</div>
                   </div>
                   
                   <div className="w-32 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
                     <Checkbox 
-                      checked={rule.cmsRegulated}
+                      checked={rule.cmsRegulated || false}
                       onCheckedChange={(checked) => {
                         const updatedRule = {
                           ...rule,
@@ -323,15 +330,15 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   </div>
                   
                   <div className="w-48 px-3 py-3 border-r border-gray-200">
-                    <span className="text-gray-600 text-sm">{rule.chapterName}</span>
+                    <span className="text-gray-600 text-sm">{rule.chapterName || 'N/A'}</span>
                   </div>
                   
                   <div className="w-48 px-3 py-3 border-r border-gray-200">
-                    <span className="text-gray-600 text-sm">{rule.sectionName}</span>
+                    <span className="text-gray-600 text-sm">{rule.sectionName || 'N/A'}</span>
                   </div>
                   
                   <div className="w-32 px-3 py-3 border-r border-gray-200">
-                    <span className="text-gray-600 text-sm">{rule.effectiveDate}</span>
+                    <span className="text-gray-600 text-sm">{rule.effectiveDate || 'N/A'}</span>
                   </div>
                   
                   <div className="w-32 px-3 py-3 border-r border-gray-200">
@@ -343,7 +350,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   </div>
                   
                   <div className="w-48 px-3 py-3">
-                    <span className="text-gray-600 text-sm">{rule.serviceGroup}</span>
+                    <span className="text-gray-600 text-sm">{rule.serviceGroup || 'N/A'}</span>
                   </div>
                 </div>
               ))}
@@ -357,14 +364,14 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
         <Dialog open={!!previewRule} onOpenChange={() => setPreviewRule(null)}>
           <DialogContent className="max-w-4xl max-h-[80vh]">
             <DialogHeader>
-              <DialogTitle>Rule Details - {previewRule.ruleId}</DialogTitle>
+              <DialogTitle>Rule Details - {previewRule.ruleId || 'N/A'}</DialogTitle>
             </DialogHeader>
             <ScrollArea className="max-h-[60vh]">
               <div className="space-y-4 p-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-semibold text-gray-500">Template</label>
-                    <p className="text-sm">{previewRule.templateName}</p>
+                    <p className="text-sm">{previewRule.templateName || 'N/A'}</p>
                   </div>
                   <div>
                     <label className="text-sm font-semibold text-gray-500">CMS Regulated</label>
@@ -372,29 +379,29 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
                   </div>
                   <div>
                     <label className="text-sm font-semibold text-gray-500">Chapter</label>
-                    <p className="text-sm">{previewRule.chapterName}</p>
+                    <p className="text-sm">{previewRule.chapterName || 'N/A'}</p>
                   </div>
                   <div>
                     <label className="text-sm font-semibold text-gray-500">Section</label>
-                    <p className="text-sm">{previewRule.sectionName}</p>
+                    <p className="text-sm">{previewRule.sectionName || 'N/A'}</p>
                   </div>
                 </div>
                 
                 <div>
                   <label className="text-sm font-semibold text-gray-500">Rule Text</label>
-                  <p className="text-sm mt-1 p-3 bg-gray-50 rounded">{previewRule.rule}</p>
+                  <p className="text-sm mt-1 p-3 bg-gray-50 rounded">{previewRule.rule || 'N/A'}</p>
                 </div>
                 
                 <div>
                   <label className="text-sm font-semibold text-gray-500">English</label>
-                  <p className="text-sm mt-1 p-3 bg-gray-50 rounded">{previewRule.english}</p>
-                  <p className="text-xs text-gray-500 mt-1">Status: {previewRule.englishStatus}</p>
+                  <p className="text-sm mt-1 p-3 bg-gray-50 rounded">{previewRule.english || 'N/A'}</p>
+                  <p className="text-xs text-gray-500 mt-1">Status: {previewRule.englishStatus || 'Unknown'}</p>
                 </div>
                 
                 <div>
                   <label className="text-sm font-semibold text-gray-500">Spanish</label>
-                  <p className="text-sm mt-1 p-3 bg-gray-50 rounded">{previewRule.spanish}</p>
-                  <p className="text-xs text-gray-500 mt-1">Status: {previewRule.spanishStatus}</p>
+                  <p className="text-sm mt-1 p-3 bg-gray-50 rounded">{previewRule.spanish || 'N/A'}</p>
+                  <p className="text-xs text-gray-500 mt-1">Status: {previewRule.spanishStatus || 'Unknown'}</p>
                 </div>
               </div>
             </ScrollArea>

@@ -31,16 +31,16 @@ export const filterSnippets = (
 
   if (filter.category) {
     filtered = filtered.filter(snippet => 
-      snippet.category.toLowerCase() === filter.category?.toLowerCase()
+      snippet.category?.toLowerCase() === filter.category?.toLowerCase()
     );
   }
 
   if (filter.tags && filter.tags.length > 0) {
     filtered = filtered.filter(snippet =>
       filter.tags!.some(tag =>
-        snippet.tags.some(snippetTag =>
-          snippetTag.toLowerCase().includes(tag.toLowerCase())
-        )
+        snippet.tags?.some(snippetTag =>
+          snippetTag?.toLowerCase().includes(tag?.toLowerCase() ?? '') ?? false
+        ) ?? false
       )
     );
   }
@@ -48,9 +48,9 @@ export const filterSnippets = (
   if (filter.searchQuery) {
     const query = filter.searchQuery.toLowerCase();
     filtered = filtered.filter(snippet =>
-      snippet.title.toLowerCase().includes(query) ||
-      snippet.content.toLowerCase().includes(query) ||
-      snippet.tags.some(tag => tag.toLowerCase().includes(query))
+      (snippet.title?.toLowerCase().includes(query) ?? false) ||
+      (snippet.content?.toLowerCase().includes(query) ?? false) ||
+      (snippet.tags?.some(tag => tag?.toLowerCase().includes(query) ?? false) ?? false)
     );
   }
 
@@ -63,17 +63,17 @@ export const filterSnippets = (
 
     switch (sortBy) {
       case 'title':
-        aValue = a.title.toLowerCase();
-        bValue = b.title.toLowerCase();
+        aValue = a.title?.toLowerCase() ?? '';
+        bValue = b.title?.toLowerCase() ?? '';
         break;
       case 'usageCount':
-        aValue = a.usageCount;
-        bValue = b.usageCount;
+        aValue = a.usageCount ?? 0;
+        bValue = b.usageCount ?? 0;
         break;
       case 'createdAt':
       default:
-        aValue = a.createdAt.getTime();
-        bValue = b.createdAt.getTime();
+        aValue = a.createdAt?.getTime() ?? 0;
+        bValue = b.createdAt?.getTime() ?? 0;
         break;
     }
 
@@ -88,12 +88,12 @@ export const filterSnippets = (
 };
 
 export const getUniqueCategories = (snippets: ContentSnippet[]): string[] => {
-  const categories = snippets.map(snippet => snippet.category);
+  const categories = snippets.map(snippet => snippet.category).filter(category => category != null);
   return Array.from(new Set(categories)).sort();
 };
 
 export const getUniqueTags = (snippets: ContentSnippet[]): string[] => {
-  const allTags = snippets.flatMap(snippet => snippet.tags);
+  const allTags = snippets.flatMap(snippet => snippet.tags || []).filter(tag => tag != null);
   return Array.from(new Set(allTags)).sort();
 };
 
