@@ -1,15 +1,30 @@
-import { useRef, useEffect, useState } from 'react';
-import { Editor } from '@tinymce/tinymce-react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Save, X, Globe, Type, Eye, EyeSlash } from '@phosphor-icons/react';
+import { Separator } from '@/components/ui/separator';
+import { 
+  Save, 
+  X, 
+  Globe, 
+  Type, 
+  Eye, 
+  EyeSlash,
+  TextB,
+  TextItalic,
+  TextUnderline,
+  ListBullets,
+  ListNumbers,
+  Link,
+  TextAlignLeft,
+  TextAlignCenter,
+  TextAlignRight
+} from '@phosphor-icons/react';
 import { toast } from 'sonner';
-import './tinymce-custom.css';
 
-interface TinyMCEEditorProps {
+interface HtmlRichTextEditorProps {
   isOpen: boolean;
   onClose: () => void;
   englishContent: string;
@@ -20,7 +35,7 @@ interface TinyMCEEditorProps {
   spanishStatus?: string;
 }
 
-export function TinyMCEEditor({
+export function HtmlRichTextEditor({
   isOpen,
   onClose,
   englishContent,
@@ -29,118 +44,42 @@ export function TinyMCEEditor({
   title,
   englishStatus,
   spanishStatus
-}: TinyMCEEditorProps) {
-  const englishEditorRef = useRef<any>(null);
-  const spanishEditorRef = useRef<any>(null);
+}: HtmlRichTextEditorProps) {
+  const englishEditorRef = useRef<HTMLDivElement>(null);
+  const spanishEditorRef = useRef<HTMLDivElement>(null);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeEditor, setActiveEditor] = useState<'english' | 'spanish'>('english');
 
-  // TinyMCE configuration optimized for document content with latest features
-  const editorConfig = {
-    height: 300,
-    menubar: false,
-    branding: false,
-    promotion: false,
-    license_key: 'gpl', // Use GPL license for open source projects
-    plugins: [
-      'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-      'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-      'insertdatetime', 'media', 'table', 'help', 'wordcount', 'paste',
-      'autoresize', 'emoticons', 'powerpaste', 'advcode', 'quickbars'
-    ],
-    toolbar: [
-      'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | forecolor backcolor | ',
-      'align lineheight | numlist bullist indent outdent | ',
-      'removeformat | link image media table emoticons | preview code fullscreen help'
-    ].join(''),
-    quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote',
-    quickbars_insert_toolbar: 'quickimage quicktable',
-    contextmenu: 'link image table',
-    content_style: `
-      body { 
-        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
-        font-size: 14px; 
-        line-height: 1.6;
-        color: #1f2937;
-        margin: 12px;
-        background-color: #ffffff;
-      }
-      p { margin: 0 0 12px 0; }
-      ul, ol { margin: 0 0 12px 0; padding-left: 24px; }
-      li { margin: 0 0 4px 0; }
-      h1, h2, h3, h4, h5, h6 { margin: 0 0 16px 0; line-height: 1.4; color: #111827; }
-      h1 { font-size: 2rem; font-weight: 700; }
-      h2 { font-size: 1.5rem; font-weight: 600; }
-      h3 { font-size: 1.25rem; font-weight: 600; }
-      table { border-collapse: collapse; width: 100%; margin: 0 0 12px 0; }
-      th, td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: left; }
-      th { background-color: #f9fafb; font-weight: 600; }
-      blockquote { 
-        border-left: 4px solid #3b82f6; 
-        padding-left: 16px; 
-        margin: 0 0 12px 0; 
-        font-style: italic; 
-        color: #6b7280; 
-      }
-      code { 
-        background-color: #f3f4f6; 
-        padding: 2px 4px; 
-        border-radius: 3px; 
-        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; 
-        font-size: 0.875em;
-      }
-      a { color: #3b82f6; text-decoration: underline; }
-      a:hover { color: #1d4ed8; }
-    `,
-    skin: 'oxide',
-    promotion: false,
-    resize: 'both',
-    min_height: 200,
-    max_height: 600,
-    autoresize_bottom_margin: 16,
-    paste_as_text: false,
-    paste_auto_cleanup_on_paste: true,
-    paste_remove_styles: false,
-    paste_remove_styles_if_webkit: false,
-    powerpaste_word_import: 'clean',
-    powerpaste_html_import: 'clean',
-    table_default_attributes: {
-      border: '1'
-    },
-    table_default_styles: {
-      'border-collapse': 'collapse'
-    },
-    link_default_target: '_blank',
-    image_advtab: true,
-    image_uploadtab: false,
-    file_picker_types: 'image',
-    automatic_uploads: false,
-    elementpath: true,
-    statusbar: true,
-    setup: (editor: any) => {
-      editor.on('init', () => {
-        editor.getContainer().style.transition = 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out';
-      });
-      
-      editor.on('focus', () => {
-        editor.getContainer().style.borderColor = '#3b82f6';
-        editor.getContainer().style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-      });
-      
-      editor.on('blur', () => {
-        editor.getContainer().style.borderColor = '#d1d5db';
-        editor.getContainer().style.boxShadow = 'none';
-      });
-
-      // Custom styles for better UI integration
-      editor.on('init', () => {
-        const container = editor.getContainer();
-        container.style.borderRadius = '6px';
-        container.style.overflow = 'hidden';
-      });
+  // Initialize editor content when dialog opens
+  useEffect(() => {
+    if (isOpen && englishEditorRef.current && spanishEditorRef.current) {
+      englishEditorRef.current.innerHTML = englishContent || '';
+      spanishEditorRef.current.innerHTML = spanishContent || '';
+      setHasUnsavedChanges(false);
     }
-  };
+  }, [isOpen, englishContent, spanishContent]);
+
+  const executeCommand = useCallback((command: string, value?: string) => {
+    const editorRef = activeEditor === 'english' ? englishEditorRef : spanishEditorRef;
+    if (editorRef.current) {
+      editorRef.current.focus();
+      document.execCommand(command, false, value);
+      setHasUnsavedChanges(true);
+    }
+  }, [activeEditor]);
+
+  const createLink = useCallback(() => {
+    const url = prompt('Enter URL:');
+    if (url) {
+      executeCommand('createLink', url);
+    }
+  }, [executeCommand]);
+
+  const handleContentChange = useCallback(() => {
+    setHasUnsavedChanges(true);
+  }, []);
 
   const handleSave = async () => {
     if (!englishEditorRef.current || !spanishEditorRef.current) {
@@ -150,8 +89,8 @@ export function TinyMCEEditor({
 
     setIsLoading(true);
     try {
-      const englishText = englishEditorRef.current?.getContent() || '';
-      const spanishText = spanishEditorRef.current?.getContent() || '';
+      const englishText = englishEditorRef.current.innerHTML || '';
+      const spanishText = spanishEditorRef.current.innerHTML || '';
       
       await onSave(englishText, spanishText);
       setHasUnsavedChanges(false);
@@ -173,10 +112,6 @@ export function TinyMCEEditor({
     } else {
       onClose();
     }
-  };
-
-  const handleContentChange = () => {
-    setHasUnsavedChanges(true);
   };
 
   // Keyboard shortcut for saving (Ctrl+S / Cmd+S)
@@ -214,6 +149,104 @@ export function TinyMCEEditor({
         return <Badge variant="secondary" className="bg-gray-100 text-gray-800">{status}</Badge>;
     }
   };
+
+  const ToolbarButton = ({ 
+    onClick, 
+    icon: Icon, 
+    title, 
+    isActive = false 
+  }: { 
+    onClick: () => void; 
+    icon: any; 
+    title: string; 
+    isActive?: boolean;
+  }) => (
+    <Button
+      type="button"
+      variant={isActive ? "default" : "ghost"}
+      size="sm"
+      onClick={onClick}
+      title={title}
+      className="p-2 h-8 w-8"
+    >
+      <Icon size={14} />
+    </Button>
+  );
+
+  const Toolbar = () => (
+    <div className="flex items-center gap-1 p-2 border-b bg-gray-50">
+      <ToolbarButton
+        onClick={() => executeCommand('bold')}
+        icon={TextB}
+        title="Bold (Ctrl+B)"
+      />
+      <ToolbarButton
+        onClick={() => executeCommand('italic')}
+        icon={TextItalic}
+        title="Italic (Ctrl+I)"
+      />
+      <ToolbarButton
+        onClick={() => executeCommand('underline')}
+        icon={TextUnderline}
+        title="Underline (Ctrl+U)"
+      />
+      
+      <Separator orientation="vertical" className="h-6 mx-1" />
+      
+      <ToolbarButton
+        onClick={() => executeCommand('justifyLeft')}
+        icon={TextAlignLeft}
+        title="Align Left"
+      />
+      <ToolbarButton
+        onClick={() => executeCommand('justifyCenter')}
+        icon={TextAlignCenter}
+        title="Align Center"
+      />
+      <ToolbarButton
+        onClick={() => executeCommand('justifyRight')}
+        icon={TextAlignRight}
+        title="Align Right"
+      />
+      
+      <Separator orientation="vertical" className="h-6 mx-1" />
+      
+      <ToolbarButton
+        onClick={() => executeCommand('insertUnorderedList')}
+        icon={ListBullets}
+        title="Bullet List"
+      />
+      <ToolbarButton
+        onClick={() => executeCommand('insertOrderedList')}
+        icon={ListNumbers}
+        title="Numbered List"
+      />
+      
+      <Separator orientation="vertical" className="h-6 mx-1" />
+      
+      <ToolbarButton
+        onClick={createLink}
+        icon={Link}
+        title="Insert Link"
+      />
+      
+      <select
+        className="ml-2 px-2 py-1 text-sm border rounded"
+        onChange={(e) => {
+          if (e.target.value) {
+            executeCommand('formatBlock', e.target.value);
+            e.target.value = '';
+          }
+        }}
+      >
+        <option value="">Format</option>
+        <option value="h1">Heading 1</option>
+        <option value="h2">Heading 2</option>
+        <option value="h3">Heading 3</option>
+        <option value="p">Paragraph</option>
+      </select>
+    </div>
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -253,20 +286,28 @@ export function TinyMCEEditor({
                 </div>
                 {getStatusBadge(englishStatus, 'English')}
               </div>
+              
+              {!isPreviewMode && <Toolbar />}
+              
               <div className="flex-1 p-4">
                 {isPreviewMode ? (
                   <div 
                     className="prose prose-sm max-w-none min-h-[300px] p-4 border rounded bg-white"
-                    dangerouslySetInnerHTML={{ __html: englishContent || '<p><em>No content</em></p>' }}
+                    dangerouslySetInnerHTML={{ __html: englishEditorRef.current?.innerHTML || '<p><em>No content</em></p>' }}
                   />
                 ) : (
-                  <Editor
-                    onInit={(evt, editor) => {
-                      englishEditorRef.current = editor;
+                  <div
+                    ref={englishEditorRef}
+                    contentEditable
+                    className="min-h-[300px] p-4 border rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    style={{
+                      lineHeight: '1.6',
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: '14px'
                     }}
-                    initialValue={englishContent}
-                    init={editorConfig}
-                    onEditorChange={handleContentChange}
+                    onFocus={() => setActiveEditor('english')}
+                    onInput={handleContentChange}
+                    suppressContentEditableWarning={true}
                   />
                 )}
               </div>
@@ -281,20 +322,28 @@ export function TinyMCEEditor({
                 </div>
                 {getStatusBadge(spanishStatus, 'Spanish')}
               </div>
+              
+              {!isPreviewMode && <Toolbar />}
+              
               <div className="flex-1 p-4">
                 {isPreviewMode ? (
                   <div 
                     className="prose prose-sm max-w-none min-h-[300px] p-4 border rounded bg-white"
-                    dangerouslySetInnerHTML={{ __html: spanishContent || '<p><em>No content</em></p>' }}
+                    dangerouslySetInnerHTML={{ __html: spanishEditorRef.current?.innerHTML || '<p><em>No content</em></p>' }}
                   />
                 ) : (
-                  <Editor
-                    onInit={(evt, editor) => {
-                      spanishEditorRef.current = editor;
+                  <div
+                    ref={spanishEditorRef}
+                    contentEditable
+                    className="min-h-[300px] p-4 border rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    style={{
+                      lineHeight: '1.6',
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: '14px'
                     }}
-                    initialValue={spanishContent}
-                    init={editorConfig}
-                    onEditorChange={handleContentChange}
+                    onFocus={() => setActiveEditor('spanish')}
+                    onInput={handleContentChange}
+                    suppressContentEditableWarning={true}
                   />
                 )}
               </div>

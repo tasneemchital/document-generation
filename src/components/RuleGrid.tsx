@@ -9,7 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { ColumnFilter } from '@/components/ColumnFilter';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { TinyMCEEditor } from '@/components/TinyMCEEditor';
+import { HtmlRichTextEditor } from '@/components/HtmlRichTextEditor';
 import { 
   ChevronDown, 
   Edit, 
@@ -787,7 +787,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
       {/* TinyMCE Editor Dialog */}
       {currentEditingRule && (
-        <TinyMCEEditor
+        <HtmlRichTextEditor
           isOpen={richTextEditorOpen}
           onClose={() => {
             setRichTextEditorOpen(false);
