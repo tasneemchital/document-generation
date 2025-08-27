@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useKV } from '@github/spark/hooks';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RefreshCw } from '@phosphor-icons/react';
 import { Toaster } from '@/components/ui/sonner';
 import { RuleGrid } from '@/components/RuleGrid';
@@ -15,6 +16,7 @@ interface DocuGenPageProps {
 export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
   const [rules, setRules] = useKV<RuleData[]>('rule-data', []);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedConfig, setSelectedConfig] = useKV<string>('selected-config', 'digital-content-manager');
 
   const loadRuleData = async () => {
     setIsLoading(true);
@@ -50,7 +52,16 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
         <div className="px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <h1 className="text-lg font-semibold text-foreground">Language Configuration Repeater</h1>
+              <Select value={selectedConfig} onValueChange={setSelectedConfig}>
+                <SelectTrigger className="w-64">
+                  <SelectValue placeholder="Select configuration" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="digital-content-manager">Digital Content Manager - ANOC-EOC</SelectItem>
+                  <SelectItem value="medicare-anoc">Medicare ANOC</SelectItem>
+                  <SelectItem value="medicare-eoc">Medicare EOC</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <Button
               onClick={loadRuleData}
