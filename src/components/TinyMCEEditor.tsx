@@ -41,6 +41,7 @@ export function TinyMCEEditor({
     height: 300,
     menubar: false,
     branding: false,
+    promotion: false,
     license_key: 'gpl', // Use GPL license for open source projects
     plugins: [
       'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
