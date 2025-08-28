@@ -107,17 +107,6 @@ const sampleDescriptions = [
 
 const statusOptions = ['Draft', 'Review', 'Approved', 'Published', 'Archived'];
 
-const sampleDescriptions = [
-  'Outlines coverage requirements and member responsibilities for medical services',
-  'Defines eligibility criteria and enrollment procedures for health plan benefits',
-  'Specifies copayment and coinsurance amounts for various healthcare services',
-  'Describes prior authorization requirements for specialty medications',
-  'Details network provider access and referral procedures',
-  'Explains appeal and grievance processes for benefit determinations',
-  'Covers emergency and urgent care access guidelines',
-  'Outlines preventive care services and wellness program benefits'
-];
-
 function getRandomDate(daysAgo: number): string {
   const date = new Date(Date.now() - Math.random() * daysAgo * 24 * 60 * 60 * 1000);
   return date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
