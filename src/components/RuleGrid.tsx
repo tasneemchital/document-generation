@@ -10,6 +10,8 @@ import { Badge } from '@/components/ui/badge';
 import { ColumnFilter } from '@/components/ColumnFilter';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { HtmlRichTextEditor } from '@/components/HtmlRichTextEditor';
+import { DatePicker } from '@/components/ui/date-picker';
+import { format, parse, isValid } from 'date-fns';
 import { 
   ChevronDown, 
   Edit, 
@@ -144,6 +146,54 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
     setCurrentPage(1);
   }, [columnFilters]);
 
+  // Helper functions for date handling
+  const formatDateForDisplay = (dateString: string): string => {
+    if (!dateString) return '';
+    try {
+      // Try to parse as ISO date first
+      let date = new Date(dateString);
+      if (isValid(date)) {
+        return format(date, 'MM/dd/yyyy');
+      }
+      
+      // Try to parse as MM/dd/yyyy format
+      date = parse(dateString, 'MM/dd/yyyy', new Date());
+      if (isValid(date)) {
+        return format(date, 'MM/dd/yyyy');
+      }
+      
+      // Return original string if parsing fails
+      return dateString;
+    } catch {
+      return dateString;
+    }
+  };
+
+  const parseDateFromString = (dateString: string): Date | undefined => {
+    if (!dateString) return undefined;
+    try {
+      // Try to parse as ISO date first
+      let date = new Date(dateString);
+      if (isValid(date)) {
+        return date;
+      }
+      
+      // Try to parse as MM/dd/yyyy format
+      date = parse(dateString, 'MM/dd/yyyy', new Date());
+      if (isValid(date)) {
+        return date;
+      }
+      
+      return undefined;
+    } catch {
+      return undefined;
+    }
+  };
+
+  const formatDateForStorage = (date: Date): string => {
+    return format(date, 'MM/dd/yyyy');
+  };
+
   // Generate unique Rule ID
   const generateUniqueRuleId = (): string => {
     const existingRuleIds = new Set(rules.map(rule => rule.ruleId).filter(Boolean));
@@ -180,7 +230,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
     const newRule: RuleData = {
       id: `rule-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       ruleId: newRuleId,
-      effectiveDate: '',
+      effectiveDate: formatDateForStorage(currentDate),
       version: '1.0',
       benefitType: '',
       businessArea: '',
@@ -291,9 +341,44 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
       return;
     }
     
+    // Handle effective date field with date picker (no inline editing)
+    if (field === 'effectiveDate') {
+      return; // Date picker will handle this through its own interface
+    }
+    
     const fieldValue = rule[field] as string || '';
     setEditingRule({ id: rule.id, field, value: fieldValue });
     setEditValue(fieldValue);
+  };
+
+  const handleDateChange = (rule: RuleData, newDate: Date | undefined) => {
+    if (!newDate) return;
+    
+    const oldValue = rule.effectiveDate || '';
+    const newValue = formatDateForStorage(newDate);
+    
+    const updatedRule = {
+      ...rule,
+      effectiveDate: newValue,
+      lastModified: new Date()
+    };
+
+    onRuleUpdate(updatedRule);
+    
+    // Log the date change activity
+    if ((window as any).addActivityLog) {
+      (window as any).addActivityLog({
+        user: 'Current User',
+        action: 'edit',
+        target: `Rule ${rule.ruleId || 'N/A'} - Effective Date`,
+        details: `Updated effective date`,
+        ruleId: rule.ruleId,
+        oldValue: oldValue,
+        newValue: newValue,
+      });
+    }
+    
+    toast.success('Effective date updated successfully');
   };
 
   const handleSaveEdit = () => {
@@ -385,6 +470,22 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
     const isEditing = editingRule?.id === rule.id && editingRule?.field === field;
     const isEditable = !['createdAt', 'lastModified', 'id', 'ruleId', 'cmsRegulated', 'isTabular'].includes(field);
     const isRichTextField = field === 'english' || field === 'spanish';
+    const isDateField = field === 'effectiveDate';
+    
+    // Special handling for effective date field
+    if (isDateField) {
+      const currentDate = parseDateFromString(rule.effectiveDate);
+      return (
+        <div className={`px-3 py-1 border-r border-gray-200 ${className} bg-white`}>
+          <DatePicker
+            date={currentDate}
+            onDateChange={(newDate) => handleDateChange(rule, newDate)}
+            placeholder="Select date"
+            className="h-7 text-sm w-full border-gray-300 hover:bg-blue-50 justify-start"
+          />
+        </div>
+      );
+    }
     
     if (isEditing) {
       return (
@@ -419,11 +520,11 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
     return (
       <div 
         className={`px-3 py-2 text-sm border-r border-gray-200 last:border-r-0 ${className} ${
-          isEditable ? 'hover:bg-blue-50 cursor-pointer group' : 'bg-gray-50 cursor-not-allowed'
+          isEditable && !isDateField ? 'hover:bg-blue-50 cursor-pointer group' : 'bg-gray-50 cursor-not-allowed'
         } ${selectedRows.has(rule.id) ? 'bg-blue-50' : ''} ${
           field === 'ruleId' ? 'font-mono font-semibold text-purple-700' : ''
         }`}
-        onClick={() => isEditable && handleCellClick(rule, field)}
+        onClick={() => isEditable && !isDateField && handleCellClick(rule, field)}
         title={field === 'ruleId' ? 'Rule ID (Auto-generated, non-editable)' : undefined}
       >
         <div className="flex items-center justify-between">
@@ -432,11 +533,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
               <div className="max-w-[200px]">
                 {stripHtmlTags(content).substring(0, 100) + (stripHtmlTags(content).length > 100 ? '...' : '')}
               </div>
+            ) : isDateField ? (
+              formatDateForDisplay(content)
             ) : (
               content
             )}
           </span>
-          {isEditable && (
+          {isEditable && !isDateField && (
             <div className="flex items-center gap-1 ml-2 opacity-0 group-hover:opacity-100 flex-shrink-0">
               {isRichTextField ? (
                 <PencilSimple size={12} className="text-blue-500" title="Edit with rich text editor" />
