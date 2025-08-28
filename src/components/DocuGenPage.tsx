@@ -24,20 +24,24 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
   }, [selectedConfig, onNavigate]);
 
   useEffect(() => {
-    // Load mock data if no rules exist
-    if (rules.length === 0) {
+    // Load mock data if no rules exist - ensure rules is an array
+    if (!Array.isArray(rules) || rules.length === 0) {
       generateMockRuleData().then(mockRules => {
         setRules(mockRules);
       });
     }
-  }, [rules.length, setRules]);
+  }, [rules, setRules]);
 
   const handleRuleUpdate = (updatedRule: RuleData) => {
-    setRules(current => 
-      current.map(rule => 
+    setRules(current => {
+      if (!Array.isArray(current)) {
+        console.error('Rules state is not an array:', current);
+        return [updatedRule];
+      }
+      return current.map(rule => 
         rule.id === updatedRule.id ? updatedRule : rule
-      )
-    );
+      );
+    });
     
     // Log the rule update activity
     if ((window as any).addActivityLog) {
@@ -52,7 +56,13 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
   };
 
   const handleRuleCreate = (newRule: RuleData) => {
-    setRules(current => [newRule, ...current]);
+    setRules(current => {
+      if (!Array.isArray(current)) {
+        console.error('Rules state is not an array:', current);
+        return [newRule];
+      }
+      return [newRule, ...current];
+    });
     
     // Log the rule creation activity
     if ((window as any).addActivityLog) {

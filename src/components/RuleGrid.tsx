@@ -33,6 +33,9 @@ interface RuleGridProps {
 }
 
 export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
+  // Ensure rules is always an array to prevent .map errors
+  const safeRules = Array.isArray(rules) ? rules : [];
+  
   const [editingRule, setEditingRule] = useState<EditingRule | null>(null);
   const [editValue, setEditValue] = useState('');
   const [previewRule, setPreviewRule] = useState<RuleData | null>(null);
@@ -73,28 +76,28 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
 
   // Get unique values for each column
   const uniqueValues = useMemo(() => ({
-    ruleId: [...new Set(rules.map(r => r.ruleId).filter(Boolean))],
-    effectiveDate: [...new Set(rules.map(r => r.effectiveDate).filter(Boolean))],
-    version: [...new Set(rules.map(r => r.version).filter(Boolean))],
-    benefitType: [...new Set(rules.map(r => r.benefitType).filter(Boolean))],
-    businessArea: [...new Set(rules.map(r => r.businessArea).filter(Boolean))],
-    subBusinessArea: [...new Set(rules.map(r => r.subBusinessArea).filter(Boolean))],
-    templateName: [...new Set(rules.map(r => r.templateName).filter(Boolean))],
-    serviceId: [...new Set(rules.map(r => r.serviceId).filter(Boolean))],
-    chapterName: [...new Set(rules.map(r => r.chapterName).filter(Boolean))],
-    sectionName: [...new Set(rules.map(r => r.sectionName).filter(Boolean))],
-    subsectionName: [...new Set(rules.map(r => r.subsectionName).filter(Boolean))],
-    serviceGroup: [...new Set(rules.map(r => r.serviceGroup).filter(Boolean))],
-    sourceMapping: [...new Set(rules.map(r => r.sourceMapping).filter(Boolean))],
-    tiers: [...new Set(rules.map(r => r.tiers).filter(Boolean))],
-    key: [...new Set(rules.map(r => r.key).filter(Boolean))],
-    englishStatus: [...new Set(rules.map(r => r.englishStatus).filter(Boolean))],
-    spanishStatus: [...new Set(rules.map(r => r.spanishStatus).filter(Boolean))]
-  }), [rules]);
+    ruleId: [...new Set(safeRules.map(r => r.ruleId).filter(Boolean))],
+    effectiveDate: [...new Set(safeRules.map(r => r.effectiveDate).filter(Boolean))],
+    version: [...new Set(safeRules.map(r => r.version).filter(Boolean))],
+    benefitType: [...new Set(safeRules.map(r => r.benefitType).filter(Boolean))],
+    businessArea: [...new Set(safeRules.map(r => r.businessArea).filter(Boolean))],
+    subBusinessArea: [...new Set(safeRules.map(r => r.subBusinessArea).filter(Boolean))],
+    templateName: [...new Set(safeRules.map(r => r.templateName).filter(Boolean))],
+    serviceId: [...new Set(safeRules.map(r => r.serviceId).filter(Boolean))],
+    chapterName: [...new Set(safeRules.map(r => r.chapterName).filter(Boolean))],
+    sectionName: [...new Set(safeRules.map(r => r.sectionName).filter(Boolean))],
+    subsectionName: [...new Set(safeRules.map(r => r.subsectionName).filter(Boolean))],
+    serviceGroup: [...new Set(safeRules.map(r => r.serviceGroup).filter(Boolean))],
+    sourceMapping: [...new Set(safeRules.map(r => r.sourceMapping).filter(Boolean))],
+    tiers: [...new Set(safeRules.map(r => r.tiers).filter(Boolean))],
+    key: [...new Set(safeRules.map(r => r.key).filter(Boolean))],
+    englishStatus: [...new Set(safeRules.map(r => r.englishStatus).filter(Boolean))],
+    spanishStatus: [...new Set(safeRules.map(r => r.spanishStatus).filter(Boolean))]
+  }), [safeRules]);
 
   // Apply column filters directly to rules
   const columnFilteredRules = useMemo(() => {
-    return rules.filter(rule => {
+    return safeRules.filter(rule => {
       // Text filters
       if (columnFilters.ruleId && !rule.ruleId?.toLowerCase().includes(columnFilters.ruleId.toLowerCase())) return false;
       if (columnFilters.effectiveDate && !rule.effectiveDate?.toLowerCase().includes(columnFilters.effectiveDate.toLowerCase())) return false;
@@ -133,7 +136,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
 
       return true;
     });
-  }, [rules, columnFilters]);
+  }, [safeRules, columnFilters]);
 
   // Pagination calculations
   const totalPages = Math.max(1, Math.ceil(columnFilteredRules.length / pageSize));
@@ -196,12 +199,12 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
 
   // Generate unique Rule ID
   const generateUniqueRuleId = (): string => {
-    const existingRuleIds = new Set(rules.map(rule => rule.ruleId).filter(Boolean));
+    const existingRuleIds = new Set(safeRules.map(rule => rule.ruleId).filter(Boolean));
     let counter = 1;
     let ruleId: string;
     
     // Find the highest existing rule number to start from
-    const existingNumbers = rules
+    const existingNumbers = safeRules
       .map(rule => rule.ruleId)
       .filter(Boolean)
       .map(id => {
@@ -386,7 +389,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
   const handleSaveEdit = () => {
     if (!editingRule) return;
 
-    const ruleToUpdate = rules.find(r => r.id === editingRule.id);
+    const ruleToUpdate = safeRules.find(r => r.id === editingRule.id);
     if (!ruleToUpdate) return;
 
     const oldValue = ruleToUpdate[editingRule.field] as string || '';
