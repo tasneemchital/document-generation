@@ -478,12 +478,12 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
     if (isDateField) {
       const currentDate = parseDateFromString(rule.effectiveDate);
       return (
-        <div className={`px-3 py-1 border-r border-gray-200 ${className} bg-white`}>
+        <div className={`px-2 py-1 border-r border-gray-200 ${className} bg-white`}>
           <DatePicker
             date={currentDate}
             onDateChange={(newDate) => handleDateChange(rule, newDate)}
             placeholder="Select date"
-            className="h-7 text-sm w-full border-gray-300 hover:bg-blue-50 justify-start"
+            className="h-7 text-sm w-full border-gray-300 hover:bg-blue-50 justify-start min-w-0"
           />
         </div>
       );
@@ -601,7 +601,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
 
         {/* Full Height Table Section with Maximum Scrolling Area */}
         <div className="flex-1 overflow-auto">
-          <div className="min-w-[4100px] h-full">
+          <div className="min-w-[4200px] h-full">
             {/* Table Header */}
             <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500 sticky top-0 z-10">
               <div className="w-12 px-3 py-2 border-r border-gray-200">
@@ -626,7 +626,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
                   onTextFilter={(value) => handleColumnFilter('ruleId', value)}
                 />
               </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span>Effective Date</span>
                   <ChevronDown size={14} className="text-gray-400" />
@@ -936,7 +936,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
                   </div>
                   
                   {renderCell(rule, 'ruleId', rule.ruleId || 'N/A', 'w-24 font-medium')}
-                  {renderCell(rule, 'effectiveDate', rule.effectiveDate || 'N/A', 'w-32')}
+                  {renderCell(rule, 'effectiveDate', rule.effectiveDate || 'N/A', 'w-40')}
                   {renderCell(rule, 'version', rule.version || 'N/A', 'w-24')}
                   {renderCell(rule, 'benefitType', rule.benefitType || 'N/A', 'w-40')}
                   {renderCell(rule, 'businessArea', rule.businessArea || 'N/A', 'w-40')}
