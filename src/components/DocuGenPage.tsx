@@ -15,6 +15,7 @@ interface DocuGenPageProps {
 export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
   const [rules, setRules] = useKV<RuleData[]>('rule-data', []);
   const [selectedConfig, setSelectedConfig] = useKV<string>('selected-config', 'digital-content-manager');
+  const [selectedMedicareType, setSelectedMedicareType] = useKV<string>('selected-medicare-type', 'medicare-anoc');
   const [activityLogCollapsed, setActivityLogCollapsed] = useKV<boolean>('activity-log-collapsed', false);
 
   useEffect(() => {

@@ -192,22 +192,22 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
           <div className="p-6 bg-white text-black">
             <div className="space-y-4">
               <div className="text-sm text-gray-600">
-                {'{{ELSE}} {{IF:[GlobalRule[GR157]=true]}}}
+                {'{{ELSE}} {{IF:[GlobalRule[GR157]=true]}}'}
               </div>
               <div className="text-base font-medium">
                 Medicare Advantage with prescription drugs
               </div>
               <div className="text-sm text-gray-600">
-                {'{{ELSE}}}
+                {'{{ELSE}}'}
               </div>
               <div className="text-sm text-gray-600">
-                {'{{IF:[Medicare[DoesyourPlanofferaPrescrptionPartDbenefit]=YES]}}}
+                {'{{IF:[Medicare[DoesyourPlanofferaPrescrptionPartDbenefit]=YES]}}'}
               </div>
               <div className="text-base font-medium">
                 Medicare Advantage plan with prescription drugs
               </div>
               <div className="text-sm text-gray-600">
-                {'{{ELSE}} {{IF:[Medicare[PlanType]=Medicare Prescription Drug Plan]}}}
+                {'{{ELSE}} {{IF:[Medicare[PlanType]=Medicare Prescription Drug Plan]}}'}
               </div>
             </div>
           </div>
