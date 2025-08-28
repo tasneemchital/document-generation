@@ -27,9 +27,10 @@ import { toast } from 'sonner';
 interface RuleGridProps {
   rules: RuleData[];
   onRuleUpdate: (updatedRule: RuleData) => void;
+  onRuleCreate: (newRule: RuleData) => void;
 }
 
-export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
+export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
   const [editingRule, setEditingRule] = useState<EditingRule | null>(null);
   const [editValue, setEditValue] = useState('');
   const [previewRule, setPreviewRule] = useState<RuleData | null>(null);
@@ -143,6 +144,84 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
     setCurrentPage(1);
   }, [columnFilters]);
 
+  // Generate unique Rule ID
+  const generateUniqueRuleId = (): string => {
+    const existingRuleIds = new Set(rules.map(rule => rule.ruleId).filter(Boolean));
+    let counter = 1;
+    let ruleId: string;
+    
+    // Find the highest existing rule number to start from
+    const existingNumbers = rules
+      .map(rule => rule.ruleId)
+      .filter(Boolean)
+      .map(id => {
+        const match = id.match(/^R(\d+)$/);
+        return match ? parseInt(match[1], 10) : 0;
+      })
+      .filter(num => num > 0);
+    
+    if (existingNumbers.length > 0) {
+      counter = Math.max(...existingNumbers) + 1;
+    }
+    
+    do {
+      ruleId = `R${String(counter).padStart(4, '0')}`;
+      counter++;
+    } while (existingRuleIds.has(ruleId));
+    
+    return ruleId;
+  };
+
+  // Handle new rule creation
+  const handleCreateNewRule = () => {
+    const newRuleId = generateUniqueRuleId();
+    const currentDate = new Date();
+    
+    const newRule: RuleData = {
+      id: `rule-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      ruleId: newRuleId,
+      effectiveDate: '',
+      version: '1.0',
+      benefitType: '',
+      businessArea: '',
+      subBusinessArea: '',
+      description: '',
+      templateName: '',
+      serviceId: '',
+      cmsRegulated: false,
+      chapterName: '',
+      sectionName: '',
+      subsectionName: '',
+      serviceGroup: '',
+      sourceMapping: '',
+      tiers: '',
+      key: '',
+      rule: '',
+      isTabular: false,
+      english: '',
+      englishStatus: 'Draft',
+      spanish: '',
+      spanishStatus: 'Draft',
+      createdAt: currentDate,
+      lastModified: currentDate
+    };
+
+    onRuleCreate(newRule);
+
+    // Log the new rule creation activity
+    if ((window as any).addActivityLog) {
+      (window as any).addActivityLog({
+        user: 'Current User',
+        action: 'create',
+        target: `Rule ${newRuleId}`,
+        details: `Created new rule with auto-generated ID: ${newRuleId}`,
+        ruleId: newRuleId,
+      });
+    }
+
+    toast.success(`New rule created with ID: ${newRuleId}`);
+  };
+
   // Pagination handlers
   const handlePageSizeChange = (newPageSize: string) => {
     setPageSize(parseInt(newPageSize));
@@ -192,7 +271,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
   };
 
   const handleCellClick = (rule: RuleData, field: keyof RuleData) => {
-    if (['createdAt', 'lastModified', 'id'].includes(field)) return;
+    if (['createdAt', 'lastModified', 'id', 'ruleId'].includes(field)) return;
     
     // Log cell click activity
     if ((window as any).addActivityLog) {
@@ -304,7 +383,7 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
 
   const renderCell = (rule: RuleData, field: keyof RuleData, content: string, className: string = '') => {
     const isEditing = editingRule?.id === rule.id && editingRule?.field === field;
-    const isEditable = !['createdAt', 'lastModified', 'id', 'cmsRegulated', 'isTabular'].includes(field);
+    const isEditable = !['createdAt', 'lastModified', 'id', 'ruleId', 'cmsRegulated', 'isTabular'].includes(field);
     const isRichTextField = field === 'english' || field === 'spanish';
     
     if (isEditing) {
@@ -340,9 +419,12 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
     return (
       <div 
         className={`px-3 py-2 text-sm border-r border-gray-200 last:border-r-0 ${className} ${
-          isEditable ? 'hover:bg-blue-50 cursor-pointer group' : ''
-        } ${selectedRows.has(rule.id) ? 'bg-blue-50' : ''}`}
+          isEditable ? 'hover:bg-blue-50 cursor-pointer group' : 'bg-gray-50 cursor-not-allowed'
+        } ${selectedRows.has(rule.id) ? 'bg-blue-50' : ''} ${
+          field === 'ruleId' ? 'font-mono font-semibold text-purple-700' : ''
+        }`}
         onClick={() => isEditable && handleCellClick(rule, field)}
+        title={field === 'ruleId' ? 'Rule ID (Auto-generated, non-editable)' : undefined}
       >
         <div className="flex items-center justify-between">
           <span className="truncate flex-1 text-gray-900">
@@ -397,7 +479,11 @@ export function RuleGrid({ rules, onRuleUpdate }: RuleGridProps) {
               <h2 className="text-base font-semibold text-gray-900">Digital Content Manager - ANOC-EOC</h2>
             </div>
             <div className="flex items-center gap-3">
-              <Button size="sm" className="flex items-center gap-2 bg-purple-600 text-white hover:bg-purple-700">
+              <Button 
+                size="sm" 
+                className="flex items-center gap-2 bg-purple-600 text-white hover:bg-purple-700"
+                onClick={handleCreateNewRule}
+              >
                 <Plus size={14} />
                 New Rule
               </Button>

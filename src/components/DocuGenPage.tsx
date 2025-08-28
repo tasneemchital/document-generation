@@ -51,6 +51,21 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
     }
   };
 
+  const handleRuleCreate = (newRule: RuleData) => {
+    setRules(current => [newRule, ...current]);
+    
+    // Log the rule creation activity
+    if ((window as any).addActivityLog) {
+      (window as any).addActivityLog({
+        user: 'Current User',
+        action: 'create',
+        target: `Rule ${newRule.ruleId}`,
+        details: `Created new rule with auto-generated ID: ${newRule.ruleId}`,
+        ruleId: newRule.ruleId,
+      });
+    }
+  };
+
   return (
     <div className="h-full bg-background overflow-hidden flex flex-col relative">
       {/* Compact Header */}
@@ -75,7 +90,11 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
 
       {/* Main Content - Adjusted Height for Activity Log */}
       <div className={`flex-1 overflow-hidden ${activityLogCollapsed ? '' : 'pb-64'}`}>
-        <RuleGrid rules={rules} onRuleUpdate={handleRuleUpdate} />
+        <RuleGrid 
+          rules={rules} 
+          onRuleUpdate={handleRuleUpdate}
+          onRuleCreate={handleRuleCreate}
+        />
       </div>
 
       {/* Activity Log at Bottom */}
