@@ -38,7 +38,7 @@ export function DatePicker({
           disabled={disabled}
         >
           <CalendarIcon size={16} className="mr-2" />
-          {date ? format(date, "PPP") : <span>{placeholder}</span>}
+          {date ? format(date, "MM/dd/yyyy") : <span>{placeholder}</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">

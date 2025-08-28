@@ -226,11 +226,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
   const handleCreateNewRule = () => {
     const newRuleId = generateUniqueRuleId();
     const currentDate = new Date();
+    // Default effective date to 1/1/2025
+    const defaultEffectiveDate = new Date(2025, 0, 1); // January 1, 2025
     
     const newRule: RuleData = {
       id: `rule-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       ruleId: newRuleId,
-      effectiveDate: formatDateForStorage(currentDate),
+      effectiveDate: formatDateForStorage(defaultEffectiveDate),
       version: '1.0',
       benefitType: '',
       businessArea: '',
