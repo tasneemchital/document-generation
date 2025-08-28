@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Toaster } from '@/components/ui/sonner';
 import { RuleGrid } from '@/components/RuleGrid';
 import { ActivityLog } from '@/components/ActivityLog';
+import { MedicareEOCMasterList } from '@/components/MedicareEOCMasterList';
 import { RuleData } from '@/lib/types';
 import { generateMockRuleData } from '@/lib/mockRuleData';
 
@@ -75,6 +76,11 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
       });
     }
   };
+
+  // If Medicare EOC is selected, show the Master List view
+  if (selectedConfig === 'medicare-eoc') {
+    return <MedicareEOCMasterList onNavigate={onNavigate} />;
+  }
 
   return (
     <div className="h-full bg-background overflow-hidden flex flex-col relative">

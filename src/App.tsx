@@ -20,11 +20,11 @@ function App() {
       case 'digital-content-manager':
         return <DocuGenPage onNavigate={handleNavigate} />;
       case 'collaborate':
-        return <PlaceholderPage title="Collaborate" description="Collaboration features coming soon" />;
+        return <PlaceholderPage title="Collaborate" description="Collaborate seamlessly with multiple stakeholders via automated workflows, version control and transparent audit" />;
       case 'generate':
-        return <PlaceholderPage title="Generate" description="Document generation tools coming soon" />;
+        return <PlaceholderPage title="Generate" description="Generate documents in Word, Print X, 508 and large print in English and other languages" />;
       case 'integrate':
-        return <PlaceholderPage title="Integrate" description="Content integration features coming soon" />;
+        return <PlaceholderPage title="Integrate" description="Reuse and stream content across multiple channels seamlessly" />;
       case 'admin-settings':
         return <PlaceholderPage title="Admin Settings" description="Administrative settings coming soon" />;
       case 'design-studio':
