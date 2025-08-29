@@ -31,11 +31,12 @@ interface RuleGridProps {
   rules: RuleData[];
   onRuleUpdate: (updatedRule: RuleData) => void;
   onRuleCreate: (newRule: RuleData) => void;
+  onRuleDelete: (ruleId: string) => void;
   onEditRule: (rule: RuleData) => void;
   onCreateRule?: () => void;
 }
 
-export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onEditRule, onCreateRule }: RuleGridProps) {
+export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEditRule, onCreateRule }: RuleGridProps) {
   // Ensure rules is always an array to prevent .map errors
   const safeRules = Array.isArray(rules) ? rules : [];
   

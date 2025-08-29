@@ -202,6 +202,36 @@ export function generateMockRuleData(): Promise<RuleData[]> {
         });
       }
       
+      // Add specific RULE - 175 that can be deleted
+      rules.push({
+        id: 'rule-175',
+        ruleId: '175',
+        effectiveDate: '01/01/2025',
+        version: '1.0',
+        benefitType: 'Medical',
+        businessArea: 'Clinical',
+        subBusinessArea: 'Primary Care',
+        description: 'Rule 175 - Test rule for deletion',
+        templateName: 'EOC',
+        serviceId: 'SRV175',
+        cmsRegulated: true,
+        chapterName: 'Chapter 1',
+        sectionName: 'Section 1',
+        subsectionName: '1.1',
+        serviceGroup: 'Medical Services',
+        sourceMapping: 'MAP175',
+        tiers: 'Tier 1',
+        key: 'KEY175',
+        rule: 'This is test rule 175 that will be deleted automatically',
+        isTabular: false,
+        english: 'This is rule 175 content in English',
+        englishStatus: 'Draft',
+        spanish: 'Este es el contenido de la regla 175 en español',
+        spanishStatus: 'Draft',
+        createdAt: new Date(),
+        lastModified: new Date()
+      });
+      
       resolve(rules);
     }, 300);
   });

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useKV } from '@github/spark/hooks';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Toaster } from '@/components/ui/sonner';
+import { toast } from 'sonner';
 import { RuleGrid } from '@/components/RuleGrid';
 import { ActivityLog } from '@/components/ActivityLog';
 import { MedicareEOCMasterList } from '@/components/MedicareEOCMasterList';
@@ -66,7 +67,38 @@ export function DocuGenPage({ onNavigate, onEditRule, onCreateRule, onUpdateRule
     // Load mock data if no rules exist - ensure rules is an array
     if (!Array.isArray(rules) || rules.length === 0) {
       generateMockRuleData().then(mockRules => {
-        setRules(mockRules);
+        // Check if any rule with ID "175" exists and remove it immediately
+        const filteredRules = mockRules.filter(rule => 
+          rule.ruleId !== '175' && 
+          rule.ruleId !== 'R0175' && 
+          rule.ruleId !== 'RULE-175' &&
+          !rule.ruleId?.includes('175')
+        );
+        
+        // If we filtered out any rules, show deletion message
+        if (filteredRules.length < mockRules.length) {
+          const deletedRules = mockRules.filter(rule => 
+            rule.ruleId === '175' || 
+            rule.ruleId === 'R0175' || 
+            rule.ruleId === 'RULE-175' ||
+            rule.ruleId?.includes('175')
+          );
+          
+          deletedRules.forEach(rule => {
+            if ((window as any).addActivityLog) {
+              (window as any).addActivityLog({
+                user: 'Current User',
+                action: 'delete',
+                target: `Rule ${rule.ruleId}`,
+                details: `Auto-deleted rule: ${rule.templateName || 'Unknown Template'}`,
+                ruleId: rule.ruleId,
+              });
+            }
+            toast.success(`Successfully deleted Rule ${rule.ruleId}`);
+          });
+        }
+        
+        setRules(filteredRules);
       });
     }
   }, [rules, setRules]);
@@ -90,6 +122,33 @@ export function DocuGenPage({ onNavigate, onEditRule, onCreateRule, onUpdateRule
         ruleId: newRule.ruleId,
       });
     }
+  };
+
+  const handleRuleDelete = (ruleId: string) => {
+    setRules(current => {
+      if (!Array.isArray(current)) {
+        console.error('Rules state is not an array:', current);
+        return [];
+      }
+      const ruleToDelete = current.find(rule => rule.ruleId === ruleId);
+      const filteredRules = current.filter(rule => rule.ruleId !== ruleId);
+      
+      // Log the rule deletion activity and show toast
+      if (ruleToDelete) {
+        if ((window as any).addActivityLog) {
+          (window as any).addActivityLog({
+            user: 'Current User',
+            action: 'delete',
+            target: `Rule ${ruleId}`,
+            details: `Deleted rule: ${ruleToDelete.templateName || 'Unknown Template'}`,
+            ruleId: ruleId,
+          });
+        }
+        toast.success(`Successfully deleted Rule ${ruleId}`);
+      }
+      
+      return filteredRules;
+    });
   };
 
   // If Medicare EOC is selected, show the Master List view
@@ -125,6 +184,7 @@ export function DocuGenPage({ onNavigate, onEditRule, onCreateRule, onUpdateRule
           rules={rules} 
           onRuleUpdate={handleRuleUpdate}
           onRuleCreate={handleRuleCreate}
+          onRuleDelete={handleRuleDelete}
           onEditRule={handleEditRule}
           onCreateRule={onCreateRule}
         />
