@@ -202,6 +202,33 @@ export function DigitalContentManager({ onNavigate }: DigitalContentManagerProps
     });
   };
 
+  const handleRuleDelete = (ruleId: string) => {
+    setRules(current => {
+      if (!Array.isArray(current)) {
+        console.error('Rules state is not an array:', current);
+        return [];
+      }
+      const ruleToDelete = current.find(rule => rule.ruleId === ruleId);
+      const filteredRules = current.filter(rule => rule.ruleId !== ruleId);
+      
+      // Log the rule deletion activity and show toast
+      if (ruleToDelete) {
+        if ((window as any).addActivityLog) {
+          (window as any).addActivityLog({
+            user: 'Current User',
+            action: 'delete',
+            target: `Rule ${ruleId}`,
+            details: `Deleted rule: ${ruleToDelete.templateName || 'Unknown Template'}`,
+            ruleId: ruleId,
+          });
+        }
+        toast.success(`Successfully deleted Rule ${ruleId}`);
+      }
+      
+      return filteredRules;
+    });
+  };
+
   const handleRuleCreate = (newRule: RuleData) => {
     setRules(current => {
       if (!Array.isArray(current)) {
@@ -251,6 +278,7 @@ export function DigitalContentManager({ onNavigate }: DigitalContentManagerProps
           rules={rules} 
           onRuleUpdate={handleRuleUpdate}
           onRuleCreate={handleRuleCreate}
+          onRuleDelete={handleRuleDelete}
         />
       </div>
 

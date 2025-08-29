@@ -23,7 +23,8 @@ import {
   CaretDoubleLeft,
   CaretDoubleRight,
   PencilSimple,
-  Eye
+  Eye,
+  Trash
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
@@ -546,6 +547,44 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     }
   };
 
+  // Handle bulk delete action for unpublished rules only
+  const handleBulkDelete = () => {
+    if (selectedRows.size === 0) {
+      toast.error('Please select at least one row to delete');
+      return;
+    }
+    
+    const selectedRules = safeRules.filter(rule => selectedRows.has(rule.id));
+    const publishedRules = selectedRules.filter(rule => rule.published);
+    
+    if (publishedRules.length > 0) {
+      toast.error('Cannot delete published rules. Only unpublished rules can be deleted.');
+      return;
+    }
+    
+    // Confirm deletion
+    const ruleNames = selectedRules.map(rule => rule.ruleId || 'N/A').join(', ');
+    const confirmMessage = selectedRules.length === 1 
+      ? `Are you sure you want to delete Rule ${ruleNames}?`
+      : `Are you sure you want to delete ${selectedRules.length} rules (${ruleNames})?`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+    
+    // Delete the rules
+    selectedRules.forEach(rule => {
+      if (rule.ruleId) {
+        onRuleDelete(rule.ruleId);
+      }
+    });
+    
+    // Clear selection
+    setSelectedRows(new Set());
+    
+    toast.success(`Successfully deleted ${selectedRules.length} rule${selectedRules.length > 1 ? 's' : ''}`);
+  };
+
   // Helper function to strip HTML tags for display in grid
   const stripHtmlTags = (html: string): string => {
     if (!html) return '';
@@ -689,6 +728,16 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
               >
                 <Eye size={14} />
                 Preview
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="flex items-center gap-2 border-red-600 text-red-600 hover:bg-red-50"
+                onClick={handleBulkDelete}
+                disabled={selectedRows.size === 0}
+              >
+                <Trash size={14} />
+                Delete
               </Button>
               <Button 
                 size="sm" 
