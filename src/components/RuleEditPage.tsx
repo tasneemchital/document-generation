@@ -9,7 +9,8 @@ import { DatePicker } from '@/components/ui/date-picker';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { ArrowLeft, Eye, MagicWand } from '@phosphor-icons/react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowLeft, Eye, MagicWand, CheckCircle, Clock, User, Calendar, Save, X } from '@phosphor-icons/react';
 import { format, parse, isValid } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -79,297 +80,472 @@ export function RuleEditPage({ rule, onSave, onCancel }: RuleEditPageProps) {
 
   return (
     <div className="h-full bg-background overflow-auto">
-      {/* Header */}
-      <div className="bg-card border-b border-border px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={onCancel}>
-              <ArrowLeft size={16} />
-            </Button>
-            <h1 className="text-lg font-semibold text-foreground">Rule Details</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleValidate}>
-              Validate
-            </Button>
-            <Button size="sm" onClick={handleSave} className="bg-primary text-primary-foreground">
-              <MagicWand size={16} className="mr-2" />
-              Update
-            </Button>
+      {/* Modern Header */}
+      <div className="bg-gradient-to-r from-card via-card/95 to-card/90 border-b border-border/50 backdrop-blur-sm">
+        <div className="px-6 py-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="sm" onClick={onCancel} className="hover:bg-muted/50">
+                <ArrowLeft size={18} />
+              </Button>
+              <div className="flex flex-col">
+                <h1 className="text-xl font-semibold text-foreground tracking-tight">Edit Rule</h1>
+                <div className="flex items-center gap-3 mt-1">
+                  <Badge variant="outline" className="text-xs">
+                    ID: {formData.ruleId || 'AUTO-GEN'}
+                  </Badge>
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <User size={12} />
+                    <span>Last modified by {formData.lastModifiedBy || 'Unknown'}</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Calendar size={12} />
+                    <span>{format(formData.lastModified || new Date(), 'MMM dd, yyyy')}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" onClick={handleValidate} className="bg-background/50 hover:bg-background/80">
+                <CheckCircle size={16} className="mr-2" />
+                Validate
+              </Button>
+              <Button variant="outline" size="sm" onClick={onCancel} className="bg-background/50 hover:bg-background/80">
+                <X size={16} className="mr-2" />
+                Cancel
+              </Button>
+              <Button size="sm" onClick={handleSave} className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all">
+                <Save size={16} className="mr-2" />
+                Save Changes
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="p-6">
-        {/* Rule Information Card */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="text-base font-medium text-muted-foreground">Rule Information</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* First Row */}
-            <div className="grid grid-cols-4 gap-4">
-              <div>
-                <Label htmlFor="benefit-category" className="text-sm font-medium text-foreground">
-                  Benefit Category *
-                </Label>
-                <Select value={formData.templateName || ''} onValueChange={(value) => handleInputChange('templateName', value)}>
-                  <SelectTrigger id="benefit-category">
-                    <SelectValue placeholder="Select benefit category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Fitness Rider">Fitness Rider</SelectItem>
-                    <SelectItem value="Dental">Dental</SelectItem>
-                    <SelectItem value="Vision">Vision</SelectItem>
-                    <SelectItem value="Prescription Drugs">Prescription Drugs</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+      <div className="max-w-7xl mx-auto p-6">
+        <Tabs defaultValue="basic-info" className="space-y-6">
+          <TabsList className="grid w-full max-w-md grid-cols-3 bg-muted/50">
+            <TabsTrigger value="basic-info" className="text-sm">Basic Info</TabsTrigger>
+            <TabsTrigger value="content" className="text-sm">Content</TabsTrigger>
+            <TabsTrigger value="preview" className="text-sm">Preview</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="basic-info" className="space-y-6">
+            {/* Rule Information Card */}
+            <Card className="shadow-sm border border-border/50">
+              <CardHeader className="bg-gradient-to-r from-muted/30 to-transparent">
+                <CardTitle className="text-lg font-medium text-foreground flex items-center gap-2">
+                  <div className="w-2 h-2 bg-primary rounded-full"></div>
+                  Rule Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 space-y-8">
+                {/* First Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="benefit-category" className="text-sm font-medium text-foreground flex items-center gap-1">
+                      Benefit Category <span className="text-destructive">*</span>
+                    </Label>
+                    <Select value={formData.templateName || ''} onValueChange={(value) => handleInputChange('templateName', value)}>
+                      <SelectTrigger id="benefit-category" className="h-10">
+                        <SelectValue placeholder="Select benefit category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Fitness Rider">Fitness Rider</SelectItem>
+                        <SelectItem value="Dental">Dental</SelectItem>
+                        <SelectItem value="Vision">Vision</SelectItem>
+                        <SelectItem value="Prescription Drugs">Prescription Drugs</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              <div>
-                <Label htmlFor="benefit-type" className="text-sm font-medium text-foreground">
-                  Benefit Type *
-                </Label>
-                <Select value={formData.benefitType || ''} onValueChange={(value) => handleInputChange('benefitType', value)}>
-                  <SelectTrigger id="benefit-type">
-                    <SelectValue placeholder="Select benefit type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Out of Pocket Maximum">Out of Pocket Maximum</SelectItem>
-                    <SelectItem value="Copayment">Copayment</SelectItem>
-                    <SelectItem value="Coinsurance">Coinsurance</SelectItem>
-                    <SelectItem value="Deductible">Deductible</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="benefit-type" className="text-sm font-medium text-foreground flex items-center gap-1">
+                      Benefit Type <span className="text-destructive">*</span>
+                    </Label>
+                    <Select value={formData.benefitType || ''} onValueChange={(value) => handleInputChange('benefitType', value)}>
+                      <SelectTrigger id="benefit-type" className="h-10">
+                        <SelectValue placeholder="Select benefit type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Out of Pocket Maximum">Out of Pocket Maximum</SelectItem>
+                        <SelectItem value="Copayment">Copayment</SelectItem>
+                        <SelectItem value="Coinsurance">Coinsurance</SelectItem>
+                        <SelectItem value="Deductible">Deductible</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              <div>
-                <Label htmlFor="business-area" className="text-sm font-medium text-foreground">
-                  Business Area *
-                </Label>
-                <Select value={formData.businessArea || ''} onValueChange={(value) => handleInputChange('businessArea', value)}>
-                  <SelectTrigger id="business-area">
-                    <SelectValue placeholder="Select business area" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Marketing">Marketing</SelectItem>
-                    <SelectItem value="Sales">Sales</SelectItem>
-                    <SelectItem value="Operations">Operations</SelectItem>
-                    <SelectItem value="Customer Service">Customer Service</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="business-area" className="text-sm font-medium text-foreground flex items-center gap-1">
+                      Business Area <span className="text-destructive">*</span>
+                    </Label>
+                    <Select value={formData.businessArea || ''} onValueChange={(value) => handleInputChange('businessArea', value)}>
+                      <SelectTrigger id="business-area" className="h-10">
+                        <SelectValue placeholder="Select business area" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Marketing">Marketing</SelectItem>
+                        <SelectItem value="Sales">Sales</SelectItem>
+                        <SelectItem value="Operations">Operations</SelectItem>
+                        <SelectItem value="Customer Service">Customer Service</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              <div>
-                <Label htmlFor="sub-business-area" className="text-sm font-medium text-foreground">
-                  Sub-business Area *
-                </Label>
-                <Select value={formData.subBusinessArea || ''} onValueChange={(value) => handleInputChange('subBusinessArea', value)}>
-                  <SelectTrigger id="sub-business-area">
-                    <SelectValue placeholder="Select sub-business area" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="MRK: DNSP">MRK: DNSP</SelectItem>
-                    <SelectItem value="MRK: ANOC">MRK: ANOC</SelectItem>
-                    <SelectItem value="MRK: EOC">MRK: EOC</SelectItem>
-                    <SelectItem value="MRK: SB">MRK: SB</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="sub-business-area" className="text-sm font-medium text-foreground flex items-center gap-1">
+                      Sub-business Area <span className="text-destructive">*</span>
+                    </Label>
+                    <Select value={formData.subBusinessArea || ''} onValueChange={(value) => handleInputChange('subBusinessArea', value)}>
+                      <SelectTrigger id="sub-business-area" className="h-10">
+                        <SelectValue placeholder="Select sub-business area" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="MRK: DNSP">MRK: DNSP</SelectItem>
+                        <SelectItem value="MRK: ANOC">MRK: ANOC</SelectItem>
+                        <SelectItem value="MRK: EOC">MRK: EOC</SelectItem>
+                        <SelectItem value="MRK: SB">MRK: SB</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <Separator className="bg-border/30" />
+
+                {/* Second Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="plan-year" className="text-sm font-medium text-foreground flex items-center gap-1">
+                      Plan Year <span className="text-destructive">*</span>
+                    </Label>
+                    <Select value={formData.version || ''} onValueChange={(value) => handleInputChange('version', value)}>
+                      <SelectTrigger id="plan-year" className="h-10">
+                        <SelectValue placeholder="Select plan year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="2025">2025</SelectItem>
+                        <SelectItem value="2026">2026</SelectItem>
+                        <SelectItem value="2027">2027</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="start-date" className="text-sm font-medium text-foreground flex items-center gap-1">
+                      Content Effective Start Date <span className="text-destructive">*</span>
+                    </Label>
+                    <DatePicker
+                      date={contentEffectiveStartDate}
+                      onDateChange={setContentEffectiveStartDate}
+                      placeholder="01-01-2025"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="end-date" className="text-sm font-medium text-foreground flex items-center gap-1">
+                      Content Effective End Date <span className="text-destructive">*</span>
+                    </Label>
+                    <DatePicker
+                      date={contentEffectiveEndDate}
+                      onDateChange={setContentEffectiveEndDate}
+                      placeholder="31-12-2025"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="description" className="text-sm font-medium text-foreground flex items-center gap-1">
+                      Description <span className="text-destructive">*</span>
+                    </Label>
+                    <Select value={formData.description || ''} onValueChange={(value) => handleInputChange('description', value)}>
+                      <SelectTrigger id="description" className="h-10">
+                        <SelectValue placeholder="Select description" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Headline">Headline</SelectItem>
+                        <SelectItem value="Body Text">Body Text</SelectItem>
+                        <SelectItem value="Footer">Footer</SelectItem>
+                        <SelectItem value="Disclaimer">Disclaimer</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <Separator className="bg-border/30" />
+
+                {/* Third Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="network-type" className="text-sm font-medium text-foreground flex items-center gap-1">
+                      Network Type <span className="text-destructive">*</span>
+                    </Label>
+                    <Select defaultValue="INN">
+                      <SelectTrigger id="network-type" className="h-10">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="INN">INN</SelectItem>
+                        <SelectItem value="OON">OON</SelectItem>
+                        <SelectItem value="Both">Both</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-foreground">Status</Label>
+                    <div className="flex items-center gap-2 pt-2">
+                      <Badge variant={formData.status === 'Active' ? 'default' : 'secondary'} className="bg-green-100 text-green-800 border-green-200">
+                        <CheckCircle size={12} className="mr-1" />
+                        {formData.status || 'Active'}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Rule Key Section */}
+            <Card className="shadow-sm border border-border/50">
+              <CardHeader className="bg-gradient-to-r from-muted/30 to-transparent">
+                <CardTitle className="text-lg font-medium text-foreground flex items-center gap-2">
+                  <div className="w-2 h-2 bg-accent rounded-full"></div>
+                  Rule Key Configuration
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="rule-key" className="text-sm font-medium text-foreground flex items-center gap-1">
+                      Rule Key <span className="text-destructive">*</span>
+                    </Label>
+                    <div className="flex items-center gap-3">
+                      <Input
+                        id="rule-key"
+                        value={formData.key || ''}
+                        onChange={(e) => handleInputChange('key', e.target.value)}
+                        placeholder="MedicareAcupuncturePackage="
+                        className="flex-1 h-10"
+                      />
+                      <Button variant="outline" size="sm" onClick={handleValidate} className="h-10">
+                        <CheckCircle size={16} className="mr-2" />
+                        Validate
+                      </Button>
+                      <Button variant="ghost" size="sm" className="text-primary h-10">
+                        <MagicWand size={16} />
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                    <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                      <span className="text-sm font-medium text-blue-900">Affected Individual Plans: 5</span>
+                    </div>
+                    <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-100">
+                      <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                      <span className="text-sm font-medium text-gray-700">Affected Group Plans: 0</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="content" className="space-y-6">
+            {/* Language and Content Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Content Template */}
+              <Card className="shadow-sm border border-border/50">
+                <CardHeader className="bg-gradient-to-r from-muted/30 to-transparent">
+                  <CardTitle className="text-lg font-medium text-foreground flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    Content Template
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="space-y-6">
+                    <div>
+                      <Label className="text-sm font-medium text-foreground mb-3 block">Language Options</Label>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge 
+                          variant={selectedLanguage === 'english' ? 'default' : 'secondary'} 
+                          className="cursor-pointer px-3 py-1 transition-all hover:scale-105"
+                          onClick={() => setSelectedLanguage('english')}
+                        >
+                          English
+                        </Badge>
+                        <Badge 
+                          variant={selectedLanguage === 'spanish' ? 'default' : 'secondary'} 
+                          className="cursor-pointer px-3 py-1 transition-all hover:scale-105"
+                          onClick={() => setSelectedLanguage('spanish')}
+                        >
+                          Español
+                        </Badge>
+                        <Badge variant="outline" className="cursor-pointer px-3 py-1 transition-all hover:scale-105">
+                          中文
+                        </Badge>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <Label className="text-sm font-medium text-foreground mb-3 block">Formatting Tools</Label>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" disabled className="h-8 w-8 p-0">
+                          H
+                        </Button>
+                        <Button variant="outline" size="sm" disabled className="h-8 w-8 p-0">
+                          Hi
+                        </Button>
+                        <Button variant="outline" size="sm" disabled className="h-8 px-2">
+                          fo()
+                        </Button>
+                        <Button variant="outline" size="sm" disabled className="h-8 px-2">
+                          ()
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="content-text" className="text-sm font-medium text-foreground">
+                        Content Text
+                      </Label>
+                      <Textarea
+                        id="content-text"
+                        placeholder="Enter your content text here..."
+                        className="min-h-32 resize-none"
+                        value={formData.content || ''}
+                        onChange={(e) => handleInputChange('content', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Content Preview */}
+              <Card className="shadow-sm border border-border/50">
+                <CardHeader className="bg-gradient-to-r from-muted/30 to-transparent">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg font-medium text-foreground flex items-center gap-2">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      Content Preview
+                    </CardTitle>
+                    <Button variant="ghost" size="sm" onClick={handleViewPlanEligibility} className="text-primary hover:bg-primary/10">
+                      <Eye size={16} className="mr-2" />
+                      View Plan Eligibility
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-foreground">Select Plan for Preview</Label>
+                      <Select defaultValue="">
+                        <SelectTrigger className="h-10">
+                          <SelectValue placeholder="Select Plan" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="plan1">Plan A - Individual</SelectItem>
+                          <SelectItem value="plan2">Plan B - Family</SelectItem>
+                          <SelectItem value="plan3">Plan C - Premium</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="p-4 bg-gradient-to-br from-muted/30 to-muted/10 rounded-lg border border-border/30 min-h-32">
+                      <p className="text-sm text-muted-foreground italic">
+                        Select a plan and click Apply to preview content with actual data values.
+                      </p>
+                      {formData.content && (
+                        <div className="mt-3 p-2 bg-card rounded border text-sm">
+                          {formData.content}
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" className="flex-1">
+                        Clear
+                      </Button>
+                      <Button variant="default" size="sm" className="flex-1">
+                        Apply
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
+          </TabsContent>
 
-            {/* Second Row */}
-            <div className="grid grid-cols-4 gap-4">
-              <div>
-                <Label htmlFor="plan-year" className="text-sm font-medium text-foreground">
-                  Plan Year *
-                </Label>
-                <Select value={formData.version || ''} onValueChange={(value) => handleInputChange('version', value)}>
-                  <SelectTrigger id="plan-year">
-                    <SelectValue placeholder="Select plan year" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="2025">2025</SelectItem>
-                    <SelectItem value="2026">2026</SelectItem>
-                    <SelectItem value="2027">2027</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="start-date" className="text-sm font-medium text-foreground">
-                  Content Effective Start Date *
-                </Label>
-                <DatePicker
-                  date={contentEffectiveStartDate}
-                  onDateChange={setContentEffectiveStartDate}
-                  placeholder="01-01-2025"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="end-date" className="text-sm font-medium text-foreground">
-                  Content Effective End Date *
-                </Label>
-                <DatePicker
-                  date={contentEffectiveEndDate}
-                  onDateChange={setContentEffectiveEndDate}
-                  placeholder="31-12-2025"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="description" className="text-sm font-medium text-foreground">
-                  Description *
-                </Label>
-                <Select value={formData.description || ''} onValueChange={(value) => handleInputChange('description', value)}>
-                  <SelectTrigger id="description">
-                    <SelectValue placeholder="Select description" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Headline">Headline</SelectItem>
-                    <SelectItem value="Body Text">Body Text</SelectItem>
-                    <SelectItem value="Footer">Footer</SelectItem>
-                    <SelectItem value="Disclaimer">Disclaimer</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {/* Third Row */}
-            <div className="grid grid-cols-1 gap-4">
-              <div>
-                <Label htmlFor="network-type" className="text-sm font-medium text-foreground">
-                  Network Type *
-                </Label>
-                <Select defaultValue="INN">
-                  <SelectTrigger id="network-type" className="w-64">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="INN">INN</SelectItem>
-                    <SelectItem value="OON">OON</SelectItem>
-                    <SelectItem value="Both">Both</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Rule Key Section */}
-        <Card className="mb-6">
-          <CardContent className="pt-6">
-            <div>
-              <Label htmlFor="rule-key" className="text-sm font-medium text-foreground">
-                Rule Key *
-              </Label>
-              <div className="flex items-center gap-2 mt-2">
-                <Input
-                  id="rule-key"
-                  value={formData.key || ''}
-                  onChange={(e) => handleInputChange('key', e.target.value)}
-                  placeholder="MedicareAcupuncturePackage="
-                  className="flex-1"
-                />
-                <Button variant="outline" size="sm" onClick={handleValidate}>
-                  Validate
-                </Button>
-                <Button variant="ghost" size="sm" className="text-primary">
-                  <MagicWand size={16} />
-                </Button>
-              </div>
-              <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                <span>Affected Individual Plans: 5</span>
-                <span>Affected Group Plans: 0</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Language and Content Section */}
-        <div className="grid grid-cols-2 gap-6">
-          {/* Content Template */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base font-medium text-foreground">Content Template</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-2 mb-4">
-                <Badge 
-                  variant={selectedLanguage === 'english' ? 'default' : 'secondary'} 
-                  className="cursor-pointer"
-                  onClick={() => setSelectedLanguage('english')}
-                >
-                  English
-                </Badge>
-                <Badge 
-                  variant={selectedLanguage === 'spanish' ? 'default' : 'secondary'} 
-                  className="cursor-pointer"
-                  onClick={() => setSelectedLanguage('spanish')}
-                >
-                  Español
-                </Badge>
-                <Badge variant="outline" className="cursor-pointer">
-                  中文
-                </Badge>
-              </div>
-              
-              <div className="flex gap-2 mb-4">
-                <Button variant="outline" size="sm" disabled>
-                  H
-                </Button>
-                <Button variant="outline" size="sm" disabled>
-                  Hi
-                </Button>
-                <Button variant="outline" size="sm" disabled>
-                  fo()
-                </Button>
-                <Button variant="outline" size="sm" disabled>
-                  ()
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Content Preview */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-base font-medium text-foreground">Content Preview</CardTitle>
-              <Button variant="ghost" size="sm" onClick={handleViewPlanEligibility}>
-                <Eye size={16} className="mr-2" />
-                View Plan Eligibility
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <Select defaultValue="">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Plan" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="plan1">Plan A</SelectItem>
-                  <SelectItem value="plan2">Plan B</SelectItem>
-                  <SelectItem value="plan3">Plan C</SelectItem>
-                </SelectContent>
-              </Select>
-              
-              <div className="mt-4 p-4 bg-muted rounded-md min-h-32">
-                <p className="text-sm text-muted-foreground">
-                  Select a plan and click Apply to preview content.
-                </p>
-              </div>
-              
-              <div className="flex gap-2 mt-4">
-                <Button variant="outline" size="sm">
-                  Clear
-                </Button>
-                <Button variant="outline" size="sm">
-                  Apply
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+          <TabsContent value="preview" className="space-y-6">
+            <Card className="shadow-sm border border-border/50">
+              <CardHeader className="bg-gradient-to-r from-muted/30 to-transparent">
+                <CardTitle className="text-lg font-medium text-foreground flex items-center gap-2">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  Rule Preview
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <h3 className="text-sm font-medium text-foreground">Rule Summary</h3>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Benefit Category:</span>
+                          <span className="font-medium">{formData.templateName || 'Not set'}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Benefit Type:</span>
+                          <span className="font-medium">{formData.benefitType || 'Not set'}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Business Area:</span>
+                          <span className="font-medium">{formData.businessArea || 'Not set'}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Effective Date:</span>
+                          <span className="font-medium">
+                            {contentEffectiveStartDate ? format(contentEffectiveStartDate, 'MMM dd, yyyy') : 'Not set'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <h3 className="text-sm font-medium text-foreground">Validation Status</h3>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-sm">
+                          <CheckCircle size={16} className="text-green-500" />
+                          <span>Required fields completed</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <CheckCircle size={16} className="text-green-500" />
+                          <span>Rule key format valid</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <Clock size={16} className="text-yellow-500" />
+                          <span>Content validation pending</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <Separator />
+                  
+                  <div>
+                    <h3 className="text-sm font-medium text-foreground mb-3">Generated Output Preview</h3>
+                    <div className="p-4 bg-gradient-to-br from-card to-muted/20 rounded-lg border min-h-24">
+                      <p className="text-sm text-muted-foreground">
+                        Rule output will appear here once all required fields are completed and validated.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

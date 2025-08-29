@@ -19,6 +19,7 @@ export interface RuleData {
   key?: string;
   rule?: string;
   ruleText?: string;
+  content?: string;
   isTabular?: boolean;
   english?: string;
   englishStatus?: string;
