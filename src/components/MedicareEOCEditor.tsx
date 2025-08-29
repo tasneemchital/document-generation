@@ -94,7 +94,7 @@ Medicare Advantage plan with prescription drugs
             Back
           </Button>
           <div>
-            <h1 className="text-xl font-semibold text-foreground">Master List</h1>
+            <h1 className="text-xl font-semibold text-foreground">Global Template</h1>
             <p className="text-sm text-muted-foreground">Medicare EOC 1/1/2026, Version No. 2026_1.01</p>
           </div>
         </div>

@@ -120,7 +120,7 @@ export function DocuGenPage({ onNavigate, onEditRule, onCreateRule, onUpdateRule
     });
   };
 
-  // If Medicare EOC is selected, show the Master List view
+  // If Medicare EOC is selected, show the Global Template view
   if (selectedConfig === 'medicare-eoc') {
     return <MedicareEOCMasterList onNavigate={onNavigate} />;
   }

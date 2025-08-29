@@ -23,7 +23,7 @@ interface LayoutProps {
 
 const navigationItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'master-list', label: 'Master List', icon: List },
+  { id: 'master-list', label: 'Global Template', icon: List },
   { id: 'digital-content-manager', label: 'Digital Content Manager', icon: File },
   { id: 'collaborate', label: 'Collaborate', icon: Users },
   { id: 'generate', label: 'Generate', icon: FileText },

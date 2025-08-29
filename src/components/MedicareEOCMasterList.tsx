@@ -40,7 +40,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
       {/* Header */}
       <div className="bg-card border-b border-border px-6 py-4">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl font-semibold text-foreground">Master List</h1>
+          <h1 className="text-xl font-semibold text-foreground">Global Template</h1>
           <Button variant="outline" size="sm">
             Get Help?
           </Button>

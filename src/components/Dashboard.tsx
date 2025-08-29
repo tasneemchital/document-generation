@@ -278,7 +278,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-foreground">Recent Documents</h2>
             <Button variant="outline" size="sm" onClick={() => onNavigate('master-list')}>
-              View All Documents
+              View Global Templates
             </Button>
           </div>
           <Card>
