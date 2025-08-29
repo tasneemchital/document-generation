@@ -1,16 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useKV } from '@github/spark/hooks';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Toaster } from '@/components/ui/sonner';
 import { RuleGrid } from '@/components/RuleGrid';
 import { ActivityLog } from '@/components/ActivityLog';
 import { MedicareEOCMasterList } from '@/components/MedicareEOCMasterList';
+import { RuleEditDialog } from '@/components/RuleEditDialog';
 import { RuleData } from '@/lib/types';
 import { generateMockRuleData } from '@/lib/mockRuleData';
 
 interface DocuGenPageProps {
   onNavigate: (page: string) => void;
-  onEditRule: (rule: RuleData) => void;
+  onEditRule?: (rule: RuleData) => void;
   onUpdateRule?: (rule: RuleData) => void;
 }
 
@@ -19,6 +20,15 @@ export function DocuGenPage({ onNavigate, onEditRule, onUpdateRule }: DocuGenPag
   const [selectedConfig, setSelectedConfig] = useKV<string>('selected-config', 'medicare-anoc');
   const [selectedMedicareType, setSelectedMedicareType] = useKV<string>('selected-medicare-type', 'medicare-anoc');
   const [activityLogCollapsed, setActivityLogCollapsed] = useKV<boolean>('activity-log-collapsed', false);
+  
+  // State for edit dialog
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingRule, setEditingRule] = useState<RuleData | null>(null);
+
+  const handleEditRule = (rule: RuleData) => {
+    setEditingRule(rule);
+    setEditDialogOpen(true);
+  };
 
   const handleRuleUpdate = (updatedRule: RuleData) => {
     setRules(current => {
@@ -114,7 +124,7 @@ export function DocuGenPage({ onNavigate, onEditRule, onUpdateRule }: DocuGenPag
           rules={rules} 
           onRuleUpdate={handleRuleUpdate}
           onRuleCreate={handleRuleCreate}
-          onEditRule={onEditRule}
+          onEditRule={handleEditRule}
         />
       </div>
 
@@ -125,6 +135,14 @@ export function DocuGenPage({ onNavigate, onEditRule, onUpdateRule }: DocuGenPag
           onToggle={() => setActivityLogCollapsed(!activityLogCollapsed)}
         />
       </div>
+
+      {/* Edit Rule Dialog */}
+      <RuleEditDialog
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        rule={editingRule}
+        onSave={handleRuleUpdate}
+      />
 
       <Toaster />
     </div>
