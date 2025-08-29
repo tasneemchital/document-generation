@@ -8,7 +8,8 @@ import {
   Settings, 
   Palette,
   CaretLeft,
-  CaretRight
+  CaretRight,
+  File
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -23,6 +24,7 @@ interface LayoutProps {
 const navigationItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'master-list', label: 'Master List', icon: List },
+  { id: 'digital-content-manager', label: 'Digital Content Manager', icon: File },
   { id: 'collaborate', label: 'Collaborate', icon: Users },
   { id: 'generate', label: 'Generate', icon: FileText },
   { id: 'integrate', label: 'Integrate', icon: Share },
