@@ -2,6 +2,7 @@ import { useKV } from '@github/spark/hooks';
 import { Layout } from '@/components/Layout';
 import { Dashboard } from '@/components/Dashboard';
 import { DocuGenPage } from '@/components/DocuGenPage';
+import { DigitalContentManager } from '@/components/DigitalContentManager';
 
 function App() {
   const [currentPage, setCurrentPage] = useKV<string>('current-page', 'dashboard');
@@ -18,7 +19,7 @@ function App() {
       case 'manage':
         return <DocuGenPage onNavigate={handleNavigate} />;
       case 'digital-content-manager':
-        return <DocuGenPage onNavigate={handleNavigate} />;
+        return <DigitalContentManager onNavigate={handleNavigate} />;
       case 'collaborate':
         return <PlaceholderPage title="Collaborate" description="Collaborate seamlessly with multiple stakeholders via automated workflows, version control and transparent audit" />;
       case 'generate':
