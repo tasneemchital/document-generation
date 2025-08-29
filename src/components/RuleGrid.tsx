@@ -75,7 +75,8 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     english: '',
     englishStatus: [] as string[],
     spanish: '',
-    spanishStatus: [] as string[]
+    spanishStatus: [] as string[],
+    published: 'all' as 'all' | 'true' | 'false'
   });
 
   // Get unique values for each column
@@ -136,6 +137,11 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
       if (columnFilters.isTabular !== 'all') {
         const expectedValue = columnFilters.isTabular === 'true';
         if (rule.isTabular !== expectedValue) return false;
+      }
+
+      if (columnFilters.published !== 'all') {
+        const expectedValue = columnFilters.published === 'true';
+        if (rule.published !== expectedValue) return false;
       }
 
       return true;
@@ -266,6 +272,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
         englishStatus: 'Draft',
         spanish: '',
         spanishStatus: 'Draft',
+        published: false,
         createdAt: currentDate,
         lastModified: currentDate
       };
@@ -549,7 +556,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
 
   const renderCell = (rule: RuleData, field: keyof RuleData, content: string, className: string = '') => {
     const isEditing = editingRule?.id === rule.id && editingRule?.field === field;
-    const isEditable = !['createdAt', 'lastModified', 'id', 'ruleId', 'cmsRegulated', 'isTabular'].includes(field);
+    const isEditable = !['createdAt', 'lastModified', 'id', 'ruleId', 'cmsRegulated', 'isTabular', 'published'].includes(field);
     const isRichTextField = field === 'english' || field === 'spanish';
     const isDateField = field === 'effectiveDate';
     
@@ -700,7 +707,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
 
         {/* Full Height Table Section with Maximum Scrolling Area */}
         <div className="flex-1 overflow-auto">
-          <div className="min-w-[4200px] h-full">
+          <div className="min-w-[4350px] h-full">
             {/* Table Header */}
             <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500 sticky top-0 z-10">
               <div className="w-12 px-3 py-2 border-r border-gray-200">
@@ -1002,7 +1009,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onTextFilter={(value) => handleColumnFilter('spanish', value)}
                 />
               </div>
-              <div className="w-32 px-3 py-2 flex items-center justify-between">
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span>Status</span>
                   <ChevronDown size={14} className="text-gray-400" />
@@ -1013,6 +1020,21 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   values={uniqueValues.spanishStatus}
                   selectedValues={columnFilters.spanishStatus}
                   onFilter={(values) => handleColumnFilter('spanishStatus', values)}
+                />
+              </div>
+              <div className="w-32 px-3 py-2 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>Published</span>
+                </div>
+                <ColumnFilter
+                  columnKey="published"
+                  columnTitle="Published"
+                  values={[]}
+                  selectedValues={[]}
+                  onFilter={() => {}}
+                  filterType="boolean"
+                  booleanValue={columnFilters.published}
+                  onBooleanFilter={(value) => handleColumnFilter('published', value)}
                 />
               </div>
             </div>
@@ -1115,8 +1137,35 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   
                   {renderCell(rule, 'spanish', rule.spanish || 'N/A', 'w-64')}
                   
-                  <div className="w-32 px-3 py-2">
+                  <div className="w-32 px-3 py-2 border-r border-gray-200">
                     {getStatusBadge(rule.spanishStatus)}
+                  </div>
+                  
+                  <div className="w-32 px-3 py-2 flex items-center justify-center">
+                    <Checkbox 
+                      checked={rule.published || false}
+                      onCheckedChange={(checked) => {
+                        const updatedRule = {
+                          ...rule,
+                          published: checked as boolean,
+                          lastModified: new Date()
+                        };
+                        onRuleUpdate(updatedRule);
+                        
+                        // Log the checkbox change activity
+                        if ((window as any).addActivityLog) {
+                          (window as any).addActivityLog({
+                            user: 'Current User',
+                            action: 'edit',
+                            target: `Rule ${rule.ruleId || 'N/A'} - Published`,
+                            details: `${checked ? 'Published' : 'Unpublished'} rule`,
+                            ruleId: rule.ruleId,
+                            oldValue: rule.published ? 'Yes' : 'No',
+                            newValue: checked ? 'Yes' : 'No',
+                          });
+                        }
+                      }}
+                    />
                   </div>
                 </div>
                 ))
@@ -1275,6 +1324,10 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   <div>
                     <label className="text-sm font-semibold text-gray-500">CMS Regulated</label>
                     <p className="text-sm">{previewRule.cmsRegulated ? 'Yes' : 'No'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-gray-500">Published</label>
+                    <p className="text-sm">{previewRule.published ? 'Yes' : 'No'}</p>
                   </div>
                   <div>
                     <label className="text-sm font-semibold text-gray-500">Chapter</label>

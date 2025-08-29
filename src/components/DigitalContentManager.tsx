@@ -152,7 +152,8 @@ export function DigitalContentManager({ onNavigate }: DigitalContentManagerProps
             status: 'Draft',
             category: 'Medicare',
             language: "English",
-            repeaterType: "ANOC-EOC"
+            repeaterType: "ANOC-EOC",
+            published: false
           };
 
           setRules(current => [newRule, ...current]);

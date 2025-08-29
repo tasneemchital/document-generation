@@ -157,6 +157,7 @@ export function generateMockRuleData(): Promise<RuleData[]> {
           englishStatus: statusOptions[Math.floor(Math.random() * statusOptions.length)],
           spanish: sampleSpanishText[Math.floor(Math.random() * sampleSpanishText.length)],
           spanishStatus: statusOptions[Math.floor(Math.random() * statusOptions.length)],
+          published: Math.random() > 0.5,
           createdAt: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000),
           lastModified: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000)
         });
@@ -197,6 +198,7 @@ export function generateMockRuleData(): Promise<RuleData[]> {
           englishStatus: statusOptions[Math.floor(Math.random() * statusOptions.length)],
           spanish: sampleSpanishText[Math.floor(Math.random() * sampleSpanishText.length)],
           spanishStatus: statusOptions[Math.floor(Math.random() * statusOptions.length)],
+          published: Math.random() > 0.5,
           createdAt: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000),
           lastModified: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000)
         });
@@ -228,6 +230,7 @@ export function generateMockRuleData(): Promise<RuleData[]> {
         englishStatus: 'Draft',
         spanish: 'Este es el contenido de la regla 175 en español',
         spanishStatus: 'Draft',
+        published: false,
         createdAt: new Date(),
         lastModified: new Date()
       });

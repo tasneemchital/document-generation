@@ -25,6 +25,7 @@ export interface RuleData {
   englishStatus?: string;
   spanish?: string;
   spanishStatus?: string;
+  published?: boolean;
   status?: string;
   tags?: string[];
   conditions?: any[];

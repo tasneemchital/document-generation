@@ -139,6 +139,7 @@ export function RuleDetailsPage({ onNavigate, rule, mode = 'create' }: RuleDetai
         englishStatus: 'Draft',
         spanish: '',
         spanishStatus: 'Draft',
+        published: false,
         createdAt: new Date(),
         lastModified: new Date()
       };
