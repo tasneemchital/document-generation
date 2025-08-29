@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { ArrowLeft, Eye, MagicWand } from '@phosphor-icons/react';
-import { format } from 'date-fns';
+import { format, parse, isValid } from 'date-fns';
 import { toast } from 'sonner';
 
 interface RuleEditPageProps {
@@ -21,8 +21,29 @@ interface RuleEditPageProps {
 
 export function RuleEditPage({ rule, onSave, onCancel }: RuleEditPageProps) {
   const [formData, setFormData] = useState<RuleData>(rule);
+  
+  // Parse the effective date more robustly
+  const parseEffectiveDate = (dateString: string): Date => {
+    if (!dateString) return new Date('2025-01-01');
+    
+    try {
+      // Try to parse as MM/dd/yyyy first
+      let date = parse(dateString, 'MM/dd/yyyy', new Date());
+      if (isValid(date)) return date;
+      
+      // Try as regular Date constructor
+      date = new Date(dateString);
+      if (isValid(date)) return date;
+      
+      // Default fallback
+      return new Date('2025-01-01');
+    } catch {
+      return new Date('2025-01-01');
+    }
+  };
+  
   const [contentEffectiveStartDate, setContentEffectiveStartDate] = useState<Date | undefined>(
-    rule.effectiveDate ? new Date(rule.effectiveDate) : new Date('2025-01-01')
+    parseEffectiveDate(rule.effectiveDate || '')
   );
   const [contentEffectiveEndDate, setContentEffectiveEndDate] = useState<Date | undefined>(
     new Date('2025-12-31')
@@ -39,8 +60,8 @@ export function RuleEditPage({ rule, onSave, onCancel }: RuleEditPageProps) {
   const handleSave = () => {
     const updatedRule = {
       ...formData,
-      effectiveDate: contentEffectiveStartDate ? format(contentEffectiveStartDate, 'MM-dd-yyyy') : formData.effectiveDate,
-      lastModified: new Date().toISOString(),
+      effectiveDate: contentEffectiveStartDate ? format(contentEffectiveStartDate, 'MM/dd/yyyy') : formData.effectiveDate,
+      lastModified: new Date(),
       lastModifiedBy: 'Current User'
     };
     

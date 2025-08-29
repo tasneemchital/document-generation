@@ -27,7 +27,7 @@ export interface RuleData {
   status?: string;
   tags?: string[];
   conditions?: any[];
-  lastModified?: string;
+  lastModified?: Date;
   lastModifiedBy?: string;
   createdAt?: Date;
 }

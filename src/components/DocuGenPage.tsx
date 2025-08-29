@@ -20,23 +20,6 @@ export function DocuGenPage({ onNavigate, onEditRule, onUpdateRule }: DocuGenPag
   const [selectedMedicareType, setSelectedMedicareType] = useKV<string>('selected-medicare-type', 'medicare-anoc');
   const [activityLogCollapsed, setActivityLogCollapsed] = useKV<boolean>('activity-log-collapsed', false);
 
-  // Export the update function for use by other components
-  useEffect(() => {
-    (window as any).updateRule = handleRuleUpdate;
-    return () => {
-      delete (window as any).updateRule;
-    };
-  }, [handleRuleUpdate]);
-
-  useEffect(() => {
-    // Load mock data if no rules exist - ensure rules is an array
-    if (!Array.isArray(rules) || rules.length === 0) {
-      generateMockRuleData().then(mockRules => {
-        setRules(mockRules);
-      });
-    }
-  }, [rules, setRules]);
-
   const handleRuleUpdate = (updatedRule: RuleData) => {
     setRules(current => {
       if (!Array.isArray(current)) {
@@ -59,6 +42,23 @@ export function DocuGenPage({ onNavigate, onEditRule, onUpdateRule }: DocuGenPag
       });
     }
   };
+
+  // Export the update function for use by other components
+  useEffect(() => {
+    (window as any).updateRule = handleRuleUpdate;
+    return () => {
+      delete (window as any).updateRule;
+    };
+  }, [handleRuleUpdate]);
+
+  useEffect(() => {
+    // Load mock data if no rules exist - ensure rules is an array
+    if (!Array.isArray(rules) || rules.length === 0) {
+      generateMockRuleData().then(mockRules => {
+        setRules(mockRules);
+      });
+    }
+  }, [rules, setRules]);
 
   const handleRuleCreate = (newRule: RuleData) => {
     setRules(current => {

@@ -480,7 +480,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onEditRule }: Rule
     const selectedRuleId = Array.from(selectedRows)[0];
     const selectedRule = safeRules.find(rule => rule.id === selectedRuleId);
     
-    if (selectedRule) {
+    if (selectedRule && typeof onEditRule === 'function') {
       // Navigate to the edit page instead of opening the rich text editor
       onEditRule(selectedRule);
       
@@ -494,6 +494,9 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onEditRule }: Rule
           ruleId: selectedRule.ruleId,
         });
       }
+    } else if (!onEditRule) {
+      console.error('onEditRule function is not provided');
+      toast.error('Edit function is not available');
     }
   };
 
