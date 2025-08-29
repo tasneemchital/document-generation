@@ -32,9 +32,10 @@ interface RuleGridProps {
   onRuleUpdate: (updatedRule: RuleData) => void;
   onRuleCreate: (newRule: RuleData) => void;
   onEditRule: (rule: RuleData) => void;
+  onCreateRule?: () => void;
 }
 
-export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onEditRule }: RuleGridProps) {
+export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onEditRule, onCreateRule }: RuleGridProps) {
   // Ensure rules is always an array to prevent .map errors
   const safeRules = Array.isArray(rules) ? rules : [];
   
@@ -229,54 +230,60 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onEditRule }: Rule
 
   // Handle new rule creation
   const handleCreateNewRule = () => {
-    const newRuleId = generateUniqueRuleId();
-    const currentDate = new Date();
-    // Default effective date to 1/1/2025
-    const defaultEffectiveDate = new Date(2025, 0, 1); // January 1, 2025
-    
-    const newRule: RuleData = {
-      id: `rule-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      ruleId: newRuleId,
-      effectiveDate: formatDateForStorage(defaultEffectiveDate),
-      version: '1.0',
-      benefitType: '',
-      businessArea: '',
-      subBusinessArea: '',
-      description: '',
-      templateName: '',
-      serviceId: '',
-      cmsRegulated: false,
-      chapterName: '',
-      sectionName: '',
-      subsectionName: '',
-      serviceGroup: '',
-      sourceMapping: '',
-      tiers: '',
-      key: '',
-      rule: '',
-      isTabular: false,
-      english: '',
-      englishStatus: 'Draft',
-      spanish: '',
-      spanishStatus: 'Draft',
-      createdAt: currentDate,
-      lastModified: currentDate
-    };
-
-    onRuleCreate(newRule);
-
-    // Log the new rule creation activity
-    if ((window as any).addActivityLog) {
-      (window as any).addActivityLog({
-        user: 'Current User',
-        action: 'create',
-        target: `Rule ${newRuleId}`,
-        details: `Created new rule with auto-generated ID: ${newRuleId}`,
+    if (onCreateRule) {
+      // Navigate to the new rule details page
+      onCreateRule();
+    } else {
+      // Fallback to old behavior if onCreateRule is not provided
+      const newRuleId = generateUniqueRuleId();
+      const currentDate = new Date();
+      // Default effective date to 1/1/2025
+      const defaultEffectiveDate = new Date(2025, 0, 1); // January 1, 2025
+      
+      const newRule: RuleData = {
+        id: `rule-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         ruleId: newRuleId,
-      });
-    }
+        effectiveDate: formatDateForStorage(defaultEffectiveDate),
+        version: '1.0',
+        benefitType: '',
+        businessArea: '',
+        subBusinessArea: '',
+        description: '',
+        templateName: '',
+        serviceId: '',
+        cmsRegulated: false,
+        chapterName: '',
+        sectionName: '',
+        subsectionName: '',
+        serviceGroup: '',
+        sourceMapping: '',
+        tiers: '',
+        key: '',
+        rule: '',
+        isTabular: false,
+        english: '',
+        englishStatus: 'Draft',
+        spanish: '',
+        spanishStatus: 'Draft',
+        createdAt: currentDate,
+        lastModified: currentDate
+      };
 
-    toast.success(`New rule created with ID: ${newRuleId}`);
+      onRuleCreate(newRule);
+
+      // Log the new rule creation activity
+      if ((window as any).addActivityLog) {
+        (window as any).addActivityLog({
+          user: 'Current User',
+          action: 'create',
+          target: `Rule ${newRuleId}`,
+          details: `Created new rule with auto-generated ID: ${newRuleId}`,
+          ruleId: newRuleId,
+        });
+      }
+
+      toast.success(`New rule created with ID: ${newRuleId}`);
+    }
   };
 
   // Pagination handlers

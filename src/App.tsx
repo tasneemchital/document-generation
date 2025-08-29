@@ -3,13 +3,28 @@ import { Layout } from '@/components/Layout';
 import { Dashboard } from '@/components/Dashboard';
 import { DocuGenPage } from '@/components/DocuGenPage';
 import { DigitalContentManager } from '@/components/DigitalContentManager';
+import { RuleDetailsPage } from '@/components/RuleDetailsPage';
 import { RuleData } from '@/lib/types';
 
 function App() {
   const [currentPage, setCurrentPage] = useKV<string>('current-page', 'dashboard');
+  const [editingRule, setEditingRule] = useKV<RuleData | null>('editing-rule', null);
 
   const handleNavigate = (page: string) => {
     setCurrentPage(page);
+    if (page !== 'rule-details' && page !== 'edit-rule') {
+      setEditingRule(null);
+    }
+  };
+
+  const handleEditRule = (rule: RuleData) => {
+    setEditingRule(rule);
+    setCurrentPage('edit-rule');
+  };
+
+  const handleCreateRule = () => {
+    setEditingRule(null);
+    setCurrentPage('rule-details');
   };
 
   const renderCurrentPage = () => {
@@ -18,7 +33,11 @@ function App() {
         return <Dashboard onNavigate={handleNavigate} />;
       case 'master-list':
       case 'manage':
-        return <DocuGenPage onNavigate={handleNavigate} />;
+        return <DocuGenPage onNavigate={handleNavigate} onEditRule={handleEditRule} onCreateRule={handleCreateRule} />;
+      case 'rule-details':
+        return <RuleDetailsPage onNavigate={handleNavigate} mode="create" />;
+      case 'edit-rule':
+        return <RuleDetailsPage onNavigate={handleNavigate} rule={editingRule} mode="edit" />;
       case 'digital-content-manager':
         return <DigitalContentManager onNavigate={handleNavigate} />;
       case 'collaborate':

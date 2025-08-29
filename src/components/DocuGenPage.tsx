@@ -12,10 +12,11 @@ import { generateMockRuleData } from '@/lib/mockRuleData';
 interface DocuGenPageProps {
   onNavigate: (page: string) => void;
   onEditRule?: (rule: RuleData) => void;
+  onCreateRule?: () => void;
   onUpdateRule?: (rule: RuleData) => void;
 }
 
-export function DocuGenPage({ onNavigate, onEditRule, onUpdateRule }: DocuGenPageProps) {
+export function DocuGenPage({ onNavigate, onEditRule, onCreateRule, onUpdateRule }: DocuGenPageProps) {
   const [rules, setRules] = useKV<RuleData[]>('rule-data', []);
   const [selectedConfig, setSelectedConfig] = useKV<string>('selected-config', 'medicare-anoc');
   const [selectedMedicareType, setSelectedMedicareType] = useKV<string>('selected-medicare-type', 'medicare-anoc');
@@ -125,6 +126,7 @@ export function DocuGenPage({ onNavigate, onEditRule, onUpdateRule }: DocuGenPag
           onRuleUpdate={handleRuleUpdate}
           onRuleCreate={handleRuleCreate}
           onEditRule={handleEditRule}
+          onCreateRule={onCreateRule}
         />
       </div>
 
