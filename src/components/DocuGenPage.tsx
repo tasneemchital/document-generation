@@ -15,14 +15,14 @@ interface DocuGenPageProps {
 
 export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
   const [rules, setRules] = useKV<RuleData[]>('rule-data', []);
-  const [selectedConfig, setSelectedConfig] = useKV<string>('selected-config', 'digital-content-manager');
+  const [selectedConfig, setSelectedConfig] = useKV<string>('selected-config', 'digital-content-manager-anoc-eoc');
   const [selectedMedicareType, setSelectedMedicareType] = useKV<string>('selected-medicare-type', 'medicare-anoc');
   const [activityLogCollapsed, setActivityLogCollapsed] = useKV<boolean>('activity-log-collapsed', false);
   const [langRepeaterDataLoaded, setLangRepeaterDataLoaded] = useKV<boolean>('lang-repeater-data-loaded', false);
 
   useEffect(() => {
     // Navigate to Digital Content Manager when selected
-    if (selectedConfig === 'digital-content-manager') {
+    if (selectedConfig === 'digital-content-manager' || selectedConfig === 'digital-content-manager-anoc-eoc') {
       onNavigate('digital-content-manager');
     }
   }, [selectedConfig, onNavigate]);
@@ -38,7 +38,7 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
 
   // Auto-load Language Repeater 2 data when Digital Content Manager is selected
   useEffect(() => {
-    if (selectedConfig === 'digital-content-manager' && !langRepeaterDataLoaded && Array.isArray(rules)) {
+    if ((selectedConfig === 'digital-content-manager' || selectedConfig === 'digital-content-manager-anoc-eoc') && !langRepeaterDataLoaded && Array.isArray(rules)) {
       loadLanguageRepeaterData();
     }
   }, [selectedConfig, langRepeaterDataLoaded, rules]);
@@ -289,7 +289,8 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
                   <SelectValue placeholder="Select configuration" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="digital-content-manager">Digital Content Manager - ANOC-EOC</SelectItem>
+                  <SelectItem value="digital-content-manager">Digital Content Manager</SelectItem>
+                  <SelectItem value="digital-content-manager-anoc-eoc">Digital Content Manager - ANOC-EOC</SelectItem>
                   <SelectItem value="medicare-anoc">Medicare ANOC</SelectItem>
                   <SelectItem value="medicare-eoc">Medicare EOC</SelectItem>
                 </SelectContent>
