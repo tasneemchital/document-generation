@@ -31,9 +31,10 @@ interface RuleGridProps {
   rules: RuleData[];
   onRuleUpdate: (updatedRule: RuleData) => void;
   onRuleCreate: (newRule: RuleData) => void;
+  onEditRule: (rule: RuleData) => void;
 }
 
-export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
+export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onEditRule }: RuleGridProps) {
   // Ensure rules is always an array to prevent .map errors
   const safeRules = Array.isArray(rules) ? rules : [];
   
@@ -480,8 +481,8 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
     const selectedRule = safeRules.find(rule => rule.id === selectedRuleId);
     
     if (selectedRule) {
-      setCurrentEditingRule(selectedRule);
-      setRichTextEditorOpen(true);
+      // Navigate to the edit page instead of opening the rich text editor
+      onEditRule(selectedRule);
       
       // Log the edit action activity
       if ((window as any).addActivityLog) {

@@ -10,13 +10,23 @@ import { generateMockRuleData } from '@/lib/mockRuleData';
 
 interface DocuGenPageProps {
   onNavigate: (page: string) => void;
+  onEditRule: (rule: RuleData) => void;
+  onUpdateRule?: (rule: RuleData) => void;
 }
 
-export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
+export function DocuGenPage({ onNavigate, onEditRule, onUpdateRule }: DocuGenPageProps) {
   const [rules, setRules] = useKV<RuleData[]>('rule-data', []);
   const [selectedConfig, setSelectedConfig] = useKV<string>('selected-config', 'medicare-anoc');
   const [selectedMedicareType, setSelectedMedicareType] = useKV<string>('selected-medicare-type', 'medicare-anoc');
   const [activityLogCollapsed, setActivityLogCollapsed] = useKV<boolean>('activity-log-collapsed', false);
+
+  // Export the update function for use by other components
+  useEffect(() => {
+    (window as any).updateRule = handleRuleUpdate;
+    return () => {
+      delete (window as any).updateRule;
+    };
+  }, [handleRuleUpdate]);
 
   useEffect(() => {
     // Load mock data if no rules exist - ensure rules is an array
@@ -104,6 +114,7 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
           rules={rules} 
           onRuleUpdate={handleRuleUpdate}
           onRuleCreate={handleRuleCreate}
+          onEditRule={onEditRule}
         />
       </div>
 

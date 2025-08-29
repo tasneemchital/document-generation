@@ -24,12 +24,13 @@
 
 **User Context**: Compliance officers, legal teams, and content managers who need to review, edit, and maintain large sets of organizational rules across multiple languages.
 
-**Critical Path**: View rules in structured grid → Search/filter to find specific rules → Click to edit in-place → Save changes → Preview full rule details
+**Critical Path**: View rules in structured grid → Search/filter to find specific rules → Select rule and click Edit → Open detailed rule editor → Make comprehensive changes → Save and return to grid
 
 **Key Moments**: 
 1. First loading the grid with clear, scannable rule data
-2. Clicking on a cell to edit with immediate inline editing interface
-3. Saving changes with confirmation feedback
+2. Selecting a rule and opening the detailed edit interface  
+3. Working through the structured form with proper validation and guidance
+4. Saving changes with confirmation feedback and returning to the updated grid
 
 ## Essential Features
 
@@ -38,9 +39,14 @@
 - **Why it matters**: Provides systematic overview of all rules with clear hierarchical structure
 - **Success criteria**: Users can scan hundreds of rules efficiently and understand document organization at a glance
 
+### Rule Detail Editor
+- **What it does**: Provides a comprehensive form-based interface for editing complete rule details including benefit categories, business areas, dates, and multilingual content
+- **Why it matters**: Enables thorough rule configuration beyond simple text editing, supporting complex business requirements
+- **Success criteria**: Users can update all rule properties in a structured, guided interface with proper validation and preview capabilities
+
 ### Inline Editing
-- **What it does**: Allows users to click on any editable cell to modify content directly in the grid
-- **Why it matters**: Eliminates need for separate edit forms, enabling rapid content updates
+- **What it does**: Allows users to click on editable cells for quick text modifications directly in the grid
+- **Why it matters**: Enables rapid content updates for simple changes without leaving the grid view
 - **Success criteria**: Editing feels immediate and intuitive, with clear save/cancel options
 
 ### Search and Filtering
