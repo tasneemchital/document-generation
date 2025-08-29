@@ -22,7 +22,8 @@ import {
   CaretRight,
   CaretDoubleLeft,
   CaretDoubleRight,
-  PencilSimple
+  PencilSimple,
+  Eye
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
@@ -463,6 +464,69 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
     setEditValue('');
   };
 
+  // Handle bulk edit action
+  const handleBulkEdit = () => {
+    if (selectedRows.size === 0) {
+      toast.error('Please select at least one row to edit');
+      return;
+    }
+    
+    if (selectedRows.size > 1) {
+      toast.error('Please select only one row to edit');
+      return;
+    }
+    
+    const selectedRuleId = Array.from(selectedRows)[0];
+    const selectedRule = safeRules.find(rule => rule.id === selectedRuleId);
+    
+    if (selectedRule) {
+      setCurrentEditingRule(selectedRule);
+      setRichTextEditorOpen(true);
+      
+      // Log the edit action activity
+      if ((window as any).addActivityLog) {
+        (window as any).addActivityLog({
+          user: 'Current User',
+          action: 'edit',
+          target: `Rule ${selectedRule.ruleId || 'N/A'}`,
+          details: `Started editing rule via Edit button`,
+          ruleId: selectedRule.ruleId,
+        });
+      }
+    }
+  };
+
+  // Handle bulk preview action
+  const handleBulkPreview = () => {
+    if (selectedRows.size === 0) {
+      toast.error('Please select at least one row to preview');
+      return;
+    }
+    
+    if (selectedRows.size > 1) {
+      toast.error('Please select only one row to preview');
+      return;
+    }
+    
+    const selectedRuleId = Array.from(selectedRows)[0];
+    const selectedRule = safeRules.find(rule => rule.id === selectedRuleId);
+    
+    if (selectedRule) {
+      setPreviewRule(selectedRule);
+      
+      // Log the preview action activity
+      if ((window as any).addActivityLog) {
+        (window as any).addActivityLog({
+          user: 'Current User',
+          action: 'view',
+          target: `Rule ${selectedRule.ruleId || 'N/A'}`,
+          details: `Opened rule preview via Preview button`,
+          ruleId: selectedRule.ruleId,
+        });
+      }
+    }
+  };
+
   // Helper function to strip HTML tags for display in grid
   const stripHtmlTags = (html: string): string => {
     if (!html) return '';
@@ -587,6 +651,26 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate }: RuleGridProps) {
               <h2 className="text-base font-semibold text-gray-900">Digital Content Manager - ANOC-EOC</h2>
             </div>
             <div className="flex items-center gap-3">
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="flex items-center gap-2 border-blue-600 text-blue-600 hover:bg-blue-50"
+                onClick={handleBulkEdit}
+                disabled={selectedRows.size !== 1}
+              >
+                <Edit size={14} />
+                Edit
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="flex items-center gap-2 border-gray-600 text-gray-600 hover:bg-gray-50"
+                onClick={handleBulkPreview}
+                disabled={selectedRows.size !== 1}
+              >
+                <Eye size={14} />
+                Preview
+              </Button>
               <Button 
                 size="sm" 
                 className="flex items-center gap-2 bg-purple-600 text-white hover:bg-purple-700"
