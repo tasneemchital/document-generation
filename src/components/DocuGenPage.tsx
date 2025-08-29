@@ -67,38 +67,7 @@ export function DocuGenPage({ onNavigate, onEditRule, onCreateRule, onUpdateRule
     // Load mock data if no rules exist - ensure rules is an array
     if (!Array.isArray(rules) || rules.length === 0) {
       generateMockRuleData().then(mockRules => {
-        // Check if any rule with ID "175" exists and remove it immediately
-        const filteredRules = mockRules.filter(rule => 
-          rule.ruleId !== '175' && 
-          rule.ruleId !== 'R0175' && 
-          rule.ruleId !== 'RULE-175' &&
-          !rule.ruleId?.includes('175')
-        );
-        
-        // If we filtered out any rules, show deletion message
-        if (filteredRules.length < mockRules.length) {
-          const deletedRules = mockRules.filter(rule => 
-            rule.ruleId === '175' || 
-            rule.ruleId === 'R0175' || 
-            rule.ruleId === 'RULE-175' ||
-            rule.ruleId?.includes('175')
-          );
-          
-          deletedRules.forEach(rule => {
-            if ((window as any).addActivityLog) {
-              (window as any).addActivityLog({
-                user: 'Current User',
-                action: 'delete',
-                target: `Rule ${rule.ruleId}`,
-                details: `Auto-deleted rule: ${rule.templateName || 'Unknown Template'}`,
-                ruleId: rule.ruleId,
-              });
-            }
-            toast.success(`Successfully deleted Rule ${rule.ruleId}`);
-          });
-        }
-        
-        setRules(filteredRules);
+        setRules(mockRules);
       });
     }
   }, [rules, setRules]);
