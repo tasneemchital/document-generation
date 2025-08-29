@@ -58,6 +58,11 @@
 - **Why it matters**: Provides full context when detailed review is needed
 - **Success criteria**: All rule information is clearly presented with proper formatting
 
+### Language Repeater Data Upload
+- **What it does**: Uploads and processes data from Language_Configuration_Repeater_2.pdf to automatically create or update rules in the Digital Content Manager
+- **Why it matters**: Automates data entry from configuration documents, reducing manual work and improving accuracy
+- **Success criteria**: Users can upload PDF data and see immediate integration with existing rules based on title matching
+
 ## Design Direction
 
 ### Visual Tone & Identity

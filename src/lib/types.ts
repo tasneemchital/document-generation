@@ -7,24 +7,29 @@ export interface RuleData {
   businessArea: string;
   subBusinessArea: string;
   description: string;
-  templateName: string;
-  serviceId: string;
-  cmsRegulated: boolean;
-  chapterName: string;
-  sectionName: string;
-  subsectionName: string;
-  serviceGroup: string;
-  sourceMapping: string;
-  tiers: string;
-  key: string;
-  rule: string;
-  isTabular: boolean;
-  english: string;
-  englishStatus: string;
-  spanish: string;
-  spanishStatus: string;
-  createdAt: Date;
-  lastModified: Date;
+  templateName?: string;
+  serviceId?: string;
+  cmsRegulated?: boolean;
+  chapterName?: string;
+  sectionName?: string;
+  subsectionName?: string;
+  serviceGroup?: string;
+  sourceMapping?: string;
+  tiers?: string;
+  key?: string;
+  rule?: string;
+  ruleText?: string;
+  isTabular?: boolean;
+  english?: string;
+  englishStatus?: string;
+  spanish?: string;
+  spanishStatus?: string;
+  status?: string;
+  tags?: string[];
+  conditions?: any[];
+  lastModified?: string;
+  lastModifiedBy?: string;
+  createdAt?: Date;
 }
 
 export interface RuleFilter {

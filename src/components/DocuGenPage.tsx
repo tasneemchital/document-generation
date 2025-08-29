@@ -1,12 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useKV } from '@github/spark/hooks';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/sonner';
 import { RuleGrid } from '@/components/RuleGrid';
 import { ActivityLog } from '@/components/ActivityLog';
 import { MedicareEOCMasterList } from '@/components/MedicareEOCMasterList';
+import { LanguageRepeaterUploader } from '@/components/LanguageRepeaterUploader';
 import { RuleData } from '@/lib/types';
 import { generateMockRuleData } from '@/lib/mockRuleData';
+import { Upload } from '@phosphor-icons/react';
 
 interface DocuGenPageProps {
   onNavigate: (page: string) => void;
@@ -17,6 +20,7 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
   const [selectedConfig, setSelectedConfig] = useKV<string>('selected-config', 'digital-content-manager');
   const [selectedMedicareType, setSelectedMedicareType] = useKV<string>('selected-medicare-type', 'medicare-anoc');
   const [activityLogCollapsed, setActivityLogCollapsed] = useKV<boolean>('activity-log-collapsed', false);
+  const [showUploader, setShowUploader] = useState(false);
 
   useEffect(() => {
     // Navigate to Digital Content Manager when selected
@@ -100,6 +104,17 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
                   <SelectItem value="medicare-eoc">Medicare EOC</SelectItem>
                 </SelectContent>
               </Select>
+              
+              {selectedConfig === 'digital-content-manager' && (
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowUploader(!showUploader)}
+                  className="flex items-center gap-2"
+                >
+                  <Upload className="h-4 w-4" />
+                  Language Repeater 2
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -107,11 +122,17 @@ export function DocuGenPage({ onNavigate }: DocuGenPageProps) {
 
       {/* Main Content - Adjusted Height for Activity Log */}
       <div className={`flex-1 overflow-hidden ${activityLogCollapsed ? '' : 'pb-64'}`}>
-        <RuleGrid 
-          rules={rules} 
-          onRuleUpdate={handleRuleUpdate}
-          onRuleCreate={handleRuleCreate}
-        />
+        {showUploader && selectedConfig === 'digital-content-manager' ? (
+          <div className="p-6 flex justify-center">
+            <LanguageRepeaterUploader />
+          </div>
+        ) : (
+          <RuleGrid 
+            rules={rules} 
+            onRuleUpdate={handleRuleUpdate}
+            onRuleCreate={handleRuleCreate}
+          />
+        )}
       </div>
 
       {/* Activity Log at Bottom */}

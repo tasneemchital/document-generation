@@ -10,7 +10,7 @@ export interface ActivityLogEntry {
   id: string;
   timestamp: Date;
   user: string;
-  action: 'view' | 'edit' | 'delete' | 'create' | 'export' | 'filter';
+  action: 'view' | 'edit' | 'delete' | 'create' | 'export' | 'filter' | 'upload';
   target: string;
   details: string;
   ruleId?: string;
