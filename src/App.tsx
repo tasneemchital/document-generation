@@ -4,15 +4,17 @@ import { Dashboard } from '@/components/Dashboard';
 import { DocuGenPage } from '@/components/DocuGenPage';
 import { DigitalContentManager } from '@/components/DigitalContentManager';
 import { RuleDetailsPage } from '@/components/RuleDetailsPage';
+import { DCMEditPage } from '@/components/DCMEditPage';
 import { RuleData } from '@/lib/types';
 
 function App() {
   const [currentPage, setCurrentPage] = useKV<string>('current-page', 'dashboard');
   const [editingRule, setEditingRule] = useKV<RuleData | null>('editing-rule', null);
+  const [rules, setRules] = useKV<RuleData[]>('rule-data', []);
 
   const handleNavigate = (page: string) => {
     setCurrentPage(page);
-    if (page !== 'rule-details' && page !== 'edit-rule') {
+    if (page !== 'rule-details' && page !== 'edit-rule' && page !== 'dcm-edit') {
       setEditingRule(null);
     }
   };
@@ -22,9 +24,30 @@ function App() {
     setCurrentPage('edit-rule');
   };
 
+  const handleEditDCMRule = (rule: RuleData) => {
+    setEditingRule(rule);
+    setCurrentPage('dcm-edit');
+  };
+
   const handleCreateRule = () => {
     setEditingRule(null);
     setCurrentPage('rule-details');
+  };
+
+  const handleSaveRule = (rule: RuleData) => {
+    setRules(current => {
+      if (!Array.isArray(current)) {
+        return [rule];
+      }
+      const existingIndex = current.findIndex(r => r.id === rule.id);
+      if (existingIndex >= 0) {
+        // Update existing rule
+        return current.map(r => r.id === rule.id ? rule : r);
+      } else {
+        // Add new rule
+        return [rule, ...current];
+      }
+    });
   };
 
   const renderCurrentPage = () => {
@@ -39,7 +62,9 @@ function App() {
       case 'edit-rule':
         return <RuleDetailsPage onNavigate={handleNavigate} rule={editingRule} mode="edit" />;
       case 'digital-content-manager':
-        return <DigitalContentManager onNavigate={handleNavigate} />;
+        return <DigitalContentManager onNavigate={handleNavigate} onEditRule={handleEditDCMRule} />;
+      case 'dcm-edit':
+        return <DCMEditPage rule={editingRule} onNavigate={handleNavigate} onSave={handleSaveRule} mode={editingRule ? 'edit' : 'create'} />;
       case 'collaborate':
         return <PlaceholderPage title="Collaborate" description="Collaborate seamlessly with multiple stakeholders via automated workflows, version control and transparent audit" />;
       case 'generate':

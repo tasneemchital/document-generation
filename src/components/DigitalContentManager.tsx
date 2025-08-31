@@ -10,9 +10,10 @@ import { toast } from 'sonner';
 
 interface DigitalContentManagerProps {
   onNavigate: (page: string) => void;
+  onEditRule?: (rule: RuleData) => void;
 }
 
-export function DigitalContentManager({ onNavigate }: DigitalContentManagerProps) {
+export function DigitalContentManager({ onNavigate, onEditRule }: DigitalContentManagerProps) {
   const [rules, setRules] = useKV<RuleData[]>('rule-data', []);
   const [selectedConfig, setSelectedConfig] = useKV<string>('selected-dcm-config', 'digital-content-manager-anoc-eoc');
   const [activityLogCollapsed, setActivityLogCollapsed] = useKV<boolean>('dcm-activity-log-collapsed', false);
@@ -279,6 +280,7 @@ export function DigitalContentManager({ onNavigate }: DigitalContentManagerProps
           onRuleUpdate={handleRuleUpdate}
           onRuleCreate={handleRuleCreate}
           onRuleDelete={handleRuleDelete}
+          onEditRule={onEditRule || (() => {})}
         />
       </div>
 
