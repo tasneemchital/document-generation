@@ -1,6 +1,6 @@
 import { useKV } from '@github/spark/hooks';
 import { Layout } from '@/components/Layout';
-import { Dashboard } from '@/components/Dashboard';
+import { MedicareEOCDashboard } from '@/components/MedicareEOCDashboard';
 import { DocuGenPage } from '@/components/DocuGenPage';
 import { DigitalContentManager } from '@/components/DigitalContentManager';
 import { RuleDetailsPage } from '@/components/RuleDetailsPage';
@@ -53,7 +53,7 @@ function App() {
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'dashboard':
-        return <Dashboard onNavigate={handleNavigate} />;
+        return <MedicareEOCDashboard onNavigate={handleNavigate} />;
       case 'master-list':
       case 'manage':
         return <DocuGenPage onNavigate={handleNavigate} onEditRule={handleEditRule} onCreateRule={handleCreateRule} />;
@@ -76,7 +76,7 @@ function App() {
       case 'design-studio':
         return <PlaceholderPage title="Design Studio" description="Design tools coming soon" />;
       default:
-        return <Dashboard onNavigate={handleNavigate} />;
+        return <MedicareEOCDashboard onNavigate={handleNavigate} />;
     }
   };
 
