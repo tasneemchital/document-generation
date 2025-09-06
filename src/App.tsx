@@ -1,5 +1,6 @@
 import { useKV } from '@github/spark/hooks';
 import { Layout } from '@/components/Layout';
+import { Dashboard } from '@/components/Dashboard';
 import { MedicareEOCDashboard } from '@/components/MedicareEOCDashboard';
 import { DocuGenPage } from '@/components/DocuGenPage';
 import { DigitalContentManager } from '@/components/DigitalContentManager';
@@ -53,6 +54,8 @@ function App() {
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'dashboard':
+        return <Dashboard onNavigate={handleNavigate} />;
+      case 'medicare-eoc':
         return <MedicareEOCDashboard onNavigate={handleNavigate} />;
       case 'master-list':
       case 'manage':
@@ -76,7 +79,7 @@ function App() {
       case 'design-studio':
         return <PlaceholderPage title="Design Studio" description="Design tools coming soon" />;
       default:
-        return <MedicareEOCDashboard onNavigate={handleNavigate} />;
+        return <Dashboard onNavigate={handleNavigate} />;
     }
   };
 
