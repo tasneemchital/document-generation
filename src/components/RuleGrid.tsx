@@ -28,7 +28,9 @@ import {
   Eye,
   Trash,
   DownloadSimple,
-  Columns
+  Columns,
+  Copy,
+  Upload
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
@@ -812,6 +814,107 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     }
   };
 
+  // Handle copy row functionality
+  const handleCopyRow = () => {
+    if (selectedRows.size === 0) {
+      toast.error('Please select at least one row to copy');
+      return;
+    }
+    
+    if (selectedRows.size > 1) {
+      toast.error('Please select only one row to copy');
+      return;
+    }
+    
+    const selectedRuleId = Array.from(selectedRows)[0];
+    const selectedRule = safeRules.find(rule => rule.id === selectedRuleId);
+    
+    if (selectedRule) {
+      // Create a copy of the rule with new ID
+      const newRuleId = generateUniqueRuleId();
+      const newRule: RuleData = {
+        ...selectedRule,
+        id: `rule-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        ruleId: newRuleId,
+        templateName: selectedRule.templateName ? `${selectedRule.templateName} (Copy)` : 'Copy',
+        published: false, // Copies should never be published by default
+        lastModified: new Date(),
+        lastModifiedBy: 'Current User'
+      };
+      
+      onRuleCreate(newRule);
+      
+      // Clear selection and select the new row
+      setSelectedRows(new Set([newRule.id]));
+      
+      // Log the copy activity
+      if ((window as any).addActivityLog) {
+        (window as any).addActivityLog({
+          user: 'Current User',
+          action: 'create',
+          target: `Rule ${newRuleId}`,
+          details: `Copied from Rule ${selectedRule.ruleId}`,
+          ruleId: newRuleId,
+        });
+      }
+      
+      toast.success(`Rule copied successfully as ${newRuleId}`);
+    }
+  };
+
+  // Handle publish selected rows functionality
+  const handlePublishRows = () => {
+    if (selectedRows.size === 0) {
+      toast.error('Please select at least one row to publish');
+      return;
+    }
+    
+    const selectedRules = safeRules.filter(rule => selectedRows.has(rule.id));
+    const unpublishedRules = selectedRules.filter(rule => !rule.published);
+    
+    if (unpublishedRules.length === 0) {
+      toast.error('Selected rules are already published');
+      return;
+    }
+    
+    // Confirm publishing
+    const ruleNames = unpublishedRules.map(rule => rule.ruleId || 'N/A').join(', ');
+    const confirmMessage = unpublishedRules.length === 1 
+      ? `Are you sure you want to publish Rule ${ruleNames}?`
+      : `Are you sure you want to publish ${unpublishedRules.length} rules (${ruleNames})?`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+    
+    // Publish the rules
+    unpublishedRules.forEach(rule => {
+      const updatedRule = {
+        ...rule,
+        published: true,
+        lastModified: new Date(),
+        lastModifiedBy: 'Current User'
+      };
+      onRuleUpdate(updatedRule);
+      
+      // Log the publish activity
+      if ((window as any).addActivityLog) {
+        (window as any).addActivityLog({
+          user: 'Current User',
+          action: 'publish',
+          target: `Rule ${rule.ruleId}`,
+          details: `Published rule`,
+          ruleId: rule.ruleId,
+        });
+      }
+    });
+    
+    // Clear selection
+    setSelectedRows(new Set());
+    
+    toast.success(`Successfully published ${unpublishedRules.length} rule${unpublishedRules.length > 1 ? 's' : ''}`);
+  };
+
   const renderCell = (rule: RuleData, field: keyof RuleData, content: string, className: string = '') => {
     const isEditing = editingRule?.id === rule.id && editingRule?.field === field;
     const isEditable = !['createdAt', 'lastModified', 'id', 'ruleId', 'cmsRegulated', 'isTabular', 'published'].includes(field);
@@ -1000,6 +1103,26 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 title="Download to Excel"
               >
                 <DownloadSimple size={16} />
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="w-8 h-8 p-0 border-orange-600 text-orange-600 hover:bg-orange-50"
+                onClick={handleCopyRow}
+                disabled={selectedRows.size !== 1}
+                title="Copy selected row"
+              >
+                <Copy size={16} />
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="w-8 h-8 p-0 border-purple-600 text-purple-600 hover:bg-purple-50"
+                onClick={handlePublishRows}
+                disabled={selectedRows.size === 0}
+                title="Publish selected row(s)"
+              >
+                <Upload size={16} />
               </Button>
               <Button 
                 size="sm" 
