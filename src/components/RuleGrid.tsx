@@ -1018,88 +1018,84 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
               </div>
               <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
-                  onClick={() => handleSort('cmsRegulated')}
-                  title="Click to sort by CMS Regulated"
                 >
                   <span>CMS Regulated</span>
                   {getSortIndicator('cmsRegulated')}
-                </div>
-                <ColumnFilter
-                  columnKey="cmsRegulated"
+                >
+                  <span>CMS Regulated</span>
+                  {getSortIndicator('cmsRegulated')}
                   columnTitle="CMS Regulated"
-                  values={[]}
+                <ColumnFilter
                   selectedValues={[]}
+                  onFilter={() => {}}
+                  values={[]}
+                  booleanValue={columnFilters.cmsRegulated}
                   onFilter={() => {}}
                   filterType="boolean"
                   booleanValue={columnFilters.cmsRegulated}
-                  onBooleanFilter={(value) => handleColumnFilter('cmsRegulated', value)}
-                />
-              </div>
               <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('chapterName')}
                 <div 
                   className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
                   onClick={() => handleSort('chapterName')}
                   title="Click to sort by Chapter Name"
                 >
-                  <span>Chapter Name</span>
-                  {getSortIndicator('chapterName')}
-                </div>
                 <ColumnFilter
-                  columnKey="chapterName"
+                  {getSortIndicator('chapterName')}
                   columnTitle="Chapter Name"
+                  values={uniqueValues.chapterName}
+                  selectedValues={columnFilters.chapterName}
+                  columnTitle="Chapter Name"erName', values)}
                   values={uniqueValues.chapterName}
                   selectedValues={columnFilters.chapterName}
                   onFilter={(values) => handleColumnFilter('chapterName', values)}
                 />
-              </div>
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
               <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
                 <div 
                   className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
                   onClick={() => handleSort('sectionName')}
                   title="Click to sort by Section Name"
-                >
-                  <span>Section Name</span>
-                  {getSortIndicator('sectionName')}
-                </div>
                 <ColumnFilter
                   columnKey="sectionName"
+                  columnTitle="Section Name"
+                  values={uniqueValues.sectionName}
+                <ColumnFilter
+                  columnKey="sectionName"ctionName', values)}
                   columnTitle="Section Name"
                   values={uniqueValues.sectionName}
                   selectedValues={columnFilters.sectionName}
                   onFilter={(values) => handleColumnFilter('sectionName', values)}
                 />
-              </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div 
+                  onClick={() => handleSort('subsectionName')}
+                  title="Click to sort by Subsection Name"
+                >
                   className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
                   onClick={() => handleSort('subsectionName')}
                   title="Click to sort by Subsection Name"
                 >
                   <span>Subsection Name</span>
-                  {getSortIndicator('subsectionName')}
-                </div>
+                  columnTitle="Subsection Name"
+                </div>ubsectionName}
                 <ColumnFilter
                   columnKey="subsectionName"
                   columnTitle="Subsection Name"
                   values={uniqueValues.subsectionName}
-                  selectedValues={columnFilters.subsectionName}
-                  onFilter={(values) => handleColumnFilter('subsectionName', values)}
-                />
-              </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                  selectedValues={columnFilters.subsectionName}ify-between">
                 <div 
+                />nter hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('serviceGroup')}
+                  title="Click to sort by Service Group"
+                >
                   className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
                   onClick={() => handleSort('serviceGroup')}
                   title="Click to sort by Service Group"
                 >
                   <span>Service Group</span>
-                  {getSortIndicator('serviceGroup')}
-                </div>
-                <ColumnFilter
-                  columnKey="serviceGroup"
                   columnTitle="Service Group"
-                  values={uniqueValues.serviceGroup}
+                </div>erviceGroup}
                   selectedValues={columnFilters.serviceGroup}
                   onFilter={(values) => handleColumnFilter('serviceGroup', values)}
                 />
