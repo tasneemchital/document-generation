@@ -24,8 +24,8 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
   const [formData, setFormData] = useState<RuleData>({
     id: '',
     ruleId: '',
-    effectiveDate: '01/01/2026',
-    version: '2026',
+    effectiveDate: '01/01/2025',
+    version: '2025',
     benefitType: 'Out of Pocket Maximum',
     businessArea: 'Marketing',
     subBusinessArea: 'MRK: DNSP',
@@ -171,8 +171,8 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
         setFormData({
           id: '',
           ruleId: '',
-          effectiveDate: '01/01/2026',
-          version: '2026',
+          effectiveDate: '01/01/2025',
+          version: '2025',
           benefitType: 'Out of Pocket Maximum',
           businessArea: 'Marketing',
           subBusinessArea: 'MRK: DNSP',
@@ -351,7 +351,7 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
                 <Label htmlFor="planYear" className="text-sm font-medium">
                   Plan Year <span className="text-red-500">*</span>
                 </Label>
-                <Select value="2026" onValueChange={(value) => handleInputChange('version', value)}>
+                <Select value="2025" onValueChange={(value) => handleInputChange('version', value)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -371,7 +371,7 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
                 <DatePicker
                   date={formatDateForDisplay(formData.effectiveDate)}
                   onDateChange={handleDateChange}
-                  placeholder="01-01-2026"
+                  placeholder="01-01-2025"
                   className="w-full"
                 />
               </div>
@@ -381,9 +381,9 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
                   Content Effective End Date <span className="text-red-500">*</span>
                 </Label>
                 <DatePicker
-                  date={new Date(2026, 11, 31)} // December 31, 2026
+                  date={new Date(2025, 11, 31)} // December 31, 2025
                   onDateChange={() => {}} // Read-only for now
-                  placeholder="31-12-2026"
+                  placeholder="31-12-2025"
                   className="w-full"
                 />
               </div>

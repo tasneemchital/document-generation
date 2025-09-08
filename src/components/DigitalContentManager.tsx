@@ -147,7 +147,7 @@ export function DigitalContentManager({ onNavigate, onEditRule }: DigitalContent
             subBusinessArea: item.subBusinessArea,
             description: item.description,
             version: "1.0",
-            effectiveDate: "2025-01-01",
+            effectiveDate: "01/01/2025",
             lastModified: new Date().toISOString(),
             lastModifiedBy: 'Language Repeater 2 Auto-Load',
             status: 'Draft',

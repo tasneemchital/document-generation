@@ -29,9 +29,9 @@ export function RuleDetailsPage({ onNavigate, rule, mode = 'create' }: RuleDetai
     benefitType: '',
     businessArea: '',
     subBusinessArea: '',
-    version: '2026', // Plan Year maps to version
+    version: '2025', // Plan Year maps to version
     effectiveDate: new Date(2025, 0, 1), // January 1, 2025
-    endDate: new Date(2026, 11, 31), // December 31, 2026
+    endDate: new Date(2025, 11, 31), // December 31, 2025
     networkType: 'INN', // Custom field for this form
     description: 'Headline',
     rule: '',
@@ -52,9 +52,9 @@ export function RuleDetailsPage({ onNavigate, rule, mode = 'create' }: RuleDetai
         benefitType: rule.benefitType || '',
         businessArea: rule.businessArea || '',
         subBusinessArea: rule.subBusinessArea || '',
-        version: rule.version || '2026',
+        version: rule.version || '2025',
         effectiveDate: rule.effectiveDate ? new Date(rule.effectiveDate) : new Date(2025, 0, 1),
-        endDate: new Date(2026, 11, 31),
+        endDate: new Date(2025, 11, 31),
         networkType: 'INN',
         description: rule.description || 'Headline',
         rule: rule.rule || '',
@@ -118,7 +118,7 @@ export function RuleDetailsPage({ onNavigate, rule, mode = 'create' }: RuleDetai
         id: `rule-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         ruleId: newRuleId,
         effectiveDate: formData.effectiveDate ? format(formData.effectiveDate, 'MM/dd/yyyy') : '01/01/2025',
-        version: formData.version || '2026',
+        version: formData.version || '2025',
         benefitType: formData.benefitType || '',
         businessArea: formData.businessArea || '',
         subBusinessArea: formData.subBusinessArea || '',
@@ -195,9 +195,9 @@ export function RuleDetailsPage({ onNavigate, rule, mode = 'create' }: RuleDetai
       benefitType: '',
       businessArea: '',
       subBusinessArea: '',
-      version: '2026',
+      version: '2025',
       effectiveDate: new Date(2025, 0, 1),
-      endDate: new Date(2026, 11, 31),
+      endDate: new Date(2025, 11, 31),
       networkType: 'INN',
       description: 'Headline',
       rule: '',
@@ -327,7 +327,7 @@ export function RuleDetailsPage({ onNavigate, rule, mode = 'create' }: RuleDetai
                   <Label htmlFor="planYear" className="text-sm font-medium">
                     Plan Year *
                   </Label>
-                  <Select value={formData.version || '2026'} onValueChange={(value) => handleInputChange('version', value)}>
+                  <Select value={formData.version || '2025'} onValueChange={(value) => handleInputChange('version', value)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
