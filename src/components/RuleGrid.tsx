@@ -722,11 +722,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
               <Button 
                 size="sm" 
                 variant="outline"
+                className="w-8 h-8 p-0 border-green-600 text-green-600 hover:bg-green-50"
                 onClick={handleBulkPreview}
-                onClick={handleBulkPreview}
+                disabled={selectedRows.size !== 1}
                 title="Preview selected rule"
-                <Eye size={16} />
               >
+                <Eye size={16} />
+              </Button>
               <Button 
               </Button>
               <Button 
