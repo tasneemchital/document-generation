@@ -212,9 +212,10 @@ export function ColumnFilter({
         <Button
           variant="ghost"
           size="sm"
-          className={`h-6 w-6 p-0 ${hasActiveFilter() ? 'bg-blue-100 text-blue-600 hover:bg-blue-200' : 'text-gray-400 hover:text-gray-600'}`}
+          className={`h-7 w-7 p-0 rounded ${hasActiveFilter() ? 'bg-blue-100 text-blue-600 hover:bg-blue-200' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}`}
+          title={`Filter ${columnTitle}`}
         >
-          <Filter size={12} />
+          <Filter size={14} weight={hasActiveFilter() ? 'fill' : 'regular'} />
         </Button>
       </PopoverTrigger>
       <PopoverContent 

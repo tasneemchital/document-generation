@@ -854,13 +854,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onCheckedChange={handleSelectAll}
                 />
               </div>
-              <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('ruleId')}
                   title="Click to sort by Rule ID"
                 >
-                  <span>Rule ID</span>
+                  <span className="truncate">Rule ID</span>
                   {getSortIndicator('ruleId')}
                 </div>
                 <ColumnFilter
@@ -874,13 +874,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onTextFilter={(value) => handleColumnFilter('ruleId', value)}
                 />
               </div>
-              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('effectiveDate')}
                   title="Click to sort by Effective Date"
                 >
-                  <span>Effective Date</span>
+                  <span className="truncate">Effective Date</span>
                   {getSortIndicator('effectiveDate')}
                 </div>
                 <ColumnFilter
@@ -894,13 +894,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onTextFilter={(value) => handleColumnFilter('effectiveDate', value)}
                 />
               </div>
-              <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('version')}
                   title="Click to sort by Version"
                 >
-                  <span>Version</span>
+                  <span className="truncate">Version</span>
                   {getSortIndicator('version')}
                 </div>
                 <ColumnFilter
@@ -911,13 +911,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onFilter={(values) => handleColumnFilter('version', values)}
                 />
               </div>
-              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('benefitType')}
                   title="Click to sort by Benefit Type"
                 >
-                  <span>Benefit Type</span>
+                  <span className="truncate">Benefit Type</span>
                   {getSortIndicator('benefitType')}
                 </div>
                 <ColumnFilter
@@ -928,13 +928,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onFilter={(values) => handleColumnFilter('benefitType', values)}
                 />
               </div>
-              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('businessArea')}
                   title="Click to sort by Business Area"
                 >
-                  <span>Business Area</span>
+                  <span className="truncate">Business Area</span>
                   {getSortIndicator('businessArea')}
                 </div>
                 <ColumnFilter
@@ -945,13 +945,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onFilter={(values) => handleColumnFilter('businessArea', values)}
                 />
               </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('subBusinessArea')}
                   title="Click to sort by Sub-Business Area"
                 >
-                  <span>Sub-Business Area</span>
+                  <span className="truncate">Sub-Business Area</span>
                   {getSortIndicator('subBusinessArea')}
                 </div>
                 <ColumnFilter
@@ -962,13 +962,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onFilter={(values) => handleColumnFilter('subBusinessArea', values)}
                 />
               </div>
-              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('description')}
                   title="Click to sort by Description"
                 >
-                  <span>Description</span>
+                  <span className="truncate">Description</span>
                   {getSortIndicator('description')}
                 </div>
                 <ColumnFilter
@@ -982,13 +982,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onTextFilter={(value) => handleColumnFilter('description', value)}
                 />
               </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('templateName')}
                   title="Click to sort by Template Name"
                 >
-                  <span>Template Name</span>
+                  <span className="truncate">Template Name</span>
                   {getSortIndicator('templateName')}
                 </div>
                 <ColumnFilter
@@ -999,13 +999,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onFilter={(values) => handleColumnFilter('templateName', values)}
                 />
               </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('serviceId')}
                   title="Click to sort by Service ID"
                 >
-                  <span>Service ID</span>
+                  <span className="truncate">Service ID</span>
                   {getSortIndicator('serviceId')}
                 </div>
                 <ColumnFilter
@@ -1016,13 +1016,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onFilter={(values) => handleColumnFilter('serviceId', values)}
                 />
               </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('cmsRegulated')}
                   title="Click to sort by CMS Regulated"
                 >
-                  <span>CMS Regulated</span>
+                  <span className="truncate">CMS Regulated</span>
                   {getSortIndicator('cmsRegulated')}
                 </div>
                 <ColumnFilter
@@ -1036,13 +1036,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onBooleanFilter={(value) => handleColumnFilter('cmsRegulated', value)}
                 />
               </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('chapterName')}
                   title="Click to sort by Chapter Name"
                 >
-                  <span>Chapter Name</span>
+                  <span className="truncate">Chapter Name</span>
                   {getSortIndicator('chapterName')}
                 </div>
                 <ColumnFilter
@@ -1053,13 +1053,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onFilter={(values) => handleColumnFilter('chapterName', values)}
                 />
               </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('sectionName')}
                   title="Click to sort by Section Name"
                 >
-                  <span>Section Name</span>
+                  <span className="truncate">Section Name</span>
                   {getSortIndicator('sectionName')}
                 </div>
                 <ColumnFilter
@@ -1070,13 +1070,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onFilter={(values) => handleColumnFilter('sectionName', values)}
                 />
               </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('subsectionName')}
                   title="Click to sort by Subsection Name"
                 >
-                  <span>Subsection Name</span>
+                  <span className="truncate">Subsection Name</span>
                   {getSortIndicator('subsectionName')}
                 </div>
                 <ColumnFilter
@@ -1087,13 +1087,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onFilter={(values) => handleColumnFilter('subsectionName', values)}
                 />
               </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('serviceGroup')}
                   title="Click to sort by Service Group"
                 >
-                  <span>Service Group</span>
+                  <span className="truncate">Service Group</span>
                   {getSortIndicator('serviceGroup')}
                 </div>
                 <ColumnFilter
@@ -1104,13 +1104,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onFilter={(values) => handleColumnFilter('serviceGroup', values)}
                 />
               </div>
-              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('sourceMapping')}
                   title="Click to sort by Source Mapping"
                 >
-                  <span>Source Mapping</span>
+                  <span className="truncate">Source Mapping</span>
                   {getSortIndicator('sourceMapping')}
                 </div>
                 <ColumnFilter
@@ -1121,13 +1121,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onFilter={(values) => handleColumnFilter('sourceMapping', values)}
                 />
               </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('tiers')}
                   title="Click to sort by Tiers"
                 >
-                  <span>Tiers</span>
+                  <span className="truncate">Tiers</span>
                   {getSortIndicator('tiers')}
                 </div>
                 <ColumnFilter
@@ -1138,13 +1138,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onFilter={(values) => handleColumnFilter('tiers', values)}
                 />
               </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('key')}
                   title="Click to sort by Key"
                 >
-                  <span>Key</span>
+                  <span className="truncate">Key</span>
                   {getSortIndicator('key')}
                 </div>
                 <ColumnFilter
@@ -1156,13 +1156,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
 
-              <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('isTabular')}
                   title="Click to sort by Is Tabular"
                 >
-                  <span>Is Tabular</span>
+                  <span className="truncate">Is Tabular</span>
                   {getSortIndicator('isTabular')}
                 </div>
                 <ColumnFilter
@@ -1176,13 +1176,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onBooleanFilter={(value) => handleColumnFilter('isTabular', value)}
                 />
               </div>
-              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('english')}
                   title="Click to sort by English"
                 >
-                  <span>English</span>
+                  <span className="truncate">English</span>
                   {getSortIndicator('english')}
                 </div>
                 <ColumnFilter
@@ -1196,13 +1196,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onTextFilter={(value) => handleColumnFilter('english', value)}
                 />
               </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('englishStatus')}
                   title="Click to sort by Status"
                 >
-                  <span>Status</span>
+                  <span className="truncate">Status</span>
                   {getSortIndicator('englishStatus')}
                 </div>
                 <ColumnFilter
@@ -1213,13 +1213,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onFilter={(values) => handleColumnFilter('englishStatus', values)}
                 />
               </div>
-              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('spanish')}
                   title="Click to sort by Spanish"
                 >
-                  <span>Spanish</span>
+                  <span className="truncate">Spanish</span>
                   {getSortIndicator('spanish')}
                 </div>
                 <ColumnFilter
@@ -1233,13 +1233,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onTextFilter={(value) => handleColumnFilter('spanish', value)}
                 />
               </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('spanishStatus')}
                   title="Click to sort by Status"
                 >
-                  <span>Status</span>
+                  <span className="truncate">Status</span>
                   {getSortIndicator('spanishStatus')}
                 </div>
                 <ColumnFilter
@@ -1250,13 +1250,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onFilter={(values) => handleColumnFilter('spanishStatus', values)}
                 />
               </div>
-              <div className="w-32 px-3 py-2 flex items-center justify-between">
+              <div className="w-32 px-3 py-2 flex items-center justify-between gap-2">
                 <div 
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                   onClick={() => handleSort('published')}
                   title="Click to sort by Published"
                 >
-                  <span>Published</span>
+                  <span className="truncate">Published</span>
                   {getSortIndicator('published')}
                 </div>
                 <ColumnFilter
