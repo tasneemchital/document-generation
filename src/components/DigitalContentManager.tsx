@@ -266,7 +266,6 @@ export function DigitalContentManager({ onNavigate, onEditRule }: DigitalContent
                 <SelectContent>
                   <SelectItem value="digital-content-manager-anoc-eoc">Digital Content Manager - ANOC-EOC</SelectItem>
                   <SelectItem value="digital-content-manager-sbc">Digital Content Manager - SBC</SelectItem>
-                  <SelectItem value="digital-content-manager-general">Digital Content Manager - General</SelectItem>
                 </SelectContent>
               </Select>
             </div>
