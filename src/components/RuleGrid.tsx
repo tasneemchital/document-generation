@@ -679,7 +679,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     const publishedRules = selectedRules.filter(rule => rule.published);
     
     if (publishedRules.length > 0) {
-      toast.error('Cannot delete published rules. Only unpublished rules can be deleted.');
+      toast.error('Cannot delete released rules. Only unreleased rules can be deleted.');
       return;
     }
     
@@ -740,7 +740,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
       'English Status',
       'Spanish',
       'Spanish Status',
-      'Published'
+      'Release'
     ];
 
     const csvContent = [
@@ -837,7 +837,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
         id: `rule-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         ruleId: newRuleId,
         templateName: selectedRule.templateName ? `${selectedRule.templateName} (Copy)` : 'Copy',
-        published: false, // Copies should never be published by default
+        published: false, // Copies should never be released by default
         lastModified: new Date(),
         lastModifiedBy: 'Current User'
       };
@@ -862,10 +862,10 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     }
   };
 
-  // Handle publish selected rows functionality
+  // Handle release selected rows functionality
   const handlePublishRows = () => {
     if (selectedRows.size === 0) {
-      toast.error('Please select at least one row to publish');
+      toast.error('Please select at least one row to release');
       return;
     }
     
@@ -873,15 +873,15 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     const unpublishedRules = selectedRules.filter(rule => !rule.published);
     
     if (unpublishedRules.length === 0) {
-      toast.error('Selected rules are already published');
+      toast.error('Selected rules are already released');
       return;
     }
     
     // Confirm publishing
     const ruleNames = unpublishedRules.map(rule => rule.ruleId || 'N/A').join(', ');
     const confirmMessage = unpublishedRules.length === 1 
-      ? `Are you sure you want to publish Rule ${ruleNames}?`
-      : `Are you sure you want to publish ${unpublishedRules.length} rules (${ruleNames})?`;
+      ? `Are you sure you want to release Rule ${ruleNames}?`
+      : `Are you sure you want to release ${unpublishedRules.length} rules (${ruleNames})?`;
     
     if (!confirm(confirmMessage)) {
       return;
@@ -901,9 +901,9 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
       if ((window as any).addActivityLog) {
         (window as any).addActivityLog({
           user: 'Current User',
-          action: 'publish',
+          action: 'release',
           target: `Rule ${rule.ruleId}`,
-          details: `Published rule`,
+          details: `Released rule`,
           ruleId: rule.ruleId,
         });
       }
@@ -912,7 +912,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     // Clear selection
     setSelectedRows(new Set());
     
-    toast.success(`Successfully published ${unpublishedRules.length} rule${unpublishedRules.length > 1 ? 's' : ''}`);
+    toast.success(`Successfully released ${unpublishedRules.length} rule${unpublishedRules.length > 1 ? 's' : ''}`);
   };
 
   const renderCell = (rule: RuleData, field: keyof RuleData, content: string, className: string = '') => {
@@ -1120,7 +1120,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 className="w-8 h-8 p-0 border-purple-600 text-purple-600 hover:bg-purple-50"
                 onClick={handlePublishRows}
                 disabled={selectedRows.size === 0}
-                title="Publish selected row(s)"
+                title="Release selected row(s)"
               >
                 <Upload size={16} />
               </Button>
@@ -1625,14 +1625,14 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('published')}
-                    title="Click to sort by Published"
+                    title="Click to sort by Release"
                   >
-                    <span className="truncate">Published</span>
+                    <span className="truncate">Release</span>
                     {getSortIndicator('published')}
                   </div>
                   <ColumnFilter
                     columnKey="published"
-                    columnTitle="Published"
+                    columnTitle="Release"
                     values={[]}
                     selectedValues={[]}
                     onFilter={() => {}}
@@ -1770,8 +1770,8 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                             (window as any).addActivityLog({
                               user: 'Current User',
                               action: 'edit',
-                              target: `Rule ${rule.ruleId || 'N/A'} - Published`,
-                              details: `${checked ? 'Published' : 'Unpublished'} rule`,
+                              target: `Rule ${rule.ruleId || 'N/A'} - Release`,
+                              details: `${checked ? 'Released' : 'Unreleased'} rule`,
                               ruleId: rule.ruleId,
                               oldValue: rule.published ? 'Yes' : 'No',
                               newValue: checked ? 'Yes' : 'No',
@@ -1940,7 +1940,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                     <p className="text-sm">{previewRule.cmsRegulated ? 'Yes' : 'No'}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-gray-500">Published</label>
+                    <label className="text-sm font-semibold text-gray-500">Release</label>
                     <p className="text-sm">{previewRule.published ? 'Yes' : 'No'}</p>
                   </div>
                   <div>
