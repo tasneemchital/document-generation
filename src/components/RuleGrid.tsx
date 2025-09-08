@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +27,8 @@ import {
   PencilSimple,
   Eye,
   Trash,
-  DownloadSimple
+  DownloadSimple,
+  Columns
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
@@ -89,6 +91,33 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
   }>({
     key: null,
     direction: 'asc'
+  });
+
+  // Column visibility state
+  const [columnVisibility, setColumnVisibility] = useState({
+    ruleId: true,
+    effectiveDate: true,
+    version: true,
+    benefitType: true,
+    businessArea: true,
+    subBusinessArea: true,
+    description: true,
+    templateName: true,
+    serviceId: true,
+    cmsRegulated: true,
+    chapterName: true,
+    sectionName: true,
+    subsectionName: true,
+    serviceGroup: true,
+    sourceMapping: true,
+    tiers: true,
+    key: true,
+    isTabular: true,
+    english: true,
+    englishStatus: true,
+    spanish: true,
+    spanishStatus: true,
+    published: true
   });
 
   // Get unique values for each column
@@ -765,6 +794,24 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     toast.success(`Downloaded ${columnFilteredRules.length} rules to Excel file`);
   };
 
+  // Handle column visibility toggle
+  const handleColumnVisibilityToggle = (columnKey: string, visible: boolean) => {
+    setColumnVisibility(prev => ({
+      ...prev,
+      [columnKey]: visible
+    }));
+
+    // Log the column visibility activity
+    if ((window as any).addActivityLog) {
+      (window as any).addActivityLog({
+        user: 'Current User',
+        action: 'view',
+        target: `Column: ${columnKey}`,
+        details: `${visible ? 'Showed' : 'Hidden'} ${columnKey} column`,
+      });
+    }
+  };
+
   const renderCell = (rule: RuleData, field: keyof RuleData, content: string, className: string = '') => {
     const isEditing = editingRule?.id === rule.id && editingRule?.field === field;
     const isEditable = !['createdAt', 'lastModified', 'id', 'ruleId', 'cmsRegulated', 'isTabular', 'published'].includes(field);
@@ -881,6 +928,70 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
               <h2 className="text-base font-semibold text-gray-900">Digital Content Manager - ANOC-EOC</h2>
             </div>
             <div className="flex items-center gap-3">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    className="w-8 h-8 p-0 border-gray-600 text-gray-600 hover:bg-gray-50"
+                    title="Column visibility"
+                  >
+                    <Columns size={16} />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-4" align="end">
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Column Visibility</h3>
+                    <div className="space-y-2 max-h-64 overflow-y-auto">
+                      {Object.entries(columnVisibility).map(([key, visible]) => (
+                        <div key={key} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`column-${key}`}
+                            checked={visible}
+                            onCheckedChange={(checked) => handleColumnVisibilityToggle(key, checked as boolean)}
+                          />
+                          <label
+                            htmlFor={`column-${key}`}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                          >
+                            {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="pt-2 border-t border-gray-200">
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={() => {
+                            const allVisible = Object.fromEntries(
+                              Object.keys(columnVisibility).map(key => [key, true])
+                            );
+                            setColumnVisibility(allVisible);
+                          }}
+                          className="flex-1 h-7 text-xs"
+                        >
+                          Show All
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={() => {
+                            const allHidden = Object.fromEntries(
+                              Object.keys(columnVisibility).map(key => [key, key === 'ruleId'])
+                            );
+                            setColumnVisibility(allHidden);
+                          }}
+                          className="flex-1 h-7 text-xs"
+                        >
+                          Hide All
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
               <Button 
                 size="sm" 
                 variant="outline"
@@ -946,422 +1057,468 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   onCheckedChange={handleSelectAll}
                 />
               </div>
-              <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('ruleId')}
-                  title="Click to sort by Rule ID"
-                >
-                  <span className="truncate">Rule ID</span>
-                  {getSortIndicator('ruleId')}
+              {columnVisibility.ruleId && (
+                <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('ruleId')}
+                    title="Click to sort by Rule ID"
+                  >
+                    <span className="truncate">Rule ID</span>
+                    {getSortIndicator('ruleId')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="ruleId"
+                    columnTitle="Rule ID"
+                    values={uniqueValues.ruleId}
+                    selectedValues={[]}
+                    onFilter={() => {}}
+                    filterType="text"
+                    textValue={columnFilters.ruleId}
+                    onTextFilter={(value) => handleColumnFilter('ruleId', value)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="ruleId"
-                  columnTitle="Rule ID"
-                  values={uniqueValues.ruleId}
-                  selectedValues={[]}
-                  onFilter={() => {}}
-                  filterType="text"
-                  textValue={columnFilters.ruleId}
-                  onTextFilter={(value) => handleColumnFilter('ruleId', value)}
-                />
-              </div>
-              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('effectiveDate')}
-                  title="Click to sort by Effective Date"
-                >
-                  <span className="truncate">Effective Date</span>
-                  {getSortIndicator('effectiveDate')}
+              )}
+              {columnVisibility.effectiveDate && (
+                <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('effectiveDate')}
+                    title="Click to sort by Effective Date"
+                  >
+                    <span className="truncate">Effective Date</span>
+                    {getSortIndicator('effectiveDate')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="effectiveDate"
+                    columnTitle="Effective Date"
+                    values={uniqueValues.effectiveDate}
+                    selectedValues={[]}
+                    onFilter={() => {}}
+                    filterType="text"
+                    textValue={columnFilters.effectiveDate}
+                    onTextFilter={(value) => handleColumnFilter('effectiveDate', value)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="effectiveDate"
-                  columnTitle="Effective Date"
-                  values={uniqueValues.effectiveDate}
-                  selectedValues={[]}
-                  onFilter={() => {}}
-                  filterType="text"
-                  textValue={columnFilters.effectiveDate}
-                  onTextFilter={(value) => handleColumnFilter('effectiveDate', value)}
-                />
-              </div>
-              <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('version')}
-                  title="Click to sort by Version"
-                >
-                  <span className="truncate">Version</span>
-                  {getSortIndicator('version')}
+              )}
+              {columnVisibility.version && (
+                <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('version')}
+                    title="Click to sort by Version"
+                  >
+                    <span className="truncate">Version</span>
+                    {getSortIndicator('version')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="version"
+                    columnTitle="Version"
+                    values={uniqueValues.version}
+                    selectedValues={columnFilters.version}
+                    onFilter={(values) => handleColumnFilter('version', values)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="version"
-                  columnTitle="Version"
-                  values={uniqueValues.version}
-                  selectedValues={columnFilters.version}
-                  onFilter={(values) => handleColumnFilter('version', values)}
-                />
-              </div>
-              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('benefitType')}
-                  title="Click to sort by Benefit Type"
-                >
-                  <span className="truncate">Benefit Type</span>
-                  columnKey="serviceId"
+              )}
+              {columnVisibility.benefitType && (
+                <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('benefitType')}
+                    title="Click to sort by Benefit Type"
+                  >
+                    <span className="truncate">Benefit Type</span>
+                    {getSortIndicator('benefitType')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="benefitType"
+                    columnTitle="Benefit Type"
+                    values={uniqueValues.benefitType}
+                    selectedValues={columnFilters.benefitType}
+                    onFilter={(values) => handleColumnFilter('benefitType', values)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="benefitType"
-                  columnTitle="Benefit Type"
-                  values={uniqueValues.benefitType}
-                  selectedValues={columnFilters.benefitType}
-                  onFilter={(values) => handleColumnFilter('benefitType', values)}
-                />
-              </div>
-              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('businessArea')}
-                  title="Click to sort by Business Area"
-                >
-                  <span className="truncate">Business Area</span>
-                  {getSortIndicator('businessArea')}
+              )}
+              {columnVisibility.businessArea && (
+                <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('businessArea')}
+                    title="Click to sort by Business Area"
+                  >
+                    <span className="truncate">Business Area</span>
+                    {getSortIndicator('businessArea')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="businessArea"
+                    columnTitle="Business Area"
+                    values={uniqueValues.businessArea}
+                    selectedValues={columnFilters.businessArea}
+                    onFilter={(values) => handleColumnFilter('businessArea', values)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="businessArea"
-                  columnTitle="Business Area"
-                  values={uniqueValues.businessArea}
-                  selectedValues={columnFilters.businessArea}
-                  onFilter={(values) => handleColumnFilter('businessArea', values)}
-                />
-              </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('subBusinessArea')}
-                  title="Click to sort by Sub-Business Area"
-                >
-                  <span className="truncate">Sub-Business Area</span>
-                  {getSortIndicator('subBusinessArea')}
+              )}
+              {columnVisibility.subBusinessArea && (
+                <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('subBusinessArea')}
+                    title="Click to sort by Sub-Business Area"
+                  >
+                    <span className="truncate">Sub-Business Area</span>
+                    {getSortIndicator('subBusinessArea')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="subBusinessArea"
+                    columnTitle="Sub-Business Area"
+                    values={uniqueValues.subBusinessArea}
+                    selectedValues={columnFilters.subBusinessArea}
+                    onFilter={(values) => handleColumnFilter('subBusinessArea', values)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="subBusinessArea"
-                  columnTitle="Sub-Business Area"
-                  values={uniqueValues.subBusinessArea}
-                  selectedValues={columnFilters.subBusinessArea}
-                  onFilter={(values) => handleColumnFilter('subBusinessArea', values)}
-                />
-              </div>
-              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('description')}
-                  title="Click to sort by Description"
-                >
-                  <span className="truncate">Description</span>
-                  {getSortIndicator('description')}
+              )}
+              {columnVisibility.description && (
+                <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('description')}
+                    title="Click to sort by Description"
+                  >
+                    <span className="truncate">Description</span>
+                    {getSortIndicator('description')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="description"
+                    columnTitle="Description"
+                    values={[]}
+                    selectedValues={[]}
+                    onFilter={() => {}}
+                    filterType="text"
+                    textValue={columnFilters.description}
+                    onTextFilter={(value) => handleColumnFilter('description', value)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="description"
-                  columnTitle="Description"
-                  values={[]}
-                  selectedValues={[]}
-                  onFilter={() => {}}
-                  filterType="text"
-                  textValue={columnFilters.description}
-                  onTextFilter={(value) => handleColumnFilter('description', value)}
-                />
-              </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('templateName')}
-                  title="Click to sort by Template Name"
-                >
-                  <span className="truncate">Template Name</span>
-                  {getSortIndicator('templateName')}
+              )}
+              {columnVisibility.templateName && (
+                <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('templateName')}
+                    title="Click to sort by Template Name"
+                  >
+                    <span className="truncate">Template Name</span>
+                    {getSortIndicator('templateName')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="templateName"
+                    columnTitle="Template Name"
+                    values={uniqueValues.templateName}
+                    selectedValues={columnFilters.templateName}
+                    onFilter={(values) => handleColumnFilter('templateName', values)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="templateName"
-                  columnTitle="Template Name"
-                  values={uniqueValues.templateName}
-                  selectedValues={columnFilters.templateName}
-                  onFilter={(values) => handleColumnFilter('templateName', values)}
-                />
-              </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('serviceId')}
-                  title="Click to sort by Service ID"
-                >
-                  <span className="truncate">Service ID</span>
-                  {getSortIndicator('serviceId')}
+              )}
+              {columnVisibility.serviceId && (
+                <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('serviceId')}
+                    title="Click to sort by Service ID"
+                  >
+                    <span className="truncate">Service ID</span>
+                    {getSortIndicator('serviceId')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="serviceId"
+                    columnTitle="Service ID"
+                    values={uniqueValues.serviceId}
+                    selectedValues={columnFilters.serviceId}
+                    onFilter={(values) => handleColumnFilter('serviceId', values)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="serviceId"
-                  columnTitle="Service ID"
-                  values={uniqueValues.serviceId}
-                  selectedValues={columnFilters.serviceId}
-                  onFilter={(values) => handleColumnFilter('serviceId', values)}
-                />
-              </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('cmsRegulated')}
-                  title="Click to sort by CMS Regulated"
-                >
-                  <span className="truncate">CMS Regulated</span>
-                  {getSortIndicator('cmsRegulated')}
+              )}
+              {columnVisibility.cmsRegulated && (
+                <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('cmsRegulated')}
+                    title="Click to sort by CMS Regulated"
+                  >
+                    <span className="truncate">CMS Regulated</span>
+                    {getSortIndicator('cmsRegulated')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="cmsRegulated"
+                    columnTitle="CMS Regulated"
+                    values={[]}
+                    selectedValues={[]}
+                    onFilter={() => {}}
+                    filterType="boolean"
+                    booleanValue={columnFilters.cmsRegulated}
+                    onBooleanFilter={(value) => handleColumnFilter('cmsRegulated', value)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="cmsRegulated"
-                  columnTitle="CMS Regulated"
-                  values={[]}
-                  selectedValues={[]}
-                  onFilter={() => {}}
-                  filterType="boolean"
-                  booleanValue={columnFilters.cmsRegulated}
-                  onBooleanFilter={(value) => handleColumnFilter('cmsRegulated', value)}
-                />
-              </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('chapterName')}
-                  title="Click to sort by Chapter Name"
-                >
-                  <span className="truncate">Chapter Name</span>
-                  {getSortIndicator('chapterName')}
+              )}
+              {columnVisibility.chapterName && (
+                <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('chapterName')}
+                    title="Click to sort by Chapter Name"
+                  >
+                    <span className="truncate">Chapter Name</span>
+                    {getSortIndicator('chapterName')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="chapterName"
+                    columnTitle="Chapter Name"
+                    values={uniqueValues.chapterName}
+                    selectedValues={columnFilters.chapterName}
+                    onFilter={(values) => handleColumnFilter('chapterName', values)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="chapterName"
-                  columnTitle="Chapter Name"
-                  values={uniqueValues.chapterName}
-                  selectedValues={columnFilters.chapterName}
-                  onFilter={(values) => handleColumnFilter('chapterName', values)}
-                />
-              </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('sectionName')}
-                  title="Click to sort by Section Name"
-                >
-                  <span className="truncate">Section Name</span>
-                  {getSortIndicator('sectionName')}
+              )}
+              {columnVisibility.sectionName && (
+                <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('sectionName')}
+                    title="Click to sort by Section Name"
+                  >
+                    <span className="truncate">Section Name</span>
+                    {getSortIndicator('sectionName')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="sectionName"
+                    columnTitle="Section Name"
+                    values={uniqueValues.sectionName}
+                    selectedValues={columnFilters.sectionName}
+                    onFilter={(values) => handleColumnFilter('sectionName', values)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="sectionName"
-                  columnTitle="Section Name"
-                  values={uniqueValues.sectionName}
-                  selectedValues={columnFilters.sectionName}
-                  onFilter={(values) => handleColumnFilter('sectionName', values)}
-                />
-              </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('subsectionName')}
-                  title="Click to sort by Subsection Name"
-                >
-                  <span className="truncate">Subsection Name</span>
-                  {getSortIndicator('subsectionName')}
+              )}
+              {columnVisibility.subsectionName && (
+                <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('subsectionName')}
+                    title="Click to sort by Subsection Name"
+                  >
+                    <span className="truncate">Subsection Name</span>
+                    {getSortIndicator('subsectionName')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="subsectionName"
+                    columnTitle="Subsection Name"
+                    values={uniqueValues.subsectionName}
+                    selectedValues={columnFilters.subsectionName}
+                    onFilter={(values) => handleColumnFilter('subsectionName', values)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="subsectionName"
-                  columnTitle="Subsection Name"
-                  values={uniqueValues.subsectionName}
-                  selectedValues={columnFilters.subsectionName}
-                  onFilter={(values) => handleColumnFilter('subsectionName', values)}
-                />
-              </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('serviceGroup')}
-                  title="Click to sort by Service Group"
-                >
-                  <span className="truncate">Service Group</span>
-                  {getSortIndicator('serviceGroup')}
+              )}
+              {columnVisibility.serviceGroup && (
+                <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('serviceGroup')}
+                    title="Click to sort by Service Group"
+                  >
+                    <span className="truncate">Service Group</span>
+                    {getSortIndicator('serviceGroup')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="serviceGroup"
+                    columnTitle="Service Group"
+                    values={uniqueValues.serviceGroup}
+                    selectedValues={columnFilters.serviceGroup}
+                    onFilter={(values) => handleColumnFilter('serviceGroup', values)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="serviceGroup"
-                  columnTitle="Service Group"
-                  values={uniqueValues.serviceGroup}
-                  selectedValues={columnFilters.serviceGroup}
-                  onFilter={(values) => handleColumnFilter('serviceGroup', values)}
-                />
-              </div>
-              <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('sourceMapping')}
-                  title="Click to sort by Source Mapping"
-                >
-                  <span className="truncate">Source Mapping</span>
-                  {getSortIndicator('sourceMapping')}
+              )}
+              {columnVisibility.sourceMapping && (
+                <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('sourceMapping')}
+                    title="Click to sort by Source Mapping"
+                  >
+                    <span className="truncate">Source Mapping</span>
+                    {getSortIndicator('sourceMapping')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="sourceMapping"
+                    columnTitle="Source Mapping"
+                    values={uniqueValues.sourceMapping}
+                    selectedValues={columnFilters.sourceMapping}
+                    onFilter={(values) => handleColumnFilter('sourceMapping', values)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="sourceMapping"
-                  columnTitle="Source Mapping"
-                  values={uniqueValues.sourceMapping}
-                  selectedValues={columnFilters.sourceMapping}
-                  onFilter={(values) => handleColumnFilter('sourceMapping', values)}
-                />
-              </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('tiers')}
-                  title="Click to sort by Tiers"
-                >
-                  <span className="truncate">Tiers</span>
-                  {getSortIndicator('tiers')}
+              )}
+              {columnVisibility.tiers && (
+                <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('tiers')}
+                    title="Click to sort by Tiers"
+                  >
+                    <span className="truncate">Tiers</span>
+                    {getSortIndicator('tiers')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="tiers"
+                    columnTitle="Tiers"
+                    values={uniqueValues.tiers}
+                    selectedValues={columnFilters.tiers}
+                    onFilter={(values) => handleColumnFilter('tiers', values)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="tiers"
-                  columnTitle="Tiers"
-                  values={uniqueValues.tiers}
-                  selectedValues={columnFilters.tiers}
-                  onFilter={(values) => handleColumnFilter('tiers', values)}
-                />
-              </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('key')}
-                  title="Click to sort by Key"
-                >
-                  <span className="truncate">Key</span>
-                  {getSortIndicator('key')}
+              )}
+              {columnVisibility.key && (
+                <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('key')}
+                    title="Click to sort by Key"
+                  >
+                    <span className="truncate">Key</span>
+                    {getSortIndicator('key')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="key"
+                    columnTitle="Key"
+                    values={uniqueValues.key}
+                    selectedValues={columnFilters.key}
+                    onFilter={(values) => handleColumnFilter('key', values)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="key"
-                  columnTitle="Key"
-                  values={uniqueValues.key}
-                  selectedValues={columnFilters.key}
-                  onFilter={(values) => handleColumnFilter('key', values)}
-                />
-              </div>
+              )}
 
-              <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('isTabular')}
-                  title="Click to sort by Is Tabular"
-                >
-                  <span className="truncate">Is Tabular</span>
-                  {getSortIndicator('isTabular')}
+              {columnVisibility.isTabular && (
+                <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('isTabular')}
+                    title="Click to sort by Is Tabular"
+                  >
+                    <span className="truncate">Is Tabular</span>
+                    {getSortIndicator('isTabular')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="isTabular"
+                    columnTitle="Is Tabular"
+                    values={[]}
+                    selectedValues={[]}
+                    onFilter={() => {}}
+                    filterType="boolean"
+                    booleanValue={columnFilters.isTabular}
+                    onBooleanFilter={(value) => handleColumnFilter('isTabular', value)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="isTabular"
-                  columnTitle="Is Tabular"
-                  values={[]}
-                  selectedValues={[]}
-                  onFilter={() => {}}
-                  filterType="boolean"
-                  booleanValue={columnFilters.isTabular}
-                  onBooleanFilter={(value) => handleColumnFilter('isTabular', value)}
-                />
-              </div>
-              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('english')}
-                  title="Click to sort by English"
-                >
-                  <span className="truncate">English</span>
-                  {getSortIndicator('english')}
+              )}
+              {columnVisibility.english && (
+                <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('english')}
+                    title="Click to sort by English"
+                  >
+                    <span className="truncate">English</span>
+                    {getSortIndicator('english')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="english"
+                    columnTitle="English"
+                    values={[]}
+                    selectedValues={[]}
+                    onFilter={() => {}}
+                    filterType="text"
+                    textValue={columnFilters.english}
+                    onTextFilter={(value) => handleColumnFilter('english', value)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="english"
-                  columnTitle="English"
-                  values={[]}
-                  selectedValues={[]}
-                  onFilter={() => {}}
-                  filterType="text"
-                  textValue={columnFilters.english}
-                  onTextFilter={(value) => handleColumnFilter('english', value)}
-                />
-              </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('englishStatus')}
-                  title="Click to sort by Status"
-                >
-                  <span className="truncate">Status</span>
-                  {getSortIndicator('englishStatus')}
+              )}
+              {columnVisibility.englishStatus && (
+                <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('englishStatus')}
+                    title="Click to sort by Status"
+                  >
+                    <span className="truncate">Status</span>
+                    {getSortIndicator('englishStatus')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="englishStatus"
+                    columnTitle="English Status"
+                    values={uniqueValues.englishStatus}
+                    selectedValues={columnFilters.englishStatus}
+                    onFilter={(values) => handleColumnFilter('englishStatus', values)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="englishStatus"
-                  columnTitle="English Status"
-                  values={uniqueValues.englishStatus}
-                  selectedValues={columnFilters.englishStatus}
-                  onFilter={(values) => handleColumnFilter('englishStatus', values)}
-                />
-              </div>
-              <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('spanish')}
-                  title="Click to sort by Spanish"
-                >
-                  <span className="truncate">Spanish</span>
-                  {getSortIndicator('spanish')}
+              )}
+              {columnVisibility.spanish && (
+                <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('spanish')}
+                    title="Click to sort by Spanish"
+                  >
+                    <span className="truncate">Spanish</span>
+                    {getSortIndicator('spanish')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="spanish"
+                    columnTitle="Spanish"
+                    values={[]}
+                    selectedValues={[]}
+                    onFilter={() => {}}
+                    filterType="text"
+                    textValue={columnFilters.spanish}
+                    onTextFilter={(value) => handleColumnFilter('spanish', value)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="spanish"
-                  columnTitle="Spanish"
-                  values={[]}
-                  selectedValues={[]}
-                  onFilter={() => {}}
-                  filterType="text"
-                  textValue={columnFilters.spanish}
-                  onTextFilter={(value) => handleColumnFilter('spanish', value)}
-                />
-              </div>
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('spanishStatus')}
-                  title="Click to sort by Status"
-                >
-                  <span className="truncate">Status</span>
-                  {getSortIndicator('spanishStatus')}
+              )}
+              {columnVisibility.spanishStatus && (
+                <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('spanishStatus')}
+                    title="Click to sort by Status"
+                  >
+                    <span className="truncate">Status</span>
+                    {getSortIndicator('spanishStatus')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="spanishStatus"
+                    columnTitle="Spanish Status"
+                    values={uniqueValues.spanishStatus}
+                    selectedValues={columnFilters.spanishStatus}
+                    onFilter={(values) => handleColumnFilter('spanishStatus', values)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="spanishStatus"
-                  columnTitle="Spanish Status"
-                  values={uniqueValues.spanishStatus}
-                  selectedValues={columnFilters.spanishStatus}
-                  onFilter={(values) => handleColumnFilter('spanishStatus', values)}
-                />
-              </div>
-              <div className="w-32 px-3 py-2 flex items-center justify-between gap-2">
-                <div 
-                  className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
-                  onClick={() => handleSort('published')}
-                  title="Click to sort by Published"
-                >
-                  <span className="truncate">Published</span>
-                  {getSortIndicator('published')}
+              )}
+              {columnVisibility.published && (
+                <div className="w-32 px-3 py-2 flex items-center justify-between gap-2">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
+                    onClick={() => handleSort('published')}
+                    title="Click to sort by Published"
+                  >
+                    <span className="truncate">Published</span>
+                    {getSortIndicator('published')}
+                  </div>
+                  <ColumnFilter
+                    columnKey="published"
+                    columnTitle="Published"
+                    values={[]}
+                    selectedValues={[]}
+                    onFilter={() => {}}
+                    filterType="boolean"
+                    booleanValue={columnFilters.published}
+                    onBooleanFilter={(value) => handleColumnFilter('published', value)}
+                  />
                 </div>
-                <ColumnFilter
-                  columnKey="published"
-                  columnTitle="Published"
-                  values={[]}
-                  selectedValues={[]}
-                  onFilter={() => {}}
-                  filterType="boolean"
-                  booleanValue={columnFilters.published}
-                  onBooleanFilter={(value) => handleColumnFilter('published', value)}
-                />
-              </div>
+              )}
             </div>
 
             {/* Table Body - Compact rows */}
@@ -1381,117 +1538,126 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                     />
                   </div>
                   
-                  {renderCell(rule, 'ruleId', rule.ruleId || 'N/A', 'w-24 font-medium')}
-                  {renderCell(rule, 'effectiveDate', rule.effectiveDate || 'N/A', 'w-40')}
-                  {renderCell(rule, 'version', rule.version || 'N/A', 'w-24')}
-                  {renderCell(rule, 'benefitType', rule.benefitType || 'N/A', 'w-40')}
-                  {renderCell(rule, 'businessArea', rule.businessArea || 'N/A', 'w-40')}
-                  {renderCell(rule, 'subBusinessArea', rule.subBusinessArea || 'N/A', 'w-48')}
-                  {renderCell(rule, 'description', rule.description || 'N/A', 'w-64')}
-                  {renderCell(rule, 'templateName', rule.templateName || 'N/A', 'w-48 font-medium')}
-                  {renderCell(rule, 'serviceId', rule.serviceId || 'N/A', 'w-32')}
+                  {columnVisibility.ruleId && renderCell(rule, 'ruleId', rule.ruleId || 'N/A', 'w-24 font-medium')}
+                  {columnVisibility.effectiveDate && renderCell(rule, 'effectiveDate', rule.effectiveDate || 'N/A', 'w-40')}
+                  {columnVisibility.version && renderCell(rule, 'version', rule.version || 'N/A', 'w-24')}
+                  {columnVisibility.benefitType && renderCell(rule, 'benefitType', rule.benefitType || 'N/A', 'w-40')}
+                  {columnVisibility.businessArea && renderCell(rule, 'businessArea', rule.businessArea || 'N/A', 'w-40')}
+                  {columnVisibility.subBusinessArea && renderCell(rule, 'subBusinessArea', rule.subBusinessArea || 'N/A', 'w-48')}
+                  {columnVisibility.description && renderCell(rule, 'description', rule.description || 'N/A', 'w-64')}
+                  {columnVisibility.templateName && renderCell(rule, 'templateName', rule.templateName || 'N/A', 'w-48 font-medium')}
+                  {columnVisibility.serviceId && renderCell(rule, 'serviceId', rule.serviceId || 'N/A', 'w-32')}
                   
-                  <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
-                    <Checkbox 
-                      checked={rule.cmsRegulated || false}
-                      onCheckedChange={(checked) => {
-                        const updatedRule = {
-                          ...rule,
-                          cmsRegulated: checked as boolean,
-                          lastModified: new Date()
-                        };
-                        onRuleUpdate(updatedRule);
-                        
-                        // Log the checkbox change activity
-                        if ((window as any).addActivityLog) {
-                          (window as any).addActivityLog({
-                            user: 'Current User',
-                            action: 'edit',
-                            target: `Rule ${rule.ruleId || 'N/A'} - CMS Regulated`,
-                            details: `${checked ? 'Enabled' : 'Disabled'} CMS regulation`,
-                            ruleId: rule.ruleId,
-                            oldValue: rule.cmsRegulated ? 'Yes' : 'No',
-                            newValue: checked ? 'Yes' : 'No',
-                          });
-                        }
-                      }}
-                    />
-                  </div>
+                  {columnVisibility.cmsRegulated && (
+                    <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
+                      <Checkbox 
+                        checked={rule.cmsRegulated || false}
+                        onCheckedChange={(checked) => {
+                          const updatedRule = {
+                            ...rule,
+                            cmsRegulated: checked as boolean,
+                            lastModified: new Date()
+                          };
+                          onRuleUpdate(updatedRule);
+                          
+                          // Log the checkbox change activity
+                          if ((window as any).addActivityLog) {
+                            (window as any).addActivityLog({
+                              user: 'Current User',
+                              action: 'edit',
+                              target: `Rule ${rule.ruleId || 'N/A'} - CMS Regulated`,
+                              details: `${checked ? 'Enabled' : 'Disabled'} CMS regulation`,
+                              ruleId: rule.ruleId,
+                              oldValue: rule.cmsRegulated ? 'Yes' : 'No',
+                              newValue: checked ? 'Yes' : 'No',
+                            });
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
                   
-                  {renderCell(rule, 'chapterName', rule.chapterName || 'N/A', 'w-48')}
-                  {renderCell(rule, 'sectionName', rule.sectionName || 'N/A', 'w-48')}
-                  {renderCell(rule, 'subsectionName', rule.subsectionName || 'N/A', 'w-48')}
-                  {renderCell(rule, 'serviceGroup', rule.serviceGroup || 'N/A', 'w-32')}
-                  {renderCell(rule, 'sourceMapping', rule.sourceMapping || 'N/A', 'w-40')}
-                  {renderCell(rule, 'tiers', rule.tiers || 'N/A', 'w-32')}
-                  {renderCell(rule, 'key', rule.key || 'N/A', 'w-32')}
+                  {columnVisibility.chapterName && renderCell(rule, 'chapterName', rule.chapterName || 'N/A', 'w-48')}
+                  {columnVisibility.sectionName && renderCell(rule, 'sectionName', rule.sectionName || 'N/A', 'w-48')}
+                  {columnVisibility.subsectionName && renderCell(rule, 'subsectionName', rule.subsectionName || 'N/A', 'w-48')}
+                  {columnVisibility.serviceGroup && renderCell(rule, 'serviceGroup', rule.serviceGroup || 'N/A', 'w-32')}
+                  {columnVisibility.sourceMapping && renderCell(rule, 'sourceMapping', rule.sourceMapping || 'N/A', 'w-40')}
+                  {columnVisibility.tiers && renderCell(rule, 'tiers', rule.tiers || 'N/A', 'w-32')}
+                  {columnVisibility.key && renderCell(rule, 'key', rule.key || 'N/A', 'w-32')}
 
+                  {columnVisibility.isTabular && (
+                    <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
+                      <Checkbox 
+                        checked={rule.isTabular || false}
+                        onCheckedChange={(checked) => {
+                          const updatedRule = {
+                            ...rule,
+                            isTabular: checked as boolean,
+                            lastModified: new Date()
+                          };
+                          onRuleUpdate(updatedRule);
+                          
+                          // Log the checkbox change activity
+                          if ((window as any).addActivityLog) {
+                            (window as any).addActivityLog({
+                              user: 'Current User',
+                              action: 'edit',
+                              target: `Rule ${rule.ruleId || 'N/A'} - Is Tabular`,
+                              details: `${checked ? 'Enabled' : 'Disabled'} tabular format`,
+                              ruleId: rule.ruleId,
+                              oldValue: rule.isTabular ? 'Yes' : 'No',
+                              newValue: checked ? 'Yes' : 'No',
+                            });
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
                   
-                  <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
-                    <Checkbox 
-                      checked={rule.isTabular || false}
-                      onCheckedChange={(checked) => {
-                        const updatedRule = {
-                          ...rule,
-                          isTabular: checked as boolean,
-                          lastModified: new Date()
-                        };
-                        onRuleUpdate(updatedRule);
-                        
-                        // Log the checkbox change activity
-                        if ((window as any).addActivityLog) {
-                          (window as any).addActivityLog({
-                            user: 'Current User',
-                            action: 'edit',
-                            target: `Rule ${rule.ruleId || 'N/A'} - Is Tabular`,
-                            details: `${checked ? 'Enabled' : 'Disabled'} tabular format`,
-                            ruleId: rule.ruleId,
-                            oldValue: rule.isTabular ? 'Yes' : 'No',
-                            newValue: checked ? 'Yes' : 'No',
-                          });
-                        }
-                      }}
-                    />
-                  </div>
+                  {columnVisibility.english && renderCell(rule, 'english', rule.english || 'N/A', 'w-64')}
                   
-                  {renderCell(rule, 'english', rule.english || 'N/A', 'w-64')}
+                  {columnVisibility.englishStatus && (
+                    <div className="w-32 px-3 py-2 border-r border-gray-200">
+                      {getStatusBadge(rule.englishStatus)}
+                    </div>
+                  )}
                   
-                  <div className="w-32 px-3 py-2 border-r border-gray-200">
-                    {getStatusBadge(rule.englishStatus)}
-                  </div>
+                  {columnVisibility.spanish && renderCell(rule, 'spanish', rule.spanish || 'N/A', 'w-64')}
                   
-                  {renderCell(rule, 'spanish', rule.spanish || 'N/A', 'w-64')}
+                  {columnVisibility.spanishStatus && (
+                    <div className="w-32 px-3 py-2 border-r border-gray-200">
+                      {getStatusBadge(rule.spanishStatus)}
+                    </div>
+                  )}
                   
-                  <div className="w-32 px-3 py-2 border-r border-gray-200">
-                    {getStatusBadge(rule.spanishStatus)}
-                  </div>
-                  
-                  <div className="w-32 px-3 py-2 flex items-center justify-center">
-                    <Checkbox 
-                      checked={rule.published || false}
-                      onCheckedChange={(checked) => {
-                        const updatedRule = {
-                          ...rule,
-                          published: checked as boolean,
-                          lastModified: new Date()
-                        };
-                        onRuleUpdate(updatedRule);
-                        
-                        // Log the checkbox change activity
-                        if ((window as any).addActivityLog) {
-                          (window as any).addActivityLog({
-                            user: 'Current User',
-                            action: 'edit',
-                            target: `Rule ${rule.ruleId || 'N/A'} - Published`,
-                            details: `${checked ? 'Published' : 'Unpublished'} rule`,
-                            ruleId: rule.ruleId,
-                            oldValue: rule.published ? 'Yes' : 'No',
-                            newValue: checked ? 'Yes' : 'No',
-                          });
-                        }
-                      }}
-                    />
-                  </div>
+                  {columnVisibility.published && (
+                    <div className="w-32 px-3 py-2 flex items-center justify-center">
+                      <Checkbox 
+                        checked={rule.published || false}
+                        onCheckedChange={(checked) => {
+                          const updatedRule = {
+                            ...rule,
+                            published: checked as boolean,
+                            lastModified: new Date()
+                          };
+                          onRuleUpdate(updatedRule);
+                          
+                          // Log the checkbox change activity
+                          if ((window as any).addActivityLog) {
+                            (window as any).addActivityLog({
+                              user: 'Current User',
+                              action: 'edit',
+                              target: `Rule ${rule.ruleId || 'N/A'} - Published`,
+                              details: `${checked ? 'Published' : 'Unpublished'} rule`,
+                              ruleId: rule.ruleId,
+                              oldValue: rule.published ? 'Yes' : 'No',
+                              newValue: checked ? 'Yes' : 'No',
+                            });
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
                 ))
               ) : (
