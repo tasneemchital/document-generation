@@ -25,7 +25,8 @@ import {
   CaretDoubleRight,
   PencilSimple,
   Eye,
-  Trash
+  Trash,
+  DownloadSimple
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
@@ -682,6 +683,88 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     return tempDiv.textContent || tempDiv.innerText || '';
   };
 
+  // Handle download to Excel
+  const handleDownloadExcel = () => {
+    // Create CSV content from filtered rules
+    const headers = [
+      'Rule ID',
+      'Effective Date',
+      'Version',
+      'Benefit Type',
+      'Business Area',
+      'Sub-Business Area',
+      'Description',
+      'Template Name',
+      'Service ID',
+      'CMS Regulated',
+      'Chapter Name',
+      'Section Name',
+      'Subsection Name',
+      'Service Group',
+      'Source Mapping',
+      'Tiers',
+      'Key',
+      'Is Tabular',
+      'English',
+      'English Status',
+      'Spanish',
+      'Spanish Status',
+      'Published'
+    ];
+
+    const csvContent = [
+      headers.join(','),
+      ...columnFilteredRules.map(rule => [
+        `"${rule.ruleId || ''}"`,
+        `"${formatDateForDisplay(rule.effectiveDate || '')}"`,
+        `"${rule.version || ''}"`,
+        `"${rule.benefitType || ''}"`,
+        `"${rule.businessArea || ''}"`,
+        `"${rule.subBusinessArea || ''}"`,
+        `"${(rule.description || '').replace(/"/g, '""')}"`,
+        `"${rule.templateName || ''}"`,
+        `"${rule.serviceId || ''}"`,
+        `"${rule.cmsRegulated ? 'Yes' : 'No'}"`,
+        `"${rule.chapterName || ''}"`,
+        `"${rule.sectionName || ''}"`,
+        `"${rule.subsectionName || ''}"`,
+        `"${rule.serviceGroup || ''}"`,
+        `"${rule.sourceMapping || ''}"`,
+        `"${rule.tiers || ''}"`,
+        `"${rule.key || ''}"`,
+        `"${rule.isTabular ? 'Yes' : 'No'}"`,
+        `"${stripHtmlTags(rule.english || '').replace(/"/g, '""')}"`,
+        `"${rule.englishStatus || ''}"`,
+        `"${stripHtmlTags(rule.spanish || '').replace(/"/g, '""')}"`,
+        `"${rule.spanishStatus || ''}"`,
+        `"${rule.published ? 'Yes' : 'No'}"`
+      ].join(','))
+    ].join('\n');
+
+    // Create and download the file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `digital-content-manager-rules-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Log the download activity
+    if ((window as any).addActivityLog) {
+      (window as any).addActivityLog({
+        user: 'Current User',
+        action: 'export',
+        target: 'Excel Export',
+        details: `Downloaded ${columnFilteredRules.length} rules to CSV file`,
+      });
+    }
+
+    toast.success(`Downloaded ${columnFilteredRules.length} rules to Excel file`);
+  };
+
   const renderCell = (rule: RuleData, field: keyof RuleData, content: string, className: string = '') => {
     const isEditing = editingRule?.id === rule.id && editingRule?.field === field;
     const isEditable = !['createdAt', 'lastModified', 'id', 'ruleId', 'cmsRegulated', 'isTabular', 'published'].includes(field);
@@ -798,6 +881,15 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
               <h2 className="text-base font-semibold text-gray-900">Digital Content Manager - ANOC-EOC</h2>
             </div>
             <div className="flex items-center gap-3">
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="w-8 h-8 p-0 border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+                onClick={handleDownloadExcel}
+                title="Download to Excel"
+              >
+                <DownloadSimple size={16} />
+              </Button>
               <Button 
                 size="sm" 
                 variant="outline"
