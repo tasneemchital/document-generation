@@ -953,31 +953,32 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 >
                   <span>Sub-Business Area</span>
                   {getSortIndicator('subBusinessArea')}
+                </div>
                 <ColumnFilter
-                  columnKey="subBusinessArea"
                   columnKey="subBusinessArea"
                   columnTitle="Sub-Business Area"
                   values={uniqueValues.subBusinessArea}
+                  selectedValues={columnFilters.subBusinessArea}
                   onFilter={(values) => handleColumnFilter('subBusinessArea', values)}
                 />
               </div>
               <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
                 <div 
-                <div ap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
                   onClick={() => handleSort('description')}
                   title="Click to sort by Description"
                 >
                   <span>Description</span>
                   {getSortIndicator('description')}
                 </div>
-                </div>
-                  columnKey="description"
+                <ColumnFilter
                   columnKey="description"
                   columnTitle="Description"
                   values={[]}
                   selectedValues={[]}
                   onFilter={() => {}}
-                  filterType="text"n}
+                  filterType="text"
+                />
                   textValue={columnFilters.description}, value)}
               </div>
               <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
