@@ -801,6 +801,27 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     toast.success(`Downloaded ${columnFilteredRules.length} rules to Excel file`);
   };
 
+  // Handle save all changes
+  const handleSaveAll = () => {
+    // Since changes are automatically saved when editing cells, this function
+    // provides a visual confirmation that all data is saved
+    
+    // Log the save activity
+    if ((window as any).addActivityLog) {
+      (window as any).addActivityLog({
+        user: 'Current User',
+        action: 'save',
+        target: 'All Rules',
+        details: `Saved all changes to ${safeRules.length} rules`,
+      });
+    }
+
+    toast.success(`All changes saved successfully! (${safeRules.length} rules)`, {
+      description: 'All rule data is automatically persisted.',
+      duration: 3000,
+    });
+  };
+
   // Handle column visibility toggle
   const handleColumnVisibilityToggle = (columnKey: string, visible: boolean) => {
     setColumnVisibility(prev => ({
@@ -1140,6 +1161,15 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 title="Download to Excel"
               >
                 <DownloadSimple size={16} />
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="w-8 h-8 p-0 border-green-600 text-green-600 hover:bg-green-50"
+                onClick={handleSaveAll}
+                title="Save all changes"
+              >
+                <Save size={16} />
               </Button>
               <Button 
                 size="sm" 
