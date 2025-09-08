@@ -13,8 +13,8 @@ import { HtmlRichTextEditor } from '@/components/HtmlRichTextEditor';
 import { DatePicker } from '@/components/ui/date-picker';
 import { format, parse, isValid } from 'date-fns';
 import { 
-  ChevronDown, 
-  ChevronUp,
+  ArrowDown, 
+  ArrowUp,
   Edit, 
   Save, 
   X, 
@@ -407,11 +407,11 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
   // Get sort indicator for column header
   const getSortIndicator = (columnKey: keyof RuleData) => {
     if (sortConfig.key !== columnKey) {
-      return <ChevronDown size={14} className="text-gray-400" />;
+      return <ArrowDown size={14} className="text-gray-400" />;
     }
     return sortConfig.direction === 'asc' 
-      ? <ChevronUp size={14} className="text-blue-600" />
-      : <ChevronDown size={14} className="text-blue-600" />;
+      ? <ArrowUp size={14} className="text-blue-600" />
+      : <ArrowDown size={14} className="text-blue-600" />;
   };
 
   const handleRowSelect = (ruleId: string, checked: boolean) => {
