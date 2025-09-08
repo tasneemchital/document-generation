@@ -722,28 +722,25 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
               <Button 
                 size="sm" 
                 variant="outline"
-                className="w-8 h-8 p-0 border-gray-600 text-gray-600 hover:bg-gray-50"
                 onClick={handleBulkPreview}
-                disabled={selectedRows.size !== 1}
+                onClick={handleBulkPreview}
                 title="Preview selected rule"
-              >
                 <Eye size={16} />
+              >
+              <Button 
               </Button>
               <Button 
-                size="sm" 
-                variant="outline"
                 className="w-8 h-8 p-0 border-red-600 text-red-600 hover:bg-red-50"
                 onClick={handleBulkDelete}
+                className="w-8 h-8 p-0 border-red-600 text-red-600 hover:bg-red-50"
+                title="Delete selected rule(s)"
                 disabled={selectedRows.size === 0}
                 title="Delete selected rule(s)"
-              >
-                <Trash size={16} />
               </Button>
+                <Trash size={16} />
+                className="flex items-center gap-2 bg-purple-600 text-white hover:bg-purple-700"
               <Button 
                 size="sm" 
-                className="flex items-center gap-2 bg-purple-600 text-white hover:bg-purple-700"
-                onClick={handleCreateNewRule}
-              >
                 <Plus size={14} />
                 New Rule
               </Button>
