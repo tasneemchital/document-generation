@@ -1010,7 +1010,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   title="Click to sort by Benefit Type"
                 >
                   <span className="truncate">Benefit Type</span>
-                  {getSortIndicator('benefitType')}
+                  columnKey="serviceId"
                 </div>
                 <ColumnFilter
                   columnKey="benefitType"
