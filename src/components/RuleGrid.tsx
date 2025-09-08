@@ -973,16 +973,15 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
                 <ColumnFilter
                   columnKey="description"
-                  columnTitle="Description"
                   values={[]}
-                  selectedValues={[]}
+                  values={[]}
                   onFilter={() => {}}
                   filterType="text"
+                  filterType="text"
                 />
-                  textValue={columnFilters.description}, value)}
               </div>
+              </div>order-gray-200 flex items-center justify-between">
               <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div 
                   className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
                   onClick={() => handleSort('templateName')}
                   className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
