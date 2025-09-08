@@ -14,6 +14,7 @@ import { DatePicker } from '@/components/ui/date-picker';
 import { format, parse, isValid } from 'date-fns';
 import { 
   ChevronDown, 
+  ChevronUp,
   Edit, 
   Save, 
   X, 
@@ -80,6 +81,15 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     published: 'all' as 'all' | 'true' | 'false'
   });
 
+  // Sorting state
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof RuleData | null;
+    direction: 'asc' | 'desc';
+  }>({
+    key: null,
+    direction: 'asc'
+  });
+
   // Get unique values for each column
   const uniqueValues = useMemo(() => ({
     ruleId: [...new Set(safeRules.map(r => r.ruleId).filter(Boolean))],
@@ -101,9 +111,9 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     spanishStatus: [...new Set(safeRules.map(r => r.spanishStatus).filter(Boolean))]
   }), [safeRules]);
 
-  // Apply column filters directly to rules
+  // Apply column filters and sorting directly to rules
   const columnFilteredRules = useMemo(() => {
-    return safeRules.filter(rule => {
+    let filtered = safeRules.filter(rule => {
       // Text filters
       if (columnFilters.ruleId && !rule.ruleId?.toLowerCase().includes(columnFilters.ruleId.toLowerCase())) return false;
       if (columnFilters.effectiveDate && !rule.effectiveDate?.toLowerCase().includes(columnFilters.effectiveDate.toLowerCase())) return false;
@@ -147,7 +157,47 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
 
       return true;
     });
-  }, [safeRules, columnFilters]);
+
+    // Apply sorting
+    if (sortConfig.key) {
+      filtered.sort((a, b) => {
+        const aValue = a[sortConfig.key!];
+        const bValue = b[sortConfig.key!];
+        
+        // Handle null/undefined values
+        if (aValue == null && bValue == null) return 0;
+        if (aValue == null) return sortConfig.direction === 'asc' ? 1 : -1;
+        if (bValue == null) return sortConfig.direction === 'asc' ? -1 : 1;
+        
+        // Handle different data types
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          const comparison = aValue.toLowerCase().localeCompare(bValue.toLowerCase());
+          return sortConfig.direction === 'asc' ? comparison : -comparison;
+        }
+        
+        if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
+          if (aValue === bValue) return 0;
+          if (sortConfig.direction === 'asc') {
+            return aValue ? 1 : -1;
+          } else {
+            return aValue ? -1 : 1;
+          }
+        }
+        
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
+        }
+        
+        // For dates and other types, convert to string and compare
+        const aStr = String(aValue);
+        const bStr = String(bValue);
+        const comparison = aStr.toLowerCase().localeCompare(bStr.toLowerCase());
+        return sortConfig.direction === 'asc' ? comparison : -comparison;
+      });
+    }
+
+    return filtered;
+  }, [safeRules, columnFilters, sortConfig]);
 
   // Pagination calculations
   const totalPages = Math.max(1, Math.ceil(columnFilteredRules.length / pageSize));
@@ -155,10 +205,10 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
   const endIndex = Math.min(startIndex + pageSize, columnFilteredRules.length);
   const paginatedRules = columnFilteredRules.slice(startIndex, endIndex);
 
-  // Reset to first page when filters change
+  // Reset to first page when filters or sorting change
   useEffect(() => {
     setCurrentPage(1);
-  }, [columnFilters]);
+  }, [columnFilters, sortConfig]);
 
   // Helper functions for date handling
   const formatDateForDisplay = (dateString: string): string => {
@@ -323,6 +373,45 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
         details: `Applied filter to ${column} column`,
       });
     }
+  };
+
+  // Sort handler
+  const handleSort = (columnKey: keyof RuleData) => {
+    setSortConfig(prev => {
+      if (prev.key === columnKey) {
+        // Toggle direction if same column
+        return {
+          key: columnKey,
+          direction: prev.direction === 'asc' ? 'desc' : 'asc'
+        };
+      } else {
+        // New column, start with ascending
+        return {
+          key: columnKey,
+          direction: 'asc'
+        };
+      }
+    });
+
+    // Log sort activity
+    if ((window as any).addActivityLog) {
+      (window as any).addActivityLog({
+        user: 'Current User',
+        action: 'sort',
+        target: `Column: ${columnKey}`,
+        details: `Sorted by ${columnKey} column`,
+      });
+    }
+  };
+
+  // Get sort indicator for column header
+  const getSortIndicator = (columnKey: keyof RuleData) => {
+    if (sortConfig.key !== columnKey) {
+      return <ChevronDown size={14} className="text-gray-400" />;
+    }
+    return sortConfig.direction === 'asc' 
+      ? <ChevronUp size={14} className="text-blue-600" />
+      : <ChevronDown size={14} className="text-blue-600" />;
   };
 
   const handleRowSelect = (ruleId: string, checked: boolean) => {
@@ -766,9 +855,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('ruleId')}
+                  title="Click to sort by Rule ID"
+                >
                   <span>Rule ID</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('ruleId')}
                 </div>
                 <ColumnFilter
                   columnKey="ruleId"
@@ -782,9 +875,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('effectiveDate')}
+                  title="Click to sort by Effective Date"
+                >
                   <span>Effective Date</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('effectiveDate')}
                 </div>
                 <ColumnFilter
                   columnKey="effectiveDate"
@@ -798,9 +895,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('version')}
+                  title="Click to sort by Version"
+                >
                   <span>Version</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('version')}
                 </div>
                 <ColumnFilter
                   columnKey="version"
@@ -811,9 +912,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('benefitType')}
+                  title="Click to sort by Benefit Type"
+                >
                   <span>Benefit Type</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('benefitType')}
                 </div>
                 <ColumnFilter
                   columnKey="benefitType"
@@ -824,9 +929,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('businessArea')}
+                  title="Click to sort by Business Area"
+                >
                   <span>Business Area</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('businessArea')}
                 </div>
                 <ColumnFilter
                   columnKey="businessArea"
@@ -837,9 +946,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('subBusinessArea')}
+                  title="Click to sort by Sub-Business Area"
+                >
                   <span>Sub-Business Area</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('subBusinessArea')}
                 </div>
                 <ColumnFilter
                   columnKey="subBusinessArea"
@@ -850,9 +963,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('description')}
+                  title="Click to sort by Description"
+                >
                   <span>Description</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('description')}
                 </div>
                 <ColumnFilter
                   columnKey="description"
@@ -866,9 +983,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('templateName')}
+                  title="Click to sort by Template Name"
+                >
                   <span>Template Name</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('templateName')}
                 </div>
                 <ColumnFilter
                   columnKey="templateName"
@@ -879,9 +1000,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('serviceId')}
+                  title="Click to sort by Service ID"
+                >
                   <span>Service ID</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('serviceId')}
                 </div>
                 <ColumnFilter
                   columnKey="serviceId"
@@ -892,8 +1017,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('cmsRegulated')}
+                  title="Click to sort by CMS Regulated"
+                >
                   <span>CMS Regulated</span>
+                  {getSortIndicator('cmsRegulated')}
                 </div>
                 <ColumnFilter
                   columnKey="cmsRegulated"
@@ -907,9 +1037,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('chapterName')}
+                  title="Click to sort by Chapter Name"
+                >
                   <span>Chapter Name</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('chapterName')}
                 </div>
                 <ColumnFilter
                   columnKey="chapterName"
@@ -920,9 +1054,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('sectionName')}
+                  title="Click to sort by Section Name"
+                >
                   <span>Section Name</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('sectionName')}
                 </div>
                 <ColumnFilter
                   columnKey="sectionName"
@@ -933,9 +1071,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('subsectionName')}
+                  title="Click to sort by Subsection Name"
+                >
                   <span>Subsection Name</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('subsectionName')}
                 </div>
                 <ColumnFilter
                   columnKey="subsectionName"
@@ -946,9 +1088,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('serviceGroup')}
+                  title="Click to sort by Service Group"
+                >
                   <span>Service Group</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('serviceGroup')}
                 </div>
                 <ColumnFilter
                   columnKey="serviceGroup"
@@ -959,9 +1105,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('sourceMapping')}
+                  title="Click to sort by Source Mapping"
+                >
                   <span>Source Mapping</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('sourceMapping')}
                 </div>
                 <ColumnFilter
                   columnKey="sourceMapping"
@@ -972,9 +1122,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('tiers')}
+                  title="Click to sort by Tiers"
+                >
                   <span>Tiers</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('tiers')}
                 </div>
                 <ColumnFilter
                   columnKey="tiers"
@@ -985,9 +1139,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('key')}
+                  title="Click to sort by Key"
+                >
                   <span>Key</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('key')}
                 </div>
                 <ColumnFilter
                   columnKey="key"
@@ -999,8 +1157,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
               </div>
 
               <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('isTabular')}
+                  title="Click to sort by Is Tabular"
+                >
                   <span>Is Tabular</span>
+                  {getSortIndicator('isTabular')}
                 </div>
                 <ColumnFilter
                   columnKey="isTabular"
@@ -1014,9 +1177,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('english')}
+                  title="Click to sort by English"
+                >
                   <span>English</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('english')}
                 </div>
                 <ColumnFilter
                   columnKey="english"
@@ -1030,9 +1197,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('englishStatus')}
+                  title="Click to sort by Status"
+                >
                   <span>Status</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('englishStatus')}
                 </div>
                 <ColumnFilter
                   columnKey="englishStatus"
@@ -1043,9 +1214,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('spanish')}
+                  title="Click to sort by Spanish"
+                >
                   <span>Spanish</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('spanish')}
                 </div>
                 <ColumnFilter
                   columnKey="spanish"
@@ -1059,9 +1234,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('spanishStatus')}
+                  title="Click to sort by Status"
+                >
                   <span>Status</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('spanishStatus')}
                 </div>
                 <ColumnFilter
                   columnKey="spanishStatus"
@@ -1072,8 +1251,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-32 px-3 py-2 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('published')}
+                  title="Click to sort by Published"
+                >
                   <span>Published</span>
+                  {getSortIndicator('published')}
                 </div>
                 <ColumnFilter
                   columnKey="published"
