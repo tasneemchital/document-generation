@@ -973,59 +973,59 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
                 <ColumnFilter
                   columnKey="description"
+                  columnTitle="Description"
                   values={[]}
-                  values={[]}
+                  selectedValues={[]}
                   onFilter={() => {}}
                   filterType="text"
-                  filterType="text"
+                  textValue={columnFilters.description}
+                  onTextFilter={(value) => handleColumnFilter('description', value)}
                 />
               </div>
-              </div>order-gray-200 flex items-center justify-between">
               <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div 
                   className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
                   onClick={() => handleSort('templateName')}
-                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  title="Click to sort by Template Name"
                 >
                   <span>Template Name</span>
-                >
-                  <span>Template Name</span>
-                <ColumnFilter
+                  {getSortIndicator('templateName')}
                 </div>
                 <ColumnFilter
                   columnKey="templateName"
                   columnTitle="Template Name"
-                  values={uniqueValues.templateName} values)}
+                  values={uniqueValues.templateName}
                   selectedValues={columnFilters.templateName}
                   onFilter={(values) => handleColumnFilter('templateName', values)}
-                />ay-200 flex items-center justify-between">
+                />
               </div>
               <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
                   onClick={() => handleSort('serviceId')}
+                  title="Click to sort by Service ID"
                 >
                   <span>Service ID</span>
                   {getSortIndicator('serviceId')}
                 </div>
-                  <span>Service ID</span>
+                <ColumnFilter
                   columnKey="serviceId"
-                </div>
+                  columnTitle="Service ID"
                   values={uniqueValues.serviceId}
                   selectedValues={columnFilters.serviceId}
                   onFilter={(values) => handleColumnFilter('serviceId', values)}
                 />
-                  selectedValues={columnFilters.serviceId}
-              <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                />
-              </div>lue-600 transition-colors"
+              </div>
               <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
                 <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('cmsRegulated')}
+                  title="Click to sort by CMS Regulated"
                 >
                   <span>CMS Regulated</span>
                   {getSortIndicator('cmsRegulated')}
                 </div>
-                  <span>CMS Regulated</span>
-                  columnKey="cmsRegulated"
-                </div>
-                  values={[]}
+                <ColumnFilter
                   columnKey="cmsRegulated"
                   columnTitle="CMS Regulated"
                   values={[]}
@@ -1037,9 +1037,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('chapterName')}
+                  title="Click to sort by Chapter Name"
+                >
                   <span>Chapter Name</span>
-                  <ChevronDown size={14} className="text-gray-400" />
+                  {getSortIndicator('chapterName')}
                 </div>
                 <ColumnFilter
                   columnKey="chapterName"
@@ -1050,22 +1054,21 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span>Section Name</span>
-                  <ChevronDown size={14} className="text-gray-400" />
-                </div>
-                <ColumnFilter
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
+                  onClick={() => handleSort('sectionName')}
+                  title="Click to sort by Section Name"
                 >
                   <span>Section Name</span>
                   {getSortIndicator('sectionName')}
                 </div>
+                <ColumnFilter
+                  columnKey="sectionName"
+                  columnTitle="Section Name"
+                  values={uniqueValues.sectionName}
+                  selectedValues={columnFilters.sectionName}
                   onFilter={(values) => handleColumnFilter('sectionName', values)}
                 />
-              </div>
-              <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  onFilter={(values) => handleColumnFilter('sectionName', values)}
-                  <ChevronDown size={14} className="text-gray-400" />
               </div>
               <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
                 <div 
@@ -1076,13 +1079,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                   <span>Subsection Name</span>
                   {getSortIndicator('subsectionName')}
                 </div>
-                <div className="flex items-center gap-2">
-                  <span>Service Group</span>
-                  <ChevronDown size={14} className="text-gray-400" />
-                </div>
                 <ColumnFilter
+                  columnKey="subsectionName"
+                  columnTitle="Subsection Name"
+                  values={uniqueValues.subsectionName}
+                  selectedValues={columnFilters.subsectionName}
                   onFilter={(values) => handleColumnFilter('subsectionName', values)}
-                  columnTitle="Service Group"
+                />
               </div>
               <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between">
                 <div 
