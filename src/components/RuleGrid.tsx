@@ -1165,15 +1165,6 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
               <Button 
                 size="sm" 
                 variant="outline"
-                className="w-8 h-8 p-0 border-green-600 text-green-600 hover:bg-green-50"
-                onClick={handleSaveAll}
-                title="Save all changes"
-              >
-                <Save size={16} />
-              </Button>
-              <Button 
-                size="sm" 
-                variant="outline"
                 className="w-8 h-8 p-0 border-orange-600 text-orange-600 hover:bg-orange-50"
                 onClick={handleCopyRow}
                 disabled={selectedRows.size !== 1}
