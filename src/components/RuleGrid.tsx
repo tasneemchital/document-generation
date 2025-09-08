@@ -617,6 +617,11 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     const selectedRuleId = Array.from(selectedRows)[0];
     const selectedRule = safeRules.find(rule => rule.id === selectedRuleId);
     
+    if (selectedRule?.published) {
+      toast.error('Cannot edit released rules. Released rules are non-editable.');
+      return;
+    }
+    
     if (selectedRule && typeof onEditRule === 'function') {
       // Navigate to the edit page instead of opening the rich text editor
       onEditRule(selectedRule);
@@ -880,18 +885,37 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     // Confirm publishing
     const ruleNames = unpublishedRules.map(rule => rule.ruleId || 'N/A').join(', ');
     const confirmMessage = unpublishedRules.length === 1 
-      ? `Are you sure you want to release Rule ${ruleNames}?`
-      : `Are you sure you want to release ${unpublishedRules.length} rules (${ruleNames})?`;
+      ? `Are you sure you want to release Rule ${ruleNames}? This will change it to a major version and make it non-editable.`
+      : `Are you sure you want to release ${unpublishedRules.length} rules (${ruleNames})? This will change them to major versions and make them non-editable.`;
     
     if (!confirm(confirmMessage)) {
       return;
     }
     
+    // Helper function to increment version to next major version
+    const incrementToMajorVersion = (currentVersion: string): string => {
+      if (!currentVersion) return '1.0';
+      
+      // Extract major version number
+      const versionMatch = currentVersion.match(/^(\d+)/);
+      if (versionMatch) {
+        const majorVersion = parseInt(versionMatch[1], 10);
+        return `${majorVersion + 1}.0`;
+      }
+      
+      // If version format is unexpected, default to 1.0
+      return '1.0';
+    };
+    
     // Publish the rules
     unpublishedRules.forEach(rule => {
+      const oldVersion = rule.version || '0.0';
+      const newVersion = incrementToMajorVersion(oldVersion);
+      
       const updatedRule = {
         ...rule,
         published: true,
+        version: newVersion,
         lastModified: new Date(),
         lastModifiedBy: 'Current User'
       };
@@ -903,8 +927,10 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
           user: 'Current User',
           action: 'release',
           target: `Rule ${rule.ruleId}`,
-          details: `Released rule`,
+          details: `Released rule (version changed from ${oldVersion} to ${newVersion})`,
           ruleId: rule.ruleId,
+          oldValue: oldVersion,
+          newValue: newVersion,
         });
       }
     });
@@ -912,12 +938,12 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     // Clear selection
     setSelectedRows(new Set());
     
-    toast.success(`Successfully released ${unpublishedRules.length} rule${unpublishedRules.length > 1 ? 's' : ''}`);
+    toast.success(`Successfully released ${unpublishedRules.length} rule${unpublishedRules.length > 1 ? 's' : ''} with updated versions`);
   };
 
   const renderCell = (rule: RuleData, field: keyof RuleData, content: string, className: string = '') => {
     const isEditing = editingRule?.id === rule.id && editingRule?.field === field;
-    const isEditable = !['createdAt', 'lastModified', 'id', 'ruleId', 'cmsRegulated', 'isTabular', 'published'].includes(field);
+    const isEditable = !['createdAt', 'lastModified', 'id', 'ruleId', 'cmsRegulated', 'isTabular', 'published'].includes(field) && !rule.published; // Make cells non-editable when released
     const isRichTextField = field === 'english' || field === 'spanish';
     const isDateField = field === 'effectiveDate';
     
@@ -925,12 +951,17 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     if (isDateField) {
       const currentDate = parseDateFromString(rule.effectiveDate);
       return (
-        <div className={`px-2 py-1 border-r border-gray-200 ${className} bg-white`}>
+        <div className={`px-2 py-1 border-r border-gray-200 ${className} ${rule.published ? 'bg-gray-50' : 'bg-white'}`}>
           <DatePicker
             date={currentDate}
-            onDateChange={(newDate) => handleDateChange(rule, newDate)}
+            onDateChange={rule.published ? undefined : (newDate) => handleDateChange(rule, newDate)} // Disable date picker for released rules
             placeholder="Select date"
-            className="h-7 text-sm w-full border-gray-300 hover:bg-blue-50 justify-start min-w-0"
+            className={`h-7 text-sm w-full justify-start min-w-0 ${
+              rule.published 
+                ? 'border-gray-200 bg-gray-50 cursor-not-allowed text-gray-500 pointer-events-none' 
+                : 'border-gray-300 hover:bg-blue-50'
+            }`}
+            disabled={rule.published}
           />
         </div>
       );
@@ -972,9 +1003,15 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
           isEditable && !isDateField ? 'hover:bg-blue-50 cursor-pointer group' : 'bg-gray-50 cursor-not-allowed'
         } ${selectedRows.has(rule.id) ? 'bg-blue-50' : ''} ${
           field === 'ruleId' ? 'font-mono font-semibold text-purple-700' : ''
-        }`}
+        } ${rule.published ? 'bg-gray-50 text-gray-600' : ''}`} // Gray out released rules
         onClick={() => isEditable && !isDateField && handleCellClick(rule, field)}
-        title={field === 'ruleId' ? 'Rule ID (Auto-generated, non-editable)' : undefined}
+        title={
+          field === 'ruleId' 
+            ? 'Rule ID (Auto-generated, non-editable)' 
+            : rule.published 
+              ? 'Released rules are non-editable'
+              : undefined
+        }
       >
         <div className="flex items-center justify-between">
           <span className="truncate flex-1 text-gray-900">
@@ -1129,8 +1166,14 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 variant="outline"
                 className="w-8 h-8 p-0 border-blue-600 text-blue-600 hover:bg-blue-50"
                 onClick={handleBulkEdit}
-                disabled={selectedRows.size !== 1}
-                title="Edit selected rule"
+                disabled={selectedRows.size !== 1 || (selectedRows.size === 1 && safeRules.find(rule => rule.id === Array.from(selectedRows)[0])?.published)}
+                title={
+                  selectedRows.size !== 1 
+                    ? "Select exactly one rule to edit" 
+                    : (selectedRows.size === 1 && safeRules.find(rule => rule.id === Array.from(selectedRows)[0])?.published)
+                      ? "Released rules cannot be edited"
+                      : "Edit selected rule"
+                }
               >
                 <Edit size={16} />
               </Button>
@@ -1675,7 +1718,8 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                     <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
                       <Checkbox 
                         checked={rule.cmsRegulated || false}
-                        onCheckedChange={(checked) => {
+                        disabled={rule.published} // Disable checkbox for released rules
+                        onCheckedChange={rule.published ? undefined : (checked) => {
                           const updatedRule = {
                             ...rule,
                             cmsRegulated: checked as boolean,
@@ -1696,6 +1740,8 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                             });
                           }
                         }}
+                        className={rule.published ? 'opacity-50 cursor-not-allowed' : ''}
+                        title={rule.published ? 'Released rules cannot be edited' : undefined}
                       />
                     </div>
                   )}
@@ -1712,7 +1758,8 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                     <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
                       <Checkbox 
                         checked={rule.isTabular || false}
-                        onCheckedChange={(checked) => {
+                        disabled={rule.published} // Disable checkbox for released rules
+                        onCheckedChange={rule.published ? undefined : (checked) => {
                           const updatedRule = {
                             ...rule,
                             isTabular: checked as boolean,
@@ -1733,6 +1780,8 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                             });
                           }
                         }}
+                        className={rule.published ? 'opacity-50 cursor-not-allowed' : ''}
+                        title={rule.published ? 'Released rules cannot be edited' : undefined}
                       />
                     </div>
                   )}
@@ -1758,25 +1807,75 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                       <Checkbox 
                         checked={rule.published || false}
                         onCheckedChange={(checked) => {
-                          const updatedRule = {
-                            ...rule,
-                            published: checked as boolean,
-                            lastModified: new Date()
-                          };
-                          onRuleUpdate(updatedRule);
-                          
-                          // Log the checkbox change activity
-                          if ((window as any).addActivityLog) {
-                            (window as any).addActivityLog({
-                              user: 'Current User',
-                              action: 'edit',
-                              target: `Rule ${rule.ruleId || 'N/A'} - Release`,
-                              details: `${checked ? 'Released' : 'Unreleased'} rule`,
-                              ruleId: rule.ruleId,
-                              oldValue: rule.published ? 'Yes' : 'No',
-                              newValue: checked ? 'Yes' : 'No',
-                            });
+                          // Don't allow unchecking a released rule - only allow initial release
+                          if (rule.published && !checked) {
+                            toast.error('Cannot unreleased a rule once it has been released');
+                            return;
                           }
+                          
+                          let updatedRule;
+                          if (checked && !rule.published) {
+                            // Releasing a rule - increment to major version
+                            const incrementToMajorVersion = (currentVersion: string): string => {
+                              if (!currentVersion) return '1.0';
+                              
+                              // Extract major version number
+                              const versionMatch = currentVersion.match(/^(\d+)/);
+                              if (versionMatch) {
+                                const majorVersion = parseInt(versionMatch[1], 10);
+                                return `${majorVersion + 1}.0`;
+                              }
+                              
+                              // If version format is unexpected, default to 1.0
+                              return '1.0';
+                            };
+                            
+                            const oldVersion = rule.version || '0.0';
+                            const newVersion = incrementToMajorVersion(oldVersion);
+                            
+                            updatedRule = {
+                              ...rule,
+                              published: true,
+                              version: newVersion,
+                              lastModified: new Date()
+                            };
+                            
+                            // Log with version change
+                            if ((window as any).addActivityLog) {
+                              (window as any).addActivityLog({
+                                user: 'Current User',
+                                action: 'release',
+                                target: `Rule ${rule.ruleId || 'N/A'} - Release`,
+                                details: `Released rule (version changed from ${oldVersion} to ${newVersion})`,
+                                ruleId: rule.ruleId,
+                                oldValue: oldVersion,
+                                newValue: newVersion,
+                              });
+                            }
+                            
+                            toast.success(`Rule ${rule.ruleId} released with version ${newVersion}`);
+                          } else {
+                            updatedRule = {
+                              ...rule,
+                              published: checked as boolean,
+                              lastModified: new Date()
+                            };
+                            
+                            // Log the checkbox change activity
+                            if ((window as any).addActivityLog) {
+                              (window as any).addActivityLog({
+                                user: 'Current User',
+                                action: 'edit',
+                                target: `Rule ${rule.ruleId || 'N/A'} - Release`,
+                                details: `${checked ? 'Released' : 'Unreleased'} rule`,
+                                ruleId: rule.ruleId,
+                                oldValue: rule.published ? 'Yes' : 'No',
+                                newValue: checked ? 'Yes' : 'No',
+                              });
+                            }
+                          }
+                          
+                          onRuleUpdate(updatedRule);
                         }}
                       />
                     </div>
