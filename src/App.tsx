@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useKV } from '@github/spark/hooks';
 import { Layout } from '@/components/Layout';
 import { Dashboard } from '@/components/Dashboard';
@@ -12,6 +13,41 @@ function App() {
   const [currentPage, setCurrentPage] = useKV<string>('current-page', 'dashboard');
   const [editingRule, setEditingRule] = useKV<RuleData | null>('editing-rule', null);
   const [rules, setRules] = useKV<RuleData[]>('rule-data', []);
+
+  // Migration function to ensure sequential rule IDs
+  const migrateRuleIdsToSequential = (currentRules: RuleData[]): RuleData[] => {
+    if (!Array.isArray(currentRules)) return [];
+    
+    return currentRules.map((rule, index) => {
+      // Check if rule ID is already in R0000 format
+      if (!rule.ruleId || !rule.ruleId.match(/^R\d{4}$/)) {
+        // Migrate to new format
+        return {
+          ...rule,
+          ruleId: `R${String(index + 1).padStart(4, '0')}`,
+          effectiveDate: '01/01/2025' // Ensure all effective dates are consistent
+        };
+      }
+      return {
+        ...rule,
+        effectiveDate: '01/01/2025' // Ensure all effective dates are consistent  
+      };
+    });
+  };
+
+  // Run migration when rules change
+  useEffect(() => {
+    if (Array.isArray(rules) && rules.length > 0) {
+      const migratedRules = migrateRuleIdsToSequential(rules);
+      const needsMigration = migratedRules.some((rule, index) => 
+        rule.ruleId !== rules[index]?.ruleId || rule.effectiveDate !== rules[index]?.effectiveDate
+      );
+      
+      if (needsMigration) {
+        setRules(migratedRules);
+      }
+    }
+  }, [rules, setRules]);
 
   const handleNavigate = (page: string) => {
     setCurrentPage(page);

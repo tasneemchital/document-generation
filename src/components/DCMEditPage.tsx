@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useKV } from '@github/spark/hooks';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,6 +22,7 @@ interface DCMEditPageProps {
 }
 
 export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps) {
+  const [rules, setRules] = useKV<RuleData[]>('rule-data', []);
   const [formData, setFormData] = useState<RuleData>({
     id: '',
     ruleId: '',
@@ -90,6 +92,35 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
     return format(date, 'MM/dd/yyyy');
   };
 
+  // Generate unique sequential Rule ID
+  const generateUniqueRuleId = (): string => {
+    const safeRules = Array.isArray(rules) ? rules : [];
+    const existingRuleIds = new Set(safeRules.map(rule => rule.ruleId).filter(Boolean));
+    let counter = 1;
+    
+    // Find the highest existing rule number
+    const existingNumbers = safeRules
+      .map(rule => rule.ruleId)
+      .filter(Boolean)
+      .map(id => {
+        const match = id.match(/^R(\d+)$/);
+        return match ? parseInt(match[1], 10) : 0;
+      })
+      .filter(num => num > 0);
+    
+    if (existingNumbers.length > 0) {
+      counter = Math.max(...existingNumbers) + 1;
+    }
+    
+    let ruleId: string;
+    do {
+      ruleId = `R${String(counter).padStart(4, '0')}`;
+      counter++;
+    } while (existingRuleIds.has(ruleId));
+    
+    return ruleId;
+  };
+
   const handleInputChange = (field: keyof RuleData, value: any) => {
     setFormData(prev => ({
       ...prev,
@@ -127,7 +158,7 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
 
       // Generate rule ID if creating new
       if (mode === 'create') {
-        const newRuleId = `R${String(Date.now()).slice(-4)}`;
+        const newRuleId = generateUniqueRuleId();
         formData.ruleId = newRuleId;
         formData.id = `rule-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         formData.createdAt = new Date();
