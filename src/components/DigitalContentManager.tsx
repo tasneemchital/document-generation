@@ -302,7 +302,10 @@ export function DigitalContentManager({ onNavigate, onEditRule }: DigitalContent
               >
                 <Plus className="w-4 h-4" />
                 Add More Data
-              </Button>
+      <Toaster />
+    </div>
+  );
+}              </Button>
               <Button 
                 variant="outline" 
                 size="sm"
