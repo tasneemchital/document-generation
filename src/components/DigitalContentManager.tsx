@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { useKV } from '@github/spark/hooks';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/sonner';
 import { RuleGrid } from '@/components/RuleGrid';
 import { ActivityLog } from '@/components/ActivityLog';
 import { RuleData } from '@/lib/types';
 import { generateMockRuleData } from '@/lib/mockRuleData';
+import { Plus, Trash } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
 interface DigitalContentManagerProps {
@@ -20,13 +22,23 @@ export function DigitalContentManager({ onNavigate, onEditRule }: DigitalContent
   const [langRepeaterDataLoaded, setLangRepeaterDataLoaded] = useKV<boolean>('lang-repeater-data-loaded', false);
 
   useEffect(() => {
-    // Load mock data if no rules exist - ensure rules is an array
-    if (!Array.isArray(rules) || rules.length === 0) {
-      generateMockRuleData().then(mockRules => {
+    // Always load fresh mock data when component mounts
+    const loadData = async () => {
+      try {
+        const mockRules = await generateMockRuleData();
         setRules(mockRules);
-      });
+        console.log('Loaded', mockRules.length, 'rules into Digital Content Manager');
+      } catch (error) {
+        console.error('Error loading mock data:', error);
+        setRules([]);
+      }
+    };
+
+    // Load mock data if no rules exist or if rules is not an array
+    if (!Array.isArray(rules) || rules.length === 0) {
+      loadData();
     }
-  }, [rules, setRules]);
+  }, [setRules]);
 
   // Auto-load Language Repeater 2 data when Digital Content Manager is loaded
   useEffect(() => {
@@ -268,6 +280,56 @@ export function DigitalContentManager({ onNavigate, onEditRule }: DigitalContent
                   <SelectItem value="digital-content-manager-sbc">Digital Content Manager - SBC</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={async () => {
+                  const newData = await generateMockRuleData();
+                  setRules(current => {
+                    const currentLength = current.length;
+                    const updatedNewData = newData.map((rule, index) => ({
+                      ...rule,
+                      id: `rule-${currentLength + index + 1}`,
+                      ruleId: `R${String(currentLength + index + 1).padStart(4, '0')}`
+                    }));
+                    return [...current, ...updatedNewData];
+                  });
+                  toast.success(`Added ${newData.length} new rules to the grid`);
+                }}
+                className="gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Add More Data
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={async () => {
+                  const newData = await generateMockRuleData();
+                  setRules(newData);
+                  setLangRepeaterDataLoaded(false); // Reset so it can reload language repeater data
+                  toast.success(`Replaced with ${newData.length} fresh rules`);
+                }}
+                className="gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Reload Sample Data
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  setRules([]);
+                  setLangRepeaterDataLoaded(false);
+                  toast.success('Cleared all data from the grid');
+                }}
+                className="gap-2"
+              >
+                <Trash className="w-4 h-4" />
+                Clear Data
+              </Button>
             </div>
           </div>
         </div>
