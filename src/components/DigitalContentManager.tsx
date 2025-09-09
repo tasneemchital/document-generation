@@ -7,7 +7,7 @@ import { RuleGrid } from '@/components/RuleGrid';
 import { ActivityLog } from '@/components/ActivityLog';
 import { RuleData } from '@/lib/types';
 import { generateMockRuleData } from '@/lib/mockRuleData';
-import { Plus, Trash, ArrowClockwise } from '@phosphor-icons/react';
+import { Plus, Trash } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
 interface DigitalContentManagerProps {
@@ -21,58 +21,27 @@ export function DigitalContentManager({ onNavigate, onEditRule }: DigitalContent
   const [activityLogCollapsed, setActivityLogCollapsed] = useKV<boolean>('dcm-activity-log-collapsed', false);
   const [langRepeaterDataLoaded, setLangRepeaterDataLoaded] = useKV<boolean>('lang-repeater-data-loaded', false);
 
-  // Function to manually refresh all data
-  const refreshAllData = async () => {
-    try {
-      const newData = await generateMockRuleData();
-      setRules(newData);
-      setLangRepeaterDataLoaded(false); // Reset to reload language repeater data
-      toast.success(`Data refreshed! Loaded ${newData.length} fresh rules`);
-    } catch (error) {
-      console.error('Error refreshing data:', error);
-      toast.error('Failed to refresh data');
-    }
-  };
-
   useEffect(() => {
-    // Trigger immediate refresh on component mount
-    const immediateRefresh = async () => {
+    // Always load fresh mock data when component mounts
+    const loadData = async () => {
       try {
-        // Clear existing data first
-        setRules([]);
-        
-        // Load fresh data
         const mockRules = await generateMockRuleData();
         setRules(mockRules);
+        console.log('Loaded', mockRules.length, 'rules into Digital Content Manager');
         
-        console.log('Data refreshed! Loaded', mockRules.length, 'rules into Digital Content Manager');
-        toast.success(`Successfully refreshed data with ${mockRules.length} rules`);
+        // Show success message for refresh
+        toast.success(`Data refreshed! Loaded ${mockRules.length} rules`);
       } catch (error) {
-        console.error('Error refreshing data:', error);
+        console.error('Error loading mock data:', error);
+        setRules([]);
         toast.error('Failed to refresh data');
       }
     };
 
-    // Always trigger refresh when component loads
-    immediateRefresh();
-  }, []); // Empty dependency array to run only once on mount
-
-  useEffect(() => {
-    // Load fresh mock data when rules array changes
-    const loadData = async () => {
-      try {
-        if (!Array.isArray(rules) || rules.length === 0) {
-          const mockRules = await generateMockRuleData();
-          setRules(mockRules);
-          console.log('Loaded', mockRules.length, 'rules into Digital Content Manager');
-        }
-      } catch (error) {
-        console.error('Error loading mock data:', error);
-        setRules([]);
-      }
-    };
-
-    loadData();
+    // Load mock data if no rules exist or if rules is not an array
+    if (!Array.isArray(rules) || rules.length === 0) {
+      loadData();
+    }
   }, [setRules]);
 
   // Auto-load Language Repeater 2 data when Digital Content Manager is loaded
@@ -319,15 +288,6 @@ export function DigitalContentManager({ onNavigate, onEditRule }: DigitalContent
             <div className="flex items-center gap-2">
               <Button 
                 variant="outline" 
-                Reload Sample Data
-              </Button>
-              <Button 
-                variant="outline" 
-                <ArrowClockwise className="w-4 h-4" />
-                Refresh Data
-              </Button>
-              <Button 
-                variant="outline" 
                 size="sm"
                 onClick={async () => {
                   const newData = await generateMockRuleData();
@@ -346,6 +306,20 @@ export function DigitalContentManager({ onNavigate, onEditRule }: DigitalContent
               >
                 <Plus className="w-4 h-4" />
                 Add More Data
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={async () => {
+                  const newData = await generateMockRuleData();
+                  setRules(newData);
+                  setLangRepeaterDataLoaded(false); // Reset so it can reload language repeater data
+                  toast.success(`Replaced with ${newData.length} fresh rules`);
+                }}
+                className="gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Reload Sample Data
               </Button>
               <Button 
                 variant="outline" 
