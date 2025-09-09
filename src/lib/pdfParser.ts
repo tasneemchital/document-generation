@@ -249,7 +249,7 @@ export async function parseDraftCY2026(): Promise<RuleData[]> {
     const rule: RuleData = {
       id: `rule-${ruleCounter}`,
       ruleId: ruleId,
-      effectiveDate: '01/01/2025',
+      effectiveDate: '2026-01-01',
       version: '1.0',
       templateName: `CY2026 HMO MAPD Template ${Math.floor(index / 5) + 1}`,
       serviceId: `SRV-${String(ruleCounter).padStart(3, '0')}-01`,

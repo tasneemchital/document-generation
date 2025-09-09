@@ -207,7 +207,7 @@ export function generateMockRuleData(): Promise<RuleData[]> {
       // Add specific RULE - 175 that can be deleted
       rules.push({
         id: 'rule-175',
-        ruleId: 'R0175',
+        ruleId: '175',
         effectiveDate: '01/01/2025',
         version: '1.0',
         benefitType: 'Medical',
