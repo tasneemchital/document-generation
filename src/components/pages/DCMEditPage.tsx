@@ -495,48 +495,109 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
               </Button>
             </div>
 
+            {/* Side-by-side Language Editors */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Content Template */}
+              {/* English Language Editor */}
               <div className="space-y-4">
-                <Label className="text-sm font-medium text-foreground">Content Template</Label>
-                <div className="grid grid-cols-4 gap-3">
-                  <Button variant="outline" size="sm" className="h-9 text-xs font-mono">
+                <div className="flex items-center gap-2">
+                  <Label className="text-sm font-medium text-foreground">English Editor</Label>
+                  <Badge variant="default" className="bg-blue-600 text-white">EN</Badge>
+                </div>
+                <div className="grid grid-cols-4 gap-2 mb-4">
+                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
                     ()
                   </Button>
-                  <Button variant="outline" size="sm" className="h-9 text-xs font-mono">
+                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
                     III
                   </Button>
-                  <Button variant="outline" size="sm" className="h-9 text-xs font-mono">
+                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
                     Ⅱ()
                   </Button>
-                  <Button variant="outline" size="sm" className="h-9 text-xs font-mono">
+                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
                     ()
+                  </Button>
+                </div>
+                <Textarea
+                  placeholder="Enter English content template..."
+                  value={formData.english || ''}
+                  onChange={(e) => handleInputChange('english', e.target.value)}
+                  className="min-h-[200px] font-mono text-sm"
+                />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm text-muted-foreground">Status:</Label>
+                    <Badge variant="outline" className="text-xs">
+                      {formData.englishStatus || 'Draft'}
+                    </Badge>
+                  </div>
+                  <Button variant="link" size="sm" className="text-blue-600 text-xs hover:text-blue-800">
+                    Preview English
                   </Button>
                 </div>
               </div>
 
-              {/* Content Preview */}
+              {/* Spanish Language Editor */}
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label className="text-sm font-medium text-foreground">Content Preview</Label>
-                  <Button variant="link" size="sm" className="text-blue-600 text-xs hover:text-blue-800">
-                    View Plan Eligibility
+                <div className="flex items-center gap-2">
+                  <Label className="text-sm font-medium text-foreground">Spanish Editor</Label>
+                  <Badge variant="default" className="bg-green-600 text-white">ES</Badge>
+                </div>
+                <div className="grid grid-cols-4 gap-2 mb-4">
+                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
+                    ()
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
+                    III
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
+                    Ⅱ()
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
+                    ()
                   </Button>
                 </div>
-                <Select value="" onValueChange={() => {}}>
-                  <SelectTrigger className="h-10">
-                    <SelectValue placeholder="Select Plan to Preview" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="plan1">Plan 1 - Medicare Advantage</SelectItem>
-                    <SelectItem value="plan2">Plan 2 - Medicare Supplement</SelectItem>
-                  </SelectContent>
-                </Select>
-                <div className="bg-muted/50 p-6 rounded-md border-2 border-dashed border-muted-foreground/20">
-                  <p className="text-sm text-muted-foreground text-center">
-                    Select a plan and click Apply to preview content rendering
-                  </p>
+                <Textarea
+                  placeholder="Ingrese la plantilla de contenido en español..."
+                  value={formData.spanish || ''}
+                  onChange={(e) => handleInputChange('spanish', e.target.value)}
+                  className="min-h-[200px] font-mono text-sm"
+                />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm text-muted-foreground">Estado:</Label>
+                    <Badge variant="outline" className="text-xs">
+                      {formData.spanishStatus || 'Draft'}
+                    </Badge>
+                  </div>
+                  <Button variant="link" size="sm" className="text-green-600 text-xs hover:text-green-800">
+                    Vista Previa Español
+                  </Button>
                 </div>
+              </div>
+            </div>
+
+            {/* Plan Preview Section */}
+            <div className="mt-8 p-4 border border-border rounded-lg bg-muted/20">
+              <div className="flex items-center justify-between mb-4">
+                <Label className="text-sm font-medium text-foreground">Plan Preview</Label>
+                <Button variant="link" size="sm" className="text-blue-600 text-xs hover:text-blue-800">
+                  View Plan Eligibility
+                </Button>
+              </div>
+              <Select value="" onValueChange={() => {}}>
+                <SelectTrigger className="h-10 max-w-md">
+                  <SelectValue placeholder="Select Plan to Preview Content" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="plan1">Plan 1 - Medicare Advantage</SelectItem>
+                  <SelectItem value="plan2">Plan 2 - Medicare Supplement</SelectItem>
+                  <SelectItem value="plan3">Plan 3 - Medicare Part D</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="mt-4 bg-muted/50 p-6 rounded-md border-2 border-dashed border-muted-foreground/20">
+                <p className="text-sm text-muted-foreground text-center">
+                  Select a plan and language to preview content rendering in respective language
+                </p>
               </div>
             </div>
           </CardContent>
