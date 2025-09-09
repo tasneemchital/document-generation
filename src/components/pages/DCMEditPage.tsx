@@ -8,10 +8,22 @@ import { DatePicker } from '@/components/ui/date-picker';
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Calendar, MapPin, Gear, FileText, Globe, Check, X } from '@phosphor-icons/react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ArrowLeft, Calendar, MapPin, Gear, FileText, Globe, Check, X, Robot } from '@phosphor-icons/react';
 import { format, parse, isValid } from 'date-fns';
 import { RuleData } from '@/lib/types';
 import { toast } from 'sonner';
+
+declare global {
+  interface Window {
+    spark: {
+      llmPrompt: (strings: TemplateStringsArray, ...values: any[]) => string;
+      llm: (prompt: string, modelName?: string, jsonMode?: boolean) => Promise<string>;
+    }
+  }
+}
+
+const spark = (window as any).spark;
 
 interface DCMEditPageProps {
   rule: RuleData | null;
@@ -52,6 +64,9 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [aiPromptOpen, setAiPromptOpen] = useState(false);
+  const [aiPromptText, setAiPromptText] = useState('');
+  const [isGeneratingRule, setIsGeneratingRule] = useState(false);
 
   useEffect(() => {
     if (rule && mode === 'edit') {
@@ -199,6 +214,42 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
         });
       }
       toast.info('Form cleared');
+    }
+  };
+
+  const handleAiPromptCreate = async () => {
+    if (!aiPromptText.trim()) {
+      toast.error('Please enter a description for the rule condition');
+      return;
+    }
+
+    setIsGeneratingRule(true);
+    try {
+      const prompt = spark.llmPrompt`You are a benefits rule expert. Based on this natural language description, generate a rule key expression that follows the pattern "Category|Subcategory|Type|Operator" where:
+      - Category could be Medicare, Commercial, Group, etc.
+      - Subcategory could be specific benefit types like Acupuncture, PCP Visit, etc.
+      - Type could be Package, Individual, Family, etc.
+      - Operator could be =, >, <, >=, <=, etc.
+
+      Description: ${aiPromptText}
+
+      Return only the rule key expression, nothing else.`;
+
+      const generatedRule = await spark.llm(prompt);
+      
+      // Update the rule key field with the generated expression
+      handleInputChange('key', generatedRule.trim());
+      
+      // Close the dialog and clear the prompt text
+      setAiPromptOpen(false);
+      setAiPromptText('');
+      
+      toast.success('Rule key generated successfully!');
+    } catch (error) {
+      console.error('Error generating rule:', error);
+      toast.error('Failed to generate rule key. Please try again.');
+    } finally {
+      setIsGeneratingRule(false);
     }
   };
 
@@ -433,13 +484,82 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
         {/* Rule Key Section */}
         <Card className="mb-8 shadow-sm">
           <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <MapPin size={20} className="text-primary" />
-              Rule Key <span className="text-red-500">*</span>
-            </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Define the key that identifies which plans this rule applies to
-            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <MapPin size={20} className="text-primary" />
+                  Rule Key <span className="text-red-500">*</span>
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Define the key that identifies which plans this rule applies to
+                </p>
+              </div>
+              <Dialog open={aiPromptOpen} onOpenChange={setAiPromptOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2 border-purple-200 text-purple-600 hover:bg-purple-50"
+                  >
+                    <Robot size={16} />
+                    AI Prompt
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[500px]">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      <Robot size={20} className="text-purple-600" />
+                      AI Rule Generator
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">
+                        Describe your rule condition in natural language:
+                      </Label>
+                      <Textarea
+                        placeholder="Example: Create a rule for Medicare acupuncture benefits that applies to all individual plans with equal coverage..."
+                        value={aiPromptText}
+                        onChange={(e) => setAiPromptText(e.target.value)}
+                        className="min-h-[120px] resize-none"
+                      />
+                    </div>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <p className="text-sm text-blue-800">
+                        <strong>Tip:</strong> Be specific about the benefit type, plan category, and coverage details. 
+                        The AI will generate a structured rule key expression based on your description.
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-end gap-3 pt-4">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setAiPromptOpen(false);
+                          setAiPromptText('');
+                        }}
+                        disabled={isGeneratingRule}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={handleAiPromptCreate}
+                        disabled={isGeneratingRule || !aiPromptText.trim()}
+                        className="bg-purple-600 text-white hover:bg-purple-700"
+                      >
+                        {isGeneratingRule ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                            Generating...
+                          </>
+                        ) : (
+                          'Create'
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
