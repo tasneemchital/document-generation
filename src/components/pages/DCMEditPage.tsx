@@ -67,6 +67,7 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
   const [aiPromptOpen, setAiPromptOpen] = useState(false);
   const [aiPromptText, setAiPromptText] = useState('');
   const [isGeneratingRule, setIsGeneratingRule] = useState(false);
+  const [generatedRuleCondition, setGeneratedRuleCondition] = useState('');
 
   useEffect(() => {
     if (rule && mode === 'edit') {
@@ -237,12 +238,8 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
 
       const generatedRule = await spark.llm(prompt);
       
-      // Update the rule key field with the generated expression
-      handleInputChange('key', generatedRule.trim());
-      
-      // Close the dialog and clear the prompt text
-      setAiPromptOpen(false);
-      setAiPromptText('');
+      // Store the generated rule condition for display
+      setGeneratedRuleCondition(generatedRule.trim());
       
       toast.success('Rule key generated successfully!');
     } catch (error) {
@@ -524,6 +521,37 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
                         className="min-h-[120px] resize-none"
                       />
                     </div>
+
+                    {/* Generated Rule Condition Display */}
+                    {generatedRuleCondition && (
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">
+                          Generated Rule Condition:
+                        </Label>
+                        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                          <div className="flex items-center justify-between">
+                            <code className="text-sm text-green-800 font-mono">
+                              {generatedRuleCondition}
+                            </code>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                handleInputChange('key', generatedRuleCondition);
+                                setAiPromptOpen(false);
+                                setAiPromptText('');
+                                setGeneratedRuleCondition('');
+                                toast.success('Rule condition applied to Rule Key field!');
+                              }}
+                              className="text-green-700 border-green-300 hover:bg-green-100"
+                            >
+                              Apply to Rule Key
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                       <p className="text-sm text-blue-800">
                         <strong>Tip:</strong> Be specific about the benefit type, plan category, and coverage details. 
@@ -536,6 +564,7 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
                         onClick={() => {
                           setAiPromptOpen(false);
                           setAiPromptText('');
+                          setGeneratedRuleCondition('');
                         }}
                         disabled={isGeneratingRule}
                       >
