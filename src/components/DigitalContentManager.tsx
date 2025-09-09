@@ -319,10 +319,10 @@ export function DigitalContentManager({ onNavigate, onEditRule }: DigitalContent
             <div className="flex items-center gap-2">
               <Button 
                 variant="outline" 
-                size="sm"
-                onClick={refreshAllData}
-                className="gap-2"
-              >
+                Reload Sample Data
+              </Button>
+              <Button 
+                variant="outline" 
                 <ArrowClockwise className="w-4 h-4" />
                 Refresh Data
               </Button>
