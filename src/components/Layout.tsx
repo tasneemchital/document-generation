@@ -9,8 +9,7 @@ import {
   Palette,
   CaretLeft,
   CaretRight,
-  File,
-  FolderOpen
+  File
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -26,7 +25,6 @@ const navigationItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'master-list', label: 'Global Template', icon: List },
   { id: 'digital-content-manager', label: 'Digital Content Manager', icon: File },
-  { id: 'collections', label: 'Collections', icon: FolderOpen },
   { id: 'collaborate', label: 'Collaborate', icon: Users },
   { id: 'generate', label: 'Generate', icon: FileText },
   { id: 'integrate', label: 'Integrate', icon: Share },

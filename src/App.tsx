@@ -104,8 +104,6 @@ function App() {
         return <DigitalContentManager onNavigate={handleNavigate} onEditRule={handleEditDCMRule} />;
       case 'dcm-edit':
         return <DCMEditPage rule={editingRule} onNavigate={handleNavigate} onSave={handleSaveRule} mode={editingRule ? 'edit' : 'create'} />;
-      case 'collections':
-        return <PlaceholderPage title="Collections" description="Organize and manage your content collections" />;
       case 'collaborate':
         return <PlaceholderPage title="Collaborate" description="Collaborate seamlessly with multiple stakeholders via automated workflows, version control and transparent audit" />;
       case 'generate':
