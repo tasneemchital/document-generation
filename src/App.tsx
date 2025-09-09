@@ -9,8 +9,7 @@ import {
   Publish, 
   AdminSettings, 
   DesignStudio,
-  AskBenny,
-  Lookups
+  AskBenny
 } from '@/components/pages/PlaceholderPages'
 import { DigitalContentManager } from './components/pages/DigitalContentManager'
 import { MedicareEOCMasterList } from './components/pages/MedicareEOCMasterList'
@@ -53,8 +52,6 @@ function App() {
         return <Collaborate />
         case 'masterlist':
         return <MasterList />
-      case 'lookups':
-        return <Lookups />
       case 'generate':
         return <Generate />
       case 'publish':
