@@ -1,143 +1,116 @@
-import { useEffect } from 'react';
-import { useKV } from '@github/spark/hooks';
-import { Layout } from '@/components/Layout';
-import { Dashboard } from '@/components/Dashboard';
-import { MedicareEOCDashboard } from '@/components/MedicareEOCDashboard';
-import { DocuGenPage } from '@/components/DocuGenPage';
-import { DigitalContentManager } from '@/components/DigitalContentManager';
-import { RuleDetailsPage } from '@/components/RuleDetailsPage';
-import { DCMEditPage } from '@/components/DCMEditPage';
-import { RuleData } from '@/lib/types';
+import { useState } from 'react'
+import { useKV } from '@github/spark/hooks'
+import { Navigation } from '@/components/Navigation'
+import { Dashboard } from '@/components/pages/Dashboard'
+import { 
+  MasterList, 
+  Collaborate, 
+  Generate, 
+  Publish, 
+  AdminSettings, 
+  DesignStudio,
+  AskBenny,
+  Lookups
+} from '@/components/pages/PlaceholderPages'
+import { DigitalContentManager } from './components/pages/DigitalContentManager'
+import { MedicareEOCMasterList } from './components/pages/MedicareEOCMasterList'
+import { DCMEditPage } from './components/pages/DCMEditPage'
+import { RuleData } from '@/lib/types'
 
 function App() {
-  const [currentPage, setCurrentPage] = useKV<string>('current-page', 'dashboard');
-  const [editingRule, setEditingRule] = useKV<RuleData | null>('editing-rule', null);
-  const [rules, setRules] = useKV<RuleData[]>('rule-data', []);
+  const [currentPage, setCurrentPage] = useKV('sda-current-page', 'dashboard')
+  const [isCollapsed, setIsCollapsed] = useKV('sda-sidebar-collapsed', false)
+  const [editingRule, setEditingRule] = useKV<RuleData | null>('dcm-editing-rule', null)
+  const [rules, setRules] = useKV<RuleData[]>('rule-data', [])
 
-  // Migration function to ensure sequential rule IDs
-  const migrateRuleIdsToSequential = (currentRules: RuleData[]): RuleData[] => {
-    if (!Array.isArray(currentRules)) return [];
-    
-    return currentRules.map((rule, index) => {
-      // Check if rule ID is already in R0000 format
-      if (!rule.ruleId || !rule.ruleId.match(/^R\d{4}$/)) {
-        // Migrate to new format
-        return {
-          ...rule,
-          ruleId: `R${String(index + 1).padStart(4, '0')}`,
-          effectiveDate: '01/01/2025' // Ensure all effective dates are consistent
-        };
+  const handleRuleCreate = (newRule: RuleData) => {
+    setRules((current: RuleData[]) => {
+      if (!Array.isArray(current)) {
+        return [newRule];
       }
-      return {
-        ...rule,
-        effectiveDate: '01/01/2025' // Ensure all effective dates are consistent  
-      };
+      return [newRule, ...current];
     });
   };
 
-  // Run migration when rules change
-  useEffect(() => {
-    if (Array.isArray(rules) && rules.length > 0) {
-      const migratedRules = migrateRuleIdsToSequential(rules);
-      const needsMigration = migratedRules.some((rule, index) => 
-        rule.ruleId !== rules[index]?.ruleId || rule.effectiveDate !== rules[index]?.effectiveDate
-      );
-      
-      if (needsMigration) {
-        setRules(migratedRules);
-      }
-    }
-  }, [rules, setRules]);
-
-  const handleNavigate = (page: string) => {
-    setCurrentPage(page);
-    if (page !== 'rule-details' && page !== 'edit-rule' && page !== 'dcm-edit') {
-      setEditingRule(null);
-    }
-  };
-
-  const handleEditRule = (rule: RuleData) => {
-    setEditingRule(rule);
-    setCurrentPage('edit-rule');
-  };
-
-  const handleEditDCMRule = (rule: RuleData) => {
-    setEditingRule(rule);
-    setCurrentPage('dcm-edit');
-  };
-
-  const handleCreateRule = () => {
-    setEditingRule(null);
-    setCurrentPage('rule-details');
-  };
-
-  const handleSaveRule = (rule: RuleData) => {
-    setRules(current => {
+  const handleRuleUpdate = (updatedRule: RuleData) => {
+    setRules((current: RuleData[]) => {
       if (!Array.isArray(current)) {
-        return [rule];
+        return [updatedRule];
       }
-      const existingIndex = current.findIndex(r => r.id === rule.id);
-      if (existingIndex >= 0) {
-        // Update existing rule
-        return current.map(r => r.id === rule.id ? rule : r);
-      } else {
-        // Add new rule
-        return [rule, ...current];
-      }
+      return current.map(rule => 
+        rule.id === updatedRule.id ? updatedRule : rule
+      );
     });
   };
 
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'dashboard':
-        return <Dashboard onNavigate={handleNavigate} />;
-      case 'medicare-eoc':
-        return <MedicareEOCDashboard onNavigate={handleNavigate} />;
-      case 'master-list':
-      case 'manage':
-        return <DocuGenPage onNavigate={handleNavigate} onEditRule={handleEditRule} onCreateRule={handleCreateRule} />;
-      case 'rule-details':
-        return <RuleDetailsPage onNavigate={handleNavigate} mode="create" />;
-      case 'edit-rule':
-        return <RuleDetailsPage onNavigate={handleNavigate} rule={editingRule} mode="edit" />;
-      case 'digital-content-manager':
-        return <DigitalContentManager onNavigate={handleNavigate} onEditRule={handleEditDCMRule} />;
-      case 'dcm-edit':
-        return <DCMEditPage rule={editingRule} onNavigate={handleNavigate} onSave={handleSaveRule} mode={editingRule ? 'edit' : 'create'} />;
-      case 'collections':
-        return <PlaceholderPage title="Collections" description="Organize and manage your content collections" />;
+        return <Dashboard onNavigate={setCurrentPage} />
+      case 'global-template':
+        return <MedicareEOCMasterList onNavigate={setCurrentPage} />
       case 'collaborate':
-        return <PlaceholderPage title="Collaborate" description="Collaborate seamlessly with multiple stakeholders via automated workflows, version control and transparent audit" />;
+        return <Collaborate />
+        case 'masterlist':
+        return <MasterList />
+      case 'lookups':
+        return <Lookups />
       case 'generate':
-        return <PlaceholderPage title="Generate" description="Generate documents in Word, Print X, 508 and large print in English and other languages" />;
-      case 'integrate':
-        return <PlaceholderPage title="Integrate" description="Reuse and stream content across multiple channels seamlessly" />;
+        return <Generate />
+      case 'publish':
+        return <Publish />
+      case 'ask-benny':
+        return <AskBenny />
       case 'admin-settings':
-        return <PlaceholderPage title="Admin Settings" description="Administrative settings coming soon" />;
+        return <AdminSettings />
       case 'design-studio':
-        return <PlaceholderPage title="Design Studio" description="Design tools coming soon" />;
+        return <DesignStudio />
+      case 'dcm':
+        return <DigitalContentManager 
+          onNavigate={setCurrentPage}
+          onEditRule={(rule) => {
+            setEditingRule(rule)
+            setCurrentPage('edit-rule')
+          }}
+        />
+      case 'create-rule':
+        return <DCMEditPage 
+          rule={null}
+          onNavigate={setCurrentPage}
+          onSave={(rule) => {
+            handleRuleCreate(rule);
+            setCurrentPage('dcm');
+          }}
+          mode="create"
+        />
+      case 'edit-rule':
+        return <DCMEditPage 
+          rule={editingRule}
+          onNavigate={setCurrentPage}
+          onSave={(rule) => {
+            handleRuleUpdate(rule);
+            setCurrentPage('dcm');
+          }}
+          mode="edit"
+        />
       default:
-        return <Dashboard onNavigate={handleNavigate} />;
+        return <Dashboard onNavigate={setCurrentPage} />
     }
-  };
+  }
 
   return (
-    <Layout currentPage={currentPage} onNavigate={handleNavigate}>
-      {renderCurrentPage()}
-    </Layout>
-  );
-}
-
-// Placeholder component for pages not yet implemented
-function PlaceholderPage({ title, description }: { title: string; description: string }) {
-  return (
-    <div className="flex items-center justify-center h-full bg-background">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-foreground mb-4">{title}</h1>
-        <p className="text-muted-foreground">{description}</p>
-      </div>
+    <div className="flex h-screen bg-background">
+      <Navigation 
+        currentPage={currentPage}
+        onNavigate={setCurrentPage}
+        isCollapsed={isCollapsed}
+        onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
+      />
+      <main className="flex-1 overflow-auto">
+        {renderCurrentPage()}
+      </main>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
