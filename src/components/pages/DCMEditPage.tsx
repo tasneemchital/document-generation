@@ -68,10 +68,39 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
   const [aiPromptText, setAiPromptText] = useState('');
   const [isGeneratingRule, setIsGeneratingRule] = useState(false);
   const [generatedRuleCondition, setGeneratedRuleCondition] = useState('');
+  const [selectedLanguage, setSelectedLanguage] = useState<'english' | 'spanish' | 'chinese'>('english');
+  const [selectedPlan, setSelectedPlan] = useState<string>('');
+  const [chineseContent, setChineseContent] = useState('');
 
   useEffect(() => {
     if (rule && mode === 'edit') {
       setFormData(rule);
+    } else if (mode === 'create') {
+      // Add sample content for new rules
+      setFormData(prev => ({
+        ...prev,
+        english: `IF(planType="Medicare Advantage")
+  Your {planName} plan includes {benefit} with a {copay} copay and {deductible} deductible.
+ELSE
+  Your {planName} includes {benefit}.
+ENDIF
+
+For more information, contact customer service.`,
+        spanish: `IF(planType="Medicare Advantage")
+  Su plan {planName} incluye {benefit} con un copago de {copay} y deducible de {deductible}.
+ELSE
+  Su {planName} incluye {benefit}.
+ENDIF
+
+Para más información, contacte al servicio al cliente.`
+      }));
+      setChineseContent(`IF(planType="Medicare Advantage")
+  您的{planName}计划包括{benefit}，共付额为{copay}，免赔额为{deductible}。
+ELSE
+  您的{planName}包括{benefit}。
+ENDIF
+
+如需更多信息，请联系客户服务。`);
     }
   }, [rule, mode]);
 
@@ -248,6 +277,147 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
     } finally {
       setIsGeneratingRule(false);
     }
+  };
+
+  // Helper functions for the new Content Template & Preview section
+  const getSelectedLanguageContent = (): string => {
+    switch (selectedLanguage) {
+      case 'english':
+        return formData.english || '';
+      case 'spanish':
+        return formData.spanish || '';
+      case 'chinese':
+        return chineseContent;
+      default:
+        return '';
+    }
+  };
+
+  const handleLanguageContentChange = (content: string) => {
+    switch (selectedLanguage) {
+      case 'english':
+        handleInputChange('english', content);
+        break;
+      case 'spanish':
+        handleInputChange('spanish', content);
+        break;
+      case 'chinese':
+        setChineseContent(content);
+        break;
+    }
+  };
+
+  const getEditorPlaceholder = (): string => {
+    switch (selectedLanguage) {
+      case 'english':
+        return `Enter English content template with IF statements...
+
+Example:
+IF(planType="Medicare Advantage")
+  Your Medicare Advantage plan includes {benefit}.
+ELSE
+  Your plan includes {benefit}.
+ENDIF`;
+      case 'spanish':
+        return `Ingrese la plantilla de contenido en español con declaraciones IF...
+
+Ejemplo:
+IF(planType="Medicare Advantage")
+  Su plan Medicare Advantage incluye {benefit}.
+ELSE
+  Su plan incluye {benefit}.
+ENDIF`;
+      case 'chinese':
+        return `输入带有IF语句的中文内容模板...
+
+示例:
+IF(planType="Medicare Advantage")
+  您的Medicare Advantage计划包括{benefit}。
+ELSE
+  您的计划包括{benefit}。
+ENDIF`;
+      default:
+        return '';
+    }
+  };
+
+  const insertTemplateCode = (code: string) => {
+    const currentContent = getSelectedLanguageContent();
+    const newContent = currentContent + (currentContent ? '\n' : '') + code;
+    handleLanguageContentChange(newContent);
+  };
+
+  const getPlanDisplayName = (planValue: string): string => {
+    const planNames: Record<string, string> = {
+      'medicare-advantage': 'Medicare Advantage Plus',
+      'medicare-supplement': 'Medicare Supplement',
+      'medicare-part-d': 'Medicare Part D',
+      'commercial-hmo': 'Commercial HMO',
+      'commercial-ppo': 'Commercial PPO'
+    };
+    return planNames[planValue] || planValue;
+  };
+
+  const processTemplateContent = (content: string, plan: string): string => {
+    if (!content || !plan) return '';
+
+    // Mock plan data for demonstration
+    const planData: Record<string, any> = {
+      'medicare-advantage': {
+        planName: 'Medicare Advantage Plus',
+        planType: 'Medicare Advantage',
+        benefit: 'comprehensive medical and prescription coverage',
+        copay: '$20',
+        deductible: '$500'
+      },
+      'medicare-supplement': {
+        planName: 'Medicare Supplement',
+        planType: 'Medicare Supplement',
+        benefit: 'supplemental coverage for Medicare gaps',
+        copay: '$0',
+        deductible: '$250'
+      },
+      'medicare-part-d': {
+        planName: 'Medicare Part D',
+        planType: 'Medicare Part D',
+        benefit: 'prescription drug coverage',
+        copay: '$15',
+        deductible: '$200'
+      },
+      'commercial-hmo': {
+        planName: 'Commercial HMO',
+        planType: 'Commercial HMO',
+        benefit: 'managed care coverage',
+        copay: '$25',
+        deductible: '$1000'
+      },
+      'commercial-ppo': {
+        planName: 'Commercial PPO',
+        planType: 'Commercial PPO',
+        benefit: 'preferred provider organization coverage',
+        copay: '$30',
+        deductible: '$1500'
+      }
+    };
+
+    let processedContent = content;
+    const currentPlanData = planData[plan] || {};
+
+    // Process IF statements (simplified logic for demonstration)
+    processedContent = processedContent.replace(/IF\([^)]+\)\s*\n?(.*?)\n?(?:ELSE\s*\n?(.*?)\n?)?ENDIF/gs, (match, ifContent, elseContent) => {
+      // For demo purposes, always show the IF content
+      return ifContent || '';
+    });
+
+    // Replace variables with actual values
+    Object.entries(currentPlanData).forEach(([key, value]) => {
+      const regex = new RegExp(`\\{${key}\\}`, 'g');
+      processedContent = processedContent.replace(regex, value);
+    });
+
+    // Convert newlines to HTML breaks for display
+    return processedContent.replace(/\n/g, '<br>');
+  };
   };
 
   return (
@@ -630,123 +800,178 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
               Configure content templates and preview across different plans
             </p>
           </CardHeader>
-          <CardContent className="space-y-8">
-            <div className="flex items-center gap-4 mb-6">
-              <Button variant="default" size="sm" className="bg-blue-600 text-white hover:bg-blue-700">
-                English
-              </Button>
-              <Button variant="outline" size="sm">
-                Español
-              </Button>
-              <Button variant="outline" size="sm" className="flex items-center gap-2">
-                <Globe size={16} />
-                繁
-              </Button>
+          <CardContent className="space-y-6">
+            {/* Language Selection */}
+            <div className="space-y-3">
+              <Label className="text-sm font-medium text-foreground">Language Selection</Label>
+              <div className="flex items-center gap-3">
+                <Button 
+                  variant={selectedLanguage === 'english' ? 'default' : 'outline'} 
+                  size="sm" 
+                  onClick={() => setSelectedLanguage('english')}
+                  className={selectedLanguage === 'english' ? 'bg-blue-600 text-white hover:bg-blue-700' : ''}
+                >
+                  English
+                </Button>
+                <Button 
+                  variant={selectedLanguage === 'spanish' ? 'default' : 'outline'} 
+                  size="sm"
+                  onClick={() => setSelectedLanguage('spanish')}
+                  className={selectedLanguage === 'spanish' ? 'bg-green-600 text-white hover:bg-green-700' : ''}
+                >
+                  Español
+                </Button>
+                <Button 
+                  variant={selectedLanguage === 'chinese' ? 'default' : 'outline'} 
+                  size="sm" 
+                  onClick={() => setSelectedLanguage('chinese')}
+                  className={`flex items-center gap-2 ${selectedLanguage === 'chinese' ? 'bg-purple-600 text-white hover:bg-purple-700' : ''}`}
+                >
+                  <Globe size={16} />
+                  中文
+                </Button>
+              </div>
             </div>
 
-            {/* Side-by-side Language Editors */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* English Language Editor */}
+            {/* Plan Selection */}
+            <div className="space-y-3">
+              <Label className="text-sm font-medium text-foreground">Plan Selection</Label>
+              <Select value={selectedPlan} onValueChange={setSelectedPlan}>
+                <SelectTrigger className="h-10 max-w-md">
+                  <SelectValue placeholder="Select a plan to preview content" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="medicare-advantage">Medicare Advantage Plus</SelectItem>
+                  <SelectItem value="medicare-supplement">Medicare Supplement</SelectItem>
+                  <SelectItem value="medicare-part-d">Medicare Part D</SelectItem>
+                  <SelectItem value="commercial-hmo">Commercial HMO</SelectItem>
+                  <SelectItem value="commercial-ppo">Commercial PPO</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Split View: Editor and Preview */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+              {/* Left Side: Editor with IF Statements */}
               <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Label className="text-sm font-medium text-foreground">English Editor</Label>
-                  <Badge variant="default" className="bg-blue-600 text-white">EN</Badge>
-                </div>
-                <div className="grid grid-cols-4 gap-2 mb-4">
-                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
-                    ()
-                  </Button>
-                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
-                    III
-                  </Button>
-                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
-                    Ⅱ()
-                  </Button>
-                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
-                    ()
-                  </Button>
-                </div>
-                <Textarea
-                  placeholder="Enter English content template..."
-                  value={formData.english || ''}
-                  onChange={(e) => handleInputChange('english', e.target.value)}
-                  className="min-h-[200px] font-mono text-sm"
-                />
                 <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm font-medium text-foreground">
+                      {selectedLanguage === 'english' ? 'English' : selectedLanguage === 'spanish' ? 'Spanish' : 'Chinese'} Editor
+                    </Label>
+                    <Badge 
+                      variant="default" 
+                      className={`text-white ${
+                        selectedLanguage === 'english' ? 'bg-blue-600' : 
+                        selectedLanguage === 'spanish' ? 'bg-green-600' : 'bg-purple-600'
+                      }`}
+                    >
+                      {selectedLanguage === 'english' ? 'EN' : selectedLanguage === 'spanish' ? 'ES' : 'CN'}
+                    </Badge>
+                  </div>
                   <div className="flex items-center gap-2">
                     <Label className="text-sm text-muted-foreground">Status:</Label>
                     <Badge variant="outline" className="text-xs">
-                      {formData.englishStatus || 'Draft'}
+                      {selectedLanguage === 'english' ? formData.englishStatus : 
+                       selectedLanguage === 'spanish' ? formData.spanishStatus : 'Draft'}
                     </Badge>
                   </div>
-                  <Button variant="link" size="sm" className="text-blue-600 text-xs hover:text-blue-800">
-                    Preview English
+                </div>
+
+                {/* Template Helper Buttons */}
+                <div className="grid grid-cols-4 gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="h-8 text-xs font-mono"
+                    onClick={() => insertTemplateCode('IF(plan="Medicare")')}
+                  >
+                    IF()
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="h-8 text-xs font-mono"
+                    onClick={() => insertTemplateCode('ENDIF')}
+                  >
+                    ENDIF
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="h-8 text-xs font-mono"
+                    onClick={() => insertTemplateCode('ELSE')}
+                  >
+                    ELSE
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="h-8 text-xs font-mono"
+                    onClick={() => insertTemplateCode('{planName}')}
+                  >
+                    {'{planName}'}
                   </Button>
                 </div>
+
+                <Textarea
+                  placeholder={getEditorPlaceholder()}
+                  value={getSelectedLanguageContent()}
+                  onChange={(e) => handleLanguageContentChange(e.target.value)}
+                  className="min-h-[300px] font-mono text-sm"
+                />
               </div>
 
-              {/* Spanish Language Editor */}
+              {/* Right Side: Preview */}
               <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Label className="text-sm font-medium text-foreground">Spanish Editor</Label>
-                  <Badge variant="default" className="bg-green-600 text-white">ES</Badge>
-                </div>
-                <div className="grid grid-cols-4 gap-2 mb-4">
-                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
-                    ()
-                  </Button>
-                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
-                    III
-                  </Button>
-                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
-                    Ⅱ()
-                  </Button>
-                  <Button variant="outline" size="sm" className="h-8 text-xs font-mono">
-                    ()
-                  </Button>
-                </div>
-                <Textarea
-                  placeholder="Ingrese la plantilla de contenido en español..."
-                  value={formData.spanish || ''}
-                  onChange={(e) => handleInputChange('spanish', e.target.value)}
-                  className="min-h-[200px] font-mono text-sm"
-                />
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Label className="text-sm text-muted-foreground">Estado:</Label>
+                    <Label className="text-sm font-medium text-foreground">Content Preview</Label>
                     <Badge variant="outline" className="text-xs">
-                      {formData.spanishStatus || 'Draft'}
+                      {selectedPlan ? getPlanDisplayName(selectedPlan) : 'No Plan Selected'}
                     </Badge>
                   </div>
-                  <Button variant="link" size="sm" className="text-green-600 text-xs hover:text-green-800">
-                    Vista Previa Español
-                  </Button>
+                  {selectedPlan && (
+                    <Button variant="link" size="sm" className="text-blue-600 text-xs hover:text-blue-800">
+                      View Plan Details
+                    </Button>
+                  )}
                 </div>
-              </div>
-            </div>
 
-            {/* Plan Preview Section */}
-            <div className="mt-8 p-4 border border-border rounded-lg bg-muted/20">
-              <div className="flex items-center justify-between mb-4">
-                <Label className="text-sm font-medium text-foreground">Plan Preview</Label>
-                <Button variant="link" size="sm" className="text-blue-600 text-xs hover:text-blue-800">
-                  View Plan Eligibility
-                </Button>
-              </div>
-              <Select value="" onValueChange={() => {}}>
-                <SelectTrigger className="h-10 max-w-md">
-                  <SelectValue placeholder="Select Plan to Preview Content" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="plan1">Plan 1 - Medicare Advantage</SelectItem>
-                  <SelectItem value="plan2">Plan 2 - Medicare Supplement</SelectItem>
-                  <SelectItem value="plan3">Plan 3 - Medicare Part D</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="mt-4 bg-muted/50 p-6 rounded-md border-2 border-dashed border-muted-foreground/20">
-                <p className="text-sm text-muted-foreground text-center">
-                  Select a plan and language to preview content rendering in respective language
-                </p>
+                <div className="border border-border rounded-lg bg-card">
+                  <div className="p-4 border-b border-border bg-muted/20">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">
+                        {selectedLanguage === 'english' ? 'English' : selectedLanguage === 'spanish' ? 'Spanish' : 'Chinese'} Preview
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {selectedPlan ? 'Live Preview' : 'Select Plan'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-6 min-h-[280px]">
+                    {selectedPlan ? (
+                      <div className="prose prose-sm max-w-none">
+                        <div 
+                          className="text-sm leading-relaxed whitespace-pre-wrap"
+                          dangerouslySetInnerHTML={{ 
+                            __html: processTemplateContent(getSelectedLanguageContent(), selectedPlan) 
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full text-center py-12">
+                        <Globe size={48} className="text-muted-foreground/50 mb-4" />
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Select a plan to preview content
+                        </p>
+                        <p className="text-xs text-muted-foreground/70">
+                          The preview will show the resolved content without IF conditions
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </CardContent>
