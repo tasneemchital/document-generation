@@ -374,7 +374,7 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
                     <SelectItem value="Marketing">Marketing</SelectItem>
                     <SelectItem value="Operations">Operations</SelectItem>
                     <SelectItem value="Compliance">Compliance</SelectItem>
-                    <SelectItem value="Medical Management">Medical Management</SelectItem>
+                  onDateChange={handleDateChange}
                     <SelectItem value="Finance">Finance</SelectItem>
                   </SelectContent>
                 </Select>
