@@ -418,7 +418,6 @@ ENDIF`;
     // Convert newlines to HTML breaks for display
     return processedContent.replace(/\n/g, '<br>');
   };
-  };
 
   return (
     <div className="h-full bg-background overflow-auto">
