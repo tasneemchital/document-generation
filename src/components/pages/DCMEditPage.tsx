@@ -43,16 +43,16 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
     subBusinessArea: 'MRK: DNSP',
     description: 'Headline',
     templateName: 'Fitness Rider',
-    serviceId: '',
+    serviceId: 'SRV001',
     cmsRegulated: false,
-    chapterName: '',
-    sectionName: '',
-    subsectionName: '',
+    chapterName: 'General Information',
+    sectionName: 'Benefits Coverage',
+    subsectionName: 'Medical Services',
     serviceGroup: 'INN',
-    sourceMapping: '',
-    tiers: '',
+    sourceMapping: 'Benefits1 Mapping',
+    tiers: 'Tier 1',
     key: 'Medicare|Acupuncture|Package|=',
-    rule: '',
+    rule: 'Standard Coverage Rule',
     isTabular: false,
     english: '',
     englishStatus: 'Draft',
@@ -572,7 +572,7 @@ ENDIF`;
                 <Label htmlFor="planYear" className="text-sm font-medium text-foreground">
                   Plan Year <span className="text-red-500">*</span>
                 </Label>
-                <Select value="2026" onValueChange={(value) => handleInputChange('version', value)}>
+                <Select value={formData.version || '2026'} onValueChange={(value) => handleInputChange('version', value)}>
                   <SelectTrigger className="h-9">
                     <SelectValue />
                   </SelectTrigger>
@@ -613,7 +613,7 @@ ENDIF`;
                 <Label htmlFor="description" className="text-sm font-medium text-foreground">
                   Description <span className="text-red-500">*</span>
                 </Label>
-                <Select value="Headline" onValueChange={(value) => handleInputChange('description', value)}>
+                <Select value={formData.description || 'Headline'} onValueChange={(value) => handleInputChange('description', value)}>
                   <SelectTrigger className="h-9">
                     <SelectValue />
                   </SelectTrigger>
@@ -630,7 +630,7 @@ ENDIF`;
                 <Label htmlFor="networkType" className="text-sm font-medium text-foreground">
                   Network Type <span className="text-red-500">*</span>
                 </Label>
-                <Select value="INN" onValueChange={(value) => handleInputChange('serviceGroup', value)}>
+                <Select value={formData.serviceGroup || 'INN'} onValueChange={(value) => handleInputChange('serviceGroup', value)}>
                   <SelectTrigger className="h-9">
                     <SelectValue />
                   </SelectTrigger>
