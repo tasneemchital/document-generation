@@ -249,11 +249,6 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
         {/* Right Sidebar */}
         <div className="w-80 border-l border-border bg-card">
           <div className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium">Page 1</span>
-              <ChevronDown size={16} />
-            </div>
-            
             {/* Chapter Navigation */}
             <div className="space-y-1">
               {sectionOptions.map((option) => (
