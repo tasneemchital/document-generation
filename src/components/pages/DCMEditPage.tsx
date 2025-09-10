@@ -89,28 +89,46 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
       // Add sample content for new rules
       setFormData(prev => ({
         ...prev,
-        english: `IF(planType="Medicare Advantage")
-  Your {planName} plan includes {benefit} with a {copay} copay and {deductible} deductible.
+        english: `# Chapter 1: Medicare Benefits Overview
+
+Your {planName} plan provides comprehensive coverage for medical services and prescription drugs (dcm id R0001). This plan includes preventive care benefits with no cost-sharing requirements for eligible members.
+
+Primary care physician visits are covered with a {copay} copay for in-network providers (dcm id R0002). Specialist visits require a referral from your primary care physician and include a higher copay amount.
+
+IF(planType="Medicare Advantage")
+  Your Medicare Advantage plan includes additional benefits beyond Original Medicare, such as wellness programs and care coordination services (dcm id R0003).
 ELSE
-  Your {planName} includes {benefit}.
+  Your plan supplements Original Medicare coverage with enhanced benefits and reduced out-of-pocket costs.
 ENDIF
 
-For more information, contact customer service.`,
-        spanish: `IF(planType="Medicare Advantage")
-  Su plan {planName} incluye {benefit} con un copago de {copay} y deducible de {deductible}.
+For emergency services, you have coverage at any hospital nationwide with no prior authorization required. Prescription drug coverage follows a tiered formulary structure with different cost-sharing levels.`,
+        spanish: `# Capítulo 1: Resumen de Beneficios de Medicare
+
+Su plan {planName} proporciona cobertura integral para servicios médicos y medicamentos recetados (dcm id R0001). Este plan incluye beneficios de atención preventiva sin requisitos de costos compartidos para miembros elegibles.
+
+Las visitas al médico de atención primaria están cubiertas con un copago de {copay} para proveedores dentro de la red (dcm id R0002). Las visitas a especialistas requieren una referencia de su médico de atención primaria e incluyen un monto de copago más alto.
+
+IF(planType="Medicare Advantage")
+  Su plan Medicare Advantage incluye beneficios adicionales más allá de Medicare Original, como programas de bienestar y servicios de coordinación de atención (dcm id R0003).
 ELSE
-  Su {planName} incluye {benefit}.
+  Su plan complementa la cobertura de Medicare Original con beneficios mejorados y costos de bolsillo reducidos.
 ENDIF
 
-Para más información, contacte al servicio al cliente.`
+Para servicios de emergencia, tiene cobertura en cualquier hospital a nivel nacional sin autorización previa requerida. La cobertura de medicamentos recetados sigue una estructura de formulario por niveles con diferentes niveles de costos compartidos.`
       }));
-      setChineseContent(`IF(planType="Medicare Advantage")
-  您的{planName}计划包括{benefit}，共付额为{copay}，免赔额为{deductible}。
+      setChineseContent(`# 第1章：Medicare福利概述
+
+您的{planName}计划为医疗服务和处方药提供全面覆盖 (dcm id R0001)。该计划为符合条件的会员提供预防护理福利，无需承担费用分摊要求。
+
+网络内提供者的初级保健医生就诊费用为{copay}共付额 (dcm id R0002)。专科医生就诊需要初级保健医生的转诊，并包含较高的共付额。
+
+IF(planType="Medicare Advantage")
+  您的Medicare Advantage计划包括超越原始Medicare的额外福利，如健康计划和护理协调服务 (dcm id R0003)。
 ELSE
-  您的{planName}包括{benefit}。
+  您的计划通过增强福利和降低自付费用来补充原始Medicare覆盖。
 ENDIF
 
-如需更多信息，请联系客户服务。`);
+对于紧急服务，您在全国任何医院都有覆盖，无需事先授权。处方药覆盖遵循分层处方集结构，具有不同的费用分摊级别。`);
     }
   }, [rule, mode]);
 
@@ -368,6 +386,33 @@ ENDIF`;
     return planNames[planValue] || planValue;
   };
 
+  // Helper function to split content into phrases with highlighting
+  const splitIntoPhrases = (text: string): string[] => {
+    // Split by sentences, but also consider clause boundaries
+    const sentences = text.split(/(?<=[.!?])\s+/);
+    const phrases: string[] = [];
+    
+    sentences.forEach(sentence => {
+      // Further split long sentences by commas and conjunctions
+      const parts = sentence.split(/(?<=,)\s+|(?:\s+(?:and|or|but|with|for|in|on|at|by|through|during|including)\s+)/);
+      phrases.push(...parts.filter(part => part.trim().length > 0));
+    });
+    
+    return phrases.filter(phrase => phrase.trim().length > 0);
+  };
+
+  // Color palette for phrase highlighting
+  const phraseColors = [
+    'bg-blue-50 border-blue-200',
+    'bg-green-50 border-green-200', 
+    'bg-purple-50 border-purple-200',
+    'bg-orange-50 border-orange-200',
+    'bg-pink-50 border-pink-200',
+    'bg-indigo-50 border-indigo-200',
+    'bg-teal-50 border-teal-200',
+    'bg-yellow-50 border-yellow-200'
+  ];
+
   const processTemplateContent = (content: string, plan: string): string => {
     if (!content || !plan) return '';
 
@@ -413,6 +458,9 @@ ENDIF`;
     let processedContent = content;
     const currentPlanData = planData[plan] || {};
 
+    // Remove markdown headers for cleaner phrase splitting
+    processedContent = processedContent.replace(/^#+\s*/gm, '');
+
     // Process IF statements (simplified logic for demonstration)
     processedContent = processedContent.replace(/IF\([^)]+\)\s*\n?(.*?)\n?(?:ELSE\s*\n?(.*?)\n?)?ENDIF/gs, (match, ifContent, elseContent) => {
       // For demo purposes, always show the IF content
@@ -425,8 +473,100 @@ ENDIF`;
       processedContent = processedContent.replace(regex, value);
     });
 
-    // Convert newlines to HTML breaks for display
-    return processedContent.replace(/\n/g, '<br>');
+    return processedContent;
+  };
+
+  const renderPhrasedContent = (content: string, plan: string): JSX.Element => {
+    if (!content || !plan) {
+      return (
+        <div className="flex flex-col items-center justify-center h-full text-center py-12">
+          <Globe size={48} className="text-muted-foreground/50 mb-4" />
+          <p className="text-sm text-muted-foreground mb-2">
+            Select a plan to preview content
+          </p>
+          <p className="text-xs text-muted-foreground/70">
+            The preview will show the resolved content split into highlighted phrases
+          </p>
+        </div>
+      );
+    }
+
+    const processedContent = processTemplateContent(content, plan);
+    
+    // Split content into subsections (by double line breaks or logical breaks)
+    const subsections = processedContent.split(/\n\s*\n/);
+    
+    return (
+      <div className="space-y-6">
+        {subsections.map((subsection, subsectionIndex) => {
+          if (!subsection.trim()) return null;
+          
+          const phrases = splitIntoPhrases(subsection.trim());
+          
+          return (
+            <div key={subsectionIndex} className="space-y-3">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded">
+                  Subsection {subsectionIndex + 1}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {phrases.length} phrases
+                </span>
+              </div>
+              <div className="space-y-2">
+                {phrases.map((phrase, index) => {
+                  // Check if phrase contains DCM rule reference and highlight in gray
+                  const hasDcmRule = /\(dcm id R\d+\)/i.test(phrase);
+                  
+                  return (
+                    <div
+                      key={index}
+                      className={`inline-block px-3 py-2 mr-2 mb-2 rounded-lg border text-sm leading-relaxed transition-all duration-200 hover:shadow-sm ${
+                        hasDcmRule 
+                          ? 'bg-gray-100 border-gray-300 text-gray-700' 
+                          : phraseColors[index % phraseColors.length]
+                      }`}
+                    >
+                      <span className="text-xs font-medium text-muted-foreground mr-2">
+                        {index + 1}.
+                      </span>
+                      {hasDcmRule ? (
+                        <span>
+                          {phrase.split(/(\(dcm id R\d+\))/gi).map((part, partIndex) => 
+                            /\(dcm id R\d+\)/i.test(part) ? (
+                              <span key={partIndex} className="font-mono text-xs bg-gray-200 px-1 py-0.5 rounded text-gray-600 mx-1">
+                                {part}
+                              </span>
+                            ) : (
+                              <span key={partIndex}>{part}</span>
+                            )
+                          )}
+                        </span>
+                      ) : (
+                        phrase.trim()
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+        
+        {/* Rule highlighting legend */}
+        {content.includes('dcm id R') && (
+          <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+            <div className="text-xs font-medium text-gray-600 mb-2">Rule References</div>
+            <div className="text-sm text-gray-700">
+              <span className="inline-block bg-gray-100 border border-gray-300 px-2 py-1 rounded text-xs mr-2">
+                Gray highlighting
+              </span>
+              Phrases containing DCM rule references (dcm id R####) are marked in gray as requested.
+            </div>
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -933,15 +1073,20 @@ ENDIF`;
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Label className="text-sm font-medium text-foreground">Content Preview</Label>
+                    <Label className="text-sm font-medium text-foreground">Phrase-Level Preview</Label>
                     <Badge variant="outline" className="text-xs">
                       {selectedPlan ? getPlanDisplayName(selectedPlan) : 'No Plan Selected'}
                     </Badge>
                   </div>
                   {selectedPlan && (
-                    <Button variant="link" size="sm" className="text-blue-600 text-xs hover:text-blue-800">
-                      View Plan Details
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary" className="text-xs">
+                        Chapter 1 Split
+                      </Badge>
+                      <Button variant="link" size="sm" className="text-blue-600 text-xs hover:text-blue-800">
+                        View Plan Details
+                      </Button>
+                    </div>
                   )}
                 </div>
 
@@ -949,34 +1094,15 @@ ENDIF`;
                   <div className="p-4 border-b border-border bg-muted/20">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">
-                        {selectedLanguage === 'english' ? 'English' : selectedLanguage === 'spanish' ? 'Spanish' : 'Chinese'} Preview
+                        {selectedLanguage === 'english' ? 'English' : selectedLanguage === 'spanish' ? 'Spanish' : 'Chinese'} - Phrases with Light Coloring
                       </span>
                       <span className="text-xs text-muted-foreground">
-                        {selectedPlan ? 'Live Preview' : 'Select Plan'}
+                        {selectedPlan ? 'Chapter 1 Split View' : 'Select Plan'}
                       </span>
                     </div>
                   </div>
                   <div className="p-6 min-h-[280px]">
-                    {selectedPlan ? (
-                      <div className="prose prose-sm max-w-none">
-                        <div 
-                          className="text-sm leading-relaxed whitespace-pre-wrap"
-                          dangerouslySetInnerHTML={{ 
-                            __html: processTemplateContent(getSelectedLanguageContent(), selectedPlan) 
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center h-full text-center py-12">
-                        <Globe size={48} className="text-muted-foreground/50 mb-4" />
-                        <p className="text-sm text-muted-foreground mb-2">
-                          Select a plan to preview content
-                        </p>
-                        <p className="text-xs text-muted-foreground/70">
-                          The preview will show the resolved content without IF conditions
-                        </p>
-                      </div>
-                    )}
+                    {renderPhrasedContent(getSelectedLanguageContent(), selectedPlan)}
                   </div>
                 </div>
               </div>

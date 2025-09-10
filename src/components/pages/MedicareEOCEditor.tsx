@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useKV } from '@github/spark/hooks';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -13,16 +13,37 @@ interface MedicareEOCEditorProps {
 export function MedicareEOCEditor({ onNavigate }: MedicareEOCEditorProps) {
   const [selectedView, setSelectedView] = useState('Medicare EOC');
   const [selectedInstance, setSelectedInstance] = useState('Medicare EOC');
-  const [selectedSection, setSelectedSection] = useState('Medicare EOC Cover Page');
+  const [selectedSection, setSelectedSection] = useState('Chapter 1');
   const [editorContent, setEditorContent] = useKV('medicare-eoc-content', `{{ELSE}} {{IF:[GlobalRule[GR157]=true]}}
 Medicare Advantage with prescription drugs
+
+This section references rule R0001 for coverage details.
+Please refer to R0002 for additional information.
 
 {{ELSE}}
 {{IF:[Medicare[DoesyourPlanofferaPrescritionPartDbenefit]=YES]}}
 Medicare Advantage plan with prescription drugs
 
+As outlined in R0003, the following benefits apply.
+See R0004 for exclusions and limitations.
+
 {{ELSE}} {{IF:[Medicare[PlanType]=Medicare Prescription Drug Plan]}}
 `);
+
+  // Function to highlight rule references in the content
+  const processContentForRuleHighlighting = (content: string) => {
+    // Regular expression to match rule references like R0001, R0002, etc.
+    const rulePattern = /\b(R\d{4})\b/g;
+    return content.replace(rulePattern, '<span style="background-color: #d1d5db; color: #374151; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-weight: 500; border: 1px solid #9ca3af;">$1</span>');
+  };
+
+  // Memoized processed content for display
+  const processedContent = useMemo(() => {
+    if (selectedSection === 'Chapter 1') {
+      return processContentForRuleHighlighting(editorContent);
+    }
+    return editorContent;
+  }, [editorContent, selectedSection]);
 
   const sectionOptions = [
     'Medicare EOC Cover Page',
@@ -302,12 +323,38 @@ Medicare Advantage plan with prescription drugs
           </CardHeader>
           
           <CardContent className="flex-1 p-0">
-            <textarea
-              value={editorContent}
-              onChange={handleTextChange}
-              className="w-full h-full min-h-96 p-4 border-0 resize-none focus:outline-none font-mono text-sm"
-              placeholder="Enter your content here..."
-            />
+            {selectedSection === 'Chapter 1' ? (
+              <div className="flex">
+                <div className="w-1/2 flex flex-col">
+                  <div className="p-2 bg-blue-50 border-b text-xs text-blue-700">
+                    <span className="font-medium">Rule Highlighting Enabled:</span> DCM rule references (e.g., R0001) will be highlighted in gray in the preview panel
+                  </div>
+                  <textarea
+                    value={editorContent}
+                    onChange={handleTextChange}
+                    className="flex-1 h-full min-h-96 p-4 border-r resize-none focus:outline-none font-mono text-sm"
+                    placeholder="Enter your content here..."
+                  />
+                </div>
+                <div className="w-1/2 p-4 bg-slate-50 overflow-auto border-l">
+                  <div className="text-sm font-medium text-slate-600 mb-3 flex items-center gap-2">
+                    <span>Preview with Rule Highlighting</span>
+                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">Chapter 1 Only</span>
+                  </div>
+                  <div 
+                    className="prose prose-sm max-w-none whitespace-pre-wrap leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: processedContent }}
+                  />
+                </div>
+              </div>
+            ) : (
+              <textarea
+                value={editorContent}
+                onChange={handleTextChange}
+                className="w-full h-full min-h-96 p-4 border-0 resize-none focus:outline-none font-mono text-sm"
+                placeholder="Enter your content here..."
+              />
+            )}
           </CardContent>
         </Card>
       </div>
