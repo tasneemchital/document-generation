@@ -1014,13 +1014,7 @@ ENDIF`;
                       {selectedLanguage === 'english' ? 'EN' : selectedLanguage === 'spanish' ? 'ES' : 'CN'}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Label className="text-sm text-muted-foreground">Status:</Label>
-                    <Badge variant="outline" className="text-xs">
-                      {selectedLanguage === 'english' ? formData.englishStatus : 
-                       selectedLanguage === 'spanish' ? formData.spanishStatus : 'Draft'}
-                    </Badge>
-                  </div>
+
                 </div>
 
                 {/* Template Helper Buttons */}
@@ -1071,7 +1065,7 @@ ENDIF`;
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Label className="text-sm font-medium text-foreground">Phrase-Level Preview</Label>
+                    <Label className="text-sm font-medium text-foreground">Content Preview</Label>
                     <Badge variant="outline" className="text-xs">
                       {selectedPlan ? getPlanDisplayName(selectedPlan) : 'No Plan Selected'}
                     </Badge>
@@ -1092,7 +1086,7 @@ ENDIF`;
                   <div className="p-4 border-b border-border bg-muted/20">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">
-                        {selectedLanguage === 'english' ? 'English' : selectedLanguage === 'spanish' ? 'Spanish' : 'Chinese'} - Phrases with Light Coloring
+                        Content Preview
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {selectedPlan ? 'Chapter 1 Split View' : 'Select Plan'}
