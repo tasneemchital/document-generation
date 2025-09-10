@@ -638,18 +638,16 @@ ENDIF`;
               Define the core details for this rule
             </p>
           </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Compact 2-row layout for better alignment */}
-            
-            {/* First Row - Main Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="benefitCategory" className="text-sm font-medium text-foreground">
+          <CardContent className="space-y-8">
+            {/* First Row - Primary Rule Details */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+              <div className="space-y-2 min-w-0">
+                <Label htmlFor="benefitCategory" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Benefit Category <span className="text-red-500">*</span>
                 </Label>
                 <Select value={formData.templateName || 'Fitness Rider'} onValueChange={(value) => handleInputChange('templateName', value)}>
-                  <SelectTrigger className="h-9">
-                    <SelectValue>{formData.templateName || 'Fitness Rider'}</SelectValue>
+                  <SelectTrigger className="h-10 w-full">
+                    <SelectValue placeholder="Select benefit category">{formData.templateName || 'Fitness Rider'}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Fitness Rider">Fitness Rider</SelectItem>
@@ -662,13 +660,13 @@ ENDIF`;
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="benefitType" className="text-sm font-medium text-foreground">
+              <div className="space-y-2 min-w-0">
+                <Label htmlFor="benefitType" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Benefit Type <span className="text-red-500">*</span>
                 </Label>
                 <Select value={formData.benefitType || 'Copayment'} onValueChange={(value) => handleInputChange('benefitType', value)}>
-                  <SelectTrigger className="h-9">
-                    <SelectValue>{formData.benefitType || 'Copayment'}</SelectValue>
+                  <SelectTrigger className="h-10 w-full">
+                    <SelectValue placeholder="Select benefit type">{formData.benefitType || 'Copayment'}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Copayment">Copayment</SelectItem>
@@ -680,13 +678,13 @@ ENDIF`;
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="businessArea" className="text-sm font-medium text-foreground">
+              <div className="space-y-2 min-w-0">
+                <Label htmlFor="businessArea" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Business Area <span className="text-red-500">*</span>
                 </Label>
                 <Select value={formData.businessArea || 'Marketing'} onValueChange={(value) => handleInputChange('businessArea', value)}>
-                  <SelectTrigger className="h-9">
-                    <SelectValue>{formData.businessArea || 'Marketing'}</SelectValue>
+                  <SelectTrigger className="h-10 w-full">
+                    <SelectValue placeholder="Select business area">{formData.businessArea || 'Marketing'}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Marketing">Marketing</SelectItem>
@@ -697,13 +695,13 @@ ENDIF`;
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="subBusinessArea" className="text-sm font-medium text-foreground">
+              <div className="space-y-2 min-w-0">
+                <Label htmlFor="subBusinessArea" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Sub-business Area <span className="text-red-500">*</span>
                 </Label>
                 <Select value={formData.subBusinessArea || 'MRK: DNSP'} onValueChange={(value) => handleInputChange('subBusinessArea', value)}>
-                  <SelectTrigger className="h-9">
-                    <SelectValue>{formData.subBusinessArea || 'MRK: DNSP'}</SelectValue>
+                  <SelectTrigger className="h-10 w-full">
+                    <SelectValue placeholder="Select sub-business area">{formData.subBusinessArea || 'MRK: DNSP'}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="MRK: DNSP">MRK: DNSP</SelectItem>
@@ -716,15 +714,15 @@ ENDIF`;
               </div>
             </div>
 
-            {/* Second Row - Plan Year, Dates, Description, Network Type */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="planYear" className="text-sm font-medium text-foreground">
+            {/* Second Row - Operational Details */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
+              <div className="space-y-2 min-w-0">
+                <Label htmlFor="planYear" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Plan Year <span className="text-red-500">*</span>
                 </Label>
                 <Select value={formData.version || '2026'} onValueChange={(value) => handleInputChange('version', value)}>
-                  <SelectTrigger className="h-9">
-                    <SelectValue>{formData.version || '2026'}</SelectValue>
+                  <SelectTrigger className="h-10 w-full">
+                    <SelectValue placeholder="Select plan year">{formData.version || '2026'}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="2024">2024</SelectItem>
@@ -735,37 +733,37 @@ ENDIF`;
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="effectiveStartDate" className="text-sm font-medium text-foreground">
+              <div className="space-y-2 min-w-0">
+                <Label htmlFor="effectiveStartDate" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Content Effective Start Date <span className="text-red-500">*</span>
                 </Label>
                 <DatePicker
                   date={formatDateForDisplay(formData.effectiveDate)}
                   onDateChange={handleDateChange}
                   placeholder="01-01-2026"
-                  className="w-full h-9"
+                  className="w-full h-10"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="effectiveEndDate" className="text-sm font-medium text-foreground">
+              <div className="space-y-2 min-w-0">
+                <Label htmlFor="effectiveEndDate" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Content Effective End Date <span className="text-red-500">*</span>
                 </Label>
                 <DatePicker
                   date={new Date(2026, 11, 31)} // December 31, 2026
                   onDateChange={() => {}} // Read-only for now
                   placeholder="31-12-2026"
-                  className="w-full h-9"
+                  className="w-full h-10"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="description" className="text-sm font-medium text-foreground">
+              <div className="space-y-2 min-w-0">
+                <Label htmlFor="description" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Description <span className="text-red-500">*</span>
                 </Label>
                 <Select value={formData.description || 'Body Text'} onValueChange={(value) => handleInputChange('description', value)}>
-                  <SelectTrigger className="h-9">
-                    <SelectValue>{formData.description || 'Body Text'}</SelectValue>
+                  <SelectTrigger className="h-10 w-full">
+                    <SelectValue placeholder="Select description type">{formData.description || 'Body Text'}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Body Text">Body Text</SelectItem>
@@ -776,13 +774,13 @@ ENDIF`;
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="networkType" className="text-sm font-medium text-foreground">
+              <div className="space-y-2 min-w-0">
+                <Label htmlFor="networkType" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Network Type <span className="text-red-500">*</span>
                 </Label>
                 <Select value={formData.serviceGroup || 'INN'} onValueChange={(value) => handleInputChange('serviceGroup', value)}>
-                  <SelectTrigger className="h-9">
-                    <SelectValue>{formData.serviceGroup || 'INN'}</SelectValue>
+                  <SelectTrigger className="h-10 w-full">
+                    <SelectValue placeholder="Select network type">{formData.serviceGroup || 'INN'}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="INN">INN</SelectItem>
