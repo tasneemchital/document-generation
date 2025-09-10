@@ -1288,7 +1288,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                       : "Edit selected rule"
                 }
               >
-                <Edit size={16} />
+                <PencilSimple size={16} />
               </Button>
               <Button 
                 size="sm" 
