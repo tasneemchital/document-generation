@@ -38,10 +38,10 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
     ruleId: '',
     effectiveDate: '01/01/2026',
     version: '2026',
-    benefitType: 'Out of Pocket Maximum',
+    benefitType: 'Copayment',
     businessArea: 'Marketing',
     subBusinessArea: 'MRK: DNSP',
-    description: 'Headline',
+    description: 'Body Text',
     templateName: 'Fitness Rider',
     serviceId: 'SRV001',
     cmsRegulated: false,
@@ -218,10 +218,10 @@ ENDIF
           ruleId: '',
           effectiveDate: '01/01/2026',
           version: '2026',
-          benefitType: 'Out of Pocket Maximum',
+          benefitType: 'Copayment',
           businessArea: 'Marketing',
           subBusinessArea: 'MRK: DNSP',
-          description: 'Headline',
+          description: 'Body Text',
           templateName: 'Fitness Rider',
           serviceId: '',
           cmsRegulated: false,
@@ -516,13 +516,13 @@ ENDIF`;
                 <Label htmlFor="benefitType" className="text-sm font-medium text-foreground">
                   Benefit Type <span className="text-red-500">*</span>
                 </Label>
-                <Select value={formData.benefitType || 'Out of Pocket Maximum'} onValueChange={(value) => handleInputChange('benefitType', value)}>
+                <Select value={formData.benefitType || 'Copayment'} onValueChange={(value) => handleInputChange('benefitType', value)}>
                   <SelectTrigger className="h-9">
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Out of Pocket Maximum">Out of Pocket Maximum</SelectItem>
                     <SelectItem value="Copayment">Copayment</SelectItem>
+                    <SelectItem value="Out of Pocket Maximum">Out of Pocket Maximum</SelectItem>
                     <SelectItem value="Coinsurance">Coinsurance</SelectItem>
                     <SelectItem value="Deductible">Deductible</SelectItem>
                     <SelectItem value="Premium">Premium</SelectItem>
@@ -613,13 +613,13 @@ ENDIF`;
                 <Label htmlFor="description" className="text-sm font-medium text-foreground">
                   Description <span className="text-red-500">*</span>
                 </Label>
-                <Select value={formData.description || 'Headline'} onValueChange={(value) => handleInputChange('description', value)}>
+                <Select value={formData.description || 'Body Text'} onValueChange={(value) => handleInputChange('description', value)}>
                   <SelectTrigger className="h-9">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Headline">Headline</SelectItem>
                     <SelectItem value="Body Text">Body Text</SelectItem>
+                    <SelectItem value="Headline">Headline</SelectItem>
                     <SelectItem value="Footnote">Footnote</SelectItem>
                     <SelectItem value="Disclaimer">Disclaimer</SelectItem>
                   </SelectContent>
