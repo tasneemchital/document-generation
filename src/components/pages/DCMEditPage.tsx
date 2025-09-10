@@ -74,7 +74,17 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
 
   useEffect(() => {
     if (rule && mode === 'edit') {
-      setFormData(rule);
+      // For edit mode, ensure all fields have default values if they're empty
+      setFormData({
+        ...rule,
+        templateName: rule.templateName || 'Fitness Rider',
+        benefitType: rule.benefitType || 'Copayment',
+        businessArea: rule.businessArea || 'Marketing',
+        subBusinessArea: rule.subBusinessArea || 'MRK: DNSP',
+        version: rule.version || '2026',
+        description: rule.description || 'Body Text',
+        serviceGroup: rule.serviceGroup || 'INN'
+      });
     } else if (mode === 'create') {
       // Add sample content for new rules
       setFormData(prev => ({
@@ -499,7 +509,7 @@ ENDIF`;
                 </Label>
                 <Select value={formData.templateName || 'Fitness Rider'} onValueChange={(value) => handleInputChange('templateName', value)}>
                   <SelectTrigger className="h-9">
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue>{formData.templateName || 'Fitness Rider'}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Fitness Rider">Fitness Rider</SelectItem>
@@ -518,7 +528,7 @@ ENDIF`;
                 </Label>
                 <Select value={formData.benefitType || 'Copayment'} onValueChange={(value) => handleInputChange('benefitType', value)}>
                   <SelectTrigger className="h-9">
-                    <SelectValue placeholder="Select type" />
+                    <SelectValue>{formData.benefitType || 'Copayment'}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Copayment">Copayment</SelectItem>
@@ -536,7 +546,7 @@ ENDIF`;
                 </Label>
                 <Select value={formData.businessArea || 'Marketing'} onValueChange={(value) => handleInputChange('businessArea', value)}>
                   <SelectTrigger className="h-9">
-                    <SelectValue placeholder="Select area" />
+                    <SelectValue>{formData.businessArea || 'Marketing'}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Marketing">Marketing</SelectItem>
@@ -553,7 +563,7 @@ ENDIF`;
                 </Label>
                 <Select value={formData.subBusinessArea || 'MRK: DNSP'} onValueChange={(value) => handleInputChange('subBusinessArea', value)}>
                   <SelectTrigger className="h-9">
-                    <SelectValue placeholder="Select sub-area" />
+                    <SelectValue>{formData.subBusinessArea || 'MRK: DNSP'}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="MRK: DNSP">MRK: DNSP</SelectItem>
@@ -574,7 +584,7 @@ ENDIF`;
                 </Label>
                 <Select value={formData.version || '2026'} onValueChange={(value) => handleInputChange('version', value)}>
                   <SelectTrigger className="h-9">
-                    <SelectValue />
+                    <SelectValue>{formData.version || '2026'}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="2024">2024</SelectItem>
@@ -615,7 +625,7 @@ ENDIF`;
                 </Label>
                 <Select value={formData.description || 'Body Text'} onValueChange={(value) => handleInputChange('description', value)}>
                   <SelectTrigger className="h-9">
-                    <SelectValue />
+                    <SelectValue>{formData.description || 'Body Text'}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Body Text">Body Text</SelectItem>
@@ -632,7 +642,7 @@ ENDIF`;
                 </Label>
                 <Select value={formData.serviceGroup || 'INN'} onValueChange={(value) => handleInputChange('serviceGroup', value)}>
                   <SelectTrigger className="h-9">
-                    <SelectValue />
+                    <SelectValue>{formData.serviceGroup || 'INN'}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="INN">INN</SelectItem>
