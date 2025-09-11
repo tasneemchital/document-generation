@@ -1,35 +1,35 @@
 import { useState } from 'react'
-import { Button } from '@/components/ui/but
-import { Label } from '@/components/ui/label'
+import { useKV } from '@github/spark/hooks'
 import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Card, CardContent } from '@/components/ui/card'
+import { 
+  Bold, 
+  Italic, 
+  Underline, 
+  List, 
+  ListNumbers, 
   Link, 
+  AlignLeft, 
   AlignCenter,
+  AlignRight,
   Plus
+} from '@phosphor-icons/react'
+import { RuleData } from '@/lib/types'
 
-  onNaviga
+interface TemplateProps {
+  onNavigate: (page: string) => void
+}
 
-  'Medic
-  const [showCM
-  'Chapt
-  'Chapter 6
-  'Chapter 8',
-  'Chapter 10
-  'Cha
-  'Rider and Dental Chat'
-
-  const [selectedView, se
-  const [selectedSection, setSelecte
- 
-
-    <div className="flex f
-      <div className="flex i
-          <h1 
-
-      {/* Cont
+const sectionOptions = [
+  'Medicare EOC Cover Page',
+  'Chapter 1',
+  'Chapter 2', 
+  'Chapter 3',
   'Chapter 4',
   'Chapter 5',
   'Chapter 6',
@@ -51,6 +51,11 @@ export function Template({ onNavigate }: TemplateProps) {
   const [showCMLDialog, setShowCMLDialog] = useState(false)
   const [rules] = useKV<RuleData[]>('rule-data', [])
 
+  const handleInsertRule = (rule: RuleData) => {
+    setEditorContent(prev => prev + rule.description)
+    setShowCMLDialog(false)
+  }
+
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Header */}
@@ -62,71 +67,69 @@ export function Template({ onNavigate }: TemplateProps) {
 
       {/* Controls Row */}
       <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
-
-                </Button>
-
-
-                </Button>
-
-
-
-
-
-
-
-
-
-
-
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Label htmlFor="view-select">View:</Label>
+            <Select value={selectedView} onValueChange={setSelectedView}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Draft">Draft</SelectItem>
+                <SelectItem value="Published">Published</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
+          <div className="flex items-center gap-2">
+            <Label htmlFor="instance-select">Instance:</Label>
+            <Select value={selectedInstance} onValueChange={setSelectedInstance}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Instance 1">Instance 1</SelectItem>
+                <SelectItem value="Instance 2">Instance 2</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
+          <div className="flex items-center gap-2">
+            <Label htmlFor="section-select">Section:</Label>
+            <Select value={selectedSection} onValueChange={setSelectedSection}>
+              <SelectTrigger className="w-48">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {sectionOptions.map((section) => (
+                  <SelectItem key={section} value={section}>
+                    {section}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
 
-
-        </Card>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  )
-
-
-
-
-
-
-
-
-
-
-
-
-
+      {/* Editor Section */}
+      <div className="flex-1 p-4">
+        <Card className="h-full">
+          <div className="p-4 border-b border-border">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-medium">{selectedSection}</h2>
+              <div className="flex items-center gap-1">
+                {/* Rich Text Editor Buttons */}
                 <Button variant="outline" size="sm">
-
-
-
-
-
-
-
-
-
+                  <Bold className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Italic className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Underline className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="sm">
                   <List className="h-4 w-4" />
                 </Button>
                 <Button variant="outline" size="sm">
@@ -160,14 +163,14 @@ export function Template({ onNavigate }: TemplateProps) {
             </p>
           </div>
 
-          <div className="flex-1 p-4">
+          <CardContent className="flex-1 p-4">
             <Textarea
               placeholder="Enter your template content here..."
               value={editorContent}
               onChange={(e) => setEditorContent(e.target.value)}
               className="min-h-[400px] resize-none font-mono text-sm"
             />
-          </div>
+          </CardContent>
         </Card>
       </div>
 
@@ -188,18 +191,27 @@ export function Template({ onNavigate }: TemplateProps) {
                   <TableHead>Sub-Business Area</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead>Version</TableHead>
+                  <TableHead>Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {rules.map((rule) => (
-                  <TableRow key={rule.id} className="cursor-pointer hover:bg-muted/50">
+                  <TableRow key={rule.id} className="hover:bg-muted/50">
                     <TableCell>{rule.id}</TableCell>
                     <TableCell>{rule.ruleName}</TableCell>
                     <TableCell>{rule.benefitType}</TableCell>
                     <TableCell>{rule.businessArea}</TableCell>
                     <TableCell>{rule.subBusinessArea}</TableCell>
-                    <TableCell>{rule.description}</TableCell>
+                    <TableCell className="max-w-md truncate">{rule.description}</TableCell>
                     <TableCell>{rule.version}</TableCell>
+                    <TableCell>
+                      <Button 
+                        size="sm" 
+                        onClick={() => handleInsertRule(rule)}
+                      >
+                        Insert
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
