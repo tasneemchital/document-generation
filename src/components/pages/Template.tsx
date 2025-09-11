@@ -1,13 +1,19 @@
 import { useState, useRef, useEffect } from 'react'
-import { Button } from '@/components/ui/but
-import { Select, SelectContent, SelectItem, Sel
-import { Dialog, DialogContent, DialogHeade
+import { Button } from '@/components/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { RuleData } from '@/lib/types'
+import {
   Bold, 
+  Italic,
   Underline,
+  AlignLeft,
   AlignCenter,
-import { RuleData } from '@/lib/types'
-import { 
+  AlignRight,
+  List,
+  ListNumbers,
+  Plus
+} from '@phosphor-icons/react'
   Bold, 
   Italic, 
   Underline,
