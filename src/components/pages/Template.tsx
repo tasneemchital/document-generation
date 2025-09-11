@@ -30,6 +30,8 @@ const templateSections = [
 
 export function Template({ onNavigate }: TemplateProps) {
   const [selectedSection, setSelectedSection] = useState('Medicare EOC Cover Page')
+  const [selectedView, setSelectedView] = useState('Draft')
+  const [selectedInstance, setSelectedInstance] = useState('Instance 1')
   const [content, setContent] = useState('')
 
   return (
@@ -37,8 +39,7 @@ export function Template({ onNavigate }: TemplateProps) {
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-4">
-          <h1 className="text-xl font-semibold text-foreground">Template Editor</h1>
-          <div className="h-0.5 bg-primary w-16 rounded-full" />
+          <h1 className="text-2xl font-bold text-foreground">Medicare EOC</h1>
         </div>
 
         <div className="flex items-center gap-2">
@@ -54,13 +55,41 @@ export function Template({ onNavigate }: TemplateProps) {
         </div>
       </div>
 
-      {/* Section Controls */}
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <div className="flex items-center gap-4">
+      {/* Controls Row */}
+      <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <Label className="text-sm font-medium">View</Label>
+            <Select value={selectedView} onValueChange={setSelectedView}>
+              <SelectTrigger className="w-[140px] h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Draft">Draft</SelectItem>
+                <SelectItem value="Preview">Preview</SelectItem>
+                <SelectItem value="Published">Published</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Label className="text-sm font-medium">Instance</Label>
+            <Select value={selectedInstance} onValueChange={setSelectedInstance}>
+              <SelectTrigger className="w-[140px] h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Instance 1">Instance 1</SelectItem>
+                <SelectItem value="Instance 2">Instance 2</SelectItem>
+                <SelectItem value="Instance 3">Instance 3</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="flex items-center gap-2">
             <Label className="text-sm font-medium">Section</Label>
             <Select value={selectedSection} onValueChange={setSelectedSection}>
-              <SelectTrigger className="w-[300px] h-10">
+              <SelectTrigger className="w-[280px] h-9">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
