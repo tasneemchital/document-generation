@@ -1,17 +1,19 @@
-import { useState, useRef } from 'react'
-import { Button } from '@/components/ui/button'
+import { useState, useRef } from
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card } from '@/components/ui/card'
-import { useKV } from '@github/spark/hooks'
 import { RuleData } from '@/lib/types'
-import { CMLDialog } from './CMLDialog'
 import { 
-  Bold, 
   Italic, 
-  Underline, 
   AlignLeft, 
-  AlignCenter, 
+  AlignRight,
+  ListOrdered,
+} from '@phosphor-icons/react'
+interface
+}
+const sect
+  'Chapter 1'
+  'Chapter 3'
+  'Chapter 5',
   AlignRight,
   List,
   ListOrdered,
@@ -28,131 +30,102 @@ const sectionOptions = [
   'Chapter 2',
   'Chapter 3',
   'Chapter 4',
-  'Chapter 5',
-  'Chapter 6',
-  'Chapter 7',
-  'Chapter 8',
-  'Chapter 9',
-  'Chapter 10',
-  'Chapter 11',
-  'Chapter 12',
-  'Back Cover',
-  'Rider and Dental Chat'
-]
-
-export function Template({ onNavigate }: TemplateProps) {
-  const [selectedView, setSelectedView] = useState('Draft')
-  const [selectedInstance, setSelectedInstance] = useState('Instance 1')
-  const [selectedSection, setSelectedSection] = useState('Medicare EOC Cover Page')
-  const [editorContent, setEditorContent] = useState('')
-  const [showCMLDialog, setShowCMLDialog] = useState(false)
-  const editorRef = useRef<HTMLDivElement>(null)
-
-  const handleInsertRule = (content: string) => {
-    if (editorRef.current) {
-      // Insert the rule chunk content at cursor position or at the end
-      const selection = window.getSelection();
-      if (selection && selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = content;
-        
-        while (tempDiv.firstChild) {
-          range.insertNode(tempDiv.firstChild);
-        }
-        
-        // Move cursor after inserted content
-        range.collapse(false);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      } else {
-        // If no selection, append to end
-        editorRef.current.innerHTML += content;
+        range.
+        select
+        // If 
       }
-    }
   }
+  const handleE
+    // This wou
+    console.log
 
-  const handleEditRule = (ruleId: string) => {
-    // Navigate to DCM edit page for the specific rule
-    // This would need to be implemented based on your app's navigation pattern
-    onNavigate('dcm');
-    console.log('Edit rule:', ruleId);
-  }
-
-  const executeCommand = (command: string, value?: string) => {
-    if (editorRef.current) {
-      editorRef.current.focus();
-      document.execCommand(command, false, value);
-    }
-  }
+    if (editorRef.current
+ 
 
   return (
-    <div className="flex flex-col h-full bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-semibold text-foreground">Template</h1>
         </div>
-      </div>
 
-      {/* Controls Row */}
-      <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between p-4
           <div className="flex items-center gap-2">
-            <Label htmlFor="view-select" className="text-sm font-medium">
               View:
-            </Label>
-            <Select value={selectedView} onValueChange={setSelectedView}>
-              <SelectTrigger id="view-select" className="w-32">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Draft">Draft</SelectItem>
-                <SelectItem value="Preview">Preview</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
 
-          <div className="flex items-center gap-2">
-            <Label htmlFor="instance-select" className="text-sm font-medium">
-              Instance:
-            </Label>
-            <Select value={selectedInstance} onValueChange={setSelectedInstance}>
-              <SelectTrigger id="instance-select" className="w-32">
                 <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Instance 1">Instance 1</SelectItem>
-                <SelectItem value="Instance 2">Instance 2</SelectItem>
-              </SelectContent>
+              <SelectCo
+                <SelectItem value="Preview">Preview</SelectItem
             </Select>
-          </div>
 
-          <div className="flex items-center gap-2">
-            <Label htmlFor="section-select" className="text-sm font-medium">
+     
+   
+
+          
+                <SelectItem value="Instance 1">Instance 
+              </Sele
+          </div>
+          <div className="flex items-center gap-2
               Section:
-            </Label>
-            <Select value={selectedSection} onValueChange={setSelectedSection}>
-              <SelectTrigger id="section-select" className="w-48">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {sectionOptions.map((section) => (
-                  <SelectItem key={section} value={section}>
-                    {section}
+            <S
+            
+
+                  <SelectI
                   </SelectItem>
-                ))}
               </SelectContent>
-            </Select>
           </div>
-        </div>
 
-        <div className="text-lg font-semibold text-foreground">
-          Medicare EOC
-        </div>
+          Medicare 
       </div>
-
       {/* Editor Section */}
+        <Card className="h-full flex flex-col">
+            <div className="fle
+                {selectedSecti
+              <div className=
+                <Button 
+                  size="sm"
+                  title="Bold"
+                  <Bo
+                
+
+                  title="Italic"
+                  <Italic className="h-4 w-4" />
+                <Button
+                  si
+                  title="Underline"
+                  <Underline className="h-4 w-4" />
+                <div className=
+                  variant="out
+                  onClick={()
+                >
+                </Button>
+                  variant="out
+                  onC
+                
+
+                  variant="outline" 
+                  onClick={() => executeCommand('justifyRight')}
+                >
+                </Bu
+                <Button 
+                  size="sm"
+                  title="Bullet
+                  <List classN
+                <Button 
+                  size="sm"
+                  title="Numbered List"
+                  <ListOrdere
+                <div className=
+                  v
+                  onClick={() 
+                  tit
+                
+              
+
+              Edit the content for this section below
+          </div>
+          <div
+            
+
+                lineHeight: 
       <div className="flex-1 p-4">
         <Card className="h-full flex flex-col">
           <div className="p-4 border-b border-border">
@@ -162,70 +135,30 @@ export function Template({ onNavigate }: TemplateProps) {
               </h2>
               <div className="flex items-center gap-2">
                 {/* Rich Text Editor Buttons */}
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => executeCommand('bold')}
-                  title="Bold"
-                >
+                <Button variant="outline" size="sm">
                   <Bold className="h-4 w-4" />
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => executeCommand('italic')}
-                  title="Italic"
-                >
+                <Button variant="outline" size="sm">
                   <Italic className="h-4 w-4" />
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => executeCommand('underline')}
-                  title="Underline"
-                >
+                <Button variant="outline" size="sm">
                   <Underline className="h-4 w-4" />
                 </Button>
                 <div className="w-px h-6 bg-border mx-2" />
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => executeCommand('justifyLeft')}
-                  title="Align Left"
-                >
+                <Button variant="outline" size="sm">
                   <AlignLeft className="h-4 w-4" />
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => executeCommand('justifyCenter')}
-                  title="Align Center"
-                >
+                <Button variant="outline" size="sm">
                   <AlignCenter className="h-4 w-4" />
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => executeCommand('justifyRight')}
-                  title="Align Right"
-                >
+                <Button variant="outline" size="sm">
                   <AlignRight className="h-4 w-4" />
                 </Button>
                 <div className="w-px h-6 bg-border mx-2" />
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => executeCommand('insertUnorderedList')}
-                  title="Bullet List"
-                >
+                <Button variant="outline" size="sm">
                   <List className="h-4 w-4" />
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => executeCommand('insertOrderedList')}
-                  title="Numbered List"
-                >
+                <Button variant="outline" size="sm">
                   <ListOrdered className="h-4 w-4" />
                 </Button>
                 <div className="w-px h-6 bg-border mx-2" />
@@ -234,7 +167,6 @@ export function Template({ onNavigate }: TemplateProps) {
                   size="sm"
                   onClick={() => setShowCMLDialog(true)}
                   className="ml-2"
-                  title="Insert Content from CML"
                 >
                   <Plus className="h-4 w-4 mr-1" />
                   CML
@@ -247,67 +179,70 @@ export function Template({ onNavigate }: TemplateProps) {
           </div>
 
           <div className="flex-1 p-4">
-            <div
-              ref={editorRef}
-              contentEditable
-              className="min-h-[400px] p-4 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              style={{
-                lineHeight: '1.6',
-                fontFamily: 'Inter, sans-serif',
-                fontSize: '14px',
-                color: '#1f2937'
-              }}
-              onDoubleClick={(e) => {
-                const target = e.target as HTMLElement;
-                const ruleChunk = target.closest('.rule-chunk');
-                
-                if (ruleChunk) {
-                  const ruleId = ruleChunk.getAttribute('data-rule-id');
-                  if (ruleId) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleEditRule(ruleId);
-                  }
-                }
-              }}
-              onClick={(e) => {
-                const target = e.target as HTMLElement;
-                const ruleChunk = target.closest('.rule-chunk');
-                
-                if (ruleChunk) {
-                  // Remove selection from other chunks
-                  const allChunks = editorRef.current?.querySelectorAll('.rule-chunk');
-                  allChunks?.forEach(chunk => chunk.classList.remove('rule-chunk-selected'));
-                  
-                  // Add selection to clicked chunk
-                  ruleChunk.classList.add('rule-chunk-selected');
-                  
-                  // Prevent text selection within the chunk
-                  e.preventDefault();
-                } else {
-                  // Remove selection from all chunks if clicking outside
-                  const allChunks = editorRef.current?.querySelectorAll('.rule-chunk');
-                  allChunks?.forEach(chunk => chunk.classList.remove('rule-chunk-selected'));
-                }
-              }}
-              onInput={() => {
-                // Handle content changes if needed
-              }}
-              dangerouslySetInnerHTML={{
-                __html: editorContent || '<p>Enter your template content here...</p>'
-              }}
-              suppressContentEditableWarning={true}
+            <Textarea
+              placeholder="Enter your template content here..."
+              value={editorContent}
+              onChange={(e) => setEditorContent(e.target.value)}
+              className="min-h-[400px] resize-none font-mono text-sm"
             />
           </div>
         </Card>
       </div>
 
       {/* CML Dialog */}
-      <CMLDialog
-        open={showCMLDialog}
-        onClose={() => setShowCMLDialog(false)}
-        onInsert={handleInsertRule}
-      />
+      <Dialog open={showCMLDialog} onOpenChange={setShowCMLDialog}>
+        <DialogContent className="max-w-6xl max-h-[80vh] overflow-hidden">
+          <DialogHeader>
+            <DialogTitle>Select CML Rule</DialogTitle>
+          </DialogHeader>
+          <div className="overflow-auto max-h-[60vh]">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Rule ID</TableHead>
+                  <TableHead>Rule Name</TableHead>
+                  <TableHead>Benefit Type</TableHead>
+                  <TableHead>Business Area</TableHead>
+                  <TableHead>Sub-Business Area</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Version</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {rules.map((rule) => (
+                  <TableRow 
+                    key={rule.id} 
+                    className={`cursor-pointer hover:bg-muted/50 ${
+                      selectedRule?.id === rule.id ? 'bg-muted' : ''
+                    }`}
+                    onClick={() => setSelectedRule(rule)}
+                    title={`Rule ID: ${rule.id}`}
+                  >
+                    <TableCell>{rule.id}</TableCell>
+                    <TableCell>{rule.ruleName}</TableCell>
+                    <TableCell>{rule.benefitType}</TableCell>
+                    <TableCell>{rule.businessArea}</TableCell>
+                    <TableCell>{rule.subBusinessArea}</TableCell>
+                    <TableCell className="max-w-xs truncate">{rule.description}</TableCell>
+                    <TableCell>{rule.version}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          <div className="flex justify-end gap-2 p-4 border-t">
+            <Button variant="outline" onClick={() => setShowCMLDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleInsertRule}
+              disabled={!selectedRule}
+            >
+              Insert
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
