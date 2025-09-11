@@ -50,7 +50,16 @@ function App() {
       case 'global-template':
         return <MedicareEOCMasterList onNavigate={setCurrentPage} />
       case 'template':
-        return <Template onNavigate={setCurrentPage} />
+        return <Template 
+          onNavigate={setCurrentPage} 
+          onEditRule={(ruleId) => {
+            const rule = rules.find(r => r.id === ruleId)
+            if (rule) {
+              setEditingRule(rule)
+              setCurrentPage('edit-rule')
+            }
+          }} 
+        />
       case 'collaborate':
         return <Collaborate />
         case 'masterlist':

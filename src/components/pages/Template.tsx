@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useKV } from '@github/spark/hooks'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -21,6 +21,7 @@ import {
 
 interface TemplateProps {
   onNavigate: (page: string) => void
+  onEditRule: (ruleId: string) => void
 }
 
 const sectionOptions = [
@@ -32,7 +33,7 @@ const sectionOptions = [
   'Chapter 5'
 ]
 
-export function Template({ onNavigate }: TemplateProps) {
+export function Template({ onNavigate, onEditRule }: TemplateProps) {
   const [selectedView, setSelectedView] = useState('Editor')
   const [selectedInstance, setSelectedInstance] = useState('Instance 1')
   const [selectedSection, setSelectedSection] = useState('Medicare EOC Cover Page')
@@ -40,6 +41,8 @@ export function Template({ onNavigate }: TemplateProps) {
   const [showCMLDialog, setShowCMLDialog] = useState(false)
   const [selectedRule, setSelectedRule] = useState<RuleData | null>(null)
   const [rules] = useKV<RuleData[]>('rule-data', [])
+  const [editingRuleId, setEditingRuleId] = useState<string | null>(null)
+  const [selectedRuleInEditor, setSelectedRuleInEditor] = useState<string | null>(null)
   const editorRef = useRef<HTMLTextAreaElement>(null)
 
   const handleInsertRule = () => {
@@ -64,14 +67,58 @@ export function Template({ onNavigate }: TemplateProps) {
     }
   }
 
+  // Handle editing a rule when double-clicked
+  const handleRuleEdit = (ruleId: string) => {
+    onEditRule(ruleId)
+  }
+
+  // Set up global function for rule editing (called from processed HTML)
+  useEffect(() => {
+    (window as any).handleRuleEdit = handleRuleEdit
+    return () => {
+      delete (window as any).handleRuleEdit
+    }
+  }, [rules])
+
   // Process content to add rule chunk styling
   const processContentForDisplay = (content: string) => {
     return content.replace(
       /\[RULE-(\d+)\](.*?)\[\/RULE-\d+\]/gs,
       (match, ruleId, description) => {
-        return `<div class="rule-chunk" data-rule-id="${ruleId}" onDoubleClick="handleRuleEdit('${ruleId}')">${description.trim()}</div>`
+        return `<div class="rule-chunk" data-rule-id="${ruleId}" ondblclick="handleRuleEdit('${ruleId}')">${description.trim()}</div>`
       }
     )
+  }
+
+  // Handle text selection in editor to detect rule chunks
+  const handleEditorClick = (e: React.MouseEvent) => {
+    if (editorRef.current) {
+      const textarea = editorRef.current
+      const cursorPosition = textarea.selectionStart
+      const content = textarea.value
+      
+      // Find if cursor is within a rule chunk
+      const rulePattern = /\[RULE-(\d+)\](.*?)\[\/RULE-\d+\]/gs
+      let match
+      let foundRule = false
+      
+      while ((match = rulePattern.exec(content)) !== null) {
+        const startPos = match.index
+        const endPos = match.index + match[0].length
+        
+        if (cursorPosition >= startPos && cursorPosition <= endPos) {
+          // User clicked within a rule chunk
+          textarea.setSelectionRange(startPos, endPos)
+          setSelectedRuleInEditor(match[1])
+          foundRule = true
+          break
+        }
+      }
+      
+      if (!foundRule) {
+        setSelectedRuleInEditor(null)
+      }
+    }
   }
 
   return (
@@ -179,18 +226,65 @@ export function Template({ onNavigate }: TemplateProps) {
               </div>
             </div>
             <p className="text-sm text-muted-foreground mb-4">
-              Edit the content for this section below. Use the +CML button to insert rule descriptions.
+              Edit the content for this section below. Use the +CML button to insert rule descriptions. 
+              Click on rule text to select it, double-click to open the rule editor.
             </p>
           </div>
 
           <div className="flex-1 p-4">
-            <Textarea
-              ref={editorRef}
-              placeholder="Enter your template content here..."
-              value={editorContent}
-              onChange={(e) => setEditorContent(e.target.value)}
-              className="min-h-[400px] resize-none font-mono text-sm"
-            />
+            <div className="relative">
+              <Textarea
+                ref={editorRef}
+                placeholder="Enter your template content here. Use +CML to insert rule descriptions. Double-click on any rule text to edit that rule."
+                value={editorContent}
+                onChange={(e) => setEditorContent(e.target.value)}
+                onClick={handleEditorClick}
+                onDoubleClick={(e) => {
+                  // Handle double-click to edit rules
+                  if (editorRef.current) {
+                    const textarea = editorRef.current
+                    const cursorPosition = textarea.selectionStart
+                    const content = textarea.value
+                    
+                    // Find if cursor is within a rule chunk
+                    const rulePattern = /\[RULE-(\d+)\](.*?)\[\/RULE-\d+\]/gs
+                    let match
+                    
+                    while ((match = rulePattern.exec(content)) !== null) {
+                      const startPos = match.index
+                      const endPos = match.index + match[0].length
+                      
+                      if (cursorPosition >= startPos && cursorPosition <= endPos) {
+                        // User double-clicked within a rule chunk
+                        e.preventDefault()
+                        handleRuleEdit(match[1])
+                        break
+                      }
+                    }
+                  }
+                }}
+                className="min-h-[400px] resize-none font-mono text-sm"
+                style={{
+                  background: editorContent.includes('[RULE-') ? 
+                    'linear-gradient(to right, #fafafa 0%, #f9f9f9 100%)' : 
+                    undefined
+                }}
+              />
+              
+              {/* Helper text for rule interaction */}
+              {editorContent.includes('[RULE-') && (
+                <div className="absolute bottom-2 right-2 text-xs text-muted-foreground bg-background/80 px-2 py-1 rounded border">
+                  💡 Double-click rule text to edit
+                </div>
+              )}
+              
+              {/* Selected rule indicator */}
+              {selectedRuleInEditor && (
+                <div className="absolute top-2 right-2 text-xs bg-primary text-primary-foreground px-2 py-1 rounded shadow-sm">
+                  Rule {selectedRuleInEditor} selected - Double-click to edit
+                </div>
+              )}
+            </div>
           </div>
         </Card>
       </div>
