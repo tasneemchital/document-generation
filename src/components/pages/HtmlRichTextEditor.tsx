@@ -33,6 +33,7 @@ interface HtmlRichTextEditorProps {
   title: string;
   englishStatus?: string;
   spanishStatus?: string;
+  onEditRule?: (ruleId: string) => void;
 }
 
 export function HtmlRichTextEditor({
@@ -43,7 +44,8 @@ export function HtmlRichTextEditor({
   onSave,
   title,
   englishStatus,
-  spanishStatus
+  spanishStatus,
+  onEditRule
 }: HtmlRichTextEditorProps) {
   const englishEditorRef = useRef<HTMLDivElement>(null);
   const spanishEditorRef = useRef<HTMLDivElement>(null);
@@ -307,6 +309,39 @@ export function HtmlRichTextEditor({
                     }}
                     onFocus={() => setActiveEditor('english')}
                     onInput={handleContentChange}
+                    onDoubleClick={(e) => {
+                      const target = e.target as HTMLElement;
+                      const ruleChunk = target.closest('.rule-chunk');
+                      
+                      if (ruleChunk && onEditRule) {
+                        const ruleId = ruleChunk.getAttribute('data-rule-id');
+                        if (ruleId) {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onEditRule(ruleId);
+                        }
+                      }
+                    }}
+                    onClick={(e) => {
+                      const target = e.target as HTMLElement;
+                      const ruleChunk = target.closest('.rule-chunk');
+                      
+                      if (ruleChunk) {
+                        // Remove selection from other chunks
+                        const allChunks = englishEditorRef.current?.querySelectorAll('.rule-chunk');
+                        allChunks?.forEach(chunk => chunk.classList.remove('rule-chunk-selected'));
+                        
+                        // Add selection to clicked chunk
+                        ruleChunk.classList.add('rule-chunk-selected');
+                        
+                        // Prevent text selection within the chunk
+                        e.preventDefault();
+                      } else {
+                        // Remove selection from all chunks if clicking outside
+                        const allChunks = englishEditorRef.current?.querySelectorAll('.rule-chunk');
+                        allChunks?.forEach(chunk => chunk.classList.remove('rule-chunk-selected'));
+                      }
+                    }}
                     suppressContentEditableWarning={true}
                   />
                 )}
@@ -343,6 +378,39 @@ export function HtmlRichTextEditor({
                     }}
                     onFocus={() => setActiveEditor('spanish')}
                     onInput={handleContentChange}
+                    onDoubleClick={(e) => {
+                      const target = e.target as HTMLElement;
+                      const ruleChunk = target.closest('.rule-chunk');
+                      
+                      if (ruleChunk && onEditRule) {
+                        const ruleId = ruleChunk.getAttribute('data-rule-id');
+                        if (ruleId) {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onEditRule(ruleId);
+                        }
+                      }
+                    }}
+                    onClick={(e) => {
+                      const target = e.target as HTMLElement;
+                      const ruleChunk = target.closest('.rule-chunk');
+                      
+                      if (ruleChunk) {
+                        // Remove selection from other chunks
+                        const allChunks = spanishEditorRef.current?.querySelectorAll('.rule-chunk');
+                        allChunks?.forEach(chunk => chunk.classList.remove('rule-chunk-selected'));
+                        
+                        // Add selection to clicked chunk
+                        ruleChunk.classList.add('rule-chunk-selected');
+                        
+                        // Prevent text selection within the chunk
+                        e.preventDefault();
+                      } else {
+                        // Remove selection from all chunks if clicking outside
+                        const allChunks = spanishEditorRef.current?.querySelectorAll('.rule-chunk');
+                        allChunks?.forEach(chunk => chunk.classList.remove('rule-chunk-selected'));
+                      }
+                    }}
                     suppressContentEditableWarning={true}
                   />
                 )}

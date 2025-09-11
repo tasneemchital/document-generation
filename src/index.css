@@ -66,3 +66,62 @@
 body {
   font-family: 'Inter', system-ui, sans-serif;
 }
+
+/* Global styles for rule chunks in editors */
+.rule-chunk {
+  border: 2px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  padding: 16px !important;
+  margin: 12px 0 !important;
+  background-color: #f9fafb !important;
+  position: relative !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: block !important;
+  user-select: none !important;
+}
+
+.rule-chunk:hover {
+  border-color: #3b82f6 !important;
+  background-color: #eff6ff !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.rule-chunk:hover::after {
+  content: 'Rule ID: ' attr(data-rule-id) !important;
+  position: absolute !important;
+  top: -30px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background-color: #1f2937 !important;
+  color: white !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  z-index: 1000 !important;
+  pointer-events: none !important;
+  opacity: 1 !important;
+}
+
+.rule-chunk:hover::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -6px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-left: 6px solid transparent !important;
+  border-right: 6px solid transparent !important;
+  border-top: 6px solid #1f2937 !important;
+  z-index: 1000 !important;
+  pointer-events: none !important;
+  opacity: 1 !important;
+}
+
+.rule-chunk-selected {
+  border-color: #059669 !important;
+  background-color: #ecfdf5 !important;
+}

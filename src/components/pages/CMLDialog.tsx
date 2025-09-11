@@ -47,15 +47,23 @@ export function CMLDialog({ open, onClose, onInsert }: CMLDialogProps) {
   }) : [];
 
   const handleInsertRule = (rule: RuleData) => {
-    // Format the rule content for insertion into the rich text editor
+    // Format the rule content as a structured chunk for insertion
     const formattedContent = `
-<div class="rule-insert" data-rule-id="${rule.ruleId}">
-  <strong>${rule.templateName || 'Untitled Rule'}</strong>
-  <br/>
-  <em>Rule ID: ${rule.ruleId}</em>
-  <br/>
-  ${rule.description || 'No description available'}
-  ${rule.content ? `<br/><br/>${rule.content}` : ''}
+<div class="rule-chunk" 
+     data-rule-id="${rule.ruleId}" 
+     data-rule-name="${rule.templateName || 'Untitled Rule'}"
+     data-business-area="${rule.businessArea || ''}"
+     data-benefit-type="${rule.benefitType || ''}"
+     style="border: 2px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 12px 0; background-color: #f9fafb; position: relative; cursor: pointer; transition: all 0.2s ease;"
+     contenteditable="false">
+  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+    <strong style="color: #1f2937; font-weight: 600;">${rule.templateName || 'Untitled Rule'}</strong>
+    <span style="font-size: 12px; background-color: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-weight: 500;">Rule ID: ${rule.ruleId}</span>
+  </div>
+  <div style="color: #6b7280; font-size: 14px; line-height: 1.5;">
+    ${rule.description || 'No description available'}
+  </div>
+  ${rule.content ? `<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb; font-size: 14px; line-height: 1.6;">${rule.content}</div>` : ''}
 </div>
     `.trim();
     

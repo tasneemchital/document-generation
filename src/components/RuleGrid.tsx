@@ -2002,6 +2002,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
           title={`Rule ${currentEditingRule.ruleId || 'N/A'} - ${currentEditingRule.templateName || 'Unknown Template'}`}
           englishStatus={currentEditingRule.englishStatus}
           spanishStatus={currentEditingRule.spanishStatus}
+          onEditRule={onEditRule}
         />
       )}
 
