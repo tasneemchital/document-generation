@@ -11,9 +11,10 @@ import { toast } from 'sonner';
 interface DigitalContentManagerProps {
   onNavigate: (page: string) => void;
   onEditRule?: (rule: RuleData) => void;
+  isDialog?: boolean;
 }
 
-export function DigitalContentManager({ onNavigate, onEditRule }: DigitalContentManagerProps) {
+export function DigitalContentManager({ onNavigate, onEditRule, isDialog = false }: DigitalContentManagerProps) {
   const [rules, setRules] = useKV<RuleData[]>('rule-data', []);
   const [selectedConfig, setSelectedConfig] = useKV<string>('selected-dcm-config', 'digital-content-manager-anoc-eoc');
   const [activityLogCollapsed, setActivityLogCollapsed] = useKV<boolean>('dcm-activity-log-collapsed', false);
@@ -253,25 +254,27 @@ export function DigitalContentManager({ onNavigate, onEditRule }: DigitalContent
 
   return (
     <div className="h-full bg-background overflow-hidden flex flex-col relative">
-      {/* Compact Header */}
-      <div className="bg-card border-b border-border flex-shrink-0">
-        <div className="px-6 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <h1 className="text-xl font-semibold text-foreground">Digital Content Manager</h1>
-              <Select value={selectedConfig} onValueChange={setSelectedConfig}>
-                <SelectTrigger className="w-64">
-                  <SelectValue placeholder="Select configuration" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="digital-content-manager-anoc-eoc">Digital Content Manager - ANOC-EOC</SelectItem>
-                  <SelectItem value="digital-content-manager-general">Digital Content Manager - General</SelectItem>
-                </SelectContent>
-              </Select>
+      {/* Compact Header - Only show when not in dialog */}
+      {!isDialog && (
+        <div className="bg-card border-b border-border flex-shrink-0">
+          <div className="px-6 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <h1 className="text-xl font-semibold text-foreground">Digital Content Manager</h1>
+                <Select value={selectedConfig} onValueChange={setSelectedConfig}>
+                  <SelectTrigger className="w-64">
+                    <SelectValue placeholder="Select configuration" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="digital-content-manager-anoc-eoc">Digital Content Manager - ANOC-EOC</SelectItem>
+                    <SelectItem value="digital-content-manager-general">Digital Content Manager - General</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Content - Full Height Container for Grid with Scrolling */}
       <div className="flex-1 overflow-auto">
@@ -285,13 +288,15 @@ export function DigitalContentManager({ onNavigate, onEditRule }: DigitalContent
         />
       </div>
 
-      {/* Activity Log at Bottom */}
-      <div className={`${activityLogCollapsed ? 'h-12' : 'h-64'} border-t border-border flex-shrink-0`}>
-        <ActivityLog 
-          isCollapsed={activityLogCollapsed}
-          onToggle={() => setActivityLogCollapsed(!activityLogCollapsed)}
-        />
-      </div>
+      {/* Activity Log at Bottom - Only show when not in dialog */}
+      {!isDialog && (
+        <div className={`${activityLogCollapsed ? 'h-12' : 'h-64'} border-t border-border flex-shrink-0`}>
+          <ActivityLog 
+            isCollapsed={activityLogCollapsed}
+            onToggle={() => setActivityLogCollapsed(!activityLogCollapsed)}
+          />
+        </div>
+      )}
 
       <Toaster />
     </div>
