@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Filter, X, Search } from '@phosphor-icons/react';
+import { Funnel, X, Search } from '@phosphor-icons/react';
 
 interface ColumnFilterProps {
   columnKey: string;
@@ -215,7 +215,7 @@ export function ColumnFilter({
           className={`h-6 w-6 p-0 flex items-center justify-center ${hasActiveFilter() ? 'bg-blue-100 text-blue-600 hover:bg-blue-200' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}`}
           title={`Filter ${columnTitle}`}
         >
-          <Filter size={14} className="flex-shrink-0" />
+          <Funnel size={14} className="flex-shrink-0" />
         </Button>
       </PopoverTrigger>
       <PopoverContent 
