@@ -1,117 +1,102 @@
 import { useState, useRef, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Select, SelectContent, SelectItem, Sel
 import { RuleData } from '@/lib/types'
-import {
   Bold, 
+import { RuleData } from '@/lib/types'
+  AlignC
+  Plus
   Italic,
   Underline,
-  AlignLeft,
+  Underline,
   AlignCenter,
-  AlignRight,
+  'Chap
   List,
-  ListNumbers,
+
   Plus
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react' setSe
   Bold, 
   Italic, 
   Underline,
   AlignLeft, 
-  AlignCenter,
-  AlignRight,
-  'Chap
-
-  cons
-  const [selectedSection, setS
-
-  const [rules] = useKV<R
-  const [selectedRuleInEditor, setSe
-
-
-      const start = text
-      
-      const ru
-      const ne
       setShowC
-      
+  AlignRight,
       setTime
 ]
 
-export function Template({ onNavigate }: TemplateProps) {
+  const [selectedSection, setS
   const [selectedView, setSelectedView] = useState('Editor')
   const [selectedInstance, setSelectedInstance] = useState('Instance 1')
   const [selectedSection, setSelectedSection] = useState('Medicare EOC Cover Page')
   const [editorContent, setEditorContent] = useKV('template-content', '')
-  const [showCMLDialog, setShowCMLDialog] = useState(false)
+etShowCMLDialog] = useState(false)
   const [selectedRule, setSelectedRule] = useState<RuleData | null>(null)
+      
+      const ru
+
+      setShowC => {
+      
+      setTime
+]textarea.selectionStart
+ectionEnd
+      
+  const [selectedView, setSelectedView] = useState('Editor')
+      const ruleChunk = `\n\n[RULE-${selectedRule.id}]\n${selectedRule.description}\n[/RULE-${selectedRule.id}]\n\n`
+      
+  const [editorContent, setEditorContent] = useKV('template-content', '')
+      setEditorContent(newContent)
+      setShowCMLDialog(false)
   const [rules] = useKV<RuleData[]>('rule-data', [])
   const editorRef = useRef<HTMLTextAreaElement>(null)
-
+ // Focus back to editor
   const handleInsertRule = () => {
     if (selectedRule && editorRef.current) {
-      const textarea = editorRef.current
+        textarea.setSelectionRange(start + ruleChunk.length, start + ruleChunk.length)
       const start = textarea.selectionStart
       const end = textarea.selectionEnd
       
       // Create the rule chunk HTML that will be styled by CSS
       const ruleChunk = `\n\n[RULE-${selectedRule.id}]\n${selectedRule.description}\n[/RULE-${selectedRule.id}]\n\n`
-      
+  const processContentForDisplay = (content: string) => {
       const newContent = editorContent.substring(0, start) + ruleChunk + editorContent.substring(end)
       setEditorContent(newContent)
       setShowCMLDialog(false)
-      setSelectedRule(null)
+        return `<div class="rule-chunk" data-rule-id="${ruleId}" onDoubleClick="handleRuleEdit('${ruleId}')">${description.trim()}</div>`
       
       // Focus back to editor
-      setTimeout(() => {
-        textarea.focus()
-        textarea.setSelectionRange(start + ruleChunk.length, start + ruleChunk.length)
-      }, 100)
-    }
-  }
-
-  // Process content to add rule chunk styling
-  const processContentForDisplay = (content: string) => {
-      let foundRule = false
-      /\[RULE-(\d+)\](.*?)\[\/RULE-\d+\]/gs,
-        const startPos = match.index
-        return `<div class="rule-chunk" data-rule-id="${ruleId}" onDoubleClick="handleRuleEdit('${ruleId}')">${description.trim()}</div>`
-       
-    )
    
-
+        textarea.focus()
         }
     <div className="h-full flex flex-col">
-      if (!foundRule
+    }foundRule
+  }er-b border-border bg-card">
+
+  // Process content to add rule chunk styling
+  return (
+          </Button>
+      /\[RULE-(\d+)\](.*?)\[\/RULE-\d+\]/gs,
+        </div>
+
+       ms-center gap-4">
+          <div className="flex items-center gap-2">
+   reground">View:</span>
+ value={selectedView} onValueChange={setSelectedView}>
+        }me="w-32">
+              <SelectTrigger cl
+              </SelectTrigger>
       <div className="flex items-center justify-between p-4 border-b border-border bg-card">
-    }
+    }     <SelectItem value="Editor">Editor</SelectItem>
           <Button variant="ghost" onClick={() => onNavigate('global-template')}>
   return (
           </Button>
           <h1 className="text-xl font-semibold text-foreground">Template Editor</h1>
         </div>
-
-        <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
+            <Select value={selectedInstance} onValueChange={setSelectedInstance}>
             <span className="text-sm text-muted-foreground">View:</span>
             <Select value={selectedView} onValueChange={setSelectedView}>
               <SelectTrigger className="w-32">
               <SelectTrigger cl
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Editor">Editor</SelectItem>
-                <SelectItem value="Preview">Preview</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex items-center gap-2">
-              </SelectTrigger>
-            <Select value={selectedInstance} onValueChange={setSelectedInstance}>
-              <SelectTrigger className="w-32">
-                <SelectValue />
-          </div>
-              <SelectContent>
                 <SelectItem value="Instance 1">Instance 1</SelectItem>
                 <SelectItem value="Instance 2">Instance 2</SelectItem>
               </SelectContent>
@@ -119,12 +104,27 @@ export function Template({ onNavigate }: TemplateProps) {
                 
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Section:</span>
+span className="text-sm text-muted-foreground">Section:</span>
             <Select value={selectedSection} onValueChange={setSelectedSection}>
               <SelectTrigger className="w-48">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
+                {sectionOptions.map((section) => (
+              <SelectContent>
+                    {section}
+                <SelectItem value="Instance 2">Instance 2</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Section:</span>
+            <Select value={selectedSection} onValueChange={setSelectedSection}>
+              <SelectTrigger className="w-48">
+                <SelectValue />
+              </SelectTrigger>der-border">
+              <SelectContent>lex items-center justify-between mb-2">
                 {sectionOptions.map((section) => (
             <div className="flex items-center justify-betwee
                     {section}
@@ -133,25 +133,25 @@ export function Template({ onNavigate }: TemplateProps) {
               </SelectContent>
             </Select>
           </div>
-        </div>
-      </div>
+        </div> size="sm" title="Italic">
+      </div>-4 w-4" />
 
-                <div classNa
+                <div classNaerline">
       <div className="flex-1 p-4">
                 </Button>
-          <div className="p-4 border-b border-border">
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-lg font-semibold text-foreground">
+                <div className="w-px h-6 bg-border mx-2" />
+                <Button variant="outline" size="sm" title="Align Left">
+                  <AlignLeft className="h-4 w-4" />
                 </Button>
-              </h2>
-              <div className="flex items-center gap-2">
-                {/* Rich Text Editor Buttons */}
-                  <ListOrdered className="h-4 w-4" />
+                <Button variant="outline" size="sm" title="Align Center">
+                  <AlignCenter className="h-4 w-4" />
+                </Button>
+                placeholder="Enter your template content here. Use +CML 
                   <Bold className="h-4 w-4" />
                 >
-                <Button variant="outline" size="sm" title="Italic">
-                  <Italic className="h-4 w-4" />
-                </Button>
+                <div className="w-px h-6 bg-border mx-2" />
+                  if (editorRef.current) {
+                  <List className="h-4 w-4" />
                 <Button variant="outline" size="sm" title="Underline">
                   <Underline className="h-4 w-4" />
                 </Button>
@@ -167,22 +167,6 @@ export function Template({ onNavigate }: TemplateProps) {
                 onClick={
                 <div className="w-px h-6 bg-border mx-2" />
                   if (editorRef.current) {
-                  <List className="h-4 w-4" />
-                    const
-                <Button variant="outline" size="sm" title="Numbered List">
-                  <ListOrdered className="h-4 w-4" />
-                </Button>
-                    while ((match = rulePattern.exec(conten
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setShowCMLDialog(true)}
-                  title="Insert CML Rule"
-                 
-                  <Plus className="h-4 w-4 mr-1" />
-                }}
-                </Button>
-                  ba
             </div>
                 }}
               Edit the content for this section below. Use the +CML button to insert rule descriptions.
@@ -198,21 +182,7 @@ export function Template({ onNavigate }: TemplateProps) {
               className="min-h-[400px] resize-none font-mono text-sm"
         </Card
           </div>
-      {/* CML D
-      </div>
-
-      {/* CML Dialog */}
-      <Dialog open={showCMLDialog} onOpenChange={setShowCMLDialog}>
-        <DialogContent className="max-w-6xl max-h-[80vh] overflow-hidden">
-          <DialogHeader>
-            <DialogTitle>Select CML Rule</DialogTitle>
-                  <TableH
-          <div className="overflow-auto max-h-[60vh]">
-                  <
-              <TableHeader>
-              </TableHeade
-                  <TableHead>Rule ID</TableHead>
-                  <TableHead>Rule Name</TableHead>
+                  ba
                   <TableHead>Benefit Type</TableHead>
                   <TableHead>Business Area</TableHead>
                   <TableHead>Sub-Business Area</TableHead>
@@ -244,6 +214,20 @@ export function Template({ onNavigate }: TemplateProps) {
           </div>
           <div className="flex justify-end gap-2 p-4 border-t">
             <Button variant="outline" onClick={() => setShowCMLDialog(false)}>
+
+            </Button>
+
+              onClick={handleInsertRule}
+
+            >
+
+            </Button>
+
+        </DialogContent>
+
+    </div>
+
+}            <Button variant="outline" onClick={() => setShowCMLDialog(false)}>
 
             </Button>
 
