@@ -1,38 +1,42 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'electTrigger, SelectValue } from '@/components/ui/select'
-  Link, 
-  AlignCenter,
-  Plus
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Card } from '@/components/ui/card'
+import { Textarea } from '@/components/ui/textarea'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-  onNaviga
+import { useKV } from '@github/spark/hooks'
+import { RuleData } from '@/lib/types'
+import { 
+  Bold, 
+  Italic, 
+  Underline, 
+  AlignLeft, 
+  AlignCenter, 
+  AlignRight,
+  List,
+  ListOrdered,
+  Plus
+} from '@phosphor-icons/react'
 
-  'Medic
- [showCM
-  'Chapt
-  'Chapter 6
+interface TemplateProps {
+  onNavigate: (page: string) => void
+}
+
+const sectionOptions = [
+  'Medicare EOC Cover Page',
+  'Chapter 1',
+  'Chapter 2',
+  'Chapter 3',
+  'Chapter 4',
+  'Chapter 5',
+  'Chapter 6',
+  'Chapter 7',
   'Chapter 8',
-  'Chapter 10
-  'Cha
-  'Chapter 6
-
-  const [selectedView, se
-  'Cha
- 
-
-    <div className="flex f
-      <div className="flex i
- 
-
-      {/* Cont
-  'Chapter 4',
-  'Chapter 5',
-  'Chapter 6',
-  'Chapter 7',
-  'Chapter 4',
-  'Chapter 5',
-  'Chapter 6',
-  'Chapter 7',
+  'Chapter 9',
+  'Chapter 10',
+  'Chapter 11',
   'Chapter 12',
   'Back Cover',
   'Rider and Dental Chat'
@@ -44,7 +48,16 @@ export function Template({ onNavigate }: TemplateProps) {
   const [selectedSection, setSelectedSection] = useState('Medicare EOC Cover Page')
   const [editorContent, setEditorContent] = useState('')
   const [showCMLDialog, setShowCMLDialog] = useState(false)
+  const [selectedRule, setSelectedRule] = useState<RuleData | null>(null)
   const [rules] = useKV<RuleData[]>('rule-data', [])
+
+  const handleInsertRule = () => {
+    if (selectedRule) {
+      setEditorContent(prev => prev + selectedRule.description)
+      setShowCMLDialog(false)
+      setSelectedRule(null)
+    }
+  }
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -57,84 +70,98 @@ export function Template({ onNavigate }: TemplateProps) {
 
       {/* Controls Row */}
       <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
-
-                </Button>
-
-
-
-
-
-
-
-
-
-
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Label htmlFor="view-select" className="text-sm font-medium">
+              View:
+            </Label>
+            <Select value={selectedView} onValueChange={setSelectedView}>
+              <SelectTrigger id="view-select" className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Draft">Draft</SelectItem>
+                <SelectItem value="Preview">Preview</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
+          <div className="flex items-center gap-2">
+            <Label htmlFor="instance-select" className="text-sm font-medium">
+              Instance:
+            </Label>
+            <Select value={selectedInstance} onValueChange={setSelectedInstance}>
+              <SelectTrigger id="instance-select" className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Instance 1">Instance 1</SelectItem>
+                <SelectItem value="Instance 2">Instance 2</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
+          <div className="flex items-center gap-2">
+            <Label htmlFor="section-select" className="text-sm font-medium">
+              Section:
+            </Label>
+            <Select value={selectedSection} onValueChange={setSelectedSection}>
+              <SelectTrigger id="section-select" className="w-48">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {sectionOptions.map((section) => (
+                  <SelectItem key={section} value={section}>
+                    {section}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
+        <div className="text-lg font-semibold text-foreground">
+          Medicare EOC
+        </div>
+      </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-" size="sm">
-
-
-
-
-
-
-
+      {/* Editor Section */}
+      <div className="flex-1 p-4">
+        <Card className="h-full flex flex-col">
+          <div className="p-4 border-b border-border">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-lg font-semibold text-foreground">
+                {selectedSection}
+              </h2>
+              <div className="flex items-center gap-2">
+                {/* Rich Text Editor Buttons */}
                 <Button variant="outline" size="sm">
-
-ssName="h-4 w-4" />
+                  <Bold className="h-4 w-4" />
                 </Button>
                 <Button variant="outline" size="sm">
-ers className="h-4 w-4" />
+                  <Italic className="h-4 w-4" />
                 </Button>
                 <Button variant="outline" size="sm">
-ssName="h-4 w-4" />
-               </Button>
-                  <List className="h-4 w-4" />
+                  <Underline className="h-4 w-4" />
+                </Button>
+                <div className="w-px h-6 bg-border mx-2" />
+                <Button variant="outline" size="sm">
                   <AlignLeft className="h-4 w-4" />
                 </Button>
-                  <ListNumbers className="h-4 w-4" />
-                </Button>
                 <Button variant="outline" size="sm">
+                  <AlignCenter className="h-4 w-4" />
+                </Button>
                 <Button variant="outline" size="sm">
                   <AlignRight className="h-4 w-4" />
                 </Button>
+                <div className="w-px h-6 bg-border mx-2" />
+                <Button variant="outline" size="sm">
+                  <List className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="sm">
+                  <ListOrdered className="h-4 w-4" />
+                </Button>
+                <div className="w-px h-6 bg-border mx-2" />
                 <Button 
                   variant="outline" 
                   size="sm"
@@ -183,18 +210,36 @@ ssName="h-4 w-4" />
               </TableHeader>
               <TableBody>
                 {rules.map((rule) => (
-                  <TableRow key={rule.id} className="cursor-pointer hover:bg-muted/50">
+                  <TableRow 
+                    key={rule.id} 
+                    className={`cursor-pointer hover:bg-muted/50 ${
+                      selectedRule?.id === rule.id ? 'bg-muted' : ''
+                    }`}
+                    onClick={() => setSelectedRule(rule)}
+                    title={`Rule ID: ${rule.id}`}
+                  >
                     <TableCell>{rule.id}</TableCell>
                     <TableCell>{rule.ruleName}</TableCell>
                     <TableCell>{rule.benefitType}</TableCell>
                     <TableCell>{rule.businessArea}</TableCell>
                     <TableCell>{rule.subBusinessArea}</TableCell>
-                    <TableCell>{rule.description}</TableCell>
+                    <TableCell className="max-w-xs truncate">{rule.description}</TableCell>
                     <TableCell>{rule.version}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+          </div>
+          <div className="flex justify-end gap-2 p-4 border-t">
+            <Button variant="outline" onClick={() => setShowCMLDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleInsertRule}
+              disabled={!selectedRule}
+            >
+              Insert
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
