@@ -242,76 +242,65 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
             </div>
 
             {/* Editor Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[600px]">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium">Content Template & Preview</h3>
-                  <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" title="Bold">
-                      <Bold className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="sm" title="Italic">
-                      <Italic className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="sm" title="Underline">
-                      <Underline className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="sm" title="Align Left">
-                      <AlignLeft className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="sm" title="Align Center">
-                      <AlignCenter className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="sm" title="Align Right">
-                      <AlignRight className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="sm" title="Bullet List">
-                      <List className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="sm" title="Numbered List">
-                      <ListNumbers className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={handleCMLInsert}
-                      className="ml-2"
-                    >
-                      <Plus className="h-4 w-4 mr-1" />
-                      CML
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleEditRule}
-                    >
-                      Edit Rule
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="text-sm text-muted-foreground mb-2">
-                  Select rule text and click "Edit Rule" to modify rule content.
-                </div>
-
-                <div className="flex-1">
-                  <Textarea
-                    ref={editorRef}
-                    value={editorContent}
-                    onChange={(e) => setEditorContent(e.target.value)}
-                    placeholder="Start typing or click + CML to insert rule content..."
-                    className="min-h-[500px] font-mono text-sm resize-none"
-                  />
+            <div className="space-y-4 h-[600px]">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-medium">Content Template</h3>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" title="Bold">
+                    <Bold className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="sm" title="Italic">
+                    <Italic className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="sm" title="Underline">
+                    <Underline className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="sm" title="Align Left">
+                    <AlignLeft className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="sm" title="Align Center">
+                    <AlignCenter className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="sm" title="Align Right">
+                    <AlignRight className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="sm" title="Bullet List">
+                    <List className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="sm" title="Numbered List">
+                    <ListNumbers className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={handleCMLInsert}
+                    className="ml-2"
+                  >
+                    <Plus className="h-4 w-4 mr-1" />
+                    CML
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleEditRule}
+                  >
+                    Edit Rule
+                  </Button>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Content Preview</h3>
-                <div className="border rounded-lg p-4 min-h-[500px] bg-muted/50">
-                  <div className="text-sm text-muted-foreground">
-                    Preview will appear here based on selected language and plan
-                  </div>
-                </div>
+              <div className="text-sm text-muted-foreground mb-2">
+                Select rule text and click "Edit Rule" to modify rule content.
+              </div>
+
+              <div className="flex-1">
+                <Textarea
+                  ref={editorRef}
+                  value={editorContent}
+                  onChange={(e) => setEditorContent(e.target.value)}
+                  placeholder="Start typing or click + CML to insert rule content..."
+                  className="min-h-[500px] font-mono text-sm resize-none w-full"
+                />
               </div>
             </div>
           </div>
