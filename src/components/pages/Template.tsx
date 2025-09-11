@@ -58,6 +58,7 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
   const editorRef = useRef<HTMLTextAreaElement>(null)
 
   const handleCMLInsert = () => {
+    setSelectedRule(null) // Reset selection
     setShowCMLDialog(true)
   }
 
@@ -71,18 +72,19 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
       
       const newContent = 
         currentContent.slice(0, cursorPosition) +
-        ruleChunk +
+        '\n' + ruleChunk + '\n' +
         currentContent.slice(cursorPosition)
       
       setEditorContent(newContent)
       setShowCMLDialog(false)
       setSelectedRule(null)
       
-      // Focus back to editor
+      // Focus back to editor and set cursor position
       setTimeout(() => {
         if (editorRef.current) {
           editorRef.current.focus()
-          editorRef.current.setSelectionRange(cursorPosition + ruleChunk.length, cursorPosition + ruleChunk.length)
+          const newCursorPosition = cursorPosition + ruleChunk.length + 2 // +2 for newlines
+          editorRef.current.setSelectionRange(newCursorPosition, newCursorPosition)
         }
       }, 100)
     }
@@ -318,54 +320,77 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
 
       {/* CML Dialog */}
       <Dialog open={showCMLDialog} onOpenChange={setShowCMLDialog}>
-        <DialogContent className="max-w-6xl max-h-[80vh]">
-          <DialogHeader>
-            <DialogTitle>Select Rule to Insert</DialogTitle>
+        <DialogContent className="max-w-6xl h-[80vh] flex flex-col p-0">
+          <DialogHeader className="px-6 py-4 border-b flex-shrink-0">
+            <DialogTitle>Select Rule to Insert ({rules.length} rules available)</DialogTitle>
           </DialogHeader>
           
-          <div className="flex-1 overflow-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Rule ID</TableHead>
-                  <TableHead>Benefit Type</TableHead>
-                  <TableHead>Business Area</TableHead>
-                  <TableHead>Sub-Business Area</TableHead>
-                  <TableHead>Version</TableHead>
-                  <TableHead>Description</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {rules.map((rule) => (
-                  <TableRow 
-                    key={rule.id}
-                    className={`cursor-pointer hover:bg-muted/50 ${
-                      selectedRule?.id === rule.id ? 'bg-primary/10' : ''
-                    }`}
-                    onClick={() => setSelectedRule(rule)}
-                  >
-                    <TableCell className="font-medium">{rule.id}</TableCell>
-                    <TableCell>{rule.benefitType}</TableCell>
-                    <TableCell>{rule.businessArea}</TableCell>
-                    <TableCell>{rule.subBusinessArea}</TableCell>
-                    <TableCell>{rule.version}</TableCell>
-                    <TableCell className="max-w-xs truncate">{rule.description}</TableCell>
+          <ScrollArea className="flex-1 px-6 py-4">
+            <div className="min-w-full">
+              <Table>
+                <TableHeader className="sticky top-0 bg-background z-10 border-b">
+                  <TableRow>
+                    <TableHead className="w-[100px]">Rule ID</TableHead>
+                    <TableHead className="w-[120px]">Benefit Type</TableHead>
+                    <TableHead className="w-[120px]">Business Area</TableHead>
+                    <TableHead className="w-[140px]">Sub-Business Area</TableHead>
+                    <TableHead className="w-[80px]">Version</TableHead>
+                    <TableHead className="min-w-[300px]">Description</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+                </TableHeader>
+                <TableBody>
+                  {rules.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                        No rules available. Create rules in Digital Content Manager first.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    rules.map((rule) => (
+                      <TableRow 
+                        key={rule.id}
+                        className={`cursor-pointer hover:bg-muted/50 transition-colors ${
+                          selectedRule?.id === rule.id ? 'bg-primary/10 border-primary/50 shadow-sm' : ''
+                        }`}
+                        onClick={() => setSelectedRule(rule)}
+                      >
+                        <TableCell className="font-medium">{rule.id}</TableCell>
+                        <TableCell>{rule.benefitType}</TableCell>
+                        <TableCell>{rule.businessArea}</TableCell>
+                        <TableCell>{rule.subBusinessArea}</TableCell>
+                        <TableCell>{rule.version}</TableCell>
+                        <TableCell className="whitespace-normal break-words">{rule.description}</TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </ScrollArea>
           
-          <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button variant="outline" onClick={() => setShowCMLDialog(false)}>
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleInsertRule}
-              disabled={!selectedRule}
-            >
-              Insert
-            </Button>
+          <div className="flex items-center justify-between p-6 border-t bg-background flex-shrink-0">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              {selectedRule ? (
+                <span>Selected: <strong className="text-foreground">{selectedRule.id}</strong> - {selectedRule.description.substring(0, 50)}...</span>
+              ) : (
+                <span>Select a rule to insert</span>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => {
+                setShowCMLDialog(false)
+                setSelectedRule(null)
+              }}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleInsertRule}
+                disabled={!selectedRule}
+                className="bg-primary hover:bg-primary/90"
+              >
+                Insert
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
