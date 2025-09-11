@@ -12,9 +12,10 @@ interface DigitalContentManagerProps {
   onNavigate: (page: string) => void;
   onEditRule?: (rule: RuleData) => void;
   isDialog?: boolean;
+  isSelectionMode?: boolean;
 }
 
-export function DigitalContentManager({ onNavigate, onEditRule, isDialog = false }: DigitalContentManagerProps) {
+export function DigitalContentManager({ onNavigate, onEditRule, isDialog = false, isSelectionMode = false }: DigitalContentManagerProps) {
   const [rules, setRules] = useKV<RuleData[]>('rule-data', []);
   const [selectedConfig, setSelectedConfig] = useKV<string>('selected-dcm-config', 'digital-content-manager-anoc-eoc');
   const [activityLogCollapsed, setActivityLogCollapsed] = useKV<boolean>('dcm-activity-log-collapsed', false);
@@ -285,6 +286,7 @@ export function DigitalContentManager({ onNavigate, onEditRule, isDialog = false
           onRuleDelete={handleRuleDelete}
           onEditRule={onEditRule || (() => {})}
           onNavigate={onNavigate}
+          isSelectionMode={isSelectionMode}
         />
       </div>
 

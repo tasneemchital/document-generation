@@ -43,9 +43,10 @@ interface RuleGridProps {
   onEditRule: (rule: RuleData) => void;
   onCreateRule?: () => void;
   onNavigate?: (page: string) => void;
+  isSelectionMode?: boolean;
 }
 
-export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEditRule, onCreateRule, onNavigate }: RuleGridProps) {
+export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEditRule, onCreateRule, onNavigate, isSelectionMode = false }: RuleGridProps) {
   // Ensure rules is always an array to prevent .map errors
   const safeRules = Array.isArray(rules) ? rules : [];
   
