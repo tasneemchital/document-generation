@@ -1,24 +1,26 @@
 import { useState, useRef, useEffect } from 'react'
 import { useKV } from '@github/spark/hooks'
 import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { ScrollArea } from '@/components/ui/scroll-area'
-  Pencil
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { 
   Bold, 
-  'Chapter
+  Italic, 
   Underline, 
-
+  AlignLeft,
   AlignCenter,
-  'Chapter 2'
+  AlignRight,
   List,
-
+  ListNumbers,
   Plus,
-      co
+  ArrowLeft
 } from '@phosphor-icons/react'
 import { DCMEditPage } from './DCMEditPage'
+import { RuleData } from '@/lib/types'
 
 interface TemplateProps {
   onNavigate: (page: string) => void
@@ -28,348 +30,363 @@ interface TemplateProps {
 const sectionOptions = [
   'Medicare EOC Cover Page',
   'Chapter 1',
-      currentP
-      // Creat
-    //
-        ruleSt
-      if (line
-    
-        if (li
-      }, 0)
-   
-          retur
-    
+  'Chapter 2', 
+  'Chapter 3',
+  'Chapter 4',
+  'Chapter 5',
+  'Chapter 6',
+  'Chapter 7',
+  'Chapter 8',
+  'Chapter 9',
+  'Chapter 10',
+  'Chapter 11',
+  'Chapter 12',
+  'Back Cover',
+  'Rider and Dental Chat'
+]
 
-      new RegExp(`\\[RULE
- 
+export function Template({ onNavigate, onEditRule }: TemplateProps) {
+  const [rules] = useKV<RuleData[]>('rule-data', [])
+  const [selectedSection, setSelectedSection] = useState('')
+  const [selectedView, setSelectedView] = useState('')
+  const [selectedInstance, setSelectedInstance] = useState('')
+  const [editorContent, setEditorContent] = useState('')
+  const [showCMLDialog, setShowCMLDialog] = useState(false)
+  const [selectedRule, setSelectedRule] = useState<RuleData | null>(null)
+  const [showEditRuleDialog, setShowEditRuleDialog] = useState(false)
+  const [editingRule, setEditingRule] = useState<RuleData | null>(null)
+  const editorRef = useRef<HTMLTextAreaElement>(null)
 
+  const handleCMLInsert = () => {
+    setShowCMLDialog(true)
+  }
+
+  const handleInsertRule = () => {
+    if (selectedRule && editorRef.current) {
+      const textarea = editorRef.current
+      const cursorPosition = textarea.selectionStart
+      const currentContent = editorContent
+      
+      const ruleChunk = `[RULE-${selectedRule.id}]${selectedRule.description}[/RULE-${selectedRule.id}]`
+      
+      const newContent = 
+        currentContent.slice(0, cursorPosition) +
+        ruleChunk +
+        currentContent.slice(cursorPosition)
+      
+      setEditorContent(newContent)
+      setShowCMLDialog(false)
+      setSelectedRule(null)
+      
+      // Focus back to editor
+      setTimeout(() => {
+        if (editorRef.current) {
+          editorRef.current.focus()
+          editorRef.current.setSelectionRange(cursorPosition + ruleChunk.length, cursorPosition + ruleChunk.length)
+        }
+      }, 100)
+    }
+  }
+
+  const handleEditRule = () => {
+    if (!editorRef.current) return
+    
+    const textarea = editorRef.current
+    const selectionStart = textarea.selectionStart
+    const selectionEnd = textarea.selectionEnd
+    const selectedText = editorContent.slice(selectionStart, selectionEnd)
+    
+    // Check if selected text contains a rule
+    const ruleMatch = selectedText.match(/\[RULE-([^\]]+)\]/)
+    if (ruleMatch) {
+      const ruleId = ruleMatch[1]
+      const rule = rules.find(r => r.id === ruleId)
+      if (rule && onEditRule) {
+        onEditRule(ruleId)
+        return
+      }
+    }
+    
+    // If no rule is selected, check if cursor is within a rule block
+    const lines = editorContent.split('\n')
+    let currentLine = 0
+    let currentPosition = 0
+    
+    for (let i = 0; i < lines.length; i++) {
+      if (currentPosition + lines[i].length >= selectionStart) {
+        currentLine = i
+        break
+      }
+      currentPosition += lines[i].length + 1 // +1 for newline
+    }
+    
+    // Look backwards and forwards for rule boundaries
+    let foundRuleId = ''
+    let ruleStartLine = -1
+    let ruleEndLine = -1
+    
+    for (let i = currentLine; i >= 0; i--) {
+      const match = lines[i].match(/\[RULE-([^\]]+)\]/)
+      if (match) {
+        foundRuleId = match[1]
+        ruleStartLine = i
+        break
+      }
+    }
+    
+    // Look forwards for [/RULE-id] if we found a start
+    if (foundRuleId) {
+      for (let i = ruleStartLine; i < lines.length; i++) {
+        if (lines[i].includes(`[/RULE-${foundRuleId}]`)) {
+          ruleEndLine = i
+          break
+        }
+      }
+      
+      if (ruleEndLine !== -1 && onEditRule) {
+        onEditRule(foundRuleId)
+        return
+      }
+    }
+    
+    // If no rule found, show a message
+    setTimeout(() => {
+      alert('Please select rule text to edit. Rule text appears as highlighted blocks.')
+    }, 0)
+  }
+
+  const handleUpdateRule = (updatedRule: RuleData) => {
+    // Update the rule content in editor
+    const updatedContent = editorContent.replace(
+      new RegExp(`\\[RULE-${updatedRule.id}\\].*?\\[/RULE-${updatedRule.id}\\]`, 'g'),
+      `[RULE-${updatedRule.id}]${updatedRule.description}[/RULE-${updatedRule.id}]`
+    )
+    setEditorContent(updatedContent)
+    setShowEditRuleDialog(false)
+    setEditingRule(null)
+  }
+
+  // Convert rule chunks to styled format for display
+  useEffect(() => {
+    if (editorRef.current) {
+      const textarea = editorRef.current
+      const content = textarea.value
+      
+      // This would need additional implementation for visual rule chunks
+      // For now, we'll use the basic textarea with rule markers
+    }
+  }, [editorContent])
+
+  return (
+    <div className="h-full flex flex-col bg-background">
+      <div className="flex items-center justify-between p-6 border-b">
         <div className="flex items-center gap-4">
+          <Button variant="ghost" onClick={() => onNavigate('dashboard')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Dashboard
           </Button>
-        return;
-    }
-    // If no rule is selected, check if cursor is within a rule block
-    let currentLine = 0;
-    
-    for (let i = 0; i < lines.length; i++) {
-        currentLine = i;
-      }
-    }
-    // Look backwards and forwards for rule boundarie
+          <h1 className="text-2xl font-semibold">Template</h1>
+        </div>
+      </div>
 
-    
-    for (let i = currentLine; i >= 0; i--) {
-      if (match) {
-        foundRuleId = match[1];
-      }
-      
-    }
-    // Look forwards for [/RULE-id] if we found a start
-      
-          ruleEndLine = i;
-        }
-      
-      if (ruleEndLine !== -
-      
-          setShowEditRuleDial
-         
-     
-    // If no rule found, show a message
-      }, 0)
-     
-  }
+      <div className="flex-1 p-6">
+        <Card className="h-full">
+          <div className="p-6 space-y-6">
+            {/* Header Controls */}
+            <div className="flex items-center gap-4 pb-4 border-b">
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium">View:</label>
+                <Select value={selectedView} onValueChange={setSelectedView}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Select view" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="template">Template</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-                  title="Edit Ru
-                  Edit Ru
-    
-    <div className="h-full flex flex-c
-      <div className="flex items-center j
-          <Button variant="ghost" onC
-            Back to Global Template
-    
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium">Instance:</label>
+                <Select value={selectedInstance} onValueChange={setSelectedInstance}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Select instance" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="medicare-eoc">Medicare EOC</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-                  <TableHead>Description</TableHead
-            <Select 
-                    className={
-      const rule = rules.find(r => r.id === ruleId);
-                <
-        setEditingRule(rule);
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium">Section:</label>
+                <Select value={selectedSection} onValueChange={setSelectedSection}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Select section" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {sectionOptions.map((section) => (
+                      <SelectItem key={section} value={section}>
+                        {section}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-        return;
-       
-    }
-    
-    // If no rule is selected, check if cursor is within a rule block
-                
-    let currentLine = 0;
-            )}
-    
+              <h2 className="text-lg font-semibold ml-4">
+                {selectedSection || 'Medicare EOC'}
+              </h2>
+            </div>
 
-    for (let i = 0; i < lines.length; i++) {
+            {/* Editor Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[600px]">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium">Content Template & Preview</h3>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" title="Bold">
+                      <Bold className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" title="Italic">
+                      <Italic className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" title="Underline">
+                      <Underline className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" title="Align Left">
+                      <AlignLeft className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" title="Align Center">
+                      <AlignCenter className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" title="Align Right">
+                      <AlignRight className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" title="Bullet List">
+                      <List className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" title="Numbered List">
+                      <ListNumbers className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleCMLInsert}
+                      className="ml-2"
+                    >
+                      <Plus className="h-4 w-4 mr-1" />
+                      CML
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleEditRule}
+                    >
+                      Edit Rule
+                    </Button>
+                  </div>
+                </div>
 
-        currentLine = i;
+                <div className="text-sm text-muted-foreground mb-2">
+                  Select rule text and click "Edit Rule" to modify rule content.
+                </div>
 
-      }
-      {/* Editor Section */}
-    }
-    
-                {selectedSection}
-              <div classNam
-                <Button v
-                </Button>
-    
-                <Button variant="ou
-    for (let i = currentLine; i >= 0; i--) {
-                <Button variant="outline" size="sm" titl
-      if (match) {
-                  <AlignCe
-        foundRuleId = match[1];
-              
-      }
-                </Button>
-                  <ListOrdered className=
-       
-    }
-    
-    // Look forwards for [/RULE-id] if we found a start
-                  CML
-                <Button
-                  size="sm"
-          ruleEndLine = i;
-                
-        }
-       
-      
-              Select rule text and click "Edit Rule
+                <div className="flex-1">
+                  <Textarea
+                    ref={editorRef}
+                    value={editorContent}
+                    onChange={(e) => setEditorContent(e.target.value)}
+                    placeholder="Start typing or click + CML to insert rule content..."
+                    className="min-h-[500px] font-mono text-sm resize-none"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Content Preview</h3>
+                <div className="border rounded-lg p-4 min-h-[500px] bg-muted/50">
+                  <div className="text-sm text-muted-foreground">
+                    Preview will appear here based on selected language and plan
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="flex-1 p-4">
-              ref={
-              value={editorCont
-              className="min-h-[400px]
-          </div>
-        }
-
-    }
-    
-    // If no rule found, show a message
-
-  }
-
-                  <TableHead>Sub-Business Area</TableHe
-                  <TableHead>Version<
-
-
-
-      
-
-
-    setEditingRule(null);
-   
-
-
-
-
-            <Button variant="outline" onClick={() => setShowCMLDialog(false)}>
-
-
-
-            Back to Global Template
-
-
-
-
-
-          <div className="flex items-center gap-2">
-                  handleUpdateRule(updatedRule);
-                }}
-
-                <SelectValue />
-
-              <SelectContent>
-
-
-
-            </Select>
-
-
-
-
-
-
-
-
-
-
-
-              </SelectContent>
-
-          </div>
-
-
-
-
-
-
-
-              <SelectContent>
-
-
-
-                  </SelectItem>
-
-
-
-
-
-
-
-      {/* Editor Section */}
-
-
-
-
-
-                {selectedSection}
-
-
-
-
-
-                </Button>
-
-
-                </Button>
-
-
-                </Button>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                >
-
-                  CML
-
-                <Button
-
-                  size="sm"
-
-
-
-
-
-
-
-
-
-
-
-
-
-          </div>
-
-          <div className="flex-1 p-4">
-
-
-
-
-
-
-
-          </div>
-
-
-
-
-
-
-
-
-
-
-
+        </Card>
+      </div>
+
+      {/* CML Dialog */}
+      <Dialog open={showCMLDialog} onOpenChange={setShowCMLDialog}>
+        <DialogContent className="max-w-6xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>Select Rule to Insert</DialogTitle>
+          </DialogHeader>
+          
+          <div className="flex-1 overflow-auto">
+            <Table>
               <TableHeader>
-
-
-
-
-
-
-
-
-
+                <TableRow>
+                  <TableHead>Rule ID</TableHead>
+                  <TableHead>Benefit Type</TableHead>
+                  <TableHead>Business Area</TableHead>
+                  <TableHead>Sub-Business Area</TableHead>
+                  <TableHead>Version</TableHead>
+                  <TableHead>Description</TableHead>
+                </TableRow>
               </TableHeader>
-
+              <TableBody>
                 {rules.map((rule) => (
-
+                  <TableRow 
                     key={rule.id}
-
-
-
-
-
+                    className={`cursor-pointer hover:bg-muted/50 ${
+                      selectedRule?.id === rule.id ? 'bg-primary/10' : ''
+                    }`}
+                    onClick={() => setSelectedRule(rule)}
                   >
-
-
-
-
-
-
-
-
-
+                    <TableCell className="font-medium">{rule.id}</TableCell>
+                    <TableCell>{rule.benefitType}</TableCell>
+                    <TableCell>{rule.businessArea}</TableCell>
+                    <TableCell>{rule.subBusinessArea}</TableCell>
+                    <TableCell>{rule.version}</TableCell>
+                    <TableCell className="max-w-xs truncate">{rule.description}</TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
-
+            </Table>
           </div>
-
+          
+          <div className="flex justify-end gap-2 pt-4 border-t">
             <Button variant="outline" onClick={() => setShowCMLDialog(false)}>
-
+              Cancel
             </Button>
-
+            <Button 
               onClick={handleInsertRule}
-
+              disabled={!selectedRule}
             >
-
+              Insert
             </Button>
-
-
-
-
-
-
-
-
-
-              <DCMEditPage
-
-
-
-                  handleUpdateRule(updatedRule);
-
-                }}
-
-              />
-
           </div>
-
+        </DialogContent>
       </Dialog>
 
+      {/* Edit Rule Dialog */}
+      <Dialog open={showEditRuleDialog} onOpenChange={setShowEditRuleDialog}>
+        <DialogContent className="max-w-7xl max-h-[90vh] p-0">
+          <div className="h-full">
+            {editingRule && (
+              <DCMEditPage
+                rule={editingRule}
+                onNavigate={() => setShowEditRuleDialog(false)}
+                onSave={(updatedRule) => {
+                  handleUpdateRule(updatedRule)
+                }}
+                mode="edit"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   )
+}
