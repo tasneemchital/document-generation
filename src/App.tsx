@@ -14,6 +14,7 @@ import {
 import { DigitalContentManager } from './components/pages/DigitalContentManager'
 import { MedicareEOCMasterList } from './components/pages/MedicareEOCMasterList'
 import { DCMEditPage } from './components/pages/DCMEditPage'
+import { Template } from './components/pages/Template'
 import { RuleData } from '@/lib/types'
 
 function App() {
@@ -48,6 +49,8 @@ function App() {
         return <Dashboard onNavigate={setCurrentPage} />
       case 'global-template':
         return <MedicareEOCMasterList onNavigate={setCurrentPage} />
+      case 'template':
+        return <Template onNavigate={setCurrentPage} />
       case 'collaborate':
         return <Collaborate />
         case 'masterlist':
