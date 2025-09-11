@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Card } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useKV } from '@github/spark/hooks'
 import { RuleData } from '@/lib/types'
 import { 
@@ -49,7 +50,100 @@ export function Template({ onNavigate }: TemplateProps) {
   const [selectedSection, setSelectedSection] = useState('Medicare EOC Cover Page')
   const [editorContent, setEditorContent] = useState('')
   const [showCMLDialog, setShowCMLDialog] = useState(false)
+  const [selectedRule, setSelectedRule] = useState<RuleData | null>(null)
   const [rules] = useKV<RuleData[]>('rule-data', [])
+  const [, setEditingRule] = useKV<RuleData | null>('dcm-editing-rule', null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [cursorPosition, setCursorPosition] = useState(0)
+
+  // Track cursor position when textarea is clicked or keys are pressed
+  const handleTextareaClick = () => {
+    if (textareaRef.current) {
+      setCursorPosition(textareaRef.current.selectionStart)
+    }
+  }
+
+  const handleTextareaKeyUp = () => {
+    if (textareaRef.current) {
+      setCursorPosition(textareaRef.current.selectionStart)
+    }
+  }
+
+  const handleRuleSelect = (rule: RuleData) => {
+    setSelectedRule(rule)
+  }
+
+  const handleInsertRule = () => {
+    if (!selectedRule || !textareaRef.current) return
+
+    const textarea = textareaRef.current
+    const content = editorContent
+    // Use a more readable format for the inserted content
+    const insertText = `${selectedRule.description}`
+    
+    // Insert at cursor position
+    const beforeCursor = content.substring(0, cursorPosition)
+    const afterCursor = content.substring(cursorPosition)
+    const newContent = beforeCursor + insertText + afterCursor
+    
+    setEditorContent(newContent)
+    
+    // Store mapping of content to rule for double-click functionality
+    const contentToRuleMap = JSON.parse(localStorage.getItem('cml-content-map') || '{}')
+    contentToRuleMap[selectedRule.description] = selectedRule.id
+    localStorage.setItem('cml-content-map', JSON.stringify(contentToRuleMap))
+    
+    // Move cursor to end of inserted text
+    setTimeout(() => {
+      const newCursorPosition = cursorPosition + insertText.length
+      textarea.setSelectionRange(newCursorPosition, newCursorPosition)
+      textarea.focus()
+      setCursorPosition(newCursorPosition)
+    }, 0)
+    
+    setShowCMLDialog(false)
+    setSelectedRule(null)
+  }
+
+  // Handle double-click on CML content
+  const handleEditorDoubleClick = (event: React.MouseEvent) => {
+    const textarea = textareaRef.current
+    if (!textarea) return
+
+    const clickPosition = textarea.selectionStart
+    const content = editorContent
+    
+    // Get the current selection or word at cursor
+    let selectionStart = clickPosition
+    let selectionEnd = clickPosition
+    
+    // Expand selection to include the full content block
+    // Look for word boundaries or line breaks
+    while (selectionStart > 0 && content[selectionStart - 1] !== '\n' && content[selectionStart - 1] !== ' ') {
+      selectionStart--
+    }
+    while (selectionEnd < content.length && content[selectionEnd] !== '\n' && content[selectionEnd] !== ' ') {
+      selectionEnd++
+    }
+    
+    const selectedText = content.substring(selectionStart, selectionEnd).trim()
+    
+    // Check if this content matches any inserted rule description
+    const contentToRuleMap = JSON.parse(localStorage.getItem('cml-content-map') || '{}')
+    const ruleId = contentToRuleMap[selectedText]
+    
+    if (ruleId) {
+      const rule = rules.find(r => r.id === ruleId)
+      if (rule) {
+        // Select the entire content block
+        textarea.setSelectionRange(selectionStart, selectionEnd)
+        
+        // Open edit dialog
+        setEditingRule(rule)
+        onNavigate('edit-rule')
+      }
+    }
+  }
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -161,12 +255,22 @@ export function Template({ onNavigate }: TemplateProps) {
           </div>
 
           <div className="flex-1 p-4">
-            <Textarea
-              placeholder="Enter your template content here..."
-              value={editorContent}
-              onChange={(e) => setEditorContent(e.target.value)}
-              className="min-h-[400px] resize-none font-mono text-sm"
-            />
+            <div className="relative">
+              <Textarea
+                ref={textareaRef}
+                placeholder="Enter your template content here..."
+                value={editorContent}
+                onChange={(e) => setEditorContent(e.target.value)}
+                onClick={handleTextareaClick}
+                onKeyUp={handleTextareaKeyUp}
+                onDoubleClick={handleEditorDoubleClick}
+                className="min-h-[400px] resize-none font-mono text-sm pr-4"
+              />
+              {/* Visual hint for CML content */}
+              <div className="absolute top-2 right-2 text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded">
+                Double-click CML content to edit rules
+              </div>
+            </div>
           </div>
         </Card>
       </div>
@@ -176,35 +280,90 @@ export function Template({ onNavigate }: TemplateProps) {
         <DialogContent className="max-w-6xl max-h-[80vh] overflow-hidden">
           <DialogHeader>
             <DialogTitle>Select CML Rule</DialogTitle>
+            {selectedRule && (
+              <div className="text-sm text-muted-foreground mt-2 p-3 bg-muted/30 rounded-md">
+                <div className="font-medium">Selected: {selectedRule.ruleName}</div>
+                <div className="text-xs mt-1">Description: {selectedRule.description}</div>
+              </div>
+            )}
           </DialogHeader>
-          <div className="overflow-auto max-h-[60vh]">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Rule ID</TableHead>
-                  <TableHead>Rule Name</TableHead>
-                  <TableHead>Benefit Type</TableHead>
-                  <TableHead>Business Area</TableHead>
-                  <TableHead>Sub-Business Area</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Version</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {rules.map((rule) => (
-                  <TableRow key={rule.id} className="cursor-pointer hover:bg-muted/50">
-                    <TableCell>{rule.id}</TableCell>
-                    <TableCell>{rule.ruleName}</TableCell>
-                    <TableCell>{rule.benefitType}</TableCell>
-                    <TableCell>{rule.businessArea}</TableCell>
-                    <TableCell>{rule.subBusinessArea}</TableCell>
-                    <TableCell>{rule.description}</TableCell>
-                    <TableCell>{rule.version}</TableCell>
+          <div className="overflow-auto max-h-[50vh]">
+            <TooltipProvider>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Rule ID</TableHead>
+                    <TableHead>Rule Name</TableHead>
+                    <TableHead>Benefit Type</TableHead>
+                    <TableHead>Business Area</TableHead>
+                    <TableHead>Sub-Business Area</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Version</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {rules.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                        No rules available. Please create rules in the Digital Content Manager first.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    rules.map((rule) => (
+                      <Tooltip key={rule.id}>
+                        <TooltipTrigger asChild>
+                          <TableRow 
+                            className={`cursor-pointer hover:bg-muted/50 transition-colors ${
+                              selectedRule?.id === rule.id ? 'bg-primary/10 border-primary/20' : ''
+                            }`}
+                            onClick={() => handleRuleSelect(rule)}
+                          >
+                            <TableCell className="font-medium">{rule.id}</TableCell>
+                            <TableCell>{rule.ruleName}</TableCell>
+                            <TableCell>{rule.benefitType}</TableCell>
+                            <TableCell>{rule.businessArea}</TableCell>
+                            <TableCell>{rule.subBusinessArea}</TableCell>
+                            <TableCell className="max-w-[300px]">
+                              <div className="truncate" title={rule.description}>
+                                {rule.description}
+                              </div>
+                            </TableCell>
+                            <TableCell>{rule.version}</TableCell>
+                          </TableRow>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                          <div className="text-sm">
+                            <div className="font-medium">Rule ID: {rule.id}</div>
+                            <div className="text-xs text-muted-foreground mt-1">
+                              Click to select, then click Insert to add to editor
+                            </div>
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </TooltipProvider>
           </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowCMLDialog(false)
+                setSelectedRule(null)
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleInsertRule}
+              disabled={!selectedRule}
+              className="bg-primary hover:bg-primary/90"
+            >
+              {selectedRule ? `Insert "${selectedRule.ruleName}"` : 'Select a rule to insert'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
