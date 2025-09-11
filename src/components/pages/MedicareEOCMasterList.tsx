@@ -246,27 +246,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
           </div>
         </div>
 
-        {/* Right Sidebar */}
-        <div className="w-80 border-l border-border bg-card">
-          <div className="p-4">
-            {/* Chapter Navigation */}
-            <div className="space-y-1">
-              {sectionOptions.map((option) => (
-                <div
-                  key={option}
-                  className={`px-2 py-1 text-sm rounded cursor-pointer ${
-                    option === section 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'hover:bg-muted'
-                  }`}
-                  onClick={() => setSection(option)}
-                >
-                  {option}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+
       </div>
 
       {/* Bottom Tabs */}
