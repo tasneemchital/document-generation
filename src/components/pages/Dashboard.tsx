@@ -69,7 +69,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     {
       id: 'generate',
       title: 'Generate',
-      description: 'Generate PDF documents',
+      description: 'Generate Documents',
       icon: FilePdf,
       gradient: 'from-purple-500/20 to-purple-600/20',
       iconColor: 'text-purple-600',

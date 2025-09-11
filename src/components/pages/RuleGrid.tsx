@@ -1049,7 +1049,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     if (isDateField) {
       const currentDate = parseDateFromString(rule.effectiveDate);
       return (
-        <div className={`px-2 py-1 border-r border-gray-200 ${className} ${rule.published ? 'bg-gray-50' : 'bg-white'}`}>
+        <div className={`px-2 py-2 border-r border-gray-200 ${className} ${rule.published ? 'bg-gray-50' : 'bg-white'}`}>
           <DatePicker
             date={currentDate}
             onDateChange={rule.published ? undefined : (newDate) => handleDateChange(rule, newDate)} // Disable date picker for released rules
@@ -1067,7 +1067,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
     
     if (isEditing) {
       return (
-        <div className={`px-3 py-1 border-r border-gray-200 flex items-center gap-2 ${className}`}>
+        <div className={`px-2 py-1 border-r border-gray-200 flex items-center gap-2 ${className}`}>
           {field === 'english' || field === 'spanish' ? (
             <Textarea
               value={editValue}
@@ -1097,7 +1097,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
 
     return (
       <div 
-        className={`px-3 py-2 text-sm border-r border-gray-200 last:border-r-0 ${className} ${
+        className={`px-2 py-2 text-sm border-r border-gray-200 last:border-r-0 ${className} ${
           isEditable && !isDateField ? 'hover:bg-blue-50 cursor-pointer group' : 'bg-gray-50 cursor-not-allowed'
         } ${selectedRows.has(rule.id) ? 'bg-blue-50' : ''} ${
           field === 'ruleId' ? 'font-mono font-semibold text-purple-700' : ''
@@ -1325,10 +1325,10 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
 
         {/* Table Container with Horizontal and Vertical Scrolling */}
         <div className="flex-1 overflow-auto border border-gray-200">
-          <div className="min-w-[4350px]">
+          <div className="min-w-[4200px]">
             {/* Table Header - Sticky */}
             <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500 sticky top-0 z-10">
-              <div className="w-12 px-3 py-2 border-r border-gray-200">
+              <div className="w-12 px-2 py-3 border-r border-gray-200 flex items-center justify-center">
                 <Checkbox 
                   checked={paginatedRules.length > 0 && selectedRows.size === paginatedRules.length}
                   onCheckedChange={handleSelectAll}
@@ -1336,13 +1336,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 />
               </div>
               {columnVisibility.ruleId && (
-                <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-28 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('ruleId')}
                     title="Click to sort by Rule ID"
                   >
-                    <span className="truncate">Rule ID</span>
+                    <span className="truncate text-xs font-medium">Rule ID</span>
                     {getSortIndicator('ruleId')}
                   </div>
                   <ColumnFilter
@@ -1358,13 +1358,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.effectiveDate && (
-                <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-36 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('effectiveDate')}
                     title="Click to sort by Effective Date"
                   >
-                    <span className="truncate">Effective Date</span>
+                    <span className="truncate text-xs font-medium">Effective Date</span>
                     {getSortIndicator('effectiveDate')}
                   </div>
                   <ColumnFilter
@@ -1380,13 +1380,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.version && (
-                <div className="w-24 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-24 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('version')}
                     title="Click to sort by Version"
                   >
-                    <span className="truncate">Version</span>
+                    <span className="truncate text-xs font-medium">Version</span>
                     {getSortIndicator('version')}
                   </div>
                   <ColumnFilter
@@ -1399,13 +1399,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.benefitType && (
-                <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-36 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('benefitType')}
                     title="Click to sort by Benefit Type"
                   >
-                    <span className="truncate">Benefit Type</span>
+                    <span className="truncate text-xs font-medium">Benefit Type</span>
                     {getSortIndicator('benefitType')}
                   </div>
                   <ColumnFilter
@@ -1418,13 +1418,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.businessArea && (
-                <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-40 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('businessArea')}
                     title="Click to sort by Business Area"
                   >
-                    <span className="truncate">Business Area</span>
+                    <span className="truncate text-xs font-medium">Business Area</span>
                     {getSortIndicator('businessArea')}
                   </div>
                   <ColumnFilter
@@ -1437,13 +1437,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.subBusinessArea && (
-                <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-44 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('subBusinessArea')}
                     title="Click to sort by Sub-Business Area"
                   >
-                    <span className="truncate">Sub-Business Area</span>
+                    <span className="truncate text-xs font-medium">Sub-Business Area</span>
                     {getSortIndicator('subBusinessArea')}
                   </div>
                   <ColumnFilter
@@ -1456,13 +1456,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.description && (
-                <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-56 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('description')}
                     title="Click to sort by Description"
                   >
-                    <span className="truncate">Description</span>
+                    <span className="truncate text-xs font-medium">Description</span>
                     {getSortIndicator('description')}
                   </div>
                   <ColumnFilter
@@ -1478,13 +1478,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.templateName && (
-                <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-44 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('templateName')}
                     title="Click to sort by Template Name"
                   >
-                    <span className="truncate">Template Name</span>
+                    <span className="truncate text-xs font-medium">Template Name</span>
                     {getSortIndicator('templateName')}
                   </div>
                   <ColumnFilter
@@ -1497,13 +1497,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.serviceId && (
-                <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-28 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('serviceId')}
                     title="Click to sort by Service ID"
                   >
-                    <span className="truncate">Service ID</span>
+                    <span className="truncate text-xs font-medium">Service ID</span>
                     {getSortIndicator('serviceId')}
                   </div>
                   <ColumnFilter
@@ -1516,13 +1516,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.cmsRegulated && (
-                <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-32 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('cmsRegulated')}
                     title="Click to sort by CMS Regulated"
                   >
-                    <span className="truncate">CMS Regulated</span>
+                    <span className="truncate text-xs font-medium">CMS Regulated</span>
                     {getSortIndicator('cmsRegulated')}
                   </div>
                   <ColumnFilter
@@ -1538,13 +1538,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.chapterName && (
-                <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-40 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('chapterName')}
                     title="Click to sort by Chapter Name"
                   >
-                    <span className="truncate">Chapter Name</span>
+                    <span className="truncate text-xs font-medium">Chapter Name</span>
                     {getSortIndicator('chapterName')}
                   </div>
                   <ColumnFilter
@@ -1557,13 +1557,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.sectionName && (
-                <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-40 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('sectionName')}
                     title="Click to sort by Section Name"
                   >
-                    <span className="truncate">Section Name</span>
+                    <span className="truncate text-xs font-medium">Section Name</span>
                     {getSortIndicator('sectionName')}
                   </div>
                   <ColumnFilter
@@ -1576,13 +1576,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.subsectionName && (
-                <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-40 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('subsectionName')}
                     title="Click to sort by Subsection Name"
                   >
-                    <span className="truncate">Subsection Name</span>
+                    <span className="truncate text-xs font-medium">Subsection Name</span>
                     {getSortIndicator('subsectionName')}
                   </div>
                   <ColumnFilter
@@ -1595,13 +1595,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.serviceGroup && (
-                <div className="w-48 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-36 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('serviceGroup')}
                     title="Click to sort by Service Group"
                   >
-                    <span className="truncate">Service Group</span>
+                    <span className="truncate text-xs font-medium">Service Group</span>
                     {getSortIndicator('serviceGroup')}
                   </div>
                   <ColumnFilter
@@ -1614,13 +1614,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.sourceMapping && (
-                <div className="w-40 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-36 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('sourceMapping')}
                     title="Click to sort by Source Mapping"
                   >
-                    <span className="truncate">Source Mapping</span>
+                    <span className="truncate text-xs font-medium">Source Mapping</span>
                     {getSortIndicator('sourceMapping')}
                   </div>
                   <ColumnFilter
@@ -1633,13 +1633,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.tiers && (
-                <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-24 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('tiers')}
                     title="Click to sort by Tiers"
                   >
-                    <span className="truncate">Tiers</span>
+                    <span className="truncate text-xs font-medium">Tiers</span>
                     {getSortIndicator('tiers')}
                   </div>
                   <ColumnFilter
@@ -1652,13 +1652,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.key && (
-                <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-24 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('key')}
                     title="Click to sort by Key"
                   >
-                    <span className="truncate">Key</span>
+                    <span className="truncate text-xs font-medium">Key</span>
                     {getSortIndicator('key')}
                   </div>
                   <ColumnFilter
@@ -1672,13 +1672,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
               )}
 
               {columnVisibility.isTabular && (
-                <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-28 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('isTabular')}
                     title="Click to sort by Is Tabular"
                   >
-                    <span className="truncate">Is Tabular</span>
+                    <span className="truncate text-xs font-medium">Is Tabular</span>
                     {getSortIndicator('isTabular')}
                   </div>
                   <ColumnFilter
@@ -1694,13 +1694,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.english && (
-                <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-52 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('english')}
                     title="Click to sort by English"
                   >
-                    <span className="truncate">English</span>
+                    <span className="truncate text-xs font-medium">English</span>
                     {getSortIndicator('english')}
                   </div>
                   <ColumnFilter
@@ -1716,13 +1716,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.englishStatus && (
-                <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-28 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('englishStatus')}
                     title="Click to sort by Status"
                   >
-                    <span className="truncate">Status</span>
+                    <span className="truncate text-xs font-medium">Status</span>
                     {getSortIndicator('englishStatus')}
                   </div>
                   <ColumnFilter
@@ -1735,13 +1735,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.spanish && (
-                <div className="w-64 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-52 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('spanish')}
                     title="Click to sort by Spanish"
                   >
-                    <span className="truncate">Spanish</span>
+                    <span className="truncate text-xs font-medium">Spanish</span>
                     {getSortIndicator('spanish')}
                   </div>
                   <ColumnFilter
@@ -1757,13 +1757,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.spanishStatus && (
-                <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-between gap-2">
+                <div className="w-28 px-2 py-3 border-r border-gray-200 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('spanishStatus')}
                     title="Click to sort by Status"
                   >
-                    <span className="truncate">Status</span>
+                    <span className="truncate text-xs font-medium">Status</span>
                     {getSortIndicator('spanishStatus')}
                   </div>
                   <ColumnFilter
@@ -1776,13 +1776,13 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                 </div>
               )}
               {columnVisibility.published && (
-                <div className="w-32 px-3 py-2 flex items-center justify-between gap-2">
+                <div className="w-28 px-2 py-3 flex items-center justify-between gap-1">
                   <div 
                     className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors flex-1 min-w-0"
                     onClick={() => handleSort('published')}
                     title="Click to sort by Release"
                   >
-                    <span className="truncate">Release</span>
+                    <span className="truncate text-xs font-medium">Release</span>
                     {getSortIndicator('published')}
                   </div>
                   <ColumnFilter
@@ -1809,25 +1809,25 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                     selectedRows.has(rule.id) ? 'bg-blue-50' : ''
                   }`}
                 >
-                  <div className="w-12 px-3 py-2 border-r border-gray-200 flex items-center">
+                  <div className="w-12 px-2 py-2 border-r border-gray-200 flex items-center justify-center">
                     <Checkbox 
                       checked={selectedRows.has(rule.id)}
                       onCheckedChange={(checked) => handleRowSelect(rule.id, checked as boolean)}
                     />
                   </div>
                   
-                  {columnVisibility.ruleId && renderCell(rule, 'ruleId', rule.ruleId || 'N/A', 'w-24 font-medium')}
-                  {columnVisibility.effectiveDate && renderCell(rule, 'effectiveDate', rule.effectiveDate || 'N/A', 'w-40')}
+                  {columnVisibility.ruleId && renderCell(rule, 'ruleId', rule.ruleId || 'N/A', 'w-28 font-medium')}
+                  {columnVisibility.effectiveDate && renderCell(rule, 'effectiveDate', rule.effectiveDate || 'N/A', 'w-36')}
                   {columnVisibility.version && renderCell(rule, 'version', rule.version || 'N/A', 'w-24')}
-                  {columnVisibility.benefitType && renderCell(rule, 'benefitType', rule.benefitType || 'N/A', 'w-40')}
+                  {columnVisibility.benefitType && renderCell(rule, 'benefitType', rule.benefitType || 'N/A', 'w-36')}
                   {columnVisibility.businessArea && renderCell(rule, 'businessArea', rule.businessArea || 'N/A', 'w-40')}
-                  {columnVisibility.subBusinessArea && renderCell(rule, 'subBusinessArea', rule.subBusinessArea || 'N/A', 'w-48')}
-                  {columnVisibility.description && renderCell(rule, 'description', rule.description || 'N/A', 'w-64')}
-                  {columnVisibility.templateName && renderCell(rule, 'templateName', rule.templateName || 'N/A', 'w-48 font-medium')}
-                  {columnVisibility.serviceId && renderCell(rule, 'serviceId', rule.serviceId || 'N/A', 'w-32')}
+                  {columnVisibility.subBusinessArea && renderCell(rule, 'subBusinessArea', rule.subBusinessArea || 'N/A', 'w-44')}
+                  {columnVisibility.description && renderCell(rule, 'description', rule.description || 'N/A', 'w-56')}
+                  {columnVisibility.templateName && renderCell(rule, 'templateName', rule.templateName || 'N/A', 'w-44 font-medium')}
+                  {columnVisibility.serviceId && renderCell(rule, 'serviceId', rule.serviceId || 'N/A', 'w-28')}
                   
                   {columnVisibility.cmsRegulated && (
-                    <div className="w-32 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
+                    <div className="w-32 px-2 py-2 border-r border-gray-200 flex items-center justify-center">
                       <Checkbox 
                         checked={rule.cmsRegulated || false}
                         disabled={rule.published} // Disable checkbox for released rules
@@ -1858,16 +1858,16 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                     </div>
                   )}
                   
-                  {columnVisibility.chapterName && renderCell(rule, 'chapterName', rule.chapterName || 'N/A', 'w-48')}
-                  {columnVisibility.sectionName && renderCell(rule, 'sectionName', rule.sectionName || 'N/A', 'w-48')}
-                  {columnVisibility.subsectionName && renderCell(rule, 'subsectionName', rule.subsectionName || 'N/A', 'w-48')}
-                  {columnVisibility.serviceGroup && renderCell(rule, 'serviceGroup', rule.serviceGroup || 'N/A', 'w-32')}
-                  {columnVisibility.sourceMapping && renderCell(rule, 'sourceMapping', rule.sourceMapping || 'N/A', 'w-40')}
-                  {columnVisibility.tiers && renderCell(rule, 'tiers', rule.tiers || 'N/A', 'w-32')}
-                  {columnVisibility.key && renderCell(rule, 'key', rule.key || 'N/A', 'w-32')}
+                  {columnVisibility.chapterName && renderCell(rule, 'chapterName', rule.chapterName || 'N/A', 'w-40')}
+                  {columnVisibility.sectionName && renderCell(rule, 'sectionName', rule.sectionName || 'N/A', 'w-40')}
+                  {columnVisibility.subsectionName && renderCell(rule, 'subsectionName', rule.subsectionName || 'N/A', 'w-40')}
+                  {columnVisibility.serviceGroup && renderCell(rule, 'serviceGroup', rule.serviceGroup || 'N/A', 'w-36')}
+                  {columnVisibility.sourceMapping && renderCell(rule, 'sourceMapping', rule.sourceMapping || 'N/A', 'w-36')}
+                  {columnVisibility.tiers && renderCell(rule, 'tiers', rule.tiers || 'N/A', 'w-24')}
+                  {columnVisibility.key && renderCell(rule, 'key', rule.key || 'N/A', 'w-24')}
 
                   {columnVisibility.isTabular && (
-                    <div className="w-28 px-3 py-2 border-r border-gray-200 flex items-center justify-center">
+                    <div className="w-28 px-2 py-2 border-r border-gray-200 flex items-center justify-center">
                       <Checkbox 
                         checked={rule.isTabular || false}
                         disabled={rule.published} // Disable checkbox for released rules
@@ -1898,24 +1898,24 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
                     </div>
                   )}
                   
-                  {columnVisibility.english && renderCell(rule, 'english', rule.english || 'N/A', 'w-64')}
+                  {columnVisibility.english && renderCell(rule, 'english', rule.english || 'N/A', 'w-52')}
                   
                   {columnVisibility.englishStatus && (
-                    <div className="w-32 px-3 py-2 border-r border-gray-200">
+                    <div className="w-28 px-2 py-2 border-r border-gray-200">
                       {getStatusBadge(rule.englishStatus)}
                     </div>
                   )}
                   
-                  {columnVisibility.spanish && renderCell(rule, 'spanish', rule.spanish || 'N/A', 'w-64')}
+                  {columnVisibility.spanish && renderCell(rule, 'spanish', rule.spanish || 'N/A', 'w-52')}
                   
                   {columnVisibility.spanishStatus && (
-                    <div className="w-32 px-3 py-2 border-r border-gray-200">
+                    <div className="w-28 px-2 py-2 border-r border-gray-200">
                       {getStatusBadge(rule.spanishStatus)}
                     </div>
                   )}
                   
                   {columnVisibility.published && (
-                    <div className="w-32 px-3 py-2 flex items-center justify-center">
+                    <div className="w-28 px-2 py-2 flex items-center justify-center">
                       <Checkbox 
                         checked={rule.published || false}
                         onCheckedChange={(checked) => {
