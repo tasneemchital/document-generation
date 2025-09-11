@@ -1157,7 +1157,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
   };
 
   return (
-    <div className="w-full h-full flex flex-col overflow-hidden">
+    <div className="w-full h-full flex flex-col">
       {/* Compact Header Section */}
       <div className="bg-white border border-gray-200 flex-shrink-0">
         <div className="px-6 py-3 border-b border-gray-200">
@@ -1323,11 +1323,11 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
         </div>
       </div>
 
-        {/* Table Container with Scrollable Body */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="min-w-[4350px] flex flex-col h-full">
-            {/* Table Header - Fixed */}
-            <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500 flex-shrink-0">
+        {/* Table Container with Horizontal and Vertical Scrolling */}
+        <div className="flex-1 overflow-auto border border-gray-200">
+          <div className="min-w-[4350px]">
+            {/* Table Header - Sticky */}
+            <div className="flex bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500 sticky top-0 z-10">
               <div className="w-12 px-3 py-2 border-r border-gray-200">
                 <Checkbox 
                   checked={paginatedRules.length > 0 && selectedRows.size === paginatedRules.length}
@@ -1800,7 +1800,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
             </div>
 
             {/* Table Body - Scrollable */}
-            <div className="flex-1 overflow-auto bg-white">
+            <div className="bg-white">
               {paginatedRules.length > 0 ? (
                 paginatedRules.map((rule, index) => (
                 <div 
@@ -2007,7 +2007,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
         </div>
 
         {/* Enhanced Pagination Controls - Always Visible */}
-        <div className="bg-white border-t border-gray-200 px-6 py-4 flex items-center justify-between flex-shrink-0 z-30">
+        <div className="bg-white border-t border-gray-200 px-6 py-4 flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-700 font-medium">Rows per page:</span>

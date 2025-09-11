@@ -273,8 +273,8 @@ export function DigitalContentManager({ onNavigate, onEditRule }: DigitalContent
         </div>
       </div>
 
-      {/* Main Content - Full Height Container for Grid */}
-      <div className="flex-1 overflow-hidden">
+      {/* Main Content - Full Height Container for Grid with Scrolling */}
+      <div className="flex-1 overflow-auto">
         <RuleGrid 
           rules={rules} 
           onRuleUpdate={handleRuleUpdate}
