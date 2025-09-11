@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,7 +9,9 @@ import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { ArrowLeft, Calendar, MapPin, Gear, FileText, Globe, Check, X, Robot } from '@phosphor-icons/react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { ArrowLeft, Calendar, MapPin, Gear, FileText, Globe, Check, X, Robot, TextBolder, TextItalic, TextUnderline, TextStrikethrough, Plus, Copy, Eye } from '@phosphor-icons/react';
 import { format, parse, isValid } from 'date-fns';
 import { RuleData } from '@/lib/types';
 import { toast } from 'sonner';
@@ -30,6 +32,13 @@ interface DCMEditPageProps {
   onNavigate: (page: string) => void;
   onSave?: (rule: RuleData) => void;
   mode: 'edit' | 'create';
+}
+
+// Hook to access rules from parent App component
+declare global {
+  interface Window {
+    getAllRules?: () => RuleData[];
+  }
 }
 
 export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps) {
@@ -71,6 +80,9 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
   const [selectedLanguage, setSelectedLanguage] = useState<'english' | 'spanish' | 'chinese'>('english');
   const [selectedPlan, setSelectedPlan] = useState<string>('');
   const [chineseContent, setChineseContent] = useState('');
+  const [cmlDialogOpen, setCmlDialogOpen] = useState(false);
+  const [allRules, setAllRules] = useState<RuleData[]>([]);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (rule && mode === 'edit') {
@@ -130,7 +142,88 @@ ENDIF
 
 对于紧急服务，您在全国任何医院都有覆盖，无需事先授权。处方药覆盖遵循分层处方集结构，具有不同的费用分摊级别。`);
     }
+
+    // Load all rules from storage for CML popup
+    loadAllRules();
   }, [rule, mode]);
+
+  // Function to load all rules from KV storage
+  const loadAllRules = async () => {
+    try {
+      // Try to get rules from the KV storage directly
+      const storedRules = await spark.kv.get<RuleData[]>('rule-data');
+      if (storedRules && Array.isArray(storedRules)) {
+        setAllRules(storedRules);
+      } else {
+        // Create sample rules if none exist
+        const sampleRules: RuleData[] = [
+          {
+            id: 'rule-sample-1',
+            ruleId: 'R0001',
+            effectiveDate: '01/01/2026',
+            version: '2026',
+            benefitType: 'Copayment',
+            businessArea: 'Marketing',
+            subBusinessArea: 'MRK: DNSP',
+            description: 'Body Text',
+            templateName: 'Primary Care',
+            key: 'Medicare|PrimaryCareCopay|Individual|=',
+            rule: 'Primary care physician copay rule',
+            english: 'Your primary care visits have a $20 copay',
+            englishStatus: 'Published',
+            spanish: 'Sus visitas de atención primaria tienen un copago de $20',
+            spanishStatus: 'Published',
+            published: true,
+            createdAt: new Date('2024-01-15'),
+            lastModified: new Date('2024-01-15')
+          },
+          {
+            id: 'rule-sample-2',
+            ruleId: 'R0002',
+            effectiveDate: '01/01/2026',
+            version: '2026',
+            benefitType: 'Deductible',
+            businessArea: 'Operations',
+            subBusinessArea: 'OPS: Claims',
+            description: 'Body Text',
+            templateName: 'Specialist Care',
+            key: 'Medicare|SpecialistDeductible|Individual|>=',
+            rule: 'Specialist visit deductible requirement',
+            english: 'Specialist visits require meeting annual deductible',
+            englishStatus: 'Draft',
+            spanish: 'Las visitas a especialistas requieren cumplir con el deducible anual',
+            spanishStatus: 'Draft',
+            published: false,
+            createdAt: new Date('2024-01-20'),
+            lastModified: new Date('2024-01-25')
+          },
+          {
+            id: 'rule-sample-3',
+            ruleId: 'R0003',
+            effectiveDate: '01/01/2026',
+            version: '2026',
+            benefitType: 'Coinsurance',
+            businessArea: 'Marketing',
+            subBusinessArea: 'MRK: DNSP',
+            description: 'Body Text',
+            templateName: 'Prescription Drugs',
+            key: 'Medicare|PrescriptionDrug|Tier1|=',
+            rule: 'Tier 1 prescription drug coverage',
+            english: 'Tier 1 generic drugs have 10% coinsurance',
+            englishStatus: 'Published',
+            spanish: 'Los medicamentos genéricos de nivel 1 tienen un coseguro del 10%',
+            spanishStatus: 'Published',
+            published: true,
+            createdAt: new Date('2024-01-10'),
+            lastModified: new Date('2024-01-12')
+          }
+        ];
+        setAllRules(sampleRules);
+      }
+    } catch (error) {
+      console.error('Error loading rules:', error);
+    }
+  };
 
   const formatDateForDisplay = (dateString: string): Date | undefined => {
     if (!dateString) return undefined;
@@ -373,6 +466,53 @@ ENDIF`;
     const currentContent = getSelectedLanguageContent();
     const newContent = currentContent + (currentContent ? '\n' : '') + code;
     handleLanguageContentChange(newContent);
+  };
+
+  // Rich text formatting functions
+  const applyFormatting = (formatType: 'bold' | 'italic' | 'underline' | 'strikethrough') => {
+    if (!textareaRef.current) return;
+
+    const textarea = textareaRef.current;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+    const currentContent = getSelectedLanguageContent();
+
+    let formattedText = '';
+    switch (formatType) {
+      case 'bold':
+        formattedText = selectedText ? `**${selectedText}**` : '**bold text**';
+        break;
+      case 'italic':
+        formattedText = selectedText ? `*${selectedText}*` : '*italic text*';
+        break;
+      case 'underline':
+        formattedText = selectedText ? `<u>${selectedText}</u>` : '<u>underlined text</u>';
+        break;
+      case 'strikethrough':
+        formattedText = selectedText ? `~~${selectedText}~~` : '~~strikethrough text~~';
+        break;
+    }
+
+    const newContent = currentContent.substring(0, start) + formattedText + currentContent.substring(end);
+    handleLanguageContentChange(newContent);
+
+    // Restore cursor position after formatting
+    setTimeout(() => {
+      if (textareaRef.current) {
+        const newCursorPos = start + formattedText.length;
+        textareaRef.current.setSelectionRange(newCursorPos, newCursorPos);
+        textareaRef.current.focus();
+      }
+    }, 0);
+  };
+
+  const insertRuleReference = (ruleId: string) => {
+    const reference = `(dcm id ${ruleId})`;
+    const currentContent = getSelectedLanguageContent();
+    const newContent = currentContent + (currentContent && !currentContent.endsWith(' ') ? ' ' : '') + reference;
+    handleLanguageContentChange(newContent);
+    setCmlDialogOpen(false);
   };
 
   const getPlanDisplayName = (planValue: string): string => {
@@ -1017,6 +1157,145 @@ ENDIF`;
 
                 </div>
 
+                {/* Rich Text Editor Buttons */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="h-8 px-2"
+                      onClick={() => applyFormatting('bold')}
+                      title="Bold"
+                    >
+                      <TextBolder size={16} />
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="h-8 px-2"
+                      onClick={() => applyFormatting('italic')}
+                      title="Italic"
+                    >
+                      <TextItalic size={16} />
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="h-8 px-2"
+                      onClick={() => applyFormatting('underline')}
+                      title="Underline"
+                    >
+                      <TextUnderline size={16} />
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="h-8 px-2"
+                      onClick={() => applyFormatting('strikethrough')}
+                      title="Strikethrough"
+                    >
+                      <TextStrikethrough size={16} />
+                    </Button>
+                    <Separator orientation="vertical" className="h-6" />
+                    <Dialog open={cmlDialogOpen} onOpenChange={setCmlDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-8 px-3 flex items-center gap-1 border-purple-200 text-purple-600 hover:bg-purple-50"
+                        >
+                          <Plus size={14} />
+                          CML
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-4xl max-h-[80vh]">
+                        <DialogHeader>
+                          <DialogTitle className="flex items-center gap-2">
+                            <FileText size={20} className="text-purple-600" />
+                            Digital Content Manager Rules
+                          </DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <p className="text-sm text-muted-foreground">
+                            Select a rule to insert its reference into your content template.
+                          </p>
+                          <ScrollArea className="h-[60vh] w-full">
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>Rule ID</TableHead>
+                                  <TableHead>Template Name</TableHead>
+                                  <TableHead>Benefit Type</TableHead>
+                                  <TableHead>Business Area</TableHead>
+                                  <TableHead>Status</TableHead>
+                                  <TableHead>Actions</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {allRules.map((rule) => (
+                                  <TableRow key={rule.id}>
+                                    <TableCell className="font-mono text-sm font-medium">
+                                      {rule.ruleId}
+                                    </TableCell>
+                                    <TableCell>{rule.templateName}</TableCell>
+                                    <TableCell>
+                                      <Badge variant="outline" className="text-xs">
+                                        {rule.benefitType}
+                                      </Badge>
+                                    </TableCell>
+                                    <TableCell className="text-sm text-muted-foreground">
+                                      {rule.businessArea}
+                                    </TableCell>
+                                    <TableCell>
+                                      <Badge 
+                                        variant={rule.published ? "default" : "secondary"}
+                                        className={rule.published ? "bg-green-100 text-green-800 hover:bg-green-200" : ""}
+                                      >
+                                        {rule.published ? 'Published' : 'Draft'}
+                                      </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                      <div className="flex items-center gap-1">
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={() => insertRuleReference(rule.ruleId)}
+                                          className="h-7 px-2 text-xs"
+                                        >
+                                          <Plus size={12} className="mr-1" />
+                                          Insert
+                                        </Button>
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={() => {
+                                            navigator.clipboard.writeText(`(dcm id ${rule.ruleId})`);
+                                            toast.success('Rule reference copied!');
+                                          }}
+                                          className="h-7 px-2"
+                                          title="Copy Reference"
+                                        >
+                                          <Copy size={12} />
+                                        </Button>
+                                      </div>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                            {allRules.length === 0 && (
+                              <div className="flex flex-col items-center justify-center h-32 text-center">
+                                <FileText size={32} className="text-muted-foreground/50 mb-2" />
+                                <p className="text-sm text-muted-foreground">No rules available</p>
+                              </div>
+                            )}
+                          </ScrollArea>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </div>
+
                 {/* Template Helper Buttons */}
                 <div className="grid grid-cols-4 gap-2">
                   <Button 
@@ -1054,6 +1333,7 @@ ENDIF`;
                 </div>
 
                 <Textarea
+                  ref={textareaRef}
                   placeholder={getEditorPlaceholder()}
                   value={getSelectedLanguageContent()}
                   onChange={(e) => handleLanguageContentChange(e.target.value)}
