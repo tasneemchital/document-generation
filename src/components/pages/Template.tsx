@@ -47,7 +47,7 @@ const sectionOptions = [
 ]
 
 export function Template({ onNavigate, onEditRule }: TemplateProps) {
-  const [rules] = useKV<RuleData[]>('rule-data', [])
+  const [rules, setRules] = useKV<RuleData[]>('rule-data', [])
   const [selectedSection, setSelectedSection] = useState('Chapter 1')
   const [selectedView, setSelectedView] = useState('medicare-eoc')
   const [selectedInstance, setSelectedInstance] = useState('hmo-mapd')
@@ -136,8 +136,9 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
     if (ruleMatch) {
       const ruleId = ruleMatch[1]
       const rule = rules.find(r => r.id === ruleId)
-      if (rule && onEditRule) {
-        onEditRule(ruleId)
+      if (rule) {
+        setEditingRule(rule)
+        setShowEditRuleDialog(true)
         return
       }
     }
@@ -178,19 +179,33 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
         }
       }
       
-      if (ruleEndLine !== -1 && onEditRule) {
-        onEditRule(foundRuleId)
-        return
+      if (ruleEndLine !== -1) {
+        const rule = rules.find(r => r.id === foundRuleId)
+        if (rule) {
+          setEditingRule(rule)
+          setShowEditRuleDialog(true)
+          return
+        }
       }
     }
     
     // If no rule found, show a message
     setTimeout(() => {
-      alert('Please select rule text to edit. Rule text appears as highlighted blocks.')
+      alert('Please select rule text to edit.\n\nRule text appears as blocks like:\n[RULE-R0001]Your rule description here...[/RULE-R0001]\n\nSelect any part of this text and click "Edit Rule" again.')
     }, 0)
   }
 
   const handleUpdateRule = (updatedRule: RuleData) => {
+    // Update the global rules state
+    setRules((currentRules: RuleData[]) => {
+      if (!Array.isArray(currentRules)) {
+        return [updatedRule];
+      }
+      return currentRules.map(rule => 
+        rule.id === updatedRule.id ? updatedRule : rule
+      );
+    });
+
     // Update the rule content in editor
     const updatedContent = editorContent.replace(
       new RegExp(`\\[RULE-${updatedRule.id}\\].*?\\[/RULE-${updatedRule.id}\\]`, 'g'),
@@ -335,7 +350,7 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
               </div>
 
               <div className="text-sm text-muted-foreground mb-2">
-                Select rule text and click "Edit Rule" to modify rule content.
+                Select rule text (highlighted blocks containing [RULE-xxx]...[/RULE-xxx]) and click "Edit Rule" to modify rule content.
               </div>
 
               <div className="flex-1">
@@ -439,8 +454,8 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
 
       {/* Edit Rule Dialog */}
       <Dialog open={showEditRuleDialog} onOpenChange={setShowEditRuleDialog}>
-        <DialogContent className="max-w-7xl max-h-[90vh] p-0">
-          <div className="h-full">
+        <DialogContent className="max-w-7xl max-h-[90vh] p-0 overflow-hidden">
+          <div className="h-full max-h-[90vh] overflow-auto">
             {editingRule && (
               <DCMEditPage
                 rule={editingRule}
