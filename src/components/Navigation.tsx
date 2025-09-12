@@ -7,7 +7,6 @@ import {
   Export, 
   Gear, 
   Palette,
-  CaretLeft,
   Robot,
   ListBullets,
   File
@@ -19,7 +18,6 @@ interface NavigationProps {
   currentPage: string
   onNavigate: (page: string) => void
   isCollapsed: boolean
-  onToggleCollapse: () => void
 }
 
 const navigationItems = [
@@ -36,31 +34,12 @@ const navigationItems = [
   { id: 'design-studio', label: 'Design Studio', icon: Palette },
 ]
 
-export function Navigation({ currentPage, onNavigate, isCollapsed, onToggleCollapse }: NavigationProps) {
+export function Navigation({ currentPage, onNavigate, isCollapsed }: NavigationProps) {
   return (
     <aside className={cn(
       "bg-card border-r border-border transition-all duration-300 ease-in-out flex flex-col",
       isCollapsed ? "w-16" : "w-72"
-    )}>
-      <div className="px-3 py-3 border-b border-border flex items-center justify-between">
-        {!isCollapsed && (
-          <h1 className="text-lg font-semibold text-foreground">
-            SimplifyDocs
-          </h1>
-        )}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onToggleCollapse}
-          className={cn(
-            "h-7 w-7 p-0 hover:bg-muted transition-transform duration-200",
-            isCollapsed && "rotate-180"
-          )}
-        >
-          <CaretLeft size={14} />
-        </Button>
-      </div>
-      
+    )}>      
       <nav className="flex-1 px-2 py-3">
         <ul className="space-y-1">
           {navigationItems.map((item) => {

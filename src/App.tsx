@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useKV } from '@github/spark/hooks'
 import { Navigation } from '@/components/Navigation'
+import { TopBar } from '@/components/TopBar'
 import { Dashboard } from '@/components/pages/Dashboard'
 import { 
   MasterList, 
@@ -108,16 +109,18 @@ function App() {
   }
 
   return (
-    <div className="flex h-screen bg-background">
-      <Navigation 
-        currentPage={currentPage}
-        onNavigate={setCurrentPage}
-        isCollapsed={isCollapsed}
-        onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
-      />
-      <main className="flex-1 overflow-auto">
-        {renderCurrentPage()}
-      </main>
+    <div className="flex flex-col h-screen bg-background">
+      <TopBar onToggleSidebar={() => setIsCollapsed(!isCollapsed)} />
+      <div className="flex flex-1 overflow-hidden">
+        <Navigation 
+          currentPage={currentPage}
+          onNavigate={setCurrentPage}
+          isCollapsed={isCollapsed}
+        />
+        <main className="flex-1 overflow-auto">
+          {renderCurrentPage()}
+        </main>
+      </div>
     </div>
   )
 }
