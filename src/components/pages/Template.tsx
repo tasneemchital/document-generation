@@ -48,8 +48,8 @@ const sectionOptions = [
 export function Template({ onNavigate, onEditRule }: TemplateProps) {
   const [rules] = useKV<RuleData[]>('rule-data', [])
   const [selectedSection, setSelectedSection] = useState('')
-  const [selectedView, setSelectedView] = useState('')
-  const [selectedInstance, setSelectedInstance] = useState('')
+  const [selectedView, setSelectedView] = useState('medicare-eoc')
+  const [selectedInstance, setSelectedInstance] = useState('hmo-mapd')
   const [editorContent, setEditorContent] = useState('')
   const [showCMLDialog, setShowCMLDialog] = useState(false)
   const [selectedRule, setSelectedRule] = useState<RuleData | null>(null)
@@ -203,7 +203,7 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
                     <SelectValue placeholder="Select view" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="template">Template</SelectItem>
+                    <SelectItem value="medicare-eoc">Medicare EOC</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -215,7 +215,7 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
                     <SelectValue placeholder="Select instance" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="medicare-eoc">Medicare EOC</SelectItem>
+                    <SelectItem value="hmo-mapd">HMO MAPD</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
