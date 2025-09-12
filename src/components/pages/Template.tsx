@@ -17,7 +17,8 @@ import {
   List,
   ListNumbers,
   Plus,
-  ArrowLeft
+  ArrowLeft,
+  FloppyDisk
 } from '@phosphor-icons/react'
 import { DCMEditPage } from './DCMEditPage'
 import { RuleData } from '@/lib/types'
@@ -47,19 +48,50 @@ const sectionOptions = [
 
 export function Template({ onNavigate, onEditRule }: TemplateProps) {
   const [rules] = useKV<RuleData[]>('rule-data', [])
-  const [selectedSection, setSelectedSection] = useState('')
+  const [selectedSection, setSelectedSection] = useState('Chapter 1')
   const [selectedView, setSelectedView] = useState('medicare-eoc')
   const [selectedInstance, setSelectedInstance] = useState('hmo-mapd')
-  const [editorContent, setEditorContent] = useState('')
+  const [templateContents, setTemplateContents] = useKV<Record<string, string>>('template-contents', {})
   const [showCMLDialog, setShowCMLDialog] = useState(false)
   const [selectedRule, setSelectedRule] = useState<RuleData | null>(null)
   const [showEditRuleDialog, setShowEditRuleDialog] = useState(false)
   const [editingRule, setEditingRule] = useState<RuleData | null>(null)
+  const [isModified, setIsModified] = useState(false)
   const editorRef = useRef<HTMLTextAreaElement>(null)
+
+  // Get current section content
+  const editorContent = templateContents[selectedSection] || ''
+  
+  const setEditorContent = (content: string) => {
+    setTemplateContents((current: Record<string, string>) => ({
+      ...current,
+      [selectedSection]: content
+    }))
+  }
 
   const handleCMLInsert = () => {
     setSelectedRule(null) // Reset selection
     setShowCMLDialog(true)
+  }
+
+  const handleSave = () => {
+    setIsModified(false)
+    // Content is automatically saved via useKV
+    // Show success message or feedback here if needed
+  }
+
+  const handleContentChange = (value: string) => {
+    setEditorContent(value)
+    setIsModified(true)
+  }
+
+  const handleSectionChange = (section: string) => {
+    if (isModified) {
+      // Auto-save current content before switching
+      setIsModified(false)
+    }
+    setSelectedSection(section)
+    setIsModified(false)
   }
 
   const handleInsertRule = () => {
@@ -76,6 +108,7 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
         currentContent.slice(cursorPosition)
       
       setEditorContent(newContent)
+      setIsModified(true)
       setShowCMLDialog(false)
       setSelectedRule(null)
       
@@ -164,6 +197,7 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
       `[RULE-${updatedRule.id}]${updatedRule.description}[/RULE-${updatedRule.id}]`
     )
     setEditorContent(updatedContent)
+    setIsModified(true)
     setShowEditRuleDialog(false)
     setEditingRule(null)
   }
@@ -222,7 +256,7 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
 
               <div className="flex items-center gap-2">
                 <label className="text-sm font-medium">Section:</label>
-                <Select value={selectedSection} onValueChange={setSelectedSection}>
+                <Select value={selectedSection} onValueChange={handleSectionChange}>
                   <SelectTrigger className="w-[200px]">
                     <SelectValue placeholder="Select section" />
                   </SelectTrigger>
@@ -237,8 +271,19 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
               </div>
 
               <h2 className="text-lg font-semibold ml-4">
-                {selectedSection || 'Medicare EOC'}
+                {selectedSection || 'Chapter 1'}
               </h2>
+              
+              <div className="ml-auto">
+                <Button 
+                  onClick={handleSave}
+                  disabled={!isModified}
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  <FloppyDisk className="h-4 w-4 mr-2" />
+                  {isModified ? 'Save Changes' : 'Saved'}
+                </Button>
+              </div>
             </div>
 
             {/* Editor Section */}
@@ -297,7 +342,7 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
                 <Textarea
                   ref={editorRef}
                   value={editorContent}
-                  onChange={(e) => setEditorContent(e.target.value)}
+                  onChange={(e) => handleContentChange(e.target.value)}
                   placeholder="Start typing or click + CML to insert rule content..."
                   className="min-h-[500px] font-mono text-sm resize-none w-full"
                 />
