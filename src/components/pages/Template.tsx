@@ -359,7 +359,7 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
                   value={editorContent}
                   onChange={(e) => handleContentChange(e.target.value)}
                   placeholder="Start typing or click + CML to insert rule content..."
-                  className="min-h-[500px] font-mono text-sm resize-none w-full"
+                  className="min-h-[500px] max-h-[500px] font-mono text-sm resize-none w-full overflow-y-auto"
                 />
               </div>
             </div>
