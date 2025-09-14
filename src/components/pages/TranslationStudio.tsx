@@ -38,20 +38,21 @@ interface MockDocument {
 }
 
 const mockDocuments: MockDocument[] = [
-  { id: '1', name: 'Medicare EOC 2025', type: 'EOC', instance: 'HMO MAPD', lastModified: '2024-01-15' },
-  { id: '2', name: 'ANOC Summary 2025', type: 'ANOC', instance: 'PPO MAPD', lastModified: '2024-01-10' },
-  { id: '3', name: 'Summary of Benefits 2025', type: 'SB', instance: 'HMO MAPD', lastModified: '2024-01-12' },
-  { id: '4', name: 'Medicare EOC Dental', type: 'EOC', instance: 'PPO MAPD', lastModified: '2024-01-08' }
+  { id: 'H1234', name: 'H1234 - Simplify HMO MAPD', type: 'EOC', instance: 'HMO MAPD', lastModified: '2024-01-15' },
+  { id: 'H2231-PPO', name: 'H2231 - Simplify PPO', type: 'EOC', instance: 'PPO MAPD', lastModified: '2024-01-14' },
+  { id: 'H2231-DSNP', name: 'H2231 - Simplify Choice DSNP', type: 'SB', instance: 'DSNP', lastModified: '2024-01-13' },
+  { id: 'H4323', name: 'H4323 - Health Choice HMO', type: 'EOC', instance: 'HMO MAPD', lastModified: '2024-01-12' },
+  { id: 'H2121', name: 'H2121 - Care Plus HMO', type: 'EOC', instance: 'HMO MAPD', lastModified: '2024-01-11' }
 ]
 
 const documentTypes = ['EOC', 'ANOC', 'SB']
-const instances = ['HMO MAPD', 'PPO MAPD', 'PFFS']
+const instances = ['HMO MAPD', 'PPO MAPD', 'PFFS', 'DSNP']
 const languages = ['Spanish', 'Chinese (Simplified)', 'Chinese (Traditional)', 'Vietnamese', 'Korean', 'Tagalog', 'Russian', 'Arabic', 'French', 'Portuguese']
 
 const sampleTranslationJobs: TranslationJob[] = [
   {
     id: 'job-1',
-    documentName: 'Medicare EOC 2025',
+    documentName: 'H1234 - Simplify HMO MAPD',
     documentType: 'EOC',
     targetLanguages: ['Spanish'],
     status: 'completed',
@@ -61,8 +62,8 @@ const sampleTranslationJobs: TranslationJob[] = [
   },
   {
     id: 'job-2',
-    documentName: 'ANOC Summary 2025',
-    documentType: 'ANOC',
+    documentName: 'H2231 - Simplify PPO',
+    documentType: 'EOC',
     targetLanguages: ['Chinese (Simplified)'],
     status: 'in_progress',
     username: 'jane.smith',
@@ -71,13 +72,43 @@ const sampleTranslationJobs: TranslationJob[] = [
   },
   {
     id: 'job-3',
-    documentName: 'Summary of Benefits 2025',
+    documentName: 'H2231 - Simplify Choice DSNP',
     documentType: 'SB',
-    targetLanguages: ['Vietnamese', 'Korean'],
+    targetLanguages: ['Vietnamese'],
     status: 'queued',
     username: 'ahmed.hassan',
     timestamp: '2024-01-13T14:20:00Z',
     progress: 0
+  },
+  {
+    id: 'job-4',
+    documentName: 'H4323 - Health Choice HMO',
+    documentType: 'EOC',
+    targetLanguages: ['Korean'],
+    status: 'in_progress',
+    username: 'maria.garcia',
+    timestamp: '2024-01-13T15:15:00Z',
+    progress: 35
+  },
+  {
+    id: 'job-5',
+    documentName: 'H2121 - Care Plus HMO',
+    documentType: 'EOC',
+    targetLanguages: ['Spanish'],
+    status: 'queued',
+    username: 'david.chen',
+    timestamp: '2024-01-13T16:00:00Z',
+    progress: 0
+  },
+  {
+    id: 'job-6',
+    documentName: 'H1234 - Simplify HMO MAPD',
+    documentType: 'EOC',
+    targetLanguages: ['Tagalog'],
+    status: 'completed',
+    username: 'sarah.kim',
+    timestamp: '2024-01-12T09:20:00Z',
+    progress: 100
   }
 ]
 
@@ -125,7 +156,7 @@ export function TranslationStudio() {
       const document = mockDocuments.find(d => d.id === docId)!
       selectedLanguages.forEach(language => {
         newJobs.push({
-          id: `job-${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${docId}-${language}`,
+          id: `job-${Date.now()}-${Math.random().toString(36).substring(2, 11)}-${docId}-${language}`,
           documentName: document.name,
           documentType: document.type,
           targetLanguages: [language],
