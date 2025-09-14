@@ -39,6 +39,11 @@
 - **Why it matters**: Provides systematic overview of all rules with clear hierarchical structure
 - **Success criteria**: Users can scan hundreds of rules efficiently and understand document organization at a glance
 
+### Translation Studio
+- **What it does**: Provides a dedicated interface for queuing documents (EOC, ANOC, SB) for translation into multiple languages, with comprehensive audit tracking
+- **Why it matters**: Enables efficient translation workflow management for compliance documents that need to be available in multiple languages
+- **Success criteria**: Users can select documents and target languages easily, queue translation jobs, and monitor progress through an audit interface
+
 ### Rule Detail Editor
 - **What it does**: Provides a comprehensive form-based interface for editing complete rule details including benefit categories, business areas, dates, and multilingual content
 - **Why it matters**: Enables thorough rule configuration beyond simple text editing, supporting complex business requirements

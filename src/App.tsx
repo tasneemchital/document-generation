@@ -16,6 +16,7 @@ import { DigitalContentManager } from './components/pages/DigitalContentManager'
 import { MedicareEOCMasterList } from './components/pages/MedicareEOCMasterList'
 import { DCMEditPage } from './components/pages/DCMEditPage'
 import { Template } from './components/pages/Template'
+import { TranslationStudio } from './components/pages/TranslationStudio'
 import { RuleData } from '@/lib/types'
 
 function App() {
@@ -61,6 +62,8 @@ function App() {
             }
           }} 
         />
+      case 'translation-studio':
+        return <TranslationStudio />
       case 'collaborate':
         return <Collaborate />
         case 'masterlist':
