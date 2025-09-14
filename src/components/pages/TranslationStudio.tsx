@@ -50,9 +50,122 @@ const documentTypes = ['EOC', 'ANOC', 'SB']
 const instances = ['HMO MAPD', 'PPO MAPD', 'PFFS']
 const languages = ['Spanish', 'Chinese (Simplified)', 'Chinese (Traditional)', 'Vietnamese', 'Korean', 'Tagalog', 'Russian', 'Arabic', 'French', 'Portuguese']
 
+const sampleTranslationJobs: TranslationJob[] = [
+  {
+    id: 'job-1',
+    documentType: 'EOC',
+    documentName: 'Medicare EOC 2025',
+    instance: 'HMO MAPD',
+    status: 'queued',
+    username: 'john.doe',
+    timestamp: '2024-01-15T10:30:00Z',
+    targetLanguages: ['Spanish'],
+    progress: 0
+  },
+  {
+    id: 'job-2',
+    documentType: 'EOC',
+    documentName: 'Medicare EOC 2025',
+    instance: 'HMO MAPD',
+    status: 'queued',
+    username: 'john.doe',
+    timestamp: '2024-01-15T10:30:00Z',
+    targetLanguages: ['Chinese (Simplified)'],
+    progress: 0
+  },
+  {
+    id: 'job-3',
+    documentType: 'ANOC',
+    documentName: 'ANOC Summary 2025',
+    instance: 'PPO MAPD',
+    status: 'in_progress',
+    username: 'maria.garcia',
+    timestamp: '2024-01-14T14:15:00Z',
+    targetLanguages: ['Spanish'],
+    progress: 65
+  },
+  {
+    id: 'job-4',
+    documentType: 'ANOC',
+    documentName: 'ANOC Summary 2025',
+    instance: 'PPO MAPD',
+    status: 'in_progress',
+    username: 'maria.garcia',
+    timestamp: '2024-01-14T14:15:00Z',
+    targetLanguages: ['Vietnamese'],
+    progress: 45
+  },
+  {
+    id: 'job-5',
+    documentType: 'SB',
+    documentName: 'Summary of Benefits 2025',
+    instance: 'HMO MAPD',
+    status: 'completed',
+    username: 'david.kim',
+    timestamp: '2024-01-12T09:00:00Z',
+    targetLanguages: ['Korean'],
+    progress: 100
+  },
+  {
+    id: 'job-6',
+    documentType: 'SB',
+    documentName: 'Summary of Benefits 2025',
+    instance: 'HMO MAPD',
+    status: 'completed',
+    username: 'david.kim',
+    timestamp: '2024-01-12T09:00:00Z',
+    targetLanguages: ['Chinese (Traditional)'],
+    progress: 100
+  },
+  {
+    id: 'job-7',
+    documentType: 'EOC',
+    documentName: 'Medicare EOC Dental',
+    instance: 'PPO MAPD',
+    status: 'in_progress',
+    username: 'sarah.chen',
+    timestamp: '2024-01-13T11:45:00Z',
+    targetLanguages: ['Tagalog'],
+    progress: 78
+  },
+  {
+    id: 'job-8',
+    documentType: 'EOC',
+    documentName: 'Medicare EOC Dental',
+    instance: 'PPO MAPD',
+    status: 'completed',
+    username: 'sarah.chen',
+    timestamp: '2024-01-10T16:20:00Z',
+    targetLanguages: ['Russian'],
+    progress: 100
+  },
+  {
+    id: 'job-9',
+    documentType: 'ANOC',
+    documentName: 'ANOC Summary 2025',
+    instance: 'PFFS',
+    status: 'queued',
+    username: 'ahmed.hassan',
+    timestamp: '2024-01-15T08:00:00Z',
+    targetLanguages: ['Arabic'],
+    progress: 0
+  },
+  {
+    id: 'job-10',
+    documentType: 'SB',
+    documentName: 'Summary of Benefits 2025',
+    instance: 'PFFS',
+    status: 'in_progress',
+    username: 'lisa.martinez',
+    timestamp: '2024-01-14T13:30:00Z',
+    targetLanguages: ['Portuguese'],
+    progress: 32
+  }
+]
+
 export function TranslationStudio() {
   const [activeTab, setActiveTab] = useState('queue')
-  const [translationJobs, setTranslationJobs] = useKV<TranslationJob[]>('translation-jobs', [])
+  const [translationJobs, setTranslationJobs] = useKV<TranslationJob[]>('translation-jobs', sampleTranslationJobs)
   
   // Queue form state
   const [selectedDocumentType, setSelectedDocumentType] = useState('')
@@ -326,6 +439,75 @@ export function TranslationStudio() {
         </TabsContent>
 
         <TabsContent value="audit" className="space-y-6">
+          {/* Status Summary */}
+          {translationJobs.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-full bg-gray-100">
+                      <Queue className="h-5 w-5 text-gray-600" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-gray-600">
+                        {translationJobs.filter(job => job.status === 'queued').length}
+                      </p>
+                      <p className="text-xs text-muted-foreground">Total Jobs</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-full bg-yellow-100">
+                      <Queue className="h-5 w-5 text-yellow-600" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-yellow-600">
+                        {translationJobs.filter(job => job.status === 'queued').length}
+                      </p>
+                      <p className="text-xs text-muted-foreground">Queued</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-full bg-blue-100">
+                      <CircleNotch className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-blue-600">
+                        {translationJobs.filter(job => job.status === 'in_progress').length}
+                      </p>
+                      <p className="text-xs text-muted-foreground">In Progress</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-full bg-green-100">
+                      <CheckCircle className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-green-600">
+                        {translationJobs.filter(job => job.status === 'completed').length}
+                      </p>
+                      <p className="text-xs text-muted-foreground">Completed</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -358,7 +540,9 @@ export function TranslationStudio() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {translationJobs.map(job => (
+                      {translationJobs
+                        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+                        .map(job => (
                         <TableRow key={job.id}>
                           <TableCell className="font-medium">{job.documentName}</TableCell>
                           <TableCell>
@@ -381,9 +565,18 @@ export function TranslationStudio() {
                             <User className="h-4 w-4 text-muted-foreground" />
                             {job.username}
                           </TableCell>
-                          <TableCell className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4 text-muted-foreground" />
-                            {new Date(job.timestamp).toLocaleDateString()}
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Calendar className="h-4 w-4 text-muted-foreground" />
+                              <div className="flex flex-col">
+                                <span className="text-xs">
+                                  {new Date(job.timestamp).toLocaleDateString()}
+                                </span>
+                                <span className="text-xs text-muted-foreground">
+                                  {new Date(job.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                              </div>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
