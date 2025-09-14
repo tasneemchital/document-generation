@@ -50,169 +50,120 @@ const instances = ['HMO MAPD', 'PPO MAPD', 'PFFS', 'DSNP']
 const languages = ['Spanish', 'Chinese (Simplified)', 'Chinese (Traditional)', 'Vietnamese', 'Korean', 'Tagalog', 'Russian', 'Arabic', 'French', 'Portuguese']
 
 const sampleTranslationJobs: TranslationJob[] = [
-  // H1234 - Simplify HMO MAPD translations
+  // H4323 - Health Choice HMO translations (matching the audit trail shown)
   {
     id: 'job-1',
-    documentName: 'H1234 - Simplify HMO MAPD',
+    documentName: 'H4323 - Health Choice HMO',
     documentType: 'EOC',
     targetLanguages: ['Spanish'],
-    status: 'completed',
-    username: 'john.doe',
-    timestamp: '2024-01-13T10:30:00Z',
-    progress: 100
+    status: 'queued',
+    username: 'tasneemchital',
+    timestamp: '2024-09-14T11:49:40.000Z',
+    progress: 0
   },
   {
     id: 'job-2',
-    documentName: 'H1234 - Simplify HMO MAPD',
-    documentType: 'EOC',
-    targetLanguages: ['Chinese (Simplified)'],
-    status: 'in_progress',
-    username: 'jane.smith',
-    timestamp: '2024-01-13T11:00:00Z',
-    progress: 75
-  },
-  {
-    id: 'job-3',
-    documentName: 'H1234 - Simplify HMO MAPD',
+    documentName: 'H4323 - Health Choice HMO',
     documentType: 'EOC',
     targetLanguages: ['Vietnamese'],
     status: 'queued',
-    username: 'mike.johnson',
-    timestamp: '2024-01-14T09:15:00Z',
+    username: 'tasneemchital',
+    timestamp: '2024-09-14T11:49:40.000Z',
     progress: 0
   },
-  // H2231 - Simplify PPO translations
+  // Medicare EOC 2025 translations
   {
-    id: 'job-4',
-    documentName: 'H2231 - Simplify PPO',
+    id: 'job-3',
+    documentName: 'Medicare EOC 2025',
     documentType: 'EOC',
-    targetLanguages: ['Tagalog'],
-    status: 'completed',
-    username: 'maria.garcia',
-    timestamp: '2024-01-13T11:45:00Z',
-    progress: 100
+    targetLanguages: ['Spanish'],
+    status: 'in_progress',
+    username: 'tasneemchital',
+    timestamp: '2024-09-14T11:40:24.000Z',
+    progress: 35
   },
   {
-    id: 'job-5',
-    documentName: 'H2231 - Simplify PPO',
+    id: 'job-4',
+    documentName: 'Medicare EOC 2025',
     documentType: 'EOC',
-    targetLanguages: ['Vietnamese'],
+    targetLanguages: ['Chinese (Simplified)'],
+    status: 'queued',
+    username: 'tasneemchital',
+    timestamp: '2024-09-14T11:40:24.000Z',
+    progress: 0
+  },
+  // ANOC Summary 2025 translations
+  {
+    id: 'job-5',
+    documentName: 'ANOC Summary 2025',
+    documentType: 'ANOC',
+    targetLanguages: ['Spanish'],
     status: 'in_progress',
-    username: 'ahmed.hassan',
-    timestamp: '2024-01-14T10:30:00Z',
-    progress: 42
+    username: 'tasneemchital',
+    timestamp: '2024-09-14T11:40:24.000Z',
+    progress: 68
   },
   {
     id: 'job-6',
-    documentName: 'H2231 - Simplify PPO',
-    documentType: 'EOC',
-    targetLanguages: ['Korean'],
+    documentName: 'ANOC Summary 2025',
+    documentType: 'ANOC',
+    targetLanguages: ['Chinese (Simplified)'],
     status: 'queued',
-    username: 'david.chen',
-    timestamp: '2024-01-14T11:00:00Z',
+    username: 'tasneemchital',
+    timestamp: '2024-09-14T11:40:24.000Z',
     progress: 0
   },
-  // H2231 - Simplify Choice DSNP translations
+  // Summary of Benefits 2025 translations
   {
     id: 'job-7',
-    documentName: 'H2231 - Simplify Choice DSNP',
+    documentName: 'Summary of Benefits 2025',
     documentType: 'SB',
     targetLanguages: ['Spanish'],
     status: 'completed',
-    username: 'lisa.rodriguez',
-    timestamp: '2024-01-13T16:45:00Z',
+    username: 'tasneemchital',
+    timestamp: '2024-09-14T11:40:24.000Z',
     progress: 100
   },
   {
     id: 'job-8',
-    documentName: 'H2231 - Simplify Choice DSNP',
+    documentName: 'Summary of Benefits 2025',
     documentType: 'SB',
-    targetLanguages: ['Chinese (Traditional)'],
-    status: 'in_progress',
-    username: 'kevin.wong',
-    timestamp: '2024-01-14T09:10:00Z',
-    progress: 58
+    targetLanguages: ['Chinese (Simplified)'],
+    status: 'queued',
+    username: 'tasneemchital',
+    timestamp: '2024-09-14T11:40:24.000Z',
+    progress: 0
   },
+  // Medicare EOC 2025 - Main Document translations
   {
     id: 'job-9',
-    documentName: 'H2231 - Simplify Choice DSNP',
-    documentType: 'SB',
-    targetLanguages: ['Vietnamese'],
-    status: 'queued',
-    username: 'tran.nguyen',
-    timestamp: '2024-01-14T11:30:00Z',
-    progress: 0
+    documentName: 'Medicare EOC 2025 - Main Document',
+    documentType: 'EOC',
+    targetLanguages: ['Spanish', 'Chinese (Simplified)'],
+    status: 'in_progress',
+    username: 'tasneemchital',
+    timestamp: '2024-09-14T11:34:15.000Z',
+    progress: 82
   },
-  // H4323 - Health Choice HMO translations
   {
     id: 'job-10',
-    documentName: 'H4323 - Health Choice HMO',
-    documentType: 'EOC',
-    targetLanguages: ['Russian'],
-    status: 'completed',
-    username: 'anna.petrov',
-    timestamp: '2024-01-12T14:20:00Z',
-    progress: 100
-  },
-  {
-    id: 'job-11',
-    documentName: 'H4323 - Health Choice HMO',
-    documentType: 'EOC',
-    targetLanguages: ['Arabic'],
-    status: 'in_progress',
-    username: 'omar.hassan',
-    timestamp: '2024-01-12T16:45:00Z',
-    progress: 33
-  },
-  {
-    id: 'job-12',
-    documentName: 'H4323 - Health Choice HMO',
-    documentType: 'EOC',
-    targetLanguages: ['French'],
-    status: 'queued',
-    username: 'pierre.martin',
-    timestamp: '2024-01-13T08:30:00Z',
-    progress: 0
-  },
-  // H2121 - Care Plus HMO translations
-  {
-    id: 'job-13',
-    documentName: 'H2121 - Care Plus HMO',
+    documentName: 'Medicare EOC 2025 - Main Document',
     documentType: 'EOC',
     targetLanguages: ['Spanish'],
     status: 'completed',
-    username: 'isabella.santos',
-    timestamp: '2024-01-11T10:15:00Z',
+    username: 'tasneemchital',
+    timestamp: '2024-09-14T11:32:54.000Z',
     progress: 100
   },
+  // Medicare EOC 2025 - Appendix A translation
   {
-    id: 'job-14',
-    documentName: 'H2121 - Care Plus HMO',
+    id: 'job-11',
+    documentName: 'Medicare EOC 2025 - Appendix A',
     documentType: 'EOC',
-    targetLanguages: ['Portuguese'],
-    status: 'in_progress',
-    username: 'rafael.silva',
-    timestamp: '2024-01-11T14:30:00Z',
-    progress: 67
-  },
-  {
-    id: 'job-15',
-    documentName: 'H2121 - Care Plus HMO',
-    documentType: 'EOC',
-    targetLanguages: ['Arabic'],
+    targetLanguages: ['Spanish'],
     status: 'queued',
-    username: 'fatima.al-zahra',
-    timestamp: '2024-01-12T08:45:00Z',
-    progress: 0
-  },
-  {
-    id: 'job-16',
-    documentName: 'H2121 - Care Plus HMO',
-    documentType: 'EOC',
-    targetLanguages: ['French'],
-    status: 'queued',
-    username: 'marie.dubois',
-    timestamp: '2024-01-12T12:20:00Z',
+    username: 'tasneemchital',
+    timestamp: '2024-09-14T11:32:54.000Z',
     progress: 0
   }
 ]
