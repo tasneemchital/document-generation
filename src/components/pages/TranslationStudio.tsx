@@ -50,6 +50,7 @@ const instances = ['HMO MAPD', 'PPO MAPD', 'PFFS', 'DSNP']
 const languages = ['Spanish', 'Chinese (Simplified)', 'Chinese (Traditional)', 'Vietnamese', 'Korean', 'Tagalog', 'Russian', 'Arabic', 'French', 'Portuguese']
 
 const sampleTranslationJobs: TranslationJob[] = [
+  // H1234 - Simplify HMO MAPD translations
   {
     id: 'job-1',
     documentName: 'H1234 - Simplify HMO MAPD',
@@ -62,53 +63,157 @@ const sampleTranslationJobs: TranslationJob[] = [
   },
   {
     id: 'job-2',
-    documentName: 'H2231 - Simplify PPO',
+    documentName: 'H1234 - Simplify HMO MAPD',
     documentType: 'EOC',
     targetLanguages: ['Chinese (Simplified)'],
     status: 'in_progress',
     username: 'jane.smith',
     timestamp: '2024-01-13T11:45:00Z',
-    progress: 65
+    progress: 75
   },
   {
     id: 'job-3',
+    documentName: 'H1234 - Simplify HMO MAPD',
+    documentType: 'EOC',
+    targetLanguages: ['Tagalog'],
+    status: 'queued',
+    username: 'sarah.kim',
+    timestamp: '2024-01-12T09:20:00Z',
+    progress: 0
+  },
+  // H2231 - Simplify PPO translations
+  {
+    id: 'job-4',
+    documentName: 'H2231 - Simplify PPO',
+    documentType: 'EOC',
+    targetLanguages: ['Spanish'],
+    status: 'completed',
+    username: 'maria.garcia',
+    timestamp: '2024-01-14T08:15:00Z',
+    progress: 100
+  },
+  {
+    id: 'job-5',
+    documentName: 'H2231 - Simplify PPO',
+    documentType: 'EOC',
+    targetLanguages: ['Vietnamese'],
+    status: 'in_progress',
+    username: 'ahmed.hassan',
+    timestamp: '2024-01-14T10:30:00Z',
+    progress: 42
+  },
+  {
+    id: 'job-6',
+    documentName: 'H2231 - Simplify PPO',
+    documentType: 'EOC',
+    targetLanguages: ['Korean'],
+    status: 'queued',
+    username: 'david.chen',
+    timestamp: '2024-01-14T14:20:00Z',
+    progress: 0
+  },
+  // H2231 - Simplify Choice DSNP translations
+  {
+    id: 'job-7',
+    documentName: 'H2231 - Simplify Choice DSNP',
+    documentType: 'SB',
+    targetLanguages: ['Spanish'],
+    status: 'completed',
+    username: 'lisa.rodriguez',
+    timestamp: '2024-01-13T16:45:00Z',
+    progress: 100
+  },
+  {
+    id: 'job-8',
+    documentName: 'H2231 - Simplify Choice DSNP',
+    documentType: 'SB',
+    targetLanguages: ['Chinese (Traditional)'],
+    status: 'in_progress',
+    username: 'kevin.wong',
+    timestamp: '2024-01-14T09:10:00Z',
+    progress: 58
+  },
+  {
+    id: 'job-9',
     documentName: 'H2231 - Simplify Choice DSNP',
     documentType: 'SB',
     targetLanguages: ['Vietnamese'],
     status: 'queued',
-    username: 'ahmed.hassan',
-    timestamp: '2024-01-13T14:20:00Z',
+    username: 'tran.nguyen',
+    timestamp: '2024-01-14T11:30:00Z',
     progress: 0
   },
+  // H4323 - Health Choice HMO translations
   {
-    id: 'job-4',
+    id: 'job-10',
+    documentName: 'H4323 - Health Choice HMO',
+    documentType: 'EOC',
+    targetLanguages: ['Spanish'],
+    status: 'in_progress',
+    username: 'carlos.mendez',
+    timestamp: '2024-01-12T13:20:00Z',
+    progress: 85
+  },
+  {
+    id: 'job-11',
     documentName: 'H4323 - Health Choice HMO',
     documentType: 'EOC',
     targetLanguages: ['Korean'],
-    status: 'in_progress',
-    username: 'maria.garcia',
-    timestamp: '2024-01-13T15:15:00Z',
-    progress: 35
+    status: 'completed',
+    username: 'jenny.park',
+    timestamp: '2024-01-11T15:45:00Z',
+    progress: 100
   },
   {
-    id: 'job-5',
+    id: 'job-12',
+    documentName: 'H4323 - Health Choice HMO',
+    documentType: 'EOC',
+    targetLanguages: ['Russian'],
+    status: 'queued',
+    username: 'alexei.volkov',
+    timestamp: '2024-01-12T17:00:00Z',
+    progress: 0
+  },
+  // H2121 - Care Plus HMO translations
+  {
+    id: 'job-13',
     documentName: 'H2121 - Care Plus HMO',
     documentType: 'EOC',
     targetLanguages: ['Spanish'],
+    status: 'completed',
+    username: 'isabella.santos',
+    timestamp: '2024-01-11T10:15:00Z',
+    progress: 100
+  },
+  {
+    id: 'job-14',
+    documentName: 'H2121 - Care Plus HMO',
+    documentType: 'EOC',
+    targetLanguages: ['Portuguese'],
+    status: 'in_progress',
+    username: 'rafael.silva',
+    timestamp: '2024-01-11T14:30:00Z',
+    progress: 67
+  },
+  {
+    id: 'job-15',
+    documentName: 'H2121 - Care Plus HMO',
+    documentType: 'EOC',
+    targetLanguages: ['Arabic'],
     status: 'queued',
-    username: 'david.chen',
-    timestamp: '2024-01-13T16:00:00Z',
+    username: 'fatima.al-zahra',
+    timestamp: '2024-01-12T08:45:00Z',
     progress: 0
   },
   {
-    id: 'job-6',
-    documentName: 'H1234 - Simplify HMO MAPD',
+    id: 'job-16',
+    documentName: 'H2121 - Care Plus HMO',
     documentType: 'EOC',
-    targetLanguages: ['Tagalog'],
-    status: 'completed',
-    username: 'sarah.kim',
-    timestamp: '2024-01-12T09:20:00Z',
-    progress: 100
+    targetLanguages: ['French'],
+    status: 'queued',
+    username: 'marie.dubois',
+    timestamp: '2024-01-12T12:20:00Z',
+    progress: 0
   }
 ]
 
