@@ -766,10 +766,10 @@ ENDIF`;
       </div>
 
       {/* Main Content */}
-      <div className="p-8 max-w-7xl mx-auto">
+      <div className="p-10 max-w-[90%] mx-auto min-w-[800px]">
         {/* Rule Information Section */}
-        <Card className="mb-8 shadow-sm">
-          <CardHeader className="pb-4">
+        <Card className="mb-10 shadow-sm">
+          <CardHeader className="pb-6">
             <CardTitle className="flex items-center gap-2 text-lg">
               <FileText size={20} className="text-primary" />
               Rule Information
@@ -778,9 +778,9 @@ ENDIF`;
               Define the core details for this rule
             </p>
           </CardHeader>
-          <CardContent className="space-y-8">
+          <CardContent className="space-y-10">
             {/* First Row - Primary Rule Details */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
               <div className="space-y-2 min-w-0">
                 <Label htmlFor="benefitCategory" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Benefit Category <span className="text-red-500">*</span>
@@ -855,7 +855,7 @@ ENDIF`;
             </div>
 
             {/* Second Row - Operational Details */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-8">
               <div className="space-y-2 min-w-0">
                 <Label htmlFor="planYear" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Plan Year <span className="text-red-500">*</span>
@@ -934,8 +934,8 @@ ENDIF`;
         </Card>
 
         {/* Rule Key Section */}
-        <Card className="mb-8 shadow-sm">
-          <CardHeader className="pb-4">
+        <Card className="mb-10 shadow-sm">
+          <CardHeader className="pb-6">
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="flex items-center gap-2 text-lg">
@@ -1046,7 +1046,7 @@ ENDIF`;
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div className="space-y-3">
                 <Label htmlFor="ruleKey" className="text-sm font-medium text-foreground">
                   Rule Key Expression
@@ -1075,8 +1075,8 @@ ENDIF`;
         </Card>
 
         {/* Content Template & Preview Section */}
-        <Card className="mb-8 shadow-sm">
-          <CardHeader className="pb-4">
+        <Card className="mb-10 shadow-sm">
+          <CardHeader className="pb-6">
             <CardTitle className="flex items-center gap-2 text-lg">
               <Globe size={20} className="text-primary" />
               Content Template & Preview
@@ -1085,7 +1085,7 @@ ENDIF`;
               Configure content templates and preview across different plans
             </p>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-8">
             {/* Language Selection */}
             <div className="space-y-3">
               <Label className="text-sm font-medium text-foreground">Language Selection</Label>
@@ -1136,7 +1136,7 @@ ENDIF`;
             </div>
 
             {/* Split View: Editor and Preview */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mt-8">
               {/* Left Side: Editor with IF Statements */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -1337,7 +1337,7 @@ ENDIF`;
                   placeholder={getEditorPlaceholder()}
                   value={getSelectedLanguageContent()}
                   onChange={(e) => handleLanguageContentChange(e.target.value)}
-                  className="min-h-[300px] font-mono text-sm"
+                  className="min-h-[400px] font-mono text-sm"
                 />
               </div>
 
@@ -1373,7 +1373,7 @@ ENDIF`;
                       </span>
                     </div>
                   </div>
-                  <div className="p-6 min-h-[280px]">
+                  <div className="p-6 min-h-[380px]">
                     {renderPhrasedContent(getSelectedLanguageContent(), selectedPlan)}
                   </div>
                 </div>

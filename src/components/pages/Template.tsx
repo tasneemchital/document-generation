@@ -478,8 +478,8 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
 
       {/* Edit Rule Dialog */}
       <Dialog open={showEditRuleDialog} onOpenChange={setShowEditRuleDialog}>
-        <DialogContent className="max-w-[98vw] w-[98vw] max-h-[98vh] h-[98vh] p-0 overflow-hidden">
-          <div className="h-full w-full max-h-[98vh] overflow-auto">
+        <DialogContent className="max-w-[95vw] w-[95vw] max-h-[95vh] h-[95vh] p-0 overflow-hidden">
+          <div className="h-full w-full max-h-[95vh] overflow-auto">
             {editingRule && (
               <DCMEditPage
                 rule={editingRule}
