@@ -2,34 +2,32 @@ import { useState } from 'react'
 import { useKV } from '@github/spark/hooks'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/che
-import { 
+import { Checkbox } from '@/components/ui/checkbox'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
   Queue, 
   ClockCounterClockwise, 
   FileText,
-  Calendar
+  Calendar,
+  Translate,
+  User,
+  CheckCircle,
+  CircleNotch
+} from '@phosphor-icons/react'
 
+interface TranslationJob {
   id: string
-  documen
-  status: 'queu
+  documentName: string
+  documentType: 'EOC' | 'ANOC' | 'SB'
+  targetLanguages: string[]
+  status: 'queued' | 'in_progress' | 'completed'
+  username: string
   timestamp: string
-  progress: nu
-
-  id: s
-  type: 'E
-  lastModified: string
-
-  { id: '1', name: 'Medica
-  { id: '3',
-]
-const documentTypes = 
-const languages = 
-const sampleTranslationJobs: TranslationJob[] = 
-    id: 'job-1',
-    documentName: '
-    status: 'queued',
-    timestamp: '20
- 
+  progress: number
+}
 
 interface MockDocument {
   id: string
@@ -50,9 +48,42 @@ const documentTypes = ['EOC', 'ANOC', 'SB']
 const instances = ['HMO MAPD', 'PPO MAPD', 'PFFS']
 const languages = ['Spanish', 'Chinese (Simplified)', 'Chinese (Traditional)', 'Vietnamese', 'Korean', 'Tagalog', 'Russian', 'Arabic', 'French', 'Portuguese']
 
+const sampleTranslationJobs: TranslationJob[] = [
+  {
+    id: 'job-1',
+    documentName: 'Medicare EOC 2025',
+    documentType: 'EOC',
+    targetLanguages: ['Spanish'],
+    status: 'completed',
+    username: 'john.doe',
+    timestamp: '2024-01-13T10:30:00Z',
+    progress: 100
+  },
+  {
+    id: 'job-2',
+    documentName: 'ANOC Summary 2025',
+    documentType: 'ANOC',
+    targetLanguages: ['Chinese (Simplified)'],
+    status: 'in_progress',
+    username: 'jane.smith',
+    timestamp: '2024-01-13T11:45:00Z',
+    progress: 65
+  },
+  {
+    id: 'job-3',
+    documentName: 'Summary of Benefits 2025',
+    documentType: 'SB',
+    targetLanguages: ['Vietnamese', 'Korean'],
+    status: 'queued',
+    username: 'ahmed.hassan',
+    timestamp: '2024-01-13T14:20:00Z',
+    progress: 0
+  }
+]
+
 export function TranslationStudio() {
   const [activeTab, setActiveTab] = useState('queue')
-  const [translationJobs, setTranslationJobs] = useKV<TranslationJob[]>('translation-jobs', [])
+  const [translationJobs, setTranslationJobs] = useKV<TranslationJob[]>('translation-jobs', sampleTranslationJobs)
   
   // Queue form state
   const [selectedDocumentType, setSelectedDocumentType] = useState('')
@@ -64,7 +95,7 @@ export function TranslationStudio() {
     if (selectedDocumentType && doc.type !== selectedDocumentType) return false
     if (selectedInstance && doc.instance !== selectedInstance) return false
     return true
-    
+  })
 
   const handleDocumentToggle = (documentId: string) => {
     setSelectedDocuments(prev => 
@@ -72,7 +103,7 @@ export function TranslationStudio() {
         ? prev.filter(id => id !== documentId)
         : [...prev, documentId]
     )
-   
+  }
 
   const handleLanguageToggle = (language: string) => {
     setSelectedLanguages(prev => 
@@ -80,51 +111,49 @@ export function TranslationStudio() {
         ? prev.filter(lang => lang !== language)
         : [...prev, language]
     )
-   
+  }
 
-    timestamp: '2024-01-13T11:45:00Z',
+  const handleQueueTranslation = async () => {
     if (selectedDocuments.length === 0 || selectedLanguages.length === 0) return
 
     // Get current user info
-    documentType: 'EOC',
-    
-    status: 'completed',
+    const user = await spark.user()
     
     // Create a separate job for each document-language combination
+    const newJobs: TranslationJob[] = []
     selectedDocuments.forEach(docId => {
       const document = mockDocuments.find(d => d.id === docId)!
       selectedLanguages.forEach(language => {
-    documentName: 'ANO
+        newJobs.push({
           id: `job-${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${docId}-${language}`,
-    username: 'ahmed.hassan',
           documentName: document.name,
-    progress: 0
+          documentType: document.type,
+          targetLanguages: [language],
           status: 'queued' as const,
           username: user.login,
           timestamp: new Date().toISOString(),
-          targetLanguages: [language],
           progress: 0
-    timest
+        })
       })
-  }
+    })
 
     setTranslationJobs(current => [...current, ...newJobs])
     
     // Reset selections
     setSelectedDocuments([])
-  const [selectedInstance, s
+    setSelectedLanguages([])
     setActiveTab('audit')
+  }
 
-
-    if (selectedInstance && doc.instance !== selectedInstance) 
+  const getStatusIcon = (status: TranslationJob['status']) => {
     switch (status) {
-
+      case 'queued':
         return <Queue className="h-4 w-4 text-yellow-500" />
       case 'in_progress':
         return <CircleNotch className="h-4 w-4 text-blue-500 animate-spin" />
-    )
+      case 'completed':
         return <CheckCircle className="h-4 w-4 text-green-500" />
-  con
+    }
   }
 
   const getStatusBadge = (status: TranslationJob['status']) => {
@@ -134,29 +163,29 @@ export function TranslationStudio() {
       completed: 'bg-green-100 text-green-800 hover:bg-green-100'
     }
     
-    
+    const labels = {
       queued: 'Queued',
-      const document = mockDocume
+      in_progress: 'In Progress',
       completed: 'Completed'
-     
+    }
 
-          in
+    return (
       <Badge variant="secondary" className={variants[status]}>
-          timestamp: new Date()
+        {getStatusIcon(status)}
         <span className="ml-1">{labels[status]}</span>
       </Badge>
     )
-
+  }
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-    setActiveTab('audit')
+      <div className="flex items-center gap-3 mb-6">
         <Translate className="h-8 w-8 text-primary" />
-  const getSt
+        <div>
           <h1 className="text-2xl font-bold text-foreground">Translation Studio</h1>
           <p className="text-sm text-muted-foreground">Queue documents for translation and monitor progress</p>
         </div>
-      case '
+      </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-2">
@@ -166,35 +195,35 @@ export function TranslationStudio() {
           </TabsTrigger>
           <TabsTrigger value="audit" className="flex items-center gap-2">
             <ClockCounterClockwise className="h-4 w-4" />
-      completed: 'Complete
+            Audit Trail
           </TabsTrigger>
-    return (
+        </TabsList>
 
         <TabsContent value="queue" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Document Selection */}
             <Card>
-    <div className="p-6 ma
+              <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />
                   Document Selection
-        </div>
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-            <Queue className="h-4 w-4" />
+                  <div className="space-y-2">
                     <label className="text-sm font-medium">Document Type</label>
                     <Select value={selectedDocumentType} onValueChange={setSelectedDocumentType}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
-        <TabsContent value="queue" cl
+                      <SelectContent>
                         {documentTypes.map(type => (
                           <SelectItem key={type} value={type}>{type}</SelectItem>
                         ))}
-                  <FileText className=
+                      </SelectContent>
                     </Select>
-              </CardHead
+                  </div>
                   
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Instance</label>
@@ -206,7 +235,7 @@ export function TranslationStudio() {
                         {instances.map(instance => (
                           <SelectItem key={instance} value={instance}>{instance}</SelectItem>
                         ))}
-                    <label className="
+                      </SelectContent>
                     </Select>
                   </div>
                 </div>
@@ -218,7 +247,7 @@ export function TranslationStudio() {
                       <p className="text-sm text-muted-foreground text-center py-4">
                         Select document type and instance to view available documents
                       </p>
-                      <p 
+                    ) : (
                       <div className="space-y-2">
                         {filteredDocuments.map(doc => (
                           <div key={doc.id} className="flex items-start space-x-2 p-2 rounded hover:bg-muted/50">
@@ -240,15 +269,15 @@ export function TranslationStudio() {
                             </div>
                           </div>
                         ))}
-            <Card>
+                      </div>
                     )}
-                  <Trans
+                  </div>
                 </div>
-              </CardHeader>
+              </CardContent>
             </Card>
 
             {/* Language Selection */}
-                  
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Translate className="h-5 w-5" />
@@ -256,144 +285,145 @@ export function TranslationStudio() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                          </label>
+                <div className="space-y-2">
                   <label className="text-sm font-medium">Select Languages for Translation</label>
                   <div className="border rounded-md p-3 max-h-64 overflow-y-auto">
                     <div className="space-y-2">
-
+                      {languages.map(language => (
                         <div key={language} className="flex items-center space-x-2 p-2 rounded hover:bg-muted/50">
-                  <Table>
-                      <TableRow>
-                        <TableHead>Type</TableHead>
-                        <TableHead>Language</TableHead>
-                        <Tab
-                        <TableHea
-                    </TableHeader>
-                      {translationJobs
-                        .ma
-                          <TableCell c
-                            <Badge
-                          <Tab
-                         
-                          
-                        
-                      
+                          <Checkbox
+                            id={language}
+                            checked={selectedLanguages.includes(language)}
+                            onCheckedChange={() => handleLanguageToggle(language)}
+                          />
+                          <label 
+                            htmlFor={language} 
+                            className="text-sm font-medium cursor-pointer flex-1"
+                          >
+                            {language}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-                          </TableCell>
-                            <User className="
-                          </TableCell>
-                            <div className="flex items-cen
-                              <div className="flex fle
-                                  {new Date(job.timestamp).toL
-                                
-                                
-                         
-                        </
-                    </Ta
-                </
+          {/* Queue Summary and Action */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Queue Summary</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="text-sm">
+                    <span className="font-medium">{selectedDocuments.length}</span> documents selected
+                  </p>
+                  <p className="text-sm">
+                    <span className="font-medium">{selectedLanguages.length}</span> languages selected
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Total jobs to create: <span className="font-medium">{selectedDocuments.length * selectedLanguages.length}</span>
+                  </p>
+                </div>
+                <Button 
+                  onClick={handleQueueTranslation}
+                  disabled={selectedDocuments.length === 0 || selectedLanguages.length === 0}
+                  className="flex items-center gap-2"
+                >
+                  <Queue className="h-4 w-4" />
+                  Queue for Translation
+                </Button>
+              </div>
             </CardContent>
-        </TabsConte
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="audit" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ClockCounterClockwise className="h-5 w-5" />
+                Translation Jobs Audit Trail
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Document</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Language</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Progress</TableHead>
+                      <TableHead>User</TableHead>
+                      <TableHead>Timestamp</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {translationJobs.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                          No translation jobs found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      translationJobs
+                        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+                        .map(job => (
+                          <TableRow key={job.id}>
+                            <TableCell className="font-medium">{job.documentName}</TableCell>
+                            <TableCell>
+                              <Badge variant="outline">{job.documentType}</Badge>
+                            </TableCell>
+                            <TableCell>{job.targetLanguages.join(', ')}</TableCell>
+                            <TableCell>{getStatusBadge(job.status)}</TableCell>
+                            <TableCell>
+                              <div className="flex items-center space-x-2">
+                                <div className="flex-1 bg-gray-200 rounded-full h-2">
+                                  <div 
+                                    className="bg-primary h-2 rounded-full transition-all duration-300"
+                                    style={{ width: `${job.progress}%` }}
+                                  ></div>
+                                </div>
+                                <span className="text-xs text-muted-foreground w-12">
+                                  {job.progress}%
+                                </span>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center space-x-2">
+                                <User className="h-4 w-4 text-muted-foreground" />
+                                <span className="text-sm">{job.username}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center space-x-2">
+                                <Calendar className="h-4 w-4 text-muted-foreground" />
+                                <div className="flex flex-col">
+                                  <span className="text-sm">
+                                    {new Date(job.timestamp).toLocaleDateString()}
+                                  </span>
+                                  <span className="text-xs text-muted-foreground">
+                                    {new Date(job.timestamp).toLocaleTimeString()}
+                                  </span>
+                                </div>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  )
+}
