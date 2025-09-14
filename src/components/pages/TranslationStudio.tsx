@@ -4,90 +4,86 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
+  Queue, rom '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import {
-  Queue, 
-  ClockCounterClockwise, 
+  Calendar
+lockwise, 
   FileText,
-  Calendar,
+  documenr,
   Translate,
   User,
   CheckCircle,
   CircleNotch
-} from '@phosphor-icons/react'
+  id: sns/react'
 
 interface TranslationJob {
   id: string
   documentName: string
-  documentType: 'EOC' | 'ANOC' | 'SB'
-  targetLanguages: string[]
-  status: 'queued' | 'in_progress' | 'completed'
+  { id: '3',C' | 'SB'
+]tLanguages: string[]
+const documentTypes = 
   username: string
   timestamp: string
-  progress: number
-}
+    id: 'job-1',r
+    documentName: '
 
 interface MockDocument {
   id: string
-  name: string
-  type: 'EOC' | 'ANOC' | 'SB'
+
   instance: string
   lastModified: string
-}
+  name: string
 
 const mockDocuments: MockDocument[] = [
-  { id: 'H1234', name: 'H1234 - Simplify HMO MAPD', type: 'EOC', instance: 'HMO MAPD', lastModified: '2024-01-15' },
   { id: 'H2231-PPO', name: 'H2231 - Simplify PPO', type: 'EOC', instance: 'PPO MAPD', lastModified: '2024-01-14' },
-  { id: 'H2231-DSNP', name: 'H2231 - Simplify Choice DSNP', type: 'SB', instance: 'DSNP', lastModified: '2024-01-13' },
-  { id: 'H4323', name: 'H4323 - Health Choice HMO', type: 'EOC', instance: 'HMO MAPD', lastModified: '2024-01-12' },
+}y Choice DSNP', type: 'SB', instance: 'DSNP', lastModified: '2024-01-13' },
+', instance: 'HMO MAPD', lastModified: '2024-01-12' },
   { id: 'H2121', name: 'H2121 - Care Plus HMO', type: 'EOC', instance: 'HMO MAPD', lastModified: '2024-01-11' }
 ]
-
+  { id: '2', name: 'ANOC Summary 2025', type: 'ANOC', instance: 'PPO MAPD', lastModified: '2024-01-10' },
 const documentTypes = ['EOC', 'ANOC', 'SB']
-const instances = ['HMO MAPD', 'PPO MAPD', 'PFFS', 'DSNP']
 const languages = ['Spanish', 'Chinese (Simplified)', 'Chinese (Traditional)', 'Vietnamese', 'Korean', 'Tagalog', 'Russian', 'Arabic', 'French', 'Portuguese']
 
 const sampleTranslationJobs: TranslationJob[] = [
   // H1234 - Simplify HMO MAPD translations
-  {
-    id: 'job-1',
-    documentName: 'H1234 - Simplify HMO MAPD',
-    documentType: 'EOC',
-    targetLanguages: ['Spanish'],
+const instances = ['HMO MAPD', 'PPO MAPD', 'PFFS']
+const languages = ['Spanish', 'Chinese (Simplified)', 'Chinese (Traditional)', 'Vietnamese', 'Korean', 'Tagalog', 'Russian', 'Arabic', 'French', 'Portuguese']
+
+export function TranslationStudio() {
+  const [activeTab, setActiveTab] = useState('queue')
     status: 'completed',
     username: 'john.doe',
     timestamp: '2024-01-13T10:30:00Z',
     progress: 100
   },
-  {
-    id: 'job-2',
-    documentName: 'H1234 - Simplify HMO MAPD',
-    documentType: 'EOC',
-    targetLanguages: ['Chinese (Simplified)'],
+  const [selectedDocuments, setSelectedDocuments] = useState<string[]>([])
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
+implify HMO MAPD',
+  const filteredDocuments = mockDocuments.filter(doc => {
+    if (selectedDocumentType && doc.type !== selectedDocumentType) return false
     status: 'in_progress',
     username: 'jane.smith',
-    timestamp: '2024-01-13T11:45:00Z',
+    ',
     progress: 75
   },
   {
-    id: 'job-3',
-    documentName: 'H1234 - Simplify HMO MAPD',
-    documentType: 'EOC',
+      prev.includes(documentId) 
+        ? prev.filter(id => id !== documentId)
+        : [...prev, documentId]
     targetLanguages: ['Tagalog'],
-    status: 'queued',
-    username: 'sarah.kim',
-    timestamp: '2024-01-12T09:20:00Z',
-    progress: 0
-  },
-  // H2231 - Simplify PPO translations
-  {
-    id: 'job-4',
+   
+
+  const handleLanguageToggle = (language: string) => {
+    setSelectedLanguages(prev => 
+      prev.includes(language) 
+        ? prev.filter(lang => lang !== language)
+        : [...prev, language]
+    )
     documentName: 'H2231 - Simplify PPO',
-    documentType: 'EOC',
-    targetLanguages: ['Spanish'],
-    status: 'completed',
+
+    timestamp: '2024-01-13T11:45:00Z',
+    if (selectedDocuments.length === 0 || selectedLanguages.length === 0) return
     username: 'maria.garcia',
     timestamp: '2024-01-14T08:15:00Z',
     progress: 100
@@ -109,11 +105,6 @@ const sampleTranslationJobs: TranslationJob[] = [
     targetLanguages: ['Korean'],
     status: 'queued',
     username: 'david.chen',
-    timestamp: '2024-01-14T14:20:00Z',
-    progress: 0
-  },
-  // H2231 - Simplify Choice DSNP translations
-  {
     id: 'job-7',
     documentName: 'H2231 - Simplify Choice DSNP',
     documentType: 'SB',
@@ -145,42 +136,42 @@ const sampleTranslationJobs: TranslationJob[] = [
   },
   // H4323 - Health Choice HMO translations
   {
-    id: 'job-10',
-    documentName: 'H4323 - Health Choice HMO',
-    documentType: 'EOC',
-    targetLanguages: ['Spanish'],
-    status: 'in_progress',
-    username: 'carlos.mendez',
-    timestamp: '2024-01-12T13:20:00Z',
-    progress: 85
-  },
-  {
-    id: 'job-11',
-    documentName: 'H4323 - Health Choice HMO',
-    documentType: 'EOC',
-    targetLanguages: ['Korean'],
-    status: 'completed',
-    username: 'jenny.park',
-    timestamp: '2024-01-11T15:45:00Z',
-    progress: 100
-  },
-  {
-    id: 'job-12',
-    documentName: 'H4323 - Health Choice HMO',
-    documentType: 'EOC',
-    targetLanguages: ['Russian'],
-    status: 'queued',
-    username: 'alexei.volkov',
-    timestamp: '2024-01-12T17:00:00Z',
-    progress: 0
-  },
-  // H2121 - Care Plus HMO translations
-  {
-    id: 'job-13',
-    documentName: 'H2121 - Care Plus HMO',
-    documentType: 'EOC',
-    targetLanguages: ['Spanish'],
-    status: 'completed',
+      const document = mockDocume
+      completed: 'Completed'
+     
+
+          in
+      <Badge variant="secondary" className={variants[status]}>
+          timestamp: new Date()
+        <span className="ml-1">{labels[status]}</span>
+      </Badge>
+    )
+
+
+  return (
+    <div className="p-6 max-w-7xl mx-auto">
+    setActiveTab('audit')
+        <Translate className="h-8 w-8 text-primary" />
+  const getSt
+          <h1 className="text-2xl font-bold text-foreground">Translation Studio</h1>
+          <p className="text-sm text-muted-foreground">Queue documents for translation and monitor progress</p>
+        </div>
+      case '
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="queue" className="flex items-center gap-2">
+            <Queue className="h-4 w-4" />
+            Queue Translation
+          </TabsTrigger>
+          <TabsTrigger value="audit" className="flex items-center gap-2">
+            <ClockCounterClockwise className="h-4 w-4" />
+      completed: 'Complete
+          </TabsTrigger>
+    return (
+
+        <TabsContent value="queue" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
     username: 'isabella.santos',
     timestamp: '2024-01-11T10:15:00Z',
     progress: 100
