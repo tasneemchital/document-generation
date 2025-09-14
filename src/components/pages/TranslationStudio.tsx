@@ -1,24 +1,23 @@
 import { useState } from 'react'
 import { useKV } from '@github/spark/hooks'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { 
+  Translate, 
+  Queue, 
+  CheckCircle, 
   ClockCounterClockwise, 
   CircleNotch,
   FileText,
-  User
-import { 
-interface Tra
-  documentType: 'EOC' | '
-  instance: str
-  username: st
-  target
-  FileText,
-  Calendar,
-  User
+  User,
+  Calendar
 } from '@phosphor-icons/react'
-import { cn } from '@/lib/utils'
 
 interface TranslationJob {
   id: string
@@ -30,38 +29,37 @@ interface TranslationJob {
   timestamp: string
   targetLanguages: string[]
   progress: number
- 
+}
 
-  })
-  const hand
-      prev.inc
-        : [...prev, documentI
-  }
-  const handleLanguage
- 
+interface MockDocument {
+  id: string
+  name: string
+  type: 'EOC' | 'ANOC' | 'SB'
+  instance: string
+  lastModified: string
+}
 
-  }
-  const handleQueueTranslation = as
+const mockDocuments: MockDocument[] = [
+  { id: '1', name: 'Medicare EOC 2025', type: 'EOC', instance: 'HMO MAPD', lastModified: '2024-01-15' },
+  { id: '2', name: 'ANOC Summary 2025', type: 'ANOC', instance: 'PPO MAPD', lastModified: '2024-01-10' },
+  { id: '3', name: 'Summary of Benefits 2025', type: 'SB', instance: 'HMO MAPD', lastModified: '2024-01-12' },
+  { id: '4', name: 'Medicare EOC Dental', type: 'EOC', instance: 'PPO MAPD', lastModified: '2024-01-08' }
+]
 
-    const user = await spark.user()
-    const newJobs: TranslationJob[] = []
-    // Create a separate job for each document-language combination
-      const document = mockDocuments.find(d => d.id === docId)!
- 
+const documentTypes = ['EOC', 'ANOC', 'SB']
+const instances = ['HMO MAPD', 'PPO MAPD', 'PFFS']
+const languages = ['Spanish', 'Chinese (Simplified)', 'Chinese (Traditional)', 'Vietnamese', 'Korean', 'Tagalog', 'Russian', 'Arabic', 'French', 'Portuguese']
 
-          documentName: document.name
-          status: 'queued' as const,
-          timestamp: new Date().toISOString(),
-          progress: 0
-      })
+export function TranslationStudio() {
+  const [activeTab, setActiveTab] = useState('queue')
+  const [translationJobs, setTranslationJobs] = useKV<TranslationJob[]>('translation-jobs', [])
+  
+  // Queue form state
+  const [selectedDocumentType, setSelectedDocumentType] = useState('')
+  const [selectedInstance, setSelectedInstance] = useState('')
+  const [selectedDocuments, setSelectedDocuments] = useState<string[]>([])
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
 
-    
-
-    setActiveTab('audit')
-
-    switch (status) {
-
-        return <CircleNotch className="h-
   const filteredDocuments = mockDocuments.filter(doc => {
     if (selectedDocumentType && doc.type !== selectedDocumentType) return false
     if (selectedInstance && doc.instance !== selectedInstance) return false
@@ -90,19 +88,24 @@ interface TranslationJob {
     // Get current user info
     const user = await spark.user()
     
-    const newJobs: TranslationJob[] = selectedDocuments.map(docId => {
+    const newJobs: TranslationJob[] = []
+    
+    // Create a separate job for each document-language combination
+    selectedDocuments.forEach(docId => {
       const document = mockDocuments.find(d => d.id === docId)!
-      return {
-        id: `job-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        documentType: document.type,
-        documentName: document.name,
-        instance: document.instance,
-        status: 'queued' as const,
-        username: user.login,
-        timestamp: new Date().toISOString(),
-        targetLanguages: [...selectedLanguages],
-        progress: 0
-      }
+      selectedLanguages.forEach(language => {
+        newJobs.push({
+          id: `job-${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${docId}-${language}`,
+          documentType: document.type,
+          documentName: document.name,
+          instance: document.instance,
+          status: 'queued' as const,
+          username: user.login,
+          timestamp: new Date().toISOString(),
+          targetLanguages: [language],
+          progress: 0
+        })
+      })
     })
 
     setTranslationJobs(current => [...current, ...newJobs])
@@ -142,7 +145,7 @@ interface TranslationJob {
         {getStatusIcon(status)}
         <span className="ml-1">{labels[status]}</span>
       </Badge>
-     
+    )
   }
 
   return (
@@ -160,7 +163,7 @@ interface TranslationJob {
           <TabsTrigger value="queue" className="flex items-center gap-2">
             <Queue className="h-4 w-4" />
             Queue Translation
-                        
+          </TabsTrigger>
           <TabsTrigger value="audit" className="flex items-center gap-2">
             <ClockCounterClockwise className="h-4 w-4" />
             Audit & Status
@@ -170,27 +173,27 @@ interface TranslationJob {
         <TabsContent value="queue" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Document Selection */}
-                </
+            <Card>
               <CardHeader>
-                <div className="space-y-2">
+                <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />
                   Document Selection
                 </CardTitle>
-                          <
+              </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Document Type</label>
                     <Select value={selectedDocumentType} onValueChange={setSelectedDocumentType}>
-                            {language
+                      <SelectTrigger>
                         <SelectValue placeholder="Select type" />
-                      ))}
+                      </SelectTrigger>
                       <SelectContent>
                         {documentTypes.map(type => (
                           <SelectItem key={type} value={type}>{type}</SelectItem>
-                  <div clas
+                        ))}
                       </SelectContent>
-                      {select
+                    </Select>
                   </div>
                   
                   <div className="space-y-2">
@@ -202,7 +205,7 @@ interface TranslationJob {
                       <SelectContent>
                         {instances.map(instance => (
                           <SelectItem key={instance} value={instance}>{instance}</SelectItem>
-              <CardContent 
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -228,21 +231,21 @@ interface TranslationJob {
                               <label 
                                 htmlFor={doc.id} 
                                 className="text-sm font-medium cursor-pointer block"
-                  </p>
+                              >
                                 {doc.name}
                               </label>
                               <p className="text-xs text-muted-foreground">
                                 Last modified: {doc.lastModified}
                               </p>
-                        <TableHead
+                            </div>
                           </div>
                         ))}
                       </div>
-                      
+                    )}
                   </div>
-                      
+                </div>
               </CardContent>
-                   
+            </Card>
 
             {/* Language Selection */}
             <Card>
@@ -250,13 +253,13 @@ interface TranslationJob {
                 <CardTitle className="flex items-center gap-2">
                   <Translate className="h-5 w-5" />
                   Target Languages
-                            
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Select Languages for Translation</label>
                   <div className="border rounded-md p-3 max-h-64 overflow-y-auto">
-                            <Calendar className="h-4 w-4 tex
+                    <div className="space-y-2">
                       {languages.map(language => (
                         <div key={language} className="flex items-center space-x-2 p-2 rounded hover:bg-muted/50">
                           <Checkbox
@@ -282,7 +285,7 @@ interface TranslationJob {
                     <div className="flex flex-wrap gap-2">
                       {selectedLanguages.map(lang => (
                         <Badge key={lang} variant="secondary">
-
+                          {lang}
                         </Badge>
                       ))}
                     </div>
@@ -294,13 +297,13 @@ interface TranslationJob {
 
           {/* Queue Summary & Action */}
           {(selectedDocuments.length > 0 || selectedLanguages.length > 0) && (
-
+            <Card>
               <CardHeader>
-
+                <CardTitle>Queue Summary</CardTitle>
               </CardHeader>
-
+              <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4 text-sm">
-
+                  <div>
                     <span className="font-medium">Documents selected:</span>
                     <span className="ml-2 text-muted-foreground">{selectedDocuments.length}</span>
                   </div>
@@ -314,21 +317,21 @@ interface TranslationJob {
                   onClick={handleQueueTranslation}
                   disabled={selectedDocuments.length === 0 || selectedLanguages.length === 0}
                   className="w-full"
-
+                >
                   Queue {selectedDocuments.length * selectedLanguages.length} Translation Jobs
-
+                </Button>
               </CardContent>
-
+            </Card>
           )}
-
+        </TabsContent>
 
         <TabsContent value="audit" className="space-y-6">
           <Card>
-
+            <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <ClockCounterClockwise className="h-5 w-5" />
                 Translation Jobs Audit
-
+              </CardTitle>
             </CardHeader>
             <CardContent>
               {translationJobs.length === 0 ? (
@@ -338,7 +341,7 @@ interface TranslationJob {
                   <p className="text-sm text-muted-foreground mt-1">
                     Queue some documents for translation to see them here
                   </p>
-
+                </div>
               ) : (
                 <div className="overflow-x-auto">
                   <Table>
@@ -346,8 +349,8 @@ interface TranslationJob {
                       <TableRow>
                         <TableHead>Document</TableHead>
                         <TableHead>Type</TableHead>
-
-                        <TableHead>Languages</TableHead>
+                        <TableHead>Instance</TableHead>
+                        <TableHead>Language</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Progress</TableHead>
                         <TableHead>User</TableHead>
@@ -356,33 +359,24 @@ interface TranslationJob {
                     </TableHeader>
                     <TableBody>
                       {translationJobs.map(job => (
-
+                        <TableRow key={job.id}>
                           <TableCell className="font-medium">{job.documentName}</TableCell>
-
+                          <TableCell>
                             <Badge variant="outline">{job.documentType}</Badge>
-
-                          <TableCell>{job.instance}</TableCell>
-
-                            <div className="flex flex-wrap gap-1">
-
-                                <Badge key={lang} variant="secondary" className="text-xs">
-                                  {lang.split(' ')[0]}
-                                </Badge>
-
-                              {job.targetLanguages.length > 2 && (
-                                <Badge variant="secondary" className="text-xs">
-                                  +{job.targetLanguages.length - 2}
-                                </Badge>
-                              )}
-
                           </TableCell>
-
+                          <TableCell>{job.instance}</TableCell>
+                          <TableCell>
+                            <Badge variant="secondary" className="text-xs">
+                              {job.targetLanguages[0]}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{getStatusBadge(job.status)}</TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
                               <Progress value={job.progress} className="w-16 h-2" />
                               <span className="text-xs text-muted-foreground">{job.progress}%</span>
                             </div>
-
+                          </TableCell>
                           <TableCell className="flex items-center gap-2">
                             <User className="h-4 w-4 text-muted-foreground" />
                             {job.username}
@@ -392,15 +386,15 @@ interface TranslationJob {
                             {new Date(job.timestamp).toLocaleDateString()}
                           </TableCell>
                         </TableRow>
-
+                      ))}
                     </TableBody>
-
+                  </Table>
                 </div>
-
+              )}
             </CardContent>
-
+          </Card>
         </TabsContent>
-
+      </Tabs>
     </div>
-
+  )
 }
