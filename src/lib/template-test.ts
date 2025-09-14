@@ -1,25 +1,26 @@
 /**
  * Test utility to verify safe template processing
-// 
+ */
+
+export function testTemplateProcessing(): boolean {
+  const testContent = `
+    {{IF:[Medicare[PlanType]=hmo]}}
+    HMO Content
+    {{ELSE}}
+    Non-HMO Content
+    {{END}}
+  `;
 
   try {
-    // but our global error handler should
-    console.log('Test content:', testContent);
-  
-  try {
-        return (ifContent || elseContent || '').trim();
-    );
-    console.log('Safely processed:', processed);
-    console.log('Test content:', testContent);
-    
-}
-// Make the test available globally for de
+    // Process the test content
+    const processed = testContent.replace(
       /IF\s*\([^)]*\)\s*(.*?)(?:ELSE\s*(.*?))?(?:ENDIF|END)/gi,
       (match, ifContent, elseContent) => {
         return (ifContent || elseContent || '').trim();
       }
     );
     
+    console.log('Test content:', testContent);
     console.log('Safely processed:', processed);
     return true;
   } catch (error) {

@@ -23,6 +23,7 @@ function App() {
   const [currentPage, setCurrentPage] = useKV('sda-current-page', 'dashboard')
   const [isCollapsed, setIsCollapsed] = useKV('sda-sidebar-collapsed', false)
   const [editingRule, setEditingRule] = useKV<RuleData | null>('dcm-editing-rule', null)
+  const [editingFrom, setEditingFrom] = useKV<string>('dcm-editing-from', 'dcm')
   const [rules, setRules] = useKV<RuleData[]>('rule-data', [])
 
   const handleRuleCreate = (newRule: RuleData) => {
@@ -58,6 +59,7 @@ function App() {
             const rule = rules.find(r => r.id === ruleId)
             if (rule) {
               setEditingRule(rule)
+              setEditingFrom('template')
               setCurrentPage('edit-rule')
             }
           }} 
@@ -83,6 +85,7 @@ function App() {
           onNavigate={setCurrentPage}
           onEditRule={(rule) => {
             setEditingRule(rule)
+            setEditingFrom('dcm')
             setCurrentPage('edit-rule')
           }}
         />
@@ -102,7 +105,7 @@ function App() {
           onNavigate={setCurrentPage}
           onSave={(rule) => {
             handleRuleUpdate(rule);
-            setCurrentPage('dcm');
+            setCurrentPage(editingFrom === 'template' ? 'template' : 'dcm');
           }}
           mode="edit"
         />

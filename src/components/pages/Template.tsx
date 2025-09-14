@@ -23,7 +23,6 @@ import {
   X,
   Check
 } from '@phosphor-icons/react'
-import { DCMEditPage } from './DCMEditPage'
 import { RuleData } from '@/lib/types'
 
 interface TemplateProps {
@@ -57,8 +56,6 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
   const [templateContents, setTemplateContents] = useKV<Record<string, string>>('template-contents', {})
   const [showCMLDialog, setShowCMLDialog] = useState(false)
   const [selectedRule, setSelectedRule] = useState<RuleData | null>(null)
-  const [showEditRuleDialog, setShowEditRuleDialog] = useState(false)
-  const [editingRule, setEditingRule] = useState<RuleData | null>(null)
   const [isModified, setIsModified] = useState(false)
   const editorRef = useRef<HTMLTextAreaElement>(null)
 
@@ -139,9 +136,8 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
     if (ruleMatch) {
       const ruleId = ruleMatch[1]
       const rule = rules.find(r => r.id === ruleId)
-      if (rule) {
-        setEditingRule(rule)
-        setShowEditRuleDialog(true)
+      if (rule && onEditRule) {
+        onEditRule(ruleId)
         return
       }
     }
@@ -184,9 +180,8 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
       
       if (ruleEndLine !== -1) {
         const rule = rules.find(r => r.id === foundRuleId)
-        if (rule) {
-          setEditingRule(rule)
-          setShowEditRuleDialog(true)
+        if (rule && onEditRule) {
+          onEditRule(foundRuleId)
           return
         }
       }
@@ -216,8 +211,6 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
     )
     setEditorContent(updatedContent)
     setIsModified(true)
-    setShowEditRuleDialog(false)
-    setEditingRule(null)
   }
 
   // Convert rule chunks to styled format for display
@@ -230,6 +223,28 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
       // For now, we'll use the basic textarea with rule markers
     }
   }, [editorContent])
+
+  // Update template content when rules change (e.g., returning from edit screen)
+  useEffect(() => {
+    // Check if any rule content needs updating in the editor
+    let updatedContent = editorContent
+    let hasChanges = false
+
+    rules.forEach(rule => {
+      const rulePattern = new RegExp(`\\[RULE-${rule.id}\\].*?\\[/RULE-${rule.id}\\]`, 'g')
+      const expectedContent = `[RULE-${rule.id}]${rule.description}[/RULE-${rule.id}]`
+      
+      if (updatedContent.includes(`[RULE-${rule.id}]`) && !updatedContent.includes(expectedContent)) {
+        updatedContent = updatedContent.replace(rulePattern, expectedContent)
+        hasChanges = true
+      }
+    })
+
+    if (hasChanges) {
+      setEditorContent(updatedContent)
+      setIsModified(true)
+    }
+  }, [rules, editorContent])
 
   return (
     <div className="h-full flex flex-col bg-background">
@@ -472,26 +487,6 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
                 Insert
               </Button>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Rule Dialog */}
-      <Dialog open={showEditRuleDialog} onOpenChange={setShowEditRuleDialog}>
-        <DialogContent className="max-w-[98vw] w-[98vw] max-h-[96vh] h-[96vh] p-0 overflow-hidden">
-          <div className="h-full w-full overflow-hidden">
-            {editingRule && (
-              <div className="h-full w-full">
-                <DCMEditPage
-                  rule={editingRule}
-                  onNavigate={() => setShowEditRuleDialog(false)}
-                  onSave={(updatedRule) => {
-                    handleUpdateRule(updatedRule)
-                  }}
-                  mode="edit"
-                />
-              </div>
-            )}
           </div>
         </DialogContent>
       </Dialog>
