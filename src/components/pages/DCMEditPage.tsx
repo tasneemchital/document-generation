@@ -766,7 +766,7 @@ ENDIF`;
       </div>
 
       {/* Main Content */}
-      <div className="p-10 max-w-[90%] mx-auto min-w-[800px]">
+      <div className="p-6 w-full min-w-[800px]">
         {/* Rule Information Section */}
         <Card className="mb-10 shadow-sm">
           <CardHeader className="pb-6">
@@ -1337,7 +1337,7 @@ ENDIF`;
                   placeholder={getEditorPlaceholder()}
                   value={getSelectedLanguageContent()}
                   onChange={(e) => handleLanguageContentChange(e.target.value)}
-                  className="min-h-[400px] font-mono text-sm"
+                  className="min-h-[600px] font-mono text-sm"
                 />
               </div>
 
@@ -1373,7 +1373,7 @@ ENDIF`;
                       </span>
                     </div>
                   </div>
-                  <div className="p-6 min-h-[380px]">
+                  <div className="p-6 min-h-[580px]">
                     {renderPhrasedContent(getSelectedLanguageContent(), selectedPlan)}
                   </div>
                 </div>
