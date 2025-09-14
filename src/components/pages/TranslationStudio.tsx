@@ -28,7 +28,7 @@ interface TranslationJob {
   status: 'queued' | 'in_progress' | 'completed'
   username: string
   timestamp: string
-  targetLanguages: string[]
+  targetLanguage: string
   progress: number
 }
 
@@ -90,19 +90,25 @@ export function TranslationStudio() {
     // Get current user info
     const user = await spark.user()
     
-    const newJobs: TranslationJob[] = selectedDocuments.map(docId => {
+    const newJobs: TranslationJob[] = []
+    
+    // Create a separate job for each document-language combination
+    selectedDocuments.forEach(docId => {
       const document = mockDocuments.find(d => d.id === docId)!
-      return {
-        id: `job-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        documentType: document.type,
-        documentName: document.name,
-        instance: document.instance,
-        status: 'queued' as const,
-        username: user.login,
-        timestamp: new Date().toISOString(),
-        targetLanguages: [...selectedLanguages],
-        progress: 0
-      }
+      
+      selectedLanguages.forEach(language => {
+        newJobs.push({
+          id: `job-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          documentType: document.type,
+          documentName: document.name,
+          instance: document.instance,
+          status: 'queued' as const,
+          username: user.login,
+          timestamp: new Date().toISOString(),
+          targetLanguage: language,
+          progress: 0
+        })
+      })
     })
 
     setTranslationJobs(current => [...current, ...newJobs])
@@ -347,7 +353,7 @@ export function TranslationStudio() {
                         <TableHead>Document</TableHead>
                         <TableHead>Type</TableHead>
                         <TableHead>Instance</TableHead>
-                        <TableHead>Languages</TableHead>
+                        <TableHead>Language</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Progress</TableHead>
                         <TableHead>User</TableHead>
@@ -363,18 +369,9 @@ export function TranslationStudio() {
                           </TableCell>
                           <TableCell>{job.instance}</TableCell>
                           <TableCell>
-                            <div className="flex flex-wrap gap-1">
-                              {job.targetLanguages.slice(0, 2).map(lang => (
-                                <Badge key={lang} variant="secondary" className="text-xs">
-                                  {lang.split(' ')[0]}
-                                </Badge>
-                              ))}
-                              {job.targetLanguages.length > 2 && (
-                                <Badge variant="secondary" className="text-xs">
-                                  +{job.targetLanguages.length - 2}
-                                </Badge>
-                              )}
-                            </div>
+                            <Badge variant="secondary" className="text-sm">
+                              {job.targetLanguage}
+                            </Badge>
                           </TableCell>
                           <TableCell>{getStatusBadge(job.status)}</TableCell>
                           <TableCell>
