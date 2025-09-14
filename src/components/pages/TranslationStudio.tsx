@@ -56,20 +56,20 @@ const sampleTranslationJobs: TranslationJob[] = [
     documentName: 'H4323 - Health Choice HMO',
     documentType: 'EOC',
     targetLanguages: ['Spanish'],
-    status: 'queued',
+    status: 'completed',
     username: 'tasneemchital',
     timestamp: '2024-09-14T11:49:40.000Z',
-    progress: 0
+    progress: 100
   },
   {
     id: 'job-2',
     documentName: 'H4323 - Health Choice HMO',
     documentType: 'EOC',
     targetLanguages: ['Vietnamese'],
-    status: 'queued',
+    status: 'in_progress',
     username: 'tasneemchital',
     timestamp: '2024-09-14T11:49:40.000Z',
-    progress: 0
+    progress: 45
   },
   // Medicare EOC 2025 translations
   {
@@ -98,20 +98,20 @@ const sampleTranslationJobs: TranslationJob[] = [
     documentName: 'ANOC Summary 2025',
     documentType: 'ANOC',
     targetLanguages: ['Spanish'],
-    status: 'in_progress',
+    status: 'completed',
     username: 'tasneemchital',
     timestamp: '2024-09-14T11:40:24.000Z',
-    progress: 68
+    progress: 100
   },
   {
     id: 'job-6',
     documentName: 'ANOC Summary 2025',
     documentType: 'ANOC',
     targetLanguages: ['Chinese (Simplified)'],
-    status: 'queued',
+    status: 'in_progress',
     username: 'tasneemchital',
     timestamp: '2024-09-14T11:40:24.000Z',
-    progress: 0
+    progress: 78
   },
   // Summary of Benefits 2025 translations
   {
@@ -165,6 +165,49 @@ const sampleTranslationJobs: TranslationJob[] = [
     username: 'tasneemchital',
     timestamp: '2024-09-14T11:32:54.000Z',
     progress: 0
+  },
+  // H1234 - Simplify HMO MAPD translations
+  {
+    id: 'job-12',
+    documentName: 'H1234 - Simplify HMO MAPD',
+    documentType: 'EOC',
+    targetLanguages: ['Spanish'],
+    status: 'completed',
+    username: 'tasneemchital',
+    timestamp: '2024-09-13T14:22:15.000Z',
+    progress: 100
+  },
+  {
+    id: 'job-13',
+    documentName: 'H1234 - Simplify HMO MAPD',
+    documentType: 'EOC',
+    targetLanguages: ['Vietnamese'],
+    status: 'in_progress',
+    username: 'tasneemchital',
+    timestamp: '2024-09-13T14:22:15.000Z',
+    progress: 65
+  },
+  // H2231 - Simplify PPO translations
+  {
+    id: 'job-14',
+    documentName: 'H2231 - Simplify PPO',
+    documentType: 'EOC',
+    targetLanguages: ['Chinese (Traditional)'],
+    status: 'queued',
+    username: 'tasneemchital',
+    timestamp: '2024-09-13T10:15:30.000Z',
+    progress: 0
+  },
+  // H2121 - Care Plus HMO translations
+  {
+    id: 'job-15',
+    documentName: 'H2121 - Care Plus HMO',
+    documentType: 'EOC',
+    targetLanguages: ['Korean'],
+    status: 'completed',
+    username: 'tasneemchital',
+    timestamp: '2024-09-12T16:45:22.000Z',
+    progress: 100
   }
 ]
 
