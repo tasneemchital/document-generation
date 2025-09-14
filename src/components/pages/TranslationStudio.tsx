@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useKV } from '@github/spark/hooks'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -213,7 +213,13 @@ const sampleTranslationJobs: TranslationJob[] = [
 
 export function TranslationStudio() {
   const [activeTab, setActiveTab] = useState('queue')
-  const [translationJobs, setTranslationJobs] = useKV<TranslationJob[]>('translation-jobs', sampleTranslationJobs)
+  const [translationJobs, setTranslationJobs] = useKV<TranslationJob[]>('translation-jobs', [])
+  
+  // Initialize with sample data if empty or force refresh
+  useEffect(() => {
+    // Always reset to show mixed statuses
+    setTranslationJobs(sampleTranslationJobs)
+  }, [setTranslationJobs])
   
   // Queue form state
   const [selectedDocumentType, setSelectedDocumentType] = useState('')
@@ -474,11 +480,19 @@ export function TranslationStudio() {
 
         <TabsContent value="audit" className="space-y-6">
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
               <CardTitle className="flex items-center gap-2">
                 <ClockCounterClockwise className="h-5 w-5" />
                 Translation Jobs Audit Trail
               </CardTitle>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setTranslationJobs(sampleTranslationJobs)}
+                className="text-xs"
+              >
+                Refresh Data
+              </Button>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
