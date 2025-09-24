@@ -5508,7 +5508,6 @@ export function Generate() {
 
 export function MasterList() {
   const [searchTerm, setSearchTerm] = useState('')
-  const [layoutView, setLayoutView] = useKV('masterlist-layout-view', 'grid')
   const [selectedMasterList, setSelectedMasterList] = useState<any>(null)
 
   // Master Lists organized by categories
@@ -5815,36 +5814,6 @@ export function MasterList() {
               </Button>
             )}
           </div>
-          
-          <div className="flex items-center border rounded-lg p-1 bg-muted/30">
-            <Button
-              variant={layoutView === 'grid' ? 'default' : 'ghost'}
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={() => setLayoutView('grid')}
-              title="Grid View"
-            >
-              <div className="grid grid-cols-2 gap-0.5 w-3 h-3">
-                <div className="bg-current w-1 h-1 rounded-[1px]"></div>
-                <div className="bg-current w-1 h-1 rounded-[1px]"></div>
-                <div className="bg-current w-1 h-1 rounded-[1px]"></div>
-                <div className="bg-current w-1 h-1 rounded-[1px]"></div>
-              </div>
-            </Button>
-            <Button
-              variant={layoutView === 'list' ? 'default' : 'ghost'}
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={() => setLayoutView('list')}
-              title="List View"
-            >
-              <div className="space-y-1">
-                <div className="bg-current w-3 h-0.5 rounded"></div>
-                <div className="bg-current w-3 h-0.5 rounded"></div>
-                <div className="bg-current w-3 h-0.5 rounded"></div>
-              </div>
-            </Button>
-          </div>
         </div>
       </div>
 
@@ -5867,93 +5836,54 @@ export function MasterList() {
         </div>
       )}
 
-      <div className="space-y-8">
+      <div className="space-y-6">
         {filteredCategories.map((category) => (
-          <div key={category.id} className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="text-2xl">{category.icon}</div>
-              <div>
-                <h2 className="text-xl font-semibold text-foreground">{category.title}</h2>
-                <p className="text-sm text-muted-foreground">{category.description}</p>
+          <Card key={category.id} className={`transition-all duration-200 hover:shadow-md ${category.color}`}>
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="text-2xl">{category.icon}</div>
+                <div className="flex-1">
+                  <CardTitle className="text-xl font-semibold text-foreground">{category.title}</CardTitle>
+                  <CardDescription className="text-sm text-muted-foreground mt-1">{category.description}</CardDescription>
+                </div>
+                <Badge variant="outline" className="font-mono text-sm">
+                  {category.masterlists.length} lists
+                </Badge>
               </div>
-              <Badge variant="outline" className="ml-auto">
-                {category.masterlists.length} lists
-              </Badge>
-            </div>
-
-            {layoutView === 'grid' ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="space-y-3">
                 {category.masterlists.map((masterlist) => (
-                  <Card 
-                    key={masterlist.id} 
-                    className={`cursor-pointer transition-all duration-200 hover:shadow-md ${category.color}`}
+                  <div
+                    key={masterlist.id}
+                    className="flex items-center justify-between p-4 rounded-lg border border-gray-200 hover:border-gray-300 cursor-pointer transition-all duration-200 hover:bg-gray-50/50"
                     onClick={() => setSelectedMasterList(masterlist)}
                   >
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <CardTitle className="text-base font-semibold text-foreground">
-                          {masterlist.name}
-                        </CardTitle>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h4 className="font-medium text-foreground text-sm">{masterlist.name}</h4>
                         <Badge className={`text-xs font-medium ${getStatusColor(masterlist.status)}`}>
                           {masterlist.status}
                         </Badge>
                       </div>
-                      <CardDescription className="text-sm text-muted-foreground line-clamp-2">
-                        {masterlist.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground mb-2 line-clamp-1">{masterlist.description}</p>
+                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
-                          <FileText size={14} />
+                          <FileText size={12} />
                           {masterlist.records.toLocaleString()} records
                         </span>
                         <span className="flex items-center gap-1">
-                          <Clock size={14} />
+                          <Clock size={12} />
                           {masterlist.lastModified}
                         </span>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                    <CaretRight size={16} className="text-muted-foreground flex-shrink-0 ml-3" />
+                  </div>
                 ))}
               </div>
-            ) : (
-              <div className="space-y-2">
-                {category.masterlists.map((masterlist) => (
-                  <Card 
-                    key={masterlist.id}
-                    className={`cursor-pointer transition-all duration-200 hover:shadow-sm ${category.color}`}
-                    onClick={() => setSelectedMasterList(masterlist)}
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-semibold text-foreground">{masterlist.name}</h3>
-                            <Badge className={`text-xs font-medium ${getStatusColor(masterlist.status)}`}>
-                              {masterlist.status}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-2">{masterlist.description}</p>
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <FileText size={14} />
-                              {masterlist.records.toLocaleString()} records
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Clock size={14} />
-                              Last modified: {masterlist.lastModified}
-                            </span>
-                          </div>
-                        </div>
-                        <CaretRight size={20} className="text-muted-foreground" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
