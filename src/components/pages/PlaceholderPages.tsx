@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { FileText, Clock, BarChart3, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus, ArrowsIn, Minus, Copy, Upload, Resize } from "@phosphor-icons/react"
+import { FileText, Clock, BarChart3, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus } from "@phosphor-icons/react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -5758,57 +5758,18 @@ export function MasterList() {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle>Master List Data</CardTitle>
-                <div className="flex items-center gap-4 mt-2">
-                  <p className="text-sm text-muted-foreground">
-                    {selectedMasterList.records} total records
-                  </p>
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="text-muted-foreground">Effective Date:</span>
-                    <span className="font-medium">1/1/2026</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="text-muted-foreground">Version No.:</span>
-                    <span className="font-medium">2026_14.0</span>
-                  </div>
-                </div>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {selectedMasterList.records} total records
+                </p>
               </div>
-              <div className="flex items-center gap-1">
-                {/* Action buttons toolbar */}
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Word wrap">
-                  <ArrowsIn size={14} />
-                </Button>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Add rows">
-                  <Plus size={14} />
-                </Button>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Remove rows">
-                  <Minus size={14} />
-                </Button>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Copy rows">
-                  <Copy size={14} />
-                </Button>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Clear filter">
-                  <Funnel size={14} />
-                </Button>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="View">
-                  <Eye size={14} />
-                </Button>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Download to Excel">
-                  <Download size={14} />
-                </Button>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Upload to Excel">
-                  <Upload size={14} />
-                </Button>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Refresh">
-                  <ArrowClockwise size={14} />
-                </Button>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Full screen">
-                  <Resize size={14} />
-                </Button>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Settings">
-                  <Gear size={14} />
-                </Button>
+              <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm">
-                  Save
+                  <Download className="w-4 h-4 mr-2" />
+                  Export
+                </Button>
+                <Button size="sm">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Record
                 </Button>
               </div>
             </div>
@@ -5823,8 +5784,6 @@ export function MasterList() {
                     <TableHead>Code</TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Effective Date</TableHead>
-                    <TableHead>Version</TableHead>
                     <TableHead>Last Modified</TableHead>
                     <TableHead>Modified By</TableHead>
                   </TableRow>
@@ -5843,8 +5802,6 @@ export function MasterList() {
                           {record.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-sm font-mono">{record.effectiveDate}</TableCell>
-                      <TableCell className="text-sm font-mono">{record.version}</TableCell>
                       <TableCell className="text-sm">{record.lastModified}</TableCell>
                       <TableCell className="text-sm">{record.modifiedBy}</TableCell>
                     </TableRow>
