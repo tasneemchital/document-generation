@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { FileText, Clock, BarChart3, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus } from "@phosphor-icons/react"
+import { FileText, Clock, BarChart3, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus, ArrowsIn, Minus, Copy, Upload, Resize } from "@phosphor-icons/react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -5772,17 +5772,43 @@ export function MasterList() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm">
-                  <Download className="w-4 h-4 mr-2" />
-                  Export
+              <div className="flex items-center gap-1">
+                {/* Action buttons toolbar */}
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Word wrap">
+                  <ArrowsIn size={14} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Add rows">
+                  <Plus size={14} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Remove rows">
+                  <Minus size={14} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Copy rows">
+                  <Copy size={14} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Clear filter">
+                  <Funnel size={14} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="View">
+                  <Eye size={14} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Download to Excel">
+                  <Download size={14} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Upload to Excel">
+                  <Upload size={14} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Refresh">
+                  <ArrowClockwise size={14} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Full screen">
+                  <Resize size={14} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Settings">
+                  <Gear size={14} />
                 </Button>
                 <Button variant="outline" size="sm">
                   Save
-                </Button>
-                <Button size="sm">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Record
                 </Button>
               </div>
             </div>
