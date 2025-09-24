@@ -5550,6 +5550,62 @@ export function MasterList() {
           lastModified: '2025-01-08',
           records: 156,
           status: 'Active'
+        },
+        {
+          id: 'drug-utilization',
+          name: 'Drug Utilization Management',
+          description: 'Prior authorization and step therapy rules',
+          lastModified: '2025-01-07',
+          records: 289,
+          status: 'Active'
+        },
+        {
+          id: 'specialty-pharmacy',
+          name: 'Specialty Pharmacy Network',
+          description: 'Specialty drug distribution and network rules',
+          lastModified: '2025-01-06',
+          records: 67,
+          status: 'Draft'
+        },
+        {
+          id: 'quantity-limits',
+          name: 'Quantity Limits',
+          description: 'Drug quantity limits and dispensing restrictions',
+          lastModified: '2025-01-05',
+          records: 178,
+          status: 'Active'
+        },
+        {
+          id: 'dosage-forms',
+          name: 'Dosage Forms',
+          description: 'Available dosage forms and administration methods',
+          lastModified: '2025-01-04',
+          records: 445,
+          status: 'Active'
+        },
+        {
+          id: 'generic-substitution',
+          name: 'Generic Substitution Rules',
+          description: 'Rules for generic drug substitution policies',
+          lastModified: '2025-01-03',
+          records: 123,
+          status: 'Active'
+        },
+        {
+          id: 'medication-therapy',
+          name: 'Medication Therapy Management',
+          description: 'MTM program rules and eligibility criteria',
+          lastModified: '2025-01-02',
+          records: 89,
+          status: 'Draft'
+        },
+        {
+          id: 'pharmacy-network',
+          name: 'Pharmacy Network Tiers',
+          description: 'Preferred and standard pharmacy network tiers',
+          lastModified: '2024-12-30',
+          records: 234,
+          status: 'Active'
         }
       ]
     },
@@ -5599,6 +5655,62 @@ export function MasterList() {
           lastModified: '2025-01-06',
           records: 234,
           status: 'Active'
+        },
+        {
+          id: 'workflow-mapping',
+          name: 'Workflow Mapping',
+          description: 'Business process workflow configurations',
+          lastModified: '2025-01-05',
+          records: 167,
+          status: 'Active'
+        },
+        {
+          id: 'error-handling',
+          name: 'Error Handling Rules',
+          description: 'System error handling and retry configurations',
+          lastModified: '2025-01-04',
+          records: 98,
+          status: 'Active'
+        },
+        {
+          id: 'validation-rules',
+          name: 'Data Validation Rules',
+          description: 'Business rules for data validation and cleansing',
+          lastModified: '2025-01-03',
+          records: 356,
+          status: 'Active'
+        },
+        {
+          id: 'lookup-tables',
+          name: 'Lookup Tables',
+          description: 'Reference data lookup tables and code mappings',
+          lastModified: '2025-01-02',
+          records: 512,
+          status: 'Active'
+        },
+        {
+          id: 'interface-configs',
+          name: 'Interface Configurations',
+          description: 'System interface configurations and protocols',
+          lastModified: '2025-01-01',
+          records: 145,
+          status: 'Draft'
+        },
+        {
+          id: 'batch-processing',
+          name: 'Batch Processing Rules',
+          description: 'Batch job configurations and processing rules',
+          lastModified: '2024-12-31',
+          records: 78,
+          status: 'Active'
+        },
+        {
+          id: 'real-time-sync',
+          name: 'Real-time Sync Configuration',
+          description: 'Real-time data synchronization settings',
+          lastModified: '2024-12-30',
+          records: 134,
+          status: 'Active'
         }
       ]
     },
@@ -5640,6 +5752,78 @@ export function MasterList() {
           lastModified: '2025-01-08',
           records: 45,
           status: 'Active'
+        },
+        {
+          id: 'audit-specifications',
+          name: 'Audit Specifications',
+          description: 'Audit trail and logging specifications',
+          lastModified: '2025-01-07',
+          records: 189,
+          status: 'Active'
+        },
+        {
+          id: 'performance-specs',
+          name: 'Performance Specifications',
+          description: 'System performance requirements and benchmarks',
+          lastModified: '2025-01-06',
+          records: 123,
+          status: 'Active'
+        },
+        {
+          id: 'accessibility-compliance',
+          name: 'Accessibility Compliance',
+          description: '508 compliance and accessibility requirements',
+          lastModified: '2025-01-05',
+          records: 76,
+          status: 'Active'
+        },
+        {
+          id: 'data-retention',
+          name: 'Data Retention Policies',
+          description: 'Data retention and archival policy specifications',
+          lastModified: '2025-01-04',
+          records: 234,
+          status: 'Active'
+        },
+        {
+          id: 'backup-specifications',
+          name: 'Backup Specifications',
+          description: 'Data backup and recovery specifications',
+          lastModified: '2025-01-03',
+          records: 67,
+          status: 'Active'
+        },
+        {
+          id: 'encryption-standards',
+          name: 'Encryption Standards',
+          description: 'Data encryption standards and key management',
+          lastModified: '2025-01-02',
+          records: 89,
+          status: 'Active'
+        },
+        {
+          id: 'privacy-specifications',
+          name: 'Privacy Specifications',
+          description: 'HIPAA and privacy protection specifications',
+          lastModified: '2025-01-01',
+          records: 156,
+          status: 'Active'
+        },
+        {
+          id: 'reporting-templates',
+          name: 'Reporting Templates',
+          description: 'Standard report templates and formats',
+          lastModified: '2024-12-31',
+          records: 298,
+          status: 'Active'
+        },
+        {
+          id: 'integration-certificates',
+          name: 'Integration Certificates',
+          description: 'Third-party integration certificates and keys',
+          lastModified: '2024-12-30',
+          records: 34,
+          status: 'Draft'
         }
       ]
     }
