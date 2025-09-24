@@ -5830,62 +5830,62 @@ export function MasterList() {
   ]
 
   // Filter master lists based on search term
-  const filteredCategories = masterListCategories.map(category => ({
-    ...category,
-    masterlists: category.masterlists.filter(masterlist =>
-      masterlist.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      masterlist.description.toLowerCase().includes(searchTerm.toLowerCase())
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     )
-  })).filter(category => category.masterlists.length > 0)
-
-  // Sample data for master list details view
-  const generateMasterListData = (masterlist: any) => {
-    const sampleData = {
-      'prescription-packages': [
-        { id: 1, packageCode: 'PKG-001', packageName: 'Basic Formulary Package', tier: 'Tier 1', copay: '$5', status: 'Active' },
-        { id: 2, packageCode: 'PKG-002', packageName: 'Enhanced Formulary Package', tier: 'Tier 2', copay: '$15', status: 'Active' },
-        { id: 3, packageCode: 'PKG-003', packageName: 'Premium Formulary Package', tier: 'Tier 3', copay: '$35', status: 'Draft' },
-        { id: 4, packageCode: 'PKG-004', packageName: 'Specialty Drug Package', tier: 'Tier 4', copay: '25%', status: 'Active' },
-        { id: 5, packageCode: 'PKG-005', packageName: 'Generic Drug Package', tier: 'Tier 1', copay: '$10', status: 'Active' }
-      ],
-      'api-configuration': [
-        { id: 1, apiName: 'Member Portal API', endpoint: '/api/v1/members', status: 'Active', version: '1.2.3', lastUpdated: '2025-01-15' },
-        { id: 2, apiName: 'Claims Processing API', endpoint: '/api/v1/claims', status: 'Active', version: '2.1.0', lastUpdated: '2025-01-14' },
-        { id: 3, apiName: 'Provider Directory API', endpoint: '/api/v1/providers', status: 'Maintenance', version: '1.8.2', lastUpdated: '2025-01-13' },
-        { id: 4, apiName: 'Benefits API', endpoint: '/api/v1/benefits', status: 'Active', version: '1.5.1', lastUpdated: '2025-01-12' }
-      ],
-      'certificates': [
-        { id: 1, certName: 'SSL Certificate - Main', issuer: 'DigiCert', expiryDate: '2025-12-15', status: 'Valid', domain: 'simplifyhealth.com' },
-        { id: 2, certName: 'API Gateway Certificate', issuer: 'Let\'s Encrypt', expiryDate: '2025-06-20', status: 'Valid', domain: 'api.simplifyhealth.com' },
-        { id: 3, certName: 'Member Portal Certificate', issuer: 'DigiCert', expiryDate: '2025-09-10', status: 'Valid', domain: 'portal.simplifyhealth.com' },
-        { id: 4, certName: 'Internal Services Certificate', issuer: 'Internal CA', expiryDate: '2025-03-15', status: 'Expiring Soon', domain: 'internal.simplifyhealth.com' }
-      ]
-    }
-    
-    return sampleData[masterlist.id as keyof typeof sampleData] || [
-      { id: 1, name: `Sample ${masterlist.name} Item 1`, status: 'Active', lastModified: '2025-01-15' },
-      { id: 2, name: `Sample ${masterlist.name} Item 2`, status: 'Active', lastModified: '2025-01-14' },
-      { id: 3, name: `Sample ${masterlist.name} Item 3`, status: 'Draft', lastModified: '2025-01-13' }
-    ]
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'active':
-      case 'valid':
-        return 'bg-green-100 text-green-800 border-green-300'
-      case 'draft':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-300'
-      case 'maintenance':
-        return 'bg-orange-100 text-orange-800 border-orange-300'
-      case 'expiring soon':
-        return 'bg-red-100 text-red-800 border-red-300'
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-300'
-    }
-  }
+  return (
+    <div className="p-4">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-semibold text-foreground">Master Lists</h1>
+          <p className="text-muted-foreground mt-1">Manage your master lists organized by category</p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <MagnifyingGlass size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search master lists..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 w-64"
+            />
+            {searchTerm && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                onClick={() => setSearchTerm('')}
+              >
+                <X size={12} />
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
 
-  if (selectedMasterList) {
+      {searchTerm && (
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="flex items-center gap-2">
+            <MagnifyingGlass size={14} className="text-blue-600" />
+            <span className="text-sm font-medium text-blue-800">
+              {filteredCategories.reduce((total, cat) => total + cat.masterlists.length, 0)} results for "{searchTerm}"
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSearchTerm('')}
+              className="text-blue-600 hover:text-blue-700 h-6 px-2 ml-auto"
+            >
     const masterListData = generateMasterListData(selectedMasterList)
     
     return (
