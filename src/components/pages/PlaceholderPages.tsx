@@ -5971,44 +5971,44 @@ export function MasterList() {
 }
 
 export function AdminSettings() {
+  return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Admin Settings</h1>
           <p className="text-muted-foreground mt-1">Configure system settings</p>
-          <p className="text-muted-foreground mt-1">Configure system settings</p>
         </div>
-      </div>d-lg border border-border p-8 text-center">
+      </div>
       <div className="bg-card rounded-lg border border-border p-8 text-center">
         <p className="text-muted-foreground">Admin settings coming soon...</p>
       </div>
     </div>
-}
+  )
 }
 
 export function DesignStudio() {
-  return (4">
+  return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Design Studio</h1>
           <p className="text-muted-foreground mt-1">Design and customize documents</p>
+        </div>
       </div>
       <div className="bg-card rounded-lg border border-border p-8 text-center">
         <p className="text-muted-foreground">Design studio features coming soon...</p>
-        <p className="text-muted-foreground">Design studio features coming soon...</p>
+      </div>
     </div>
   )
-  )
+}
 
 export function AskBenny() {
-export function AskBenny() {
+  return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Ask Benny</h1>
-          <h1 className="text-2xl font-semibold text-foreground">Ask Benny</h1>
-          <p className="text-muted-foreground mt-1">AI assistant for document questions</p>
+          <h1 className="text-2xl font-semibold text-foreground">Ask <em>Benny</em></h1>
+          <p className="text-muted-foreground mt-1">Interact smartly with your content via your personalized Benefits1™ Native intelligence assistant</p>
         </div>
       </div>
       <div className="bg-card rounded-lg border border-border p-8 text-center">
@@ -6022,14 +6022,14 @@ export function Portfolio() {
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-semibold text-foreground">Portfolio</h1>
+        <div>
           <h1 className="text-2xl font-semibold text-foreground">Portfolio</h1>
           <p className="text-muted-foreground mt-1">Manage your project portfolios</p>
+        </div>
       </div>
       <div className="bg-card rounded-lg border border-border p-8 text-center">
         <p className="text-muted-foreground">Portfolio management features coming soon...</p>
-        <p className="text-muted-foreground">Portfolio management features coming soon...</p>
       </div>
     </div>
-}
+  )
 }
