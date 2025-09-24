@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { FileText, Clock, BarChart3, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus } from "@phosphor-icons/react"
+import { FileText, Clock, BarChart3, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus, TextAa, Rows, CopySimple, XCircle, FrameCorners, FileXls, CloudArrowUp, ArrowsClockwise } from "@phosphor-icons/react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -5758,19 +5758,57 @@ export function MasterList() {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle>Master List Data</CardTitle>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {selectedMasterList.records} total records
-                </p>
+                <div className="flex items-center gap-4 mt-2">
+                  <p className="text-sm text-muted-foreground">
+                    Effective Date: <span className="font-semibold text-foreground">1/1/2026</span>, Version No. <span className="font-semibold text-foreground">2026_14.0</span>
+                  </p>
+                  <Button variant="outline" size="sm" className="h-8">
+                    Save
+                  </Button>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm">
-                  <Download className="w-4 h-4 mr-2" />
-                  Export
+            </div>
+            
+            {/* Toolbar with Button Icons */}
+            <div className="flex items-center justify-between mt-4 p-2 bg-muted/30 rounded-lg border">
+              <div className="flex items-center gap-1">
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Word wrap">
+                  <TextAa size={16} />
                 </Button>
-                <Button size="sm">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Record
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Add rows">
+                  <Plus size={16} />
                 </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Remove rows">
+                  <X size={16} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Copy rows">
+                  <CopySimple size={16} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Clear filter">
+                  <XCircle size={16} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="View">
+                  <Eye size={16} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Download to Excel">
+                  <Download size={16} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Upload to Excel">
+                  <CloudArrowUp size={16} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Refresh">
+                  <ArrowsClockwise size={16} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Full screen">
+                  <FrameCorners size={16} />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Grid preferences">
+                  <Gear size={16} />
+                </Button>
+              </div>
+              
+              <div className="text-sm text-muted-foreground">
+                {selectedMasterList.records} total records
               </div>
             </div>
           </CardHeader>
