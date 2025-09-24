@@ -5507,17 +5507,465 @@ export function Generate() {
 }
 
 export function MasterList() {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [layoutView, setLayoutView] = useKV('masterlist-layout-view', 'grid')
+  const [selectedMasterList, setSelectedMasterList] = useState<any>(null)
+
+  // Master Lists organized by categories
+  const masterListCategories = [
+    {
+      id: 'cascade',
+      title: 'Cascade Master List',
+      description: 'Prescription packages and tiers management',
+      icon: '🔄',
+      color: 'bg-blue-50 border-blue-200 hover:bg-blue-100',
+      masterlists: [
+        {
+          id: 'prescription-packages',
+          name: 'Prescription Packages',
+          description: 'Manage prescription drug packages and formulary tiers',
+          lastModified: '2025-01-15',
+          records: 1247,
+          status: 'Active'
+        },
+        {
+          id: 'tier-structure',
+          name: 'Tier Structure',
+          description: 'Drug tier classifications and copay structures',
+          lastModified: '2025-01-12',
+          records: 89,
+          status: 'Active'
+        },
+        {
+          id: 'formulary-cascade',
+          name: 'Formulary Cascade Rules',
+          description: 'Rules for formulary inheritance and overrides',
+          lastModified: '2025-01-10',
+          records: 342,
+          status: 'Draft'
+        },
+        {
+          id: 'coverage-tiers',
+          name: 'Coverage Tiers',
+          description: 'Coverage levels and tier assignments',
+          lastModified: '2025-01-08',
+          records: 156,
+          status: 'Active'
+        }
+      ]
+    },
+    {
+      id: 'mapping',
+      title: 'Mapping Master List',
+      description: 'API configuration and field mappings',
+      icon: '🗺️',
+      color: 'bg-green-50 border-green-200 hover:bg-green-100',
+      masterlists: [
+        {
+          id: 'api-configuration',
+          name: 'API Configuration',
+          description: 'External system API endpoints and configurations',
+          lastModified: '2025-01-14',
+          records: 67,
+          status: 'Active'
+        },
+        {
+          id: 'field-mapping',
+          name: 'Field Mapping',
+          description: 'Data field mappings between systems',
+          lastModified: '2025-01-11',
+          records: 423,
+          status: 'Active'
+        },
+        {
+          id: 'business-entity-mapping',
+          name: 'Business Entity Mapping',
+          description: 'Enterprise business entity relationships',
+          lastModified: '2025-01-09',
+          records: 189,
+          status: 'Active'
+        },
+        {
+          id: 'system-integration',
+          name: 'System Integration Points',
+          description: 'Integration points and data flow configurations',
+          lastModified: '2025-01-07',
+          records: 78,
+          status: 'Draft'
+        },
+        {
+          id: 'data-transformation',
+          name: 'Data Transformation Rules',
+          description: 'Rules for transforming data between systems',
+          lastModified: '2025-01-06',
+          records: 234,
+          status: 'Active'
+        }
+      ]
+    },
+    {
+      id: 'certificates',
+      title: 'Certificates & Specifications',
+      description: 'Certificates and download specifications',
+      icon: '📋',
+      color: 'bg-purple-50 border-purple-200 hover:bg-purple-100',
+      masterlists: [
+        {
+          id: 'certificates',
+          name: 'Certificate Registry',
+          description: 'Digital certificates and validation records',
+          lastModified: '2025-01-13',
+          records: 145,
+          status: 'Active'
+        },
+        {
+          id: 'download-specs',
+          name: 'Download Specifications',
+          description: 'File download formats and specifications',
+          lastModified: '2025-01-11',
+          records: 89,
+          status: 'Active'
+        },
+        {
+          id: 'compliance-specs',
+          name: 'Compliance Specifications',
+          description: 'Regulatory compliance requirements and specs',
+          lastModified: '2025-01-10',
+          records: 267,
+          status: 'Active'
+        },
+        {
+          id: 'security-certificates',
+          name: 'Security Certificates',
+          description: 'Security certificates and access credentials',
+          lastModified: '2025-01-08',
+          records: 45,
+          status: 'Active'
+        }
+      ]
+    }
+  ]
+
+  // Filter master lists based on search term
+  const filteredCategories = masterListCategories.map(category => ({
+    ...category,
+    masterlists: category.masterlists.filter(masterlist =>
+      masterlist.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      masterlist.description.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  })).filter(category => category.masterlists.length > 0)
+
+  // Sample data for master list details view
+  const generateMasterListData = (masterlist: any) => {
+    const sampleData = {
+      'prescription-packages': [
+        { id: 1, packageCode: 'PKG-001', packageName: 'Basic Formulary Package', tier: 'Tier 1', copay: '$5', status: 'Active' },
+        { id: 2, packageCode: 'PKG-002', packageName: 'Enhanced Formulary Package', tier: 'Tier 2', copay: '$15', status: 'Active' },
+        { id: 3, packageCode: 'PKG-003', packageName: 'Premium Formulary Package', tier: 'Tier 3', copay: '$35', status: 'Draft' },
+        { id: 4, packageCode: 'PKG-004', packageName: 'Specialty Drug Package', tier: 'Tier 4', copay: '25%', status: 'Active' },
+        { id: 5, packageCode: 'PKG-005', packageName: 'Generic Drug Package', tier: 'Tier 1', copay: '$10', status: 'Active' }
+      ],
+      'api-configuration': [
+        { id: 1, apiName: 'Member Portal API', endpoint: '/api/v1/members', status: 'Active', version: '1.2.3', lastUpdated: '2025-01-15' },
+        { id: 2, apiName: 'Claims Processing API', endpoint: '/api/v1/claims', status: 'Active', version: '2.1.0', lastUpdated: '2025-01-14' },
+        { id: 3, apiName: 'Provider Directory API', endpoint: '/api/v1/providers', status: 'Maintenance', version: '1.8.2', lastUpdated: '2025-01-13' },
+        { id: 4, apiName: 'Benefits API', endpoint: '/api/v1/benefits', status: 'Active', version: '1.5.1', lastUpdated: '2025-01-12' }
+      ],
+      'certificates': [
+        { id: 1, certName: 'SSL Certificate - Main', issuer: 'DigiCert', expiryDate: '2025-12-15', status: 'Valid', domain: 'simplifyhealth.com' },
+        { id: 2, certName: 'API Gateway Certificate', issuer: 'Let\'s Encrypt', expiryDate: '2025-06-20', status: 'Valid', domain: 'api.simplifyhealth.com' },
+        { id: 3, certName: 'Member Portal Certificate', issuer: 'DigiCert', expiryDate: '2025-09-10', status: 'Valid', domain: 'portal.simplifyhealth.com' },
+        { id: 4, certName: 'Internal Services Certificate', issuer: 'Internal CA', expiryDate: '2025-03-15', status: 'Expiring Soon', domain: 'internal.simplifyhealth.com' }
+      ]
+    }
+    
+    return sampleData[masterlist.id as keyof typeof sampleData] || [
+      { id: 1, name: `Sample ${masterlist.name} Item 1`, status: 'Active', lastModified: '2025-01-15' },
+      { id: 2, name: `Sample ${masterlist.name} Item 2`, status: 'Active', lastModified: '2025-01-14' },
+      { id: 3, name: `Sample ${masterlist.name} Item 3`, status: 'Draft', lastModified: '2025-01-13' }
+    ]
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'active':
+      case 'valid':
+        return 'bg-green-100 text-green-800 border-green-300'
+      case 'draft':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-300'
+      case 'maintenance':
+        return 'bg-orange-100 text-orange-800 border-orange-300'
+      case 'expiring soon':
+        return 'bg-red-100 text-red-800 border-red-300'
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-300'
+    }
+  }
+
+  if (selectedMasterList) {
+    const masterListData = generateMasterListData(selectedMasterList)
+    
+    return (
+      <div className="p-4">
+        <div className="flex items-center gap-4 mb-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setSelectedMasterList(null)}
+            className="flex items-center gap-2"
+          >
+            <CaretLeft size={16} />
+            Back to Master Lists
+          </Button>
+          <div>
+            <h1 className="text-2xl font-semibold text-foreground">{selectedMasterList.name}</h1>
+            <p className="text-muted-foreground">{selectedMasterList.description}</p>
+          </div>
+        </div>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                {selectedMasterList.name} Data
+                <Badge variant="outline" className="font-mono">
+                  {selectedMasterList.records} records
+                </Badge>
+              </CardTitle>
+              <CardDescription>
+                Last modified: {selectedMasterList.lastModified}
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm">
+                <Download size={16} />
+                Export
+              </Button>
+              <Button size="sm">
+                Add New
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="border rounded-lg">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/50">
+                    {Object.keys(masterListData[0] || {}).map((key) => (
+                      <TableHead key={key} className="font-semibold capitalize">
+                        {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {masterListData.map((row: any, index) => (
+                    <TableRow key={row.id} className={index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}>
+                      {Object.entries(row).map(([key, value]) => (
+                        <TableCell key={key} className="p-3">
+                          {key === 'status' ? (
+                            <Badge className={`text-xs font-medium ${getStatusColor(value as string)}`}>
+                              {value as string}
+                            </Badge>
+                          ) : key.toLowerCase().includes('code') ? (
+                            <code className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
+                              {value as string}
+                            </code>
+                          ) : (
+                            <span className="text-sm">{value as string}</span>
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="p-4">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Master List</h1>
-          <p className="text-muted-foreground mt-1">Manage collateral content</p>
+          <h1 className="text-2xl font-semibold text-foreground">Master Lists</h1>
+          <p className="text-muted-foreground mt-1">Manage your master lists organized by category</p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <MagnifyingGlass size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search master lists..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 w-64"
+            />
+            {searchTerm && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                onClick={() => setSearchTerm('')}
+              >
+                <X size={12} />
+              </Button>
+            )}
+          </div>
+          
+          <div className="flex items-center border rounded-lg p-1 bg-muted/30">
+            <Button
+              variant={layoutView === 'grid' ? 'default' : 'ghost'}
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => setLayoutView('grid')}
+              title="Grid View"
+            >
+              <div className="grid grid-cols-2 gap-0.5 w-3 h-3">
+                <div className="bg-current w-1 h-1 rounded-[1px]"></div>
+                <div className="bg-current w-1 h-1 rounded-[1px]"></div>
+                <div className="bg-current w-1 h-1 rounded-[1px]"></div>
+                <div className="bg-current w-1 h-1 rounded-[1px]"></div>
+              </div>
+            </Button>
+            <Button
+              variant={layoutView === 'list' ? 'default' : 'ghost'}
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => setLayoutView('list')}
+              title="List View"
+            >
+              <div className="space-y-1">
+                <div className="bg-current w-3 h-0.5 rounded"></div>
+                <div className="bg-current w-3 h-0.5 rounded"></div>
+                <div className="bg-current w-3 h-0.5 rounded"></div>
+              </div>
+            </Button>
+          </div>
         </div>
       </div>
-      <div className="bg-card rounded-lg border border-border p-8 text-center">
-        <p className="text-muted-foreground">Master list features coming soon...</p>
+
+      {searchTerm && (
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="flex items-center gap-2">
+            <MagnifyingGlass size={14} className="text-blue-600" />
+            <span className="text-sm font-medium text-blue-800">
+              {filteredCategories.reduce((total, cat) => total + cat.masterlists.length, 0)} results for "{searchTerm}"
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSearchTerm('')}
+              className="text-blue-600 hover:text-blue-700 h-6 px-2 ml-auto"
+            >
+              Clear
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-8">
+        {filteredCategories.map((category) => (
+          <div key={category.id} className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="text-2xl">{category.icon}</div>
+              <div>
+                <h2 className="text-xl font-semibold text-foreground">{category.title}</h2>
+                <p className="text-sm text-muted-foreground">{category.description}</p>
+              </div>
+              <Badge variant="outline" className="ml-auto">
+                {category.masterlists.length} lists
+              </Badge>
+            </div>
+
+            {layoutView === 'grid' ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {category.masterlists.map((masterlist) => (
+                  <Card 
+                    key={masterlist.id} 
+                    className={`cursor-pointer transition-all duration-200 hover:shadow-md ${category.color}`}
+                    onClick={() => setSelectedMasterList(masterlist)}
+                  >
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between">
+                        <CardTitle className="text-base font-semibold text-foreground">
+                          {masterlist.name}
+                        </CardTitle>
+                        <Badge className={`text-xs font-medium ${getStatusColor(masterlist.status)}`}>
+                          {masterlist.status}
+                        </Badge>
+                      </div>
+                      <CardDescription className="text-sm text-muted-foreground line-clamp-2">
+                        {masterlist.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="flex items-center justify-between text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <FileText size={14} />
+                          {masterlist.records.toLocaleString()} records
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Clock size={14} />
+                          {masterlist.lastModified}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {category.masterlists.map((masterlist) => (
+                  <Card 
+                    key={masterlist.id}
+                    className={`cursor-pointer transition-all duration-200 hover:shadow-sm ${category.color}`}
+                    onClick={() => setSelectedMasterList(masterlist)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="font-semibold text-foreground">{masterlist.name}</h3>
+                            <Badge className={`text-xs font-medium ${getStatusColor(masterlist.status)}`}>
+                              {masterlist.status}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">{masterlist.description}</p>
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <FileText size={14} />
+                              {masterlist.records.toLocaleString()} records
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Clock size={14} />
+                              Last modified: {masterlist.lastModified}
+                            </span>
+                          </div>
+                        </div>
+                        <CaretRight size={20} className="text-muted-foreground" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
+
+      {filteredCategories.length === 0 && searchTerm && (
+        <div className="text-center py-12">
+          <MagnifyingGlass size={48} className="mx-auto text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold text-foreground mb-2">No master lists found</h3>
+          <p className="text-muted-foreground">
+            No master lists match your search for "{searchTerm}"
+          </p>
+        </div>
+      )}
     </div>
   )
 }
