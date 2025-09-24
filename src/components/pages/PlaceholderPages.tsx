@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { FileText, Clock, BarChart3, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link } from "@phosphor-icons/react"
+import { FileText, Clock, BarChart3, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus } from "@phosphor-icons/react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -5528,83 +5528,59 @@ export function MasterList() {
           status: 'Active'
         },
         {
-          id: 'tier-structure',
-          name: 'Tier Structure',
-          description: 'Drug tier classifications and copay structures',
+          id: 'drug-tiers',
+          name: 'Drug Tiers',
+          description: 'Configure drug tier classifications and coverage levels',
+          lastModified: '2025-01-14',
+          records: 523,
+          status: 'Active'
+        },
+        {
+          id: 'formulary-rules',
+          name: 'Formulary Rules',
+          description: 'Define rules for drug formulary management',
+          lastModified: '2025-01-13',
+          records: 892,
+          status: 'Active'
+        },
+        {
+          id: 'prior-auth',
+          name: 'Prior Authorization',
+          description: 'Manage prior authorization requirements and processes',
           lastModified: '2025-01-12',
-          records: 89,
+          records: 678,
           status: 'Active'
         },
         {
-          id: 'formulary-cascade',
-          name: 'Formulary Cascade Rules',
-          description: 'Rules for formulary inheritance and overrides',
-          lastModified: '2025-01-10',
-          records: 342,
-          status: 'Draft'
-        },
-        {
-          id: 'coverage-tiers',
-          name: 'Coverage Tiers',
-          description: 'Coverage levels and tier assignments',
-          lastModified: '2025-01-08',
-          records: 156,
-          status: 'Active'
-        },
-        {
-          id: 'drug-utilization',
-          name: 'Drug Utilization Management',
-          description: 'Prior authorization and step therapy rules',
-          lastModified: '2025-01-07',
-          records: 289,
-          status: 'Active'
-        },
-        {
-          id: 'specialty-pharmacy',
-          name: 'Specialty Pharmacy Network',
-          description: 'Specialty drug distribution and network rules',
-          lastModified: '2025-01-06',
-          records: 67,
-          status: 'Draft'
-        },
-        {
-          id: 'quantity-limits',
-          name: 'Quantity Limits',
-          description: 'Drug quantity limits and dispensing restrictions',
-          lastModified: '2025-01-05',
-          records: 178,
-          status: 'Active'
-        },
-        {
-          id: 'dosage-forms',
-          name: 'Dosage Forms',
-          description: 'Available dosage forms and administration methods',
-          lastModified: '2025-01-04',
+          id: 'step-therapy',
+          name: 'Step Therapy',
+          description: 'Configure step therapy protocols and requirements',
+          lastModified: '2025-01-11',
           records: 445,
           status: 'Active'
         },
         {
-          id: 'generic-substitution',
-          name: 'Generic Substitution Rules',
-          description: 'Rules for generic drug substitution policies',
-          lastModified: '2025-01-03',
-          records: 123,
+          id: 'quantity-limits',
+          name: 'Quantity Limits',
+          description: 'Set quantity limits for prescription medications',
+          lastModified: '2025-01-10',
+          records: 1156,
           status: 'Active'
         },
         {
-          id: 'medication-therapy',
-          name: 'Medication Therapy Management',
-          description: 'MTM program rules and eligibility criteria',
-          lastModified: '2025-01-02',
-          records: 89,
-          status: 'Draft'
+          id: 'coverage-gaps',
+          name: 'Coverage Gaps',
+          description: 'Manage coverage gap rules and exceptions',
+          lastModified: '2025-01-09',
+          records: 234,
+          status: 'Active'
         },
         {
-          id: 'pharmacy-network',
-          name: 'Pharmacy Network Tiers',
-          description: 'Preferred and standard pharmacy network tiers',
-          lastModified: '2024-12-30',
-          records: 234,
+          id: 'therapeutic-categories',
+          name: 'Therapeutic Categories',
+          description: 'Define therapeutic drug categories and classifications',
+          lastModified: '2025-01-08',
+          records: 789,
           status: 'Active'
         }
       ]
@@ -5612,104 +5588,56 @@ export function MasterList() {
     {
       id: 'mapping',
       title: 'Mapping Master List',
-      description: 'API configuration and field mappings',
-      icon: '🗺️',
+      description: 'API configuration and field mapping management',
+      icon: '🗂️',
       color: 'bg-green-50 border-green-200 hover:bg-green-100',
       masterlists: [
         {
-          id: 'api-configuration',
+          id: 'api-config',
           name: 'API Configuration',
-          description: 'External system API endpoints and configurations',
-          lastModified: '2025-01-14',
-          records: 67,
+          description: 'Configure API endpoints and connection settings',
+          lastModified: '2025-01-15',
+          records: 156,
           status: 'Active'
         },
         {
           id: 'field-mapping',
           name: 'Field Mapping',
-          description: 'Data field mappings between systems',
-          lastModified: '2025-01-11',
-          records: 423,
+          description: 'Map data fields between systems and formats',
+          lastModified: '2025-01-14',
+          records: 324,
           status: 'Active'
         },
         {
           id: 'business-entity-mapping',
           name: 'Business Entity Mapping',
-          description: 'Enterprise business entity relationships',
-          lastModified: '2025-01-09',
-          records: 189,
+          description: 'Map business entities across different systems',
+          lastModified: '2025-01-13',
+          records: 287,
           status: 'Active'
-        },
-        {
-          id: 'system-integration',
-          name: 'System Integration Points',
-          description: 'Integration points and data flow configurations',
-          lastModified: '2025-01-07',
-          records: 78,
-          status: 'Draft'
         },
         {
           id: 'data-transformation',
           name: 'Data Transformation Rules',
-          description: 'Rules for transforming data between systems',
-          lastModified: '2025-01-06',
-          records: 234,
+          description: 'Define rules for data transformation and validation',
+          lastModified: '2025-01-12',
+          records: 492,
+          status: 'Active'
+        },
+        {
+          id: 'integration-endpoints',
+          name: 'Integration Endpoints',
+          description: 'Manage integration points and service endpoints',
+          lastModified: '2025-01-11',
+          records: 128,
           status: 'Active'
         },
         {
           id: 'workflow-mapping',
           name: 'Workflow Mapping',
-          description: 'Business process workflow configurations',
-          lastModified: '2025-01-05',
-          records: 167,
-          status: 'Active'
-        },
-        {
-          id: 'error-handling',
-          name: 'Error Handling Rules',
-          description: 'System error handling and retry configurations',
-          lastModified: '2025-01-04',
-          records: 98,
-          status: 'Active'
-        },
-        {
-          id: 'validation-rules',
-          name: 'Data Validation Rules',
-          description: 'Business rules for data validation and cleansing',
-          lastModified: '2025-01-03',
-          records: 356,
-          status: 'Active'
-        },
-        {
-          id: 'lookup-tables',
-          name: 'Lookup Tables',
-          description: 'Reference data lookup tables and code mappings',
-          lastModified: '2025-01-02',
-          records: 512,
-          status: 'Active'
-        },
-        {
-          id: 'interface-configs',
-          name: 'Interface Configurations',
-          description: 'System interface configurations and protocols',
-          lastModified: '2025-01-01',
-          records: 145,
-          status: 'Draft'
-        },
-        {
-          id: 'batch-processing',
-          name: 'Batch Processing Rules',
-          description: 'Batch job configurations and processing rules',
-          lastModified: '2024-12-31',
-          records: 78,
-          status: 'Active'
-        },
-        {
-          id: 'real-time-sync',
-          name: 'Real-time Sync Configuration',
-          description: 'Real-time data synchronization settings',
-          lastModified: '2024-12-30',
-          records: 134,
+          description: 'Map workflows between different business processes',
+          lastModified: '2025-01-10',
+          records: 376,
           status: 'Active'
         }
       ]
@@ -5717,125 +5645,94 @@ export function MasterList() {
     {
       id: 'certificates',
       title: 'Certificates & Specifications',
-      description: 'Certificates and download specifications',
+      description: 'Certificate management and download specifications',
       icon: '📋',
       color: 'bg-purple-50 border-purple-200 hover:bg-purple-100',
       masterlists: [
         {
-          id: 'certificates',
-          name: 'Certificate Registry',
-          description: 'Digital certificates and validation records',
-          lastModified: '2025-01-13',
-          records: 145,
+          id: 'certificate-templates',
+          name: 'Certificate Templates',
+          description: 'Manage certificate templates and formats',
+          lastModified: '2025-01-15',
+          records: 89,
           status: 'Active'
         },
         {
           id: 'download-specs',
           name: 'Download Specifications',
-          description: 'File download formats and specifications',
-          lastModified: '2025-01-11',
-          records: 89,
+          description: 'Define specifications for document downloads',
+          lastModified: '2025-01-14',
+          records: 145,
           status: 'Active'
         },
         {
           id: 'compliance-specs',
           name: 'Compliance Specifications',
-          description: 'Regulatory compliance requirements and specs',
-          lastModified: '2025-01-10',
+          description: 'Manage compliance requirements and specifications',
+          lastModified: '2025-01-13',
           records: 267,
           status: 'Active'
         },
         {
-          id: 'security-certificates',
-          name: 'Security Certificates',
-          description: 'Security certificates and access credentials',
-          lastModified: '2025-01-08',
-          records: 45,
+          id: 'format-standards',
+          name: 'Format Standards',
+          description: 'Define document format standards and guidelines',
+          lastModified: '2025-01-12',
+          records: 178,
           status: 'Active'
         },
         {
-          id: 'audit-specifications',
-          name: 'Audit Specifications',
-          description: 'Audit trail and logging specifications',
-          lastModified: '2025-01-07',
-          records: 189,
-          status: 'Active'
-        },
-        {
-          id: 'performance-specs',
-          name: 'Performance Specifications',
-          description: 'System performance requirements and benchmarks',
-          lastModified: '2025-01-06',
-          records: 123,
-          status: 'Active'
-        },
-        {
-          id: 'accessibility-compliance',
-          name: 'Accessibility Compliance',
-          description: '508 compliance and accessibility requirements',
-          lastModified: '2025-01-05',
-          records: 76,
-          status: 'Active'
-        },
-        {
-          id: 'data-retention',
-          name: 'Data Retention Policies',
-          description: 'Data retention and archival policy specifications',
-          lastModified: '2025-01-04',
+          id: 'quality-metrics',
+          name: 'Quality Metrics',
+          description: 'Define quality metrics and measurement standards',
+          lastModified: '2025-01-11',
           records: 234,
           status: 'Active'
-        },
-        {
-          id: 'backup-specifications',
-          name: 'Backup Specifications',
-          description: 'Data backup and recovery specifications',
-          lastModified: '2025-01-03',
-          records: 67,
-          status: 'Active'
-        },
-        {
-          id: 'encryption-standards',
-          name: 'Encryption Standards',
-          description: 'Data encryption standards and key management',
-          lastModified: '2025-01-02',
-          records: 89,
-          status: 'Active'
-        },
-        {
-          id: 'privacy-specifications',
-          name: 'Privacy Specifications',
-          description: 'HIPAA and privacy protection specifications',
-          lastModified: '2025-01-01',
-          records: 156,
-          status: 'Active'
-        },
-        {
-          id: 'reporting-templates',
-          name: 'Reporting Templates',
-          description: 'Standard report templates and formats',
-          lastModified: '2024-12-31',
-          records: 298,
-          status: 'Active'
-        },
-        {
-          id: 'integration-certificates',
-          name: 'Integration Certificates',
-          description: 'Third-party integration certificates and keys',
-          lastModified: '2024-12-30',
-          records: 34,
-          status: 'Draft'
         }
       ]
     }
   ]
 
-  // Filter master lists based on search term
-  const filteredMasterLists = masterListCategories.flatMap(category =>
-    category.masterlists.filter(masterList =>
-      masterList.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      masterList.description.toLowerCase().includes(searchTerm.toLowerCase())
+  const generateMasterListData = (masterList: any) => {
+    // Generate sample data based on masterlist type
+    const baseData = []
+    for (let i = 1; i <= Math.min(50, masterList.records); i++) {
+      baseData.push({
+        id: `${masterList.id}-${String(i).padStart(3, '0')}`,
+        name: `${masterList.name} Item ${i}`,
+        code: `${masterList.id.toUpperCase().substring(0, 3)}-${String(i).padStart(4, '0')}`,
+        description: `Sample description for ${masterList.name} item ${i}`,
+        status: i % 10 === 0 ? 'Inactive' : 'Active',
+        category: masterList.name,
+        lastModified: new Date(2025, 0, Math.floor(Math.random() * 15) + 1).toLocaleDateString(),
+        modifiedBy: ['John Doe', 'Jane Smith', 'Mike Johnson', 'Sarah Wilson'][Math.floor(Math.random() * 4)],
+        effectiveDate: new Date(2025, 0, 1).toLocaleDateString(),
+        expirationDate: new Date(2025, 11, 31).toLocaleDateString()
+      })
+    }
+    return baseData
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'active':
+        return 'bg-green-100 text-green-800 border-green-200'
+      case 'inactive':
+        return 'bg-red-100 text-red-800 border-red-200'
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200'
+    }
+  }
+
+  const filteredCategories = masterListCategories.map(category => ({
+    ...category,
+    masterlists: category.masterlists.filter(masterlist =>
+      masterlist.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      masterlist.description.toLowerCase().includes(searchTerm.toLowerCase())
     )
-  )
+  })).filter(category => category.masterlists.length > 0)
 
   if (selectedMasterList) {
     return (
@@ -5856,172 +5753,56 @@ export function MasterList() {
         </div>
 
         <Card>
-          <CardContent className="p-0">
-            <div className="overflow-auto">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Master List Data</CardTitle>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {selectedMasterList.records} total records
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export
+                </Button>
+                <Button size="sm">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Record
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-auto max-h-[600px]">
               <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>ID</TableHead>
                     <TableHead>Name</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Value</TableHead>
+                    <TableHead>Code</TableHead>
+                    <TableHead>Description</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Last Modified</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>Modified By</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {selectedMasterList.data?.map((row, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{row.id}</TableCell>
-                      <TableCell>{row.name}</TableCell>
-                      <TableCell>{row.type}</TableCell>
-                      <TableCell>{row.value}</TableCell>
+                  {generateMasterListData(selectedMasterList).map((record) => (
+                    <TableRow key={record.id}>
+                      <TableCell className="font-mono text-sm">{record.id}</TableCell>
+                      <TableCell className="font-medium">{record.name}</TableCell>
+                      <TableCell className="font-mono text-sm">{record.code}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground max-w-xs truncate">
+                        {record.description}
+                      </TableCell>
                       <TableCell>
-                        <Badge variant={row.status === 'Active' ? 'default' : 'secondary'}>
-                          {row.status}
+                        <Badge className={`text-xs ${getStatusColor(record.status)}`}>
+                          {record.status}
                         </Badge>
                       </TableCell>
-                      <TableCell>{row.lastModified}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Button size="sm" variant="ghost">
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button size="sm" variant="ghost">
-                            <Trash className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-  }
-
-  return (
-    <div className="p-4">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">Master Lists</h1>
-          <p className="text-muted-foreground mt-1">Manage your master lists organized by category</p>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <MagnifyingGlass size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search master lists..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 w-64"
-            />
-            {searchTerm && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
-                onClick={() => setSearchTerm('')}
-              >
-                <X size={12} />
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {searchTerm && (
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="flex items-center gap-2">
-            <MagnifyingGlass size={14} className="text-blue-600" />
-            <span className="text-sm font-medium text-blue-800">
-              {filteredCategories.reduce((total, cat) => total + cat.masterlists.length, 0)} results for "{searchTerm}"
-            </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSearchTerm('')}
-              className="text-blue-600 hover:text-blue-700 h-6 px-2 ml-auto"
-            >
-    const masterListData = generateMasterListData(selectedMasterList)
-    
-    return (
-      <div className="p-4">
-        <div className="flex items-center gap-4 mb-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setSelectedMasterList(null)}
-            className="flex items-center gap-2"
-          >
-            <CaretLeft size={16} />
-            Back to Master Lists
-          </Button>
-          <div>
-            <h1 className="text-2xl font-semibold text-foreground">{selectedMasterList.name}</h1>
-            <p className="text-muted-foreground">{selectedMasterList.description}</p>
-          </div>
-        </div>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                {selectedMasterList.name} Data
-                <Badge variant="outline" className="font-mono">
-                  {selectedMasterList.records} records
-                </Badge>
-              </CardTitle>
-              <CardDescription>
-                Last modified: {selectedMasterList.lastModified}
-              </CardDescription>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
-                <Download size={16} />
-                Export
-              </Button>
-              <Button size="sm">
-                Add New
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="border rounded-lg">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/50">
-                    {Object.keys(masterListData[0] || {}).map((key) => (
-                      <TableHead key={key} className="font-semibold capitalize">
-                        {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {masterListData.map((row: any, index) => (
-                    <TableRow key={row.id} className={index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}>
-                      {Object.entries(row).map(([key, value]) => (
-                        <TableCell key={key} className="p-3">
-                          {key === 'status' ? (
-                            <Badge className={`text-xs font-medium ${getStatusColor(value as string)}`}>
-                              {value as string}
-                            </Badge>
-                          ) : key.toLowerCase().includes('code') ? (
-                            <code className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
-                              {value as string}
-                            </code>
-                          ) : (
-                            <span className="text-sm">{value as string}</span>
-                          )}
-                        </TableCell>
-                      ))}
+                      <TableCell className="text-sm">{record.lastModified}</TableCell>
+                      <TableCell className="text-sm">{record.modifiedBy}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -6050,16 +5831,6 @@ export function MasterList() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 w-64"
             />
-            {searchTerm && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
-                onClick={() => setSearchTerm('')}
-              >
-                <X size={12} />
-              </Button>
-            )}
           </div>
         </div>
       </div>
@@ -6083,32 +5854,29 @@ export function MasterList() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredCategories.map((category) => (
-          <Card key={category.id} className={`transition-all duration-200 hover:shadow-md ${category.color} h-80 flex flex-col`}>
-            <CardHeader className="pb-3 flex-shrink-0">
-              <div className="flex items-center gap-2">
-                <div className="text-lg">{category.icon}</div>
-                <div className="flex-1 min-w-0">
-                  <CardTitle className="text-base font-semibold text-foreground truncate">{category.title}</CardTitle>
-                  <CardDescription className="text-xs text-muted-foreground line-clamp-2">{category.description}</CardDescription>
+          <Card key={category.id} className={`${category.color} transition-colors`}>
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-3">
+                <div className="text-2xl">{category.icon}</div>
+                <div className="flex-1">
+                  <CardTitle className="text-lg">{category.title}</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">{category.description}</p>
                 </div>
               </div>
-              <Badge variant="outline" className="font-mono text-xs w-fit">
-                {category.masterlists.length} lists
-              </Badge>
             </CardHeader>
-            <CardContent className="pt-0 flex-1 min-h-0">
-              <div className="h-full overflow-y-auto overflow-x-hidden space-y-3 pr-1">
+            <CardContent>
+              <div className="space-y-2 max-h-64 overflow-y-auto">
                 {category.masterlists.map((masterlist) => (
                   <div
                     key={masterlist.id}
-                    className="flex items-center gap-2 p-3 rounded-lg border border-gray-200 hover:border-gray-300 cursor-pointer transition-all duration-200 hover:bg-gray-50/50"
                     onClick={() => setSelectedMasterList(masterlist)}
+                    className="flex items-center justify-between p-3 bg-white/80 backdrop-blur-sm rounded-lg border border-white/60 hover:bg-white/90 cursor-pointer transition-colors group"
                   >
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <h4 className="font-medium text-foreground text-sm" title={masterlist.name}>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="text-sm font-medium text-foreground truncate" title={masterlist.name}>
                           {masterlist.name}
                         </h4>
                         <Badge className={`text-xs font-medium flex-shrink-0 ${getStatusColor(masterlist.status)}`}>
