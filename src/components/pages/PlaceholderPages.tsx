@@ -5508,7 +5508,6 @@ export function Generate() {
 
 export function MasterList() {
   const [searchTerm, setSearchTerm] = useState('')
-  const [layoutView, setLayoutView] = useKV('masterlist-layout-view', 'grid')
   const [selectedMasterList, setSelectedMasterList] = useState<any>(null)
 
   // Master Lists organized by categories
@@ -5815,45 +5814,15 @@ export function MasterList() {
               </Button>
             )}
           </div>
-          
-          <div className="flex items-center border rounded-lg p-1 bg-muted/30">
-            <Button
-              variant={layoutView === 'grid' ? 'default' : 'ghost'}
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={() => setLayoutView('grid')}
-              title="Grid View"
-            >
-              <div className="grid grid-cols-2 gap-0.5 w-3 h-3">
-                <div className="bg-current w-1 h-1 rounded-[1px]"></div>
-                <div className="bg-current w-1 h-1 rounded-[1px]"></div>
-                <div className="bg-current w-1 h-1 rounded-[1px]"></div>
-                <div className="bg-current w-1 h-1 rounded-[1px]"></div>
-              </div>
-            </Button>
-            <Button
-              variant={layoutView === 'list' ? 'default' : 'ghost'}
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={() => setLayoutView('list')}
-              title="List View"
-            >
-              <div className="space-y-1">
-                <div className="bg-current w-3 h-0.5 rounded"></div>
-                <div className="bg-current w-3 h-0.5 rounded"></div>
-                <div className="bg-current w-3 h-0.5 rounded"></div>
-              </div>
-            </Button>
-          </div>
         </div>
       </div>
 
       {searchTerm && (
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="mb-6 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex items-center gap-2">
             <MagnifyingGlass size={14} className="text-blue-600" />
             <span className="text-sm font-medium text-blue-800">
-              {filteredCategories.reduce((total, cat) => total + cat.masterlists.length, 0)} results for "{searchTerm}"
+              {filteredCategories.length} categories with {filteredCategories.reduce((total, cat) => total + cat.masterlists.length, 0)} master lists for "{searchTerm}"
             </span>
             <Button
               variant="ghost"
@@ -5867,93 +5836,65 @@ export function MasterList() {
         </div>
       )}
 
-      <div className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredCategories.map((category) => (
-          <div key={category.id} className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="text-2xl">{category.icon}</div>
-              <div>
-                <h2 className="text-xl font-semibold text-foreground">{category.title}</h2>
-                <p className="text-sm text-muted-foreground">{category.description}</p>
+          <Card 
+            key={category.id}
+            className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${category.color}`}
+            onClick={() => {
+              // Navigate to category view - for now, select the first masterlist as demo
+              setSelectedMasterList(category.masterlists[0])
+            }}
+          >
+            <CardHeader className="pb-3">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="text-2xl">{category.icon}</div>
+                  <div>
+                    <CardTitle className="text-lg font-semibold text-foreground">
+                      {category.title}
+                    </CardTitle>
+                    <CardDescription className="text-sm text-muted-foreground">
+                      {category.description}
+                    </CardDescription>
+                  </div>
+                </div>
+                <CaretRight size={20} className="text-muted-foreground" />
               </div>
-              <Badge variant="outline" className="ml-auto">
-                {category.masterlists.length} lists
-              </Badge>
-            </div>
-
-            {layoutView === 'grid' ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {category.masterlists.map((masterlist) => (
-                  <Card 
-                    key={masterlist.id} 
-                    className={`cursor-pointer transition-all duration-200 hover:shadow-md ${category.color}`}
-                    onClick={() => setSelectedMasterList(masterlist)}
-                  >
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <CardTitle className="text-base font-semibold text-foreground">
-                          {masterlist.name}
-                        </CardTitle>
-                        <Badge className={`text-xs font-medium ${getStatusColor(masterlist.status)}`}>
-                          {masterlist.status}
-                        </Badge>
-                      </div>
-                      <CardDescription className="text-sm text-muted-foreground line-clamp-2">
-                        {masterlist.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="flex items-center justify-between text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <FileText size={14} />
-                          {masterlist.records.toLocaleString()} records
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock size={14} />
-                          {masterlist.lastModified}
-                        </span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <FileText size={14} />
+                      {category.masterlists.length} lists
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <BarChart3 size={14} />
+                      {category.masterlists.reduce((total, ml) => total + ml.records, 0).toLocaleString()} records
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {category.masterlists.slice(0, 3).map((ml) => (
+                    <Badge 
+                      key={ml.id}
+                      variant="outline" 
+                      className={`text-xs ${getStatusColor(ml.status)}`}
+                    >
+                      {ml.status}
+                    </Badge>
+                  ))}
+                  {category.masterlists.length > 3 && (
+                    <Badge variant="outline" className="text-xs">
+                      +{category.masterlists.length - 3} more
+                    </Badge>
+                  )}
+                </div>
               </div>
-            ) : (
-              <div className="space-y-2">
-                {category.masterlists.map((masterlist) => (
-                  <Card 
-                    key={masterlist.id}
-                    className={`cursor-pointer transition-all duration-200 hover:shadow-sm ${category.color}`}
-                    onClick={() => setSelectedMasterList(masterlist)}
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-semibold text-foreground">{masterlist.name}</h3>
-                            <Badge className={`text-xs font-medium ${getStatusColor(masterlist.status)}`}>
-                              {masterlist.status}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-2">{masterlist.description}</p>
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <FileText size={14} />
-                              {masterlist.records.toLocaleString()} records
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Clock size={14} />
-                              Last modified: {masterlist.lastModified}
-                            </span>
-                          </div>
-                        </div>
-                        <CaretRight size={20} className="text-muted-foreground" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
