@@ -5836,49 +5836,52 @@ export function MasterList() {
         </div>
       )}
 
-      <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         {filteredCategories.map((category) => (
-          <Card key={category.id} className={`transition-all duration-200 hover:shadow-md ${category.color}`}>
-            <CardHeader className="pb-4">
-              <div className="flex items-center gap-3">
-                <div className="text-2xl">{category.icon}</div>
-                <div className="flex-1">
-                  <CardTitle className="text-xl font-semibold text-foreground">{category.title}</CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground mt-1">{category.description}</CardDescription>
+          <Card key={category.id} className={`transition-all duration-200 hover:shadow-md ${category.color} h-96 flex flex-col`}>
+            <CardHeader className="pb-3 flex-shrink-0">
+              <div className="flex items-center gap-2">
+                <div className="text-lg">{category.icon}</div>
+                <div className="flex-1 min-w-0">
+                  <CardTitle className="text-base font-semibold text-foreground truncate">{category.title}</CardTitle>
+                  <CardDescription className="text-xs text-muted-foreground line-clamp-2">{category.description}</CardDescription>
                 </div>
-                <Badge variant="outline" className="font-mono text-sm">
-                  {category.masterlists.length} lists
-                </Badge>
               </div>
+              <Badge variant="outline" className="font-mono text-xs w-fit">
+                {category.masterlists.length} lists
+              </Badge>
             </CardHeader>
-            <CardContent className="pt-0">
-              <div className="space-y-3">
+            <CardContent className="pt-0 flex-1 min-h-0">
+              <div className="h-full overflow-y-auto overflow-x-hidden space-y-2 pr-1">
                 {category.masterlists.map((masterlist) => (
                   <div
                     key={masterlist.id}
-                    className="flex items-center justify-between p-4 rounded-lg border border-gray-200 hover:border-gray-300 cursor-pointer transition-all duration-200 hover:bg-gray-50/50"
+                    className="flex items-start gap-2 p-2 rounded-lg border border-gray-200 hover:border-gray-300 cursor-pointer transition-all duration-200 hover:bg-gray-50/50"
                     onClick={() => setSelectedMasterList(masterlist)}
                   >
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h4 className="font-medium text-foreground text-sm">{masterlist.name}</h4>
-                        <Badge className={`text-xs font-medium ${getStatusColor(masterlist.status)}`}>
+                      <div className="flex items-start justify-between gap-1 mb-1">
+                        <h4 className="font-medium text-foreground text-xs line-clamp-1" title={masterlist.name}>
+                          {masterlist.name}
+                        </h4>
+                        <Badge className={`text-xs font-medium flex-shrink-0 ${getStatusColor(masterlist.status)}`}>
                           {masterlist.status}
                         </Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground mb-2 line-clamp-1">{masterlist.description}</p>
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                      <p className="text-xs text-muted-foreground mb-1 line-clamp-2" title={masterlist.description}>
+                        {masterlist.description}
+                      </p>
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
-                          <FileText size={12} />
-                          {masterlist.records.toLocaleString()} records
+                          <FileText size={10} />
+                          {masterlist.records.toLocaleString()}
                         </span>
-                        <span className="flex items-center gap-1">
-                          <Clock size={12} />
+                        <span className="text-xs">
                           {masterlist.lastModified}
                         </span>
                       </div>
                     </div>
-                    <CaretRight size={16} className="text-muted-foreground flex-shrink-0 ml-3" />
+                    <CaretRight size={12} className="text-muted-foreground flex-shrink-0 mt-1" />
                   </div>
                 ))}
               </div>
