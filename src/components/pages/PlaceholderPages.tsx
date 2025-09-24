@@ -5959,9 +5959,6 @@ export function MasterList() {
                         <h4 className="text-sm font-medium text-foreground truncate" title={masterlist.name}>
                           {masterlist.name}
                         </h4>
-                        <Badge className={`text-xs font-medium flex-shrink-0 ${getStatusColor(masterlist.status)}`}>
-                          {masterlist.status}
-                        </Badge>
                       </div>
                       <p className="text-xs text-muted-foreground line-clamp-2" title={masterlist.description}>
                         {masterlist.description}
