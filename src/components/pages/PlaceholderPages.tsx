@@ -5853,7 +5853,8 @@ export function MasterList() {
           <div className="flex items-center gap-2">
             <MagnifyingGlass size={14} className="text-blue-600" />
             <span className="text-sm font-medium text-blue-800">
-              {filteredCategories.reduce((total, cat) => total + cat.masterlists.length, 0)} results for "{searchTerm}"
+              Found {filteredCategories.reduce((total, cat) => total + cat.masterlists.length, 0)} master lists 
+              across {filteredCategories.length} categories for "{searchTerm}"
             </span>
             <Button
               variant="ghost"
@@ -5867,89 +5868,83 @@ export function MasterList() {
         </div>
       )}
 
-      <div className="space-y-8">
+      <div className="space-y-6">
         {filteredCategories.map((category) => (
-          <div key={category.id} className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="text-2xl">{category.icon}</div>
-              <div>
-                <h2 className="text-xl font-semibold text-foreground">{category.title}</h2>
-                <p className="text-sm text-muted-foreground">{category.description}</p>
+          <div key={category.id} className="space-y-3">
+            <div className={`flex items-center gap-3 p-3 rounded-lg border-2 ${category.color}`}>
+              <div className="text-xl">{category.icon}</div>
+              <div className="flex-1">
+                <h2 className="text-lg font-semibold text-foreground">{category.title}</h2>
+                <p className="text-xs text-muted-foreground">{category.description}</p>
               </div>
-              <Badge variant="outline" className="ml-auto">
-                {category.masterlists.length} lists
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="text-xs">
+                  {category.masterlists.length} lists
+                </Badge>
+                <Badge variant="outline" className="text-xs font-mono">
+                  {category.masterlists.reduce((sum, ml) => sum + ml.records, 0).toLocaleString()} records
+                </Badge>
+              </div>
             </div>
 
             {layoutView === 'grid' ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
                 {category.masterlists.map((masterlist) => (
-                  <Card 
+                  <div 
                     key={masterlist.id} 
-                    className={`cursor-pointer transition-all duration-200 hover:shadow-md ${category.color}`}
+                    className={`cursor-pointer transition-all duration-200 hover:shadow-md ${category.color} rounded-lg border p-3 min-h-[100px] flex flex-col justify-between`}
                     onClick={() => setSelectedMasterList(masterlist)}
                   >
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <CardTitle className="text-base font-semibold text-foreground">
-                          {masterlist.name}
-                        </CardTitle>
-                        <Badge className={`text-xs font-medium ${getStatusColor(masterlist.status)}`}>
-                          {masterlist.status}
-                        </Badge>
-                      </div>
-                      <CardDescription className="text-sm text-muted-foreground line-clamp-2">
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground mb-1 leading-tight line-clamp-2">
+                        {masterlist.name}
+                      </h3>
+                      <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
                         {masterlist.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="flex items-center justify-between text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <FileText size={14} />
-                          {masterlist.records.toLocaleString()} records
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock size={14} />
-                          {masterlist.lastModified}
-                        </span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Badge className={`text-xs font-medium ${getStatusColor(masterlist.status)}`}>
+                        {masterlist.status}
+                      </Badge>
+                      <span className="text-xs text-muted-foreground font-mono">
+                        {masterlist.records > 999 ? `${Math.round(masterlist.records / 1000)}k` : masterlist.records}
+                      </span>
+                    </div>
+                  </div>
                 ))}
               </div>
             ) : (
-              <div className="space-y-2">
-                {category.masterlists.map((masterlist) => (
-                  <Card 
+              <div className="bg-white border rounded-lg divide-y divide-border">
+                {category.masterlists.map((masterlist, index) => (
+                  <div 
                     key={masterlist.id}
-                    className={`cursor-pointer transition-all duration-200 hover:shadow-sm ${category.color}`}
+                    className={`cursor-pointer transition-all duration-200 hover:bg-muted/30 p-3 ${index === 0 ? 'rounded-t-lg' : ''} ${index === category.masterlists.length - 1 ? 'rounded-b-lg' : ''}`}
                     onClick={() => setSelectedMasterList(masterlist)}
                   >
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-semibold text-foreground">{masterlist.name}</h3>
-                            <Badge className={`text-xs font-medium ${getStatusColor(masterlist.status)}`}>
-                              {masterlist.status}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-2">{masterlist.description}</p>
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <FileText size={14} />
-                              {masterlist.records.toLocaleString()} records
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Clock size={14} />
-                              Last modified: {masterlist.lastModified}
-                            </span>
-                          </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-semibold text-foreground text-sm truncate">{masterlist.name}</h3>
+                          <Badge className={`text-xs font-medium ${getStatusColor(masterlist.status)} shrink-0`}>
+                            {masterlist.status}
+                          </Badge>
                         </div>
-                        <CaretRight size={20} className="text-muted-foreground" />
+                        <p className="text-xs text-muted-foreground line-clamp-1 mb-2">{masterlist.description}</p>
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <FileText size={12} />
+                            {masterlist.records.toLocaleString()} records
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock size={12} />
+                            {masterlist.lastModified}
+                          </span>
+                        </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                      <CaretRight size={16} className="text-muted-foreground shrink-0 ml-3" />
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
@@ -5961,8 +5956,22 @@ export function MasterList() {
         <div className="text-center py-12">
           <MagnifyingGlass size={48} className="mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg font-semibold text-foreground mb-2">No master lists found</h3>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mb-2">
             No master lists match your search for "{searchTerm}"
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Try searching across {masterListCategories.reduce((total, cat) => total + cat.masterlists.length, 0)} master lists 
+            in {masterListCategories.length} categories
+          </p>
+        </div>
+      )}
+
+      {!searchTerm && filteredCategories.length === 0 && (
+        <div className="text-center py-12">
+          <FileText size={48} className="mx-auto text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold text-foreground mb-2">No master lists available</h3>
+          <p className="text-muted-foreground">
+            Master lists will be organized by categories when available
           </p>
         </div>
       )}
