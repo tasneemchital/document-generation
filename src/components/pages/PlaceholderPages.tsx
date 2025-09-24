@@ -5569,3 +5569,19 @@ export function AskBenny() {
     </div>
   )
 }
+
+export function Portfolio() {
+  return (
+    <div className="p-4">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-foreground">Portfolio</h1>
+          <p className="text-muted-foreground mt-1">Manage your project portfolios</p>
+        </div>
+      </div>
+      <div className="bg-card rounded-lg border border-border p-8 text-center">
+        <p className="text-muted-foreground">Portfolio management features coming soon...</p>
+      </div>
+    </div>
+  )
+}

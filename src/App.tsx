@@ -10,7 +10,8 @@ import {
   Publish, 
   AdminSettings, 
   DesignStudio,
-  AskBenny
+  AskBenny,
+  Portfolio
 } from '@/components/pages/PlaceholderPages'
 import { DigitalContentManager } from '@/components/pages/DigitalContentManager'
 import { MedicareEOCMasterList } from '@/components/pages/MedicareEOCMasterList'
@@ -66,6 +67,8 @@ function App() {
         />
       case 'translation-studio':
         return <TranslationStudio />
+      case 'portfolio':
+        return <Portfolio />
       case 'collaborate':
         return <Collaborate />
         case 'masterlist':
