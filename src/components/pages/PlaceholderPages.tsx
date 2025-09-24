@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { FileText, Clock, BarChart3, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus, TextAa, Rows, CopySimple, XCircle, FrameCorners, FileXls, CloudArrowUp, ArrowsClockwise } from "@phosphor-icons/react"
+import { FileText, Clock, BarChart3, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus, TextAa, Rows, CopySimple, XCircle, FrameCorners, FileXls, CloudArrowUp, ArrowsClockwise, FloppyDisk } from "@phosphor-icons/react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -5762,11 +5762,11 @@ export function MasterList() {
                   <p className="text-sm text-muted-foreground">
                     Effective Date: <span className="font-semibold text-foreground">1/1/2026</span>, Version No. <span className="font-semibold text-foreground">2026_14.0</span>
                   </p>
-                  <Button variant="outline" size="sm" className="h-8">
-                    Save
-                  </Button>
                 </div>
               </div>
+              <Button variant="outline" size="sm" className="h-8 w-8 p-0" title="Save">
+                <FloppyDisk size={16} />
+              </Button>
             </div>
             
             {/* Toolbar with Button Icons */}
