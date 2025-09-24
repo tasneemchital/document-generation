@@ -5690,6 +5690,47 @@ export function MasterList() {
           status: 'Active'
         }
       ]
+    },
+    {
+      id: 'integration',
+      title: 'Integration Master Lists',
+      description: 'Integration mappings and system synchronization',
+      icon: '🔗',
+      color: 'bg-orange-50 border-orange-200 hover:bg-orange-100',
+      masterlists: [
+        {
+          id: 'hpms-sync-mappings',
+          name: 'HPMS sync mappings',
+          description: 'Configure Health Plan Management System synchronization mappings',
+          lastModified: '2025-01-15',
+          records: 412,
+          status: 'Active'
+        },
+        {
+          id: 'api-mappings',
+          name: 'API mappings',
+          description: 'Manage API endpoint mappings and data transformations',
+          lastModified: '2025-01-14',
+          records: 298,
+          status: 'Active'
+        },
+        {
+          id: 'odm-mappings',
+          name: 'ODM mappings',
+          description: 'Object Data Model mappings for cross-system integration',
+          lastModified: '2025-01-13',
+          records: 156,
+          status: 'Active'
+        },
+        {
+          id: 'excel-upload-mappings',
+          name: 'Excel upload mappings',
+          description: 'Define mappings for Excel file upload and processing',
+          lastModified: '2025-01-12',
+          records: 234,
+          status: 'Active'
+        }
+      ]
     }
   ]
 
