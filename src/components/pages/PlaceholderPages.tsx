@@ -5706,8 +5706,9 @@ export function MasterList() {
         category: masterList.name,
         lastModified: new Date(2025, 0, Math.floor(Math.random() * 15) + 1).toLocaleDateString(),
         modifiedBy: ['John Doe', 'Jane Smith', 'Mike Johnson', 'Sarah Wilson'][Math.floor(Math.random() * 4)],
-        effectiveDate: new Date(2025, 0, 1).toLocaleDateString(),
-        expirationDate: new Date(2025, 11, 31).toLocaleDateString()
+        effectiveDate: '1/1/2026',
+        expirationDate: new Date(2025, 11, 31).toLocaleDateString(),
+        version: '2026_14.0'
       })
     }
     return baseData
@@ -5757,14 +5758,27 @@ export function MasterList() {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle>Master List Data</CardTitle>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {selectedMasterList.records} total records
-                </p>
+                <div className="flex items-center gap-4 mt-2">
+                  <p className="text-sm text-muted-foreground">
+                    {selectedMasterList.records} total records
+                  </p>
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-muted-foreground">Effective Date:</span>
+                    <span className="font-medium">1/1/2026</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-muted-foreground">Version No.:</span>
+                    <span className="font-medium">2026_14.0</span>
+                  </div>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm">
                   <Download className="w-4 h-4 mr-2" />
                   Export
+                </Button>
+                <Button variant="outline" size="sm">
+                  Save
                 </Button>
                 <Button size="sm">
                   <Plus className="w-4 h-4 mr-2" />
@@ -5783,6 +5797,8 @@ export function MasterList() {
                     <TableHead>Code</TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Effective Date</TableHead>
+                    <TableHead>Version</TableHead>
                     <TableHead>Last Modified</TableHead>
                     <TableHead>Modified By</TableHead>
                   </TableRow>
@@ -5801,6 +5817,8 @@ export function MasterList() {
                           {record.status}
                         </Badge>
                       </TableCell>
+                      <TableCell className="text-sm font-mono">{record.effectiveDate}</TableCell>
+                      <TableCell className="text-sm font-mono">{record.version}</TableCell>
                       <TableCell className="text-sm">{record.lastModified}</TableCell>
                       <TableCell className="text-sm">{record.modifiedBy}</TableCell>
                     </TableRow>
