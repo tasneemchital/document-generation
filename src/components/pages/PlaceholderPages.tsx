@@ -6022,7 +6022,7 @@ export function MasterList() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         {filteredCategories.map((category) => (
-          <Card key={category.id} className={`transition-all duration-200 hover:shadow-md ${category.color} h-96 flex flex-col`}>
+          <Card key={category.id} className={`transition-all duration-200 hover:shadow-md ${category.color} h-80 flex flex-col`}>
             <CardHeader className="pb-3 flex-shrink-0">
               <div className="flex items-center gap-2">
                 <div className="text-lg">{category.icon}</div>
@@ -6036,36 +6036,27 @@ export function MasterList() {
               </Badge>
             </CardHeader>
             <CardContent className="pt-0 flex-1 min-h-0">
-              <div className="h-full overflow-y-auto overflow-x-hidden space-y-2 pr-1">
+              <div className="h-full overflow-y-auto overflow-x-hidden space-y-3 pr-1">
                 {category.masterlists.map((masterlist) => (
                   <div
                     key={masterlist.id}
-                    className="flex items-start gap-2 p-2 rounded-lg border border-gray-200 hover:border-gray-300 cursor-pointer transition-all duration-200 hover:bg-gray-50/50"
+                    className="flex items-center gap-2 p-3 rounded-lg border border-gray-200 hover:border-gray-300 cursor-pointer transition-all duration-200 hover:bg-gray-50/50"
                     onClick={() => setSelectedMasterList(masterlist)}
                   >
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-1 mb-1">
-                        <h4 className="font-medium text-foreground text-xs line-clamp-1" title={masterlist.name}>
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <h4 className="font-medium text-foreground text-sm" title={masterlist.name}>
                           {masterlist.name}
                         </h4>
                         <Badge className={`text-xs font-medium flex-shrink-0 ${getStatusColor(masterlist.status)}`}>
                           {masterlist.status}
                         </Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground mb-1 line-clamp-2" title={masterlist.description}>
+                      <p className="text-xs text-muted-foreground line-clamp-2" title={masterlist.description}>
                         {masterlist.description}
                       </p>
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <FileText size={10} />
-                          {masterlist.records.toLocaleString()}
-                        </span>
-                        <span className="text-xs">
-                          {masterlist.lastModified}
-                        </span>
-                      </div>
                     </div>
-                    <CaretRight size={12} className="text-muted-foreground flex-shrink-0 mt-1" />
+                    <CaretRight size={12} className="text-muted-foreground flex-shrink-0" />
                   </div>
                 ))}
               </div>
