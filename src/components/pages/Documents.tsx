@@ -2,68 +2,68 @@ import { useState } from 'react'
 import { useKV } from '@github/spark/hooks'
 import { SmartSearchBar } from '@/components/SmartSearchBar'
 import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { 
   Table, 
-  TableBody, 
   TableCell, 
-  TableHead, 
   TableHeader, 
-  TableRow 
-} from '@/components/ui/table'
-import { 
+} from '@
   Filter,
-  Download,
   Eye,
-  Settings,
   Calendar,
-  FileText,
   Building,
-  Tag
-} from '@phosphor-icons/react'
-
-interface DocumentData {
-  id: string
+} from '@phosph
+interface D
   documentName: string
-  planType: string
-  instanceName: string
-  effectiveDate: string
-  versionNumber: string
-  status: string
-  lastModified: string
-  createdBy: string
-  documentType: string
-}
+  instanc
+  version
+  lastModif
+  docu
 
-// Sample document data
-const mockDocuments: DocumentData[] = [
-  {
-    id: 'DOC-001',
-    documentName: 'Medicare Advantage EOC 2025',
-    planType: 'HMO',
-    instanceName: 'Simplify HMO MAPD',
-    effectiveDate: '1/1/2025',
-    versionNumber: '2025_1.0',
+const mockD
+    id: 'DO
+    planTyp
+    e
     status: 'Active',
-    lastModified: '12/15/2024',
-    createdBy: 'John Smith',
-    documentType: 'EOC'
+
   },
-  {
-    id: 'DOC-002',
-    documentName: 'Medicare Advantage ANOC 2025',
+    id: 'DOC
     planType: 'PPO',
-    instanceName: 'Simplify PPO',
-    effectiveDate: '1/1/2025',
-    versionNumber: '2025_2.0',
+    effectiveDate:
     status: 'Active',
-    lastModified: '12/14/2024',
-    createdBy: 'Sarah Johnson',
-    documentType: 'ANOC'
+    createdBy: 'Sarah J
+  },
+    id: 'DOC-003
+    planType: 'DSNP',
+    effectiveDate: 
+    status: 'Draft',
+ 
+
+    id: 'DOC-004',
+    planType: 'HMO',
+   
+    status: 'Under
+    createdBy: 'Lisa Wilson',
+  },
+    id: 'DOC-005',
+    planType: 'HMO',
+    effectiveDate: '1/1/2025',
+    status: 'Active',
+    createdBy: 'Robert Brown',
+  },
+    id: 'DOC-006',
   },
   {
+    status: 'Activ
+    createdBy: 'Emily Clark',
+  },
+    id: 'DOC-007',
+    planType: 'All Plans',
+    effectiveDate: '1/1/2025',
+    status: 'Active',
+    createdBy: 'David Lee',
+  },
+    id: 'DOC-008',
+    
+   
     id: 'DOC-003',
     documentName: 'Summary of Benefits',
     planType: 'DSNP',
@@ -132,23 +132,23 @@ const mockDocuments: DocumentData[] = [
     versionNumber: '2025_2.0',
     status: 'Draft',
     lastModified: '12/08/2024',
-    createdBy: 'Jennifer Taylor',
+        return 'bg-blue-100 text-
     documentType: 'Handbook'
-  },
+    
   {
-    id: 'DOC-009',
+  return (
     documentName: 'Outline of Coverage',
-    planType: 'PPO',
+      <div className
     instanceName: 'Premium PPO Plan',
-    effectiveDate: '1/1/2025',
+          <p className="text-m
     versionNumber: '2025_1.2',
     status: 'Under Review',
     lastModified: '12/07/2024',
     createdBy: 'Kevin Martinez',
     documentType: 'OOC'
-  },
+    
   {
-    id: 'DOC-010',
+          </Button
     documentName: 'SOB Rx Filling Guide',
     planType: 'MAPD',
     instanceName: 'Medicare Rx Plan',
@@ -156,9 +156,9 @@ const mockDocuments: DocumentData[] = [
     versionNumber: '2025_1.0',
     status: 'Active',
     lastModified: '12/06/2024',
-    createdBy: 'Amanda White',
+          />
     documentType: 'SOB'
-  }
+
 ]
 
 interface DocumentsProps {
@@ -184,25 +184,25 @@ export function Documents({ onNavigate }: DocumentsProps) {
       doc.instanceName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doc.planType.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doc.documentType.toLowerCase().includes(searchTerm.toLowerCase())
-    
+
     const matchesPlanType = planTypeFilter === 'all' || doc.planType === planTypeFilter
     const matchesStatus = statusFilter === 'all' || doc.status === statusFilter  
     const matchesDocumentType = documentTypeFilter === 'all' || doc.documentType === documentTypeFilter
     
     return matchesSearch && matchesPlanType && matchesStatus && matchesDocumentType
-  })
+    
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Active':
+
         return 'bg-green-100 text-green-800'
-      case 'Draft':
+                var
         return 'bg-yellow-100 text-yellow-800'
       case 'Under Review':
         return 'bg-blue-100 text-blue-800'
       default:
         return 'bg-gray-100 text-gray-800'
-    }
+     
   }
 
   return (
@@ -214,11 +214,11 @@ export function Documents({ onNavigate }: DocumentsProps) {
           <p className="text-muted-foreground mt-1">
             Manage and view all document templates and instances
           </p>
-        </div>
+      <Card>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm">
             <Download className="w-4 h-4 mr-2" />
-            Export
+                <T
           </Button>
           <Button variant="outline" size="sm">
             <Settings className="w-4 h-4 mr-2" />
@@ -228,19 +228,19 @@ export function Documents({ onNavigate }: DocumentsProps) {
       </div>
 
       {/* Smart Search Bar */}
-      <Card>
+            
         <CardContent className="p-4">
-          <SmartSearchBar 
+                    </div>
             value={searchTerm}
             onChange={setSearchTerm}
             placeholder="Search documents by name, instance, plan type..."
             storageKey="documents-search"
           />
-        </CardContent>
+                  </Ta
       </Card>
 
       {/* Global Filters */}
-      <Card>
+            
         <CardContent className="p-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
@@ -258,10 +258,10 @@ export function Documents({ onNavigate }: DocumentsProps) {
                   <SelectItem value="all">All Plan Types</SelectItem>
                   {uniquePlanTypes.map(type => (
                     <SelectItem key={type} value={type}>{type}</SelectItem>
-                  ))}
+            <p classN
                 </SelectContent>
-              </Select>
-            </div>
+          </CardContent
+
 
             <div className="flex items-center gap-2">
               <Tag className="w-4 h-4 text-muted-foreground" />
@@ -273,9 +273,9 @@ export function Documents({ onNavigate }: DocumentsProps) {
                   <SelectItem value="all">All Statuses</SelectItem>
                   {uniqueStatuses.map(status => (
                     <SelectItem key={status} value={status}>{status}</SelectItem>
-                  ))}
+
                 </SelectContent>
-              </Select>
+
             </div>
 
             <div className="flex items-center gap-2">
@@ -302,19 +302,19 @@ export function Documents({ onNavigate }: DocumentsProps) {
                   setStatusFilter('all')
                   setDocumentTypeFilter('all')
                 }}
-              >
+
                 Clear Filters
-              </Button>
+
             )}
-          </div>
+
         </CardContent>
-      </Card>
+
 
       {/* Results Summary */}
       <div className="flex items-center justify-between text-sm text-muted-foreground">
-        <span>
+
           Showing {filteredDocuments.length} of {documents.length} documents
-        </span>
+
         <div className="flex items-center gap-2">
           <Calendar className="w-4 h-4" />
           <span>Last updated: {new Date().toLocaleDateString()}</span>
@@ -324,63 +324,63 @@ export function Documents({ onNavigate }: DocumentsProps) {
       {/* Documents Table */}
       <Card>
         <CardContent className="p-0">
-          <Table>
+
             <TableHeader>
-              <TableRow>
+
                 <TableHead>Document Name</TableHead>
                 <TableHead>Plan Type</TableHead>
                 <TableHead>Instance Name</TableHead>
                 <TableHead>Effective Date</TableHead>
                 <TableHead>Version Number</TableHead>
-                <TableHead>Status</TableHead>
+
                 <TableHead>Document Type</TableHead>
                 <TableHead>Last Modified</TableHead>
                 <TableHead>Created By</TableHead>
-                <TableHead>Actions</TableHead>
+
               </TableRow>
-            </TableHeader>
+
             <TableBody>
-              {filteredDocuments.map((doc) => (
+
                 <TableRow key={doc.id} className="hover:bg-muted/50">
-                  <TableCell className="font-medium">
+
                     <div className="flex items-center gap-2">
                       <FileText className="w-4 h-4 text-muted-foreground" />
                       {doc.documentName}
-                    </div>
+
                   </TableCell>
-                  <TableCell>
+
                     <Badge variant="outline">{doc.planType}</Badge>
-                  </TableCell>
+
                   <TableCell>{doc.instanceName}</TableCell>
-                  <TableCell>{doc.effectiveDate}</TableCell>
-                  <TableCell>
+
+
                     <Badge variant="secondary">{doc.versionNumber}</Badge>
                   </TableCell>
                   <TableCell>
                     <Badge className={getStatusColor(doc.status)} variant="secondary">
-                      {doc.status}
+
                     </Badge>
-                  </TableCell>
+
                   <TableCell>
-                    <Badge variant="outline">{doc.documentType}</Badge>
+
                   </TableCell>
-                  <TableCell>{doc.lastModified}</TableCell>
+
                   <TableCell>{doc.createdBy}</TableCell>
-                  <TableCell>
+
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="sm">
+
                         <Eye className="w-4 h-4" />
                       </Button>
                       <Button variant="ghost" size="sm">
-                        <Download className="w-4 h-4" />
+
                       </Button>
-                    </div>
+
                   </TableCell>
-                </TableRow>
+
               ))}
             </TableBody>
           </Table>
-        </CardContent>
+
       </Card>
 
       {filteredDocuments.length === 0 && (
@@ -390,10 +390,9 @@ export function Documents({ onNavigate }: DocumentsProps) {
             <h3 className="text-lg font-semibold mb-2">No documents found</h3>
             <p className="text-muted-foreground">
               Try adjusting your search criteria or filters
-            </p>
+
           </CardContent>
-        </Card>
+
       )}
-    </div>
+
   )
-}
