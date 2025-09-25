@@ -6041,8 +6041,8 @@ export function Portfolio() {
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Portfolio</h1>
-          <p className="text-muted-foreground mt-1">Manage your project portfolios</p>
+          <h1 className="text-2xl font-semibold text-foreground">Review</h1>
+          <p className="text-muted-foreground mt-1">Review and manage your documents</p>
         </div>
         
         {/* Search and Button in top right */}
@@ -6050,7 +6050,7 @@ export function Portfolio() {
           <div className="relative">
             <MagnifyingGlass size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search portfolios..."
+              placeholder="Search documents..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 w-64"
@@ -6058,13 +6058,13 @@ export function Portfolio() {
           </div>
           <Button className="bg-primary hover:bg-primary/90">
             <Plus size={16} className="mr-2" />
-            New Portfolio
+            New Review
           </Button>
         </div>
       </div>
       
       <div className="bg-card rounded-lg border border-border p-8 text-center">
-        <p className="text-muted-foreground">Portfolio management features coming soon...</p>
+        <p className="text-muted-foreground">Document review features coming soon...</p>
       </div>
     </div>
   )

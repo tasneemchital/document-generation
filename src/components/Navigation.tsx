@@ -47,7 +47,7 @@ const navigationItems: NavigationItem[] = [
     ]
   },
   { id: 'template', label: 'Template', icon: File },
-  { id: 'portfolio', label: 'Portfolio', icon: Briefcase },
+  { id: 'portfolio', label: 'Review', icon: Briefcase },
   { 
     id: 'global-content', 
     label: 'Create', 
