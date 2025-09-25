@@ -6079,6 +6079,16 @@ export function MasterList() {
                           {masterlist.name}
                         </h4>
                       </div>
+                    key={masterlist.id}
+                    onClick={() => setSelectedMasterList(masterlist)}
+                    className="flex items-center justify-between p-3 bg-white/80 backdrop-blur-sm rounded-lg border border-white/60 hover:bg-white/90 cursor-pointer transition-colors group"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="text-sm font-medium text-foreground truncate" title={masterlist.name}>
+                          {masterlist.name}
+                        </h4>
+                      </div>
                       <p className="text-xs text-muted-foreground line-clamp-2" title={masterlist.description}>
                         {masterlist.description}
                       </p>
@@ -6109,16 +6119,6 @@ export function AdminSettings() {
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">Admin Settings</h1>
-          <p className="text-muted-foreground mt-1">Configure system settings</p>
-        </div>
-      </div>
-      <div className="bg-card rounded-lg border border-border p-8 text-center">
-        <p className="text-muted-foreground">Admin settings coming soon...</p>
-      </div>
-    </div>
-  )
 }
 
 export function DesignStudio() {
