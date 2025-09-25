@@ -402,7 +402,7 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
                         <SelectValue placeholder="Filter..." />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All</SelectItem>
+                        <SelectItem value="all">All</SelectItem>
                         {uniquePlanTypes.map(type => (
                           <SelectItem key={type} value={type}>{type}</SelectItem>
                         ))}
@@ -491,7 +491,7 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
                         <SelectValue placeholder="Filter..." />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All</SelectItem>
+                        <SelectItem value="all">All</SelectItem>
                         {uniqueStatuses.map(status => (
                           <SelectItem key={status} value={status}>{status}</SelectItem>
                         ))}
@@ -517,7 +517,7 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
                         <SelectValue placeholder="Filter..." />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All</SelectItem>
+                        <SelectItem value="all">All</SelectItem>
                         {uniqueDocumentTypes.map(type => (
                           <SelectItem key={type} value={type}>{type}</SelectItem>
                         ))}
@@ -564,7 +564,7 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
                         <SelectValue placeholder="Filter..." />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All</SelectItem>
+                        <SelectItem value="all">All</SelectItem>
                         {uniqueCreatedBy.map(user => (
                           <SelectItem key={user} value={user}>{user}</SelectItem>
                         ))}

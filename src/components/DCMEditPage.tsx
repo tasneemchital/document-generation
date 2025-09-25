@@ -54,6 +54,7 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState('');
 
   useEffect(() => {
     if (rule && mode === 'edit') {
@@ -534,7 +535,7 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
                     View Plan Eligibility
                   </Button>
                 </div>
-                <Select value="" onValueChange={() => {}}>
+                <Select value={selectedPlan} onValueChange={setSelectedPlan}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select Plan" />
                   </SelectTrigger>
