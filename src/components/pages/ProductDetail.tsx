@@ -1,14 +1,13 @@
 import { Button } from "@/components/ui/button"
-import { Separator } from '@/components/ui/separator'
+import { ArrowLeft, Eye, Download } from "@phosphor-i
 import { ArrowLeft, Eye, Download } from "@phosphor-icons/react"
 interface ProductDetailProps {
-  productId?: string
+
   productName?: string
-  onNavigate: (page: string) => void
 }
 
 export function ProductDetail({ productId, productName, onNavigate }: ProductDetailProps) {
-  // Mock product data - in a real app this would come from an API
+export function ProductDetail({ productId, productName, onNavigate }: ProductDetailProps) {
   const productData = {
     id: productId,
     name: productName || 'Medicare EOC 2024',
