@@ -97,6 +97,21 @@ export function SmartSearchBar({
     )
   }
 
+  const markRecentAsFavorite = (query: string) => {
+    const newFavorite: SavedQuery = {
+      id: Date.now().toString(),
+      query: query,
+      label: query,
+      timestamp: Date.now(),
+      isFavorite: true
+    }
+
+    setSavedQueries((current: SavedQuery[]) => [newFavorite, ...current])
+    
+    // Remove from recent searches
+    setRecentQueries((current: string[]) => current.filter(q => q !== query))
+  }
+
   const clearRecentQueries = () => {
     setRecentQueries([])
   }
@@ -140,8 +155,7 @@ export function SmartSearchBar({
               size="sm"
               className="h-10 px-3"
             >
-              <Star className="h-4 w-4 mr-1" />
-              Favorites
+              <Star className="h-4 w-4" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-80" align="end">
@@ -218,17 +232,27 @@ export function SmartSearchBar({
                   </div>
                   <div className="space-y-1">
                     {recentQueries.map((query, index) => (
-                      <button
-                        key={index}
-                        className="w-full text-left p-2 hover:bg-muted rounded-md flex items-center space-x-2"
-                        onClick={() => {
-                          handleInputChange(query)
-                          onChange?.(query)
-                        }}
-                      >
-                        <Clock className="h-3 w-3 text-muted-foreground" />
-                        <span className="truncate text-sm">{query}</span>
-                      </button>
+                      <div key={index} className="flex items-center justify-between p-2 hover:bg-muted rounded-md">
+                        <button
+                          className="flex-1 text-left flex items-center space-x-2"
+                          onClick={() => {
+                            handleInputChange(query)
+                            onChange?.(query)
+                          }}
+                        >
+                          <Clock className="h-3 w-3 text-muted-foreground" />
+                          <span className="truncate text-sm">{query}</span>
+                        </button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0"
+                          onClick={() => markRecentAsFavorite(query)}
+                          title="Mark as favorite"
+                        >
+                          <Star className="h-3 w-3" />
+                        </Button>
+                      </div>
                     ))}
                   </div>
                 </div>
