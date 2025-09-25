@@ -4769,6 +4769,12 @@ export function Generate() {
     switch (collateralType) {
       case 'Medicare ANOC':
       case 'Medicare EOC':
+      case 'SOB':
+      case 'SBC':
+      case 'SOB Rx filling':
+      case 'SOB Med Filling':
+      case 'SBC Filling':
+      case 'Outline of Coverage':
         return {
           documentName: '',
           planType: '',
@@ -4782,6 +4788,16 @@ export function Generate() {
           planType: '',
           egwp: '',
           language: '',
+          folderName: '',
+          folderVersionNumber: ''
+        }
+      case 'Commercial Handbook':
+      case 'Benefit Description':
+      case 'HIPAA Codification':
+      case 'Medicaid Handbook':
+        return {
+          documentName: '',
+          planType: '',
           folderName: '',
           folderVersionNumber: ''
         }
@@ -4806,14 +4822,13 @@ export function Generate() {
   const getColumnsForCollateral = (collateralType: string) => {
     switch (collateralType) {
       case 'Medicare ANOC':
-        return [
-          { key: 'documentName', label: 'Document Name' },
-          { key: 'planType', label: 'Plan Type' },
-          { key: 'egwp', label: 'EGWP' },
-          { key: 'folderName', label: 'Folder Name' },
-          { key: 'folderVersionNumber', label: 'Folder Version Number' }
-        ]
       case 'Medicare EOC':
+      case 'SOB':
+      case 'SBC':
+      case 'SOB Rx filling':
+      case 'SOB Med Filling':
+      case 'SBC Filling':
+      case 'Outline of Coverage':
         return [
           { key: 'documentName', label: 'Document Name' },
           { key: 'planType', label: 'Plan Type' },
@@ -4827,6 +4842,16 @@ export function Generate() {
           { key: 'planType', label: 'Plan Type' },
           { key: 'egwp', label: 'EGWP' },
           { key: 'language', label: 'Language' },
+          { key: 'folderName', label: 'Folder Name' },
+          { key: 'folderVersionNumber', label: 'Folder Version Number' }
+        ]
+      case 'Commercial Handbook':
+      case 'Benefit Description':
+      case 'HIPAA Codification':
+      case 'Medicaid Handbook':
+        return [
+          { key: 'documentName', label: 'Document Name' },
+          { key: 'planType', label: 'Plan Type' },
           { key: 'folderName', label: 'Folder Name' },
           { key: 'folderVersionNumber', label: 'Folder Version Number' }
         ]
@@ -4870,7 +4895,17 @@ export function Generate() {
   const collateralOptions = [
     'Medicare ANOC',
     'Medicare EOC',
-    'Medicare SB'
+    'Medicare SB',
+    'SOB',
+    'SBC',
+    'SOB Rx filling',
+    'SOB Med Filling',
+    'SBC Filling',
+    'Commercial Handbook',
+    'Benefit Description',
+    'HIPAA Codification',
+    'Medicaid Handbook',
+    'Outline of Coverage'
   ]
   
   // Different document sets for each collateral type with unique data
@@ -4936,6 +4971,71 @@ export function Generate() {
           { id: 'sb_H7722004000', documentName: 'H7722004000', planType: 'HMO-POS', egwp: 'No', language: 'English', folderName: 'H7722004000', folderVersionNumber: '2026_2.01' },
           { id: 'sb_H8833006000', documentName: 'H8833006000', planType: 'PPO', egwp: 'Yes', language: 'English', folderName: 'H8833006000', folderVersionNumber: '2026_2.01' },
           { id: 'sb_H8833006000_es', documentName: 'H8833006000', planType: 'PPO', egwp: 'Yes', language: 'Spanish', folderName: 'H8833006000_ES', folderVersionNumber: '2026_2.01' }
+        ]
+      case 'SOB':
+        return [
+          { id: 'sob_H2406064000', documentName: 'H2406064000 SOB', planType: 'HMO', egwp: 'No', folderName: 'H2406064000_SOB', folderVersionNumber: '2026_1.0' },
+          { id: 'sob_H2406084000', documentName: 'H2406084000 SOB', planType: 'PPO', egwp: 'No', folderName: 'H2406084000_SOB', folderVersionNumber: '2026_1.0' },
+          { id: 'sob_H0169001000', documentName: 'H0169001000 SOB', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169001000_SOB', folderVersionNumber: '2026_1.0' },
+          { id: 'sob_H0169002000', documentName: 'H0169002000 SOB', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169002000_SOB', folderVersionNumber: '2026_1.0' },
+          { id: 'sob_H5421001000', documentName: 'H5421001000 SOB', planType: 'HMO', egwp: 'Yes', folderName: 'H5421001000_SOB', folderVersionNumber: '2026_1.0' }
+        ]
+      case 'SBC':
+        return [
+          { id: 'sbc_H2406064000', documentName: 'H2406064000 SBC', planType: 'HMO', egwp: 'No', folderName: 'H2406064000_SBC', folderVersionNumber: '2026_1.0' },
+          { id: 'sbc_H2406084000', documentName: 'H2406084000 SBC', planType: 'PPO', egwp: 'No', folderName: 'H2406084000_SBC', folderVersionNumber: '2026_1.0' },
+          { id: 'sbc_H0169001000', documentName: 'H0169001000 SBC', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169001000_SBC', folderVersionNumber: '2026_1.0' },
+          { id: 'sbc_H0169002000', documentName: 'H0169002000 SBC', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169002000_SBC', folderVersionNumber: '2026_1.0' },
+          { id: 'sbc_H5421001000', documentName: 'H5421001000 SBC', planType: 'HMO', egwp: 'Yes', folderName: 'H5421001000_SBC', folderVersionNumber: '2026_1.0' }
+        ]
+      case 'SOB Rx filling':
+        return [
+          { id: 'sob_rx_H2406064000', documentName: 'H2406064000 SOB Rx', planType: 'HMO', egwp: 'No', folderName: 'H2406064000_SOB_Rx', folderVersionNumber: '2026_1.0' },
+          { id: 'sob_rx_H2406084000', documentName: 'H2406084000 SOB Rx', planType: 'PPO', egwp: 'No', folderName: 'H2406084000_SOB_Rx', folderVersionNumber: '2026_1.0' },
+          { id: 'sob_rx_H0169001000', documentName: 'H0169001000 SOB Rx', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169001000_SOB_Rx', folderVersionNumber: '2026_1.0' }
+        ]
+      case 'SOB Med Filling':
+        return [
+          { id: 'sob_med_H2406064000', documentName: 'H2406064000 SOB Med', planType: 'HMO', egwp: 'No', folderName: 'H2406064000_SOB_Med', folderVersionNumber: '2026_1.0' },
+          { id: 'sob_med_H2406084000', documentName: 'H2406084000 SOB Med', planType: 'PPO', egwp: 'No', folderName: 'H2406084000_SOB_Med', folderVersionNumber: '2026_1.0' },
+          { id: 'sob_med_H0169001000', documentName: 'H0169001000 SOB Med', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169001000_SOB_Med', folderVersionNumber: '2026_1.0' }
+        ]
+      case 'SBC Filling':
+        return [
+          { id: 'sbc_fill_H2406064000', documentName: 'H2406064000 SBC Fill', planType: 'HMO', egwp: 'No', folderName: 'H2406064000_SBC_Fill', folderVersionNumber: '2026_1.0' },
+          { id: 'sbc_fill_H2406084000', documentName: 'H2406084000 SBC Fill', planType: 'PPO', egwp: 'No', folderName: 'H2406084000_SBC_Fill', folderVersionNumber: '2026_1.0' },
+          { id: 'sbc_fill_H0169001000', documentName: 'H0169001000 SBC Fill', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169001000_SBC_Fill', folderVersionNumber: '2026_1.0' }
+        ]
+      case 'Commercial Handbook':
+        return [
+          { id: 'comm_handbook_001', documentName: 'Commercial Handbook v1', planType: 'Commercial', egwp: 'No', folderName: 'Commercial_Handbook_v1', folderVersionNumber: '2026_1.0' },
+          { id: 'comm_handbook_002', documentName: 'Commercial Handbook v2', planType: 'Commercial', egwp: 'No', folderName: 'Commercial_Handbook_v2', folderVersionNumber: '2026_1.0' },
+          { id: 'comm_handbook_003', documentName: 'Commercial Handbook v3', planType: 'Commercial', egwp: 'No', folderName: 'Commercial_Handbook_v3', folderVersionNumber: '2026_1.0' }
+        ]
+      case 'Benefit Description':
+        return [
+          { id: 'benefit_desc_001', documentName: 'Medical Benefits Description', planType: 'HMO', egwp: 'No', folderName: 'Medical_Benefits_Desc', folderVersionNumber: '2026_1.0' },
+          { id: 'benefit_desc_002', documentName: 'Pharmacy Benefits Description', planType: 'PPO', egwp: 'No', folderName: 'Pharmacy_Benefits_Desc', folderVersionNumber: '2026_1.0' },
+          { id: 'benefit_desc_003', documentName: 'Dental Benefits Description', planType: 'HMO', egwp: 'Yes', folderName: 'Dental_Benefits_Desc', folderVersionNumber: '2026_1.0' }
+        ]
+      case 'HIPAA Codification':
+        return [
+          { id: 'hipaa_001', documentName: 'HIPAA Privacy Notice', planType: 'All Plans', egwp: 'No', folderName: 'HIPAA_Privacy_Notice', folderVersionNumber: '2026_1.0' },
+          { id: 'hipaa_002', documentName: 'HIPAA Security Policies', planType: 'All Plans', egwp: 'No', folderName: 'HIPAA_Security_Policies', folderVersionNumber: '2026_1.0' },
+          { id: 'hipaa_003', documentName: 'HIPAA Breach Notification', planType: 'All Plans', egwp: 'No', folderName: 'HIPAA_Breach_Notification', folderVersionNumber: '2026_1.0' }
+        ]
+      case 'Medicaid Handbook':
+        return [
+          { id: 'medicaid_001', documentName: 'Medicaid Member Handbook', planType: 'Medicaid', egwp: 'No', folderName: 'Medicaid_Member_Handbook', folderVersionNumber: '2026_1.0' },
+          { id: 'medicaid_002', documentName: 'Medicaid Provider Handbook', planType: 'Medicaid', egwp: 'No', folderName: 'Medicaid_Provider_Handbook', folderVersionNumber: '2026_1.0' },
+          { id: 'medicaid_003', documentName: 'Medicaid Benefits Guide', planType: 'Medicaid', egwp: 'No', folderName: 'Medicaid_Benefits_Guide', folderVersionNumber: '2026_1.0' }
+        ]
+      case 'Outline of Coverage':
+        return [
+          { id: 'ooc_H2406064000', documentName: 'H2406064000 Outline', planType: 'HMO', egwp: 'No', folderName: 'H2406064000_Outline', folderVersionNumber: '2026_1.0' },
+          { id: 'ooc_H2406084000', documentName: 'H2406084000 Outline', planType: 'PPO', egwp: 'No', folderName: 'H2406084000_Outline', folderVersionNumber: '2026_1.0' },
+          { id: 'ooc_H0169001000', documentName: 'H0169001000 Outline', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169001000_Outline', folderVersionNumber: '2026_1.0' },
+          { id: 'ooc_H5421001000', documentName: 'H5421001000 Outline', planType: 'HMO', egwp: 'Yes', folderName: 'H5421001000_Outline', folderVersionNumber: '2026_1.0' }
         ]
       default:
         return []
@@ -5238,7 +5338,17 @@ export function Generate() {
                             <span className="text-xs text-muted-foreground mt-0.5">
                               {collateral === 'Medicare ANOC' ? 'Annual Notice of Change' :
                                collateral === 'Medicare EOC' ? 'Evidence of Coverage' :
-                               collateral === 'Medicare SB' ? 'Summary of Benefits' : ''
+                               collateral === 'Medicare SB' ? 'Summary of Benefits' :
+                               collateral === 'SOB' ? 'Summary of Benefits' :
+                               collateral === 'SBC' ? 'Summary of Benefits and Coverage' :
+                               collateral === 'SOB Rx filling' ? 'Summary of Benefits Rx Filling' :
+                               collateral === 'SOB Med Filling' ? 'Summary of Benefits Med Filling' :
+                               collateral === 'SBC Filling' ? 'Summary of Benefits and Coverage Filling' :
+                               collateral === 'Commercial Handbook' ? 'Commercial Member Handbook' :
+                               collateral === 'Benefit Description' ? 'Benefit Description Documents' :
+                               collateral === 'HIPAA Codification' ? 'HIPAA Compliance Documents' :
+                               collateral === 'Medicaid Handbook' ? 'Medicaid Member Resources' :
+                               collateral === 'Outline of Coverage' ? 'Coverage Outline Documents' : ''
                               }
                             </span>
                           </div>
