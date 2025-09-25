@@ -34,7 +34,6 @@ interface NavigationItem {
 
 const navigationItems: NavigationItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: House },
-  { id: 'global-template', label: 'Global Template', icon: Globe },
   { id: 'template', label: 'Template', icon: File },
   { id: 'translation-studio', label: 'Translation Studio', icon: Translate },
   { id: 'portfolio', label: 'Portfolio', icon: Briefcase },
@@ -43,10 +42,11 @@ const navigationItems: NavigationItem[] = [
     label: 'Global Content', 
     icon: Globe,
     children: [
+      { id: 'global-template', label: 'Global Template', icon: Globe },
+      { id: 'masterlist', label: 'Master List', icon: ListBullets },
       { id: 'dcm', label: 'Digital Content Manager', icon: FolderOpen }
     ]
   },
-  { id: 'masterlist', label: 'Master List', icon: ListBullets },
   { id: 'collaborate', label: 'Collaborate', icon: Users },
   { id: 'generate', label: 'Generate', icon: FilePdf },
   { id: 'publish', label: 'Publish', icon: Export },
