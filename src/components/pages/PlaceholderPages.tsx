@@ -4785,6 +4785,46 @@ export function Generate() {
     folderVersion: true
   })
   
+  // Get column configuration for current collateral type
+  const getColumnsForCollateral = (collateralType: string) => {
+    switch (collateralType) {
+      case 'Medicare ANOC':
+        return [
+          { key: 'documentName', label: 'Document Name' },
+          { key: 'planType', label: 'Plan Type' },
+          { key: 'benefitPackage', label: 'Benefit Package' },
+          { key: 'region', label: 'Region' },
+          { key: 'folderName', label: 'Folder Name' },
+          { key: 'folderVersion', label: 'Folder Version Number' }
+        ]
+      case 'Medicare EOC':
+        return [
+          { key: 'documentName', label: 'Document Name' },
+          { key: 'planType', label: 'Plan Type' },
+          { key: 'coverage', label: 'Coverage Type' },
+          { key: 'networkSize', label: 'Network Size' },
+          { key: 'folderName', label: 'Folder Name' },
+          { key: 'folderVersion', label: 'Folder Version Number' }
+        ]
+      case 'Medicare SB':
+        return [
+          { key: 'documentName', label: 'Document Name' },
+          { key: 'planType', label: 'Plan Type' },
+          { key: 'summaryType', label: 'Summary Type' },
+          { key: 'language', label: 'Language' },
+          { key: 'folderName', label: 'Folder Name' },
+          { key: 'folderVersion', label: 'Folder Version Number' }
+        ]
+      default:
+        return [
+          { key: 'documentName', label: 'Document Name' },
+          { key: 'planType', label: 'Plan Type' },
+          { key: 'folderName', label: 'Folder Name' },
+          { key: 'folderVersion', label: 'Folder Version Number' }
+        ]
+    }
+  }
+
   // Available columns configuration
   const availableColumns = [
     { key: 'documentName', label: 'Document Name' },
@@ -4868,45 +4908,6 @@ export function Generate() {
     return combinedDocs
   }, [selectedCollaterals])
 
-  // Get column configuration for current collateral type
-  const getColumnsForCollateral = (collateralType: string) => {
-    switch (collateralType) {
-      case 'Medicare ANOC':
-        return [
-          { key: 'documentName', label: 'Document Name' },
-          { key: 'planType', label: 'Plan Type' },
-          { key: 'benefitPackage', label: 'Benefit Package' },
-          { key: 'region', label: 'Region' },
-          { key: 'folderName', label: 'Folder Name' },
-          { key: 'folderVersion', label: 'Folder Version Number' }
-        ]
-      case 'Medicare EOC':
-        return [
-          { key: 'documentName', label: 'Document Name' },
-          { key: 'planType', label: 'Plan Type' },
-          { key: 'coverage', label: 'Coverage Type' },
-          { key: 'networkSize', label: 'Network Size' },
-          { key: 'folderName', label: 'Folder Name' },
-          { key: 'folderVersion', label: 'Folder Version Number' }
-        ]
-      case 'Medicare SB':
-        return [
-          { key: 'documentName', label: 'Document Name' },
-          { key: 'planType', label: 'Plan Type' },
-          { key: 'summaryType', label: 'Summary Type' },
-          { key: 'language', label: 'Language' },
-          { key: 'folderName', label: 'Folder Name' },
-          { key: 'folderVersion', label: 'Folder Version Number' }
-        ]
-      default:
-        return [
-          { key: 'documentName', label: 'Document Name' },
-          { key: 'planType', label: 'Plan Type' },
-          { key: 'folderName', label: 'Folder Name' },
-          { key: 'folderVersion', label: 'Folder Version Number' }
-        ]
-    }
-  }
   
   // Filter and sort documents with enhanced filtering
   const filteredAndSortedDocuments = useMemo(() => {
