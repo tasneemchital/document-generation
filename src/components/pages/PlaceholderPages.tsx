@@ -4764,23 +4764,17 @@ export function Generate() {
   const [productNameSearch, setProductNameSearch] = useState('')
   
   // Column filters for search and filtering - dynamic based on collateral type
+  // Get initial column filters based on collateral type
   const getInitialColumnFilters = (collateralType: string) => {
     switch (collateralType) {
       case 'Medicare ANOC':
-        return {
-          documentName: '',
-          planType: '',
-          egwp: '',
-          folderName: '',
-          folderVersion: ''
-        }
       case 'Medicare EOC':
         return {
           documentName: '',
           planType: '',
           egwp: '',
           folderName: '',
-          folderVersion: ''
+          folderVersionNumber: ''
         }
       case 'Medicare SB':
         return {
@@ -4789,7 +4783,7 @@ export function Generate() {
           egwp: '',
           language: '',
           folderName: '',
-          folderVersion: ''
+          folderVersionNumber: ''
         }
       default:
         return {
@@ -4797,7 +4791,7 @@ export function Generate() {
           planType: '',
           egwp: '',
           folderName: '',
-          folderVersion: ''
+          folderVersionNumber: ''
         }
     }
   }
@@ -5075,9 +5069,14 @@ export function Generate() {
   const handleCollateralSelect = (collateral: string) => {
     setSelectedCollateral(collateral)
     // Reset filters when collateral type changes
-    setColumnFilters(getInitialColumnFilters(collateral))
+    const newFilters = getInitialColumnFilters(collateral)
+    setColumnFilters(newFilters)
     setProductNameSearch('')
     setCurrentPage(1)
+    
+    // Update column visibility for the new collateral type
+    const newVisibility = getInitialColumnVisibility(collateral)
+    setVisibleColumns(newVisibility)
   }
 
   const isAllVisibleSelected = currentPageDocuments.length > 0 && 
