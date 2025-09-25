@@ -1,34 +1,241 @@
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "@phosphor-icons/react"
+
+  productId?: string
+  onNavigate: (page: string) => void
+import { Separator } from '@/components/ui/separator'
 
 interface ProductDetailProps {
   productId?: string
-  productName?: string
-  onNavigate: (page: string) => void
+      <div className="p-6 border-b b
 }
 
-export function ProductDetail({ productId, productName, onNavigate }: ProductDetailProps) {
-  return (
-    <div className="flex flex-col h-full bg-background">
-      <div className="p-6 border-b border-border">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onNavigate('portfolio')}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft size={16} />
-            Back to Portfolio
-          </Button>
-          <h1 className="text-2xl font-semibold text-foreground">
-            {productName || 'Product Detail'}
-          </h1>
-        </div>
-      </div>
-      <div className="flex-1 p-6">
-        {/* Content will go here */}
-      </div>
-    </div>
+export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
+  // Mock data - in real app this would be fetched based on productId
+  const productData = {
+    id: 'H9042008000',
+    productName: 'Medicare Advantage PDP',
   )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    reviewedBy: 'fatima.gavandi',
+
+  }
+
+  return (
+
+      {/* Header */}
+
+        <Button 
+
+          size="sm"
+
+
+
+
+
+        </Button>
+
+
+
+          </h1>
+
+            {productData.folderName}
+
+        </div>
+
+
+
+            Preview
+
+
+
+            Download
+
+
+
+
+
+
+
+
+
+      <div className="flex-1 overflow-auto p-6">
+
+
+
+            <Card>
+
+
+
+
+
+
+
+              </CardContent>
+
+
+
+
+
+              </CardHeader>
+
+
+
+
+
+            <Card>
+
+
+
+
+
+
+
+          </div>
+
+
+
+
+
+
+
+              </CardTitle>
+
+            <CardContent>
+
+
+
+
+
+                  </div>
+
+
+
+                  </div>
+
+
+
+                  </div>
+
+
+
+                  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              </div>
+
+
+
+              <div>
+
+                <p className="text-foreground mt-1">{productData.description}</p>
+
+            </CardContent>
+
+
+
+          <Card>
+
+
+
+
+
+            </CardHeader>
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+
+
+
+                  <div className="flex-1">
+                    <div className="flex justify-between items-center">
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+            </CardContent>
+
+
+
+          <Card>
+
+
+
+                Team Information
+
+
+
+
+
+
+
+                </div>
+
+
+
+                </div>
+
+
+
+                </div>
+
+            </CardContent>
+
+        </div>
+
+    </div>
+
 }
