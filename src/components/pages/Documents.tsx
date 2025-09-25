@@ -180,14 +180,14 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
   
   // Column filters
   const [documentNameFilter, setDocumentNameFilter] = useState('')
-  const [planTypeFilter, setPlanTypeFilter] = useState('')
+  const [planTypeFilter, setPlanTypeFilter] = useState('all')
   const [instanceNameFilter, setInstanceNameFilter] = useState('')
   const [effectiveDateFilter, setEffectiveDateFilter] = useState('')
   const [versionNumberFilter, setVersionNumberFilter] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [documentTypeFilter, setDocumentTypeFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [documentTypeFilter, setDocumentTypeFilter] = useState('all')
   const [lastModifiedFilter, setLastModifiedFilter] = useState('')
-  const [createdByFilter, setCreatedByFilter] = useState('')
+  const [createdByFilter, setCreatedByFilter] = useState('all')
   
   // Sorting
   const [sortColumn, setSortColumn] = useState<keyof DocumentData | ''>('')
@@ -209,18 +209,18 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
 
       const matchesDocumentName = documentNameFilter === '' || 
         doc.documentName.toLowerCase().includes(documentNameFilter.toLowerCase())
-      const matchesPlanType = planTypeFilter === '' || doc.planType === planTypeFilter
+      const matchesPlanType = planTypeFilter === 'all' || doc.planType === planTypeFilter
       const matchesInstanceName = instanceNameFilter === '' || 
         doc.instanceName.toLowerCase().includes(instanceNameFilter.toLowerCase())
       const matchesEffectiveDate = effectiveDateFilter === '' || 
         doc.effectiveDate.includes(effectiveDateFilter)
       const matchesVersionNumber = versionNumberFilter === '' || 
         doc.versionNumber.toLowerCase().includes(versionNumberFilter.toLowerCase())
-      const matchesStatus = statusFilter === '' || doc.status === statusFilter
-      const matchesDocumentType = documentTypeFilter === '' || doc.documentType === documentTypeFilter
+      const matchesStatus = statusFilter === 'all' || doc.status === statusFilter
+      const matchesDocumentType = documentTypeFilter === 'all' || doc.documentType === documentTypeFilter
       const matchesLastModified = lastModifiedFilter === '' || 
         doc.lastModified.includes(lastModifiedFilter)
-      const matchesCreatedBy = createdByFilter === '' || doc.createdBy === createdByFilter
+      const matchesCreatedBy = createdByFilter === 'all' || doc.createdBy === createdByFilter
       
       return matchesSearch && matchesDocumentName && matchesPlanType && 
              matchesInstanceName && matchesEffectiveDate && matchesVersionNumber && 
