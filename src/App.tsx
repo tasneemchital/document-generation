@@ -23,7 +23,7 @@ import { TranslationStudio } from '@/components/pages/TranslationStudio'
 import { RuleData } from '@/lib/types'
 
 function App() {
-  const [currentPage, setCurrentPage] = useKV('sda-current-page', 'dashboard')
+  const [currentPage, setCurrentPage] = useKV('sda-current-page', 'portfolio')
   const [isCollapsed, setIsCollapsed] = useKV('sda-sidebar-collapsed', false)
   const [editingRule, setEditingRule] = useKV<RuleData | null>('dcm-editing-rule', null)
   const [editingFrom, setEditingFrom] = useKV<string>('dcm-editing-from', 'dcm')
