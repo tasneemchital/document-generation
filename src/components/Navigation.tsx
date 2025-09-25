@@ -50,7 +50,7 @@ const navigationItems: NavigationItem[] = [
   { id: 'portfolio', label: 'Portfolio', icon: Briefcase },
   { 
     id: 'global-content', 
-    label: 'Global Content', 
+    label: 'Create', 
     icon: Globe,
     children: [
       { id: 'dcm', label: 'Digital Content Manager', icon: FolderOpen },
