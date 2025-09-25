@@ -12,7 +12,8 @@ import {
   DesignStudio,
   AskBenny,
   Portfolio,
-  GlobalContent
+  GlobalContent,
+  Manage
 } from '@/components/pages/PlaceholderPages'
 import { DigitalContentManager } from '@/components/pages/DigitalContentManager'
 import { MedicareEOCMasterList } from '@/components/pages/MedicareEOCMasterList'
@@ -52,6 +53,8 @@ function App() {
     switch (currentPage) {
       case 'dashboard':
         return <Dashboard onNavigate={setCurrentPage} />
+      case 'manage':
+        return <Manage />
       case 'global-template':
         return <MedicareEOCMasterList onNavigate={setCurrentPage} />
       case 'template':

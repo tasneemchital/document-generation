@@ -13,7 +13,8 @@ import {
   Briefcase,
   Globe,
   CaretDown,
-  CaretRight
+  CaretRight,
+  FolderGear
 } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -34,6 +35,7 @@ interface NavigationItem {
 
 const navigationItems: NavigationItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: House },
+  { id: 'manage', label: 'Manage', icon: FolderGear },
   { id: 'template', label: 'Template', icon: File },
   { id: 'translation-studio', label: 'Translation Studio', icon: Translate },
   { id: 'portfolio', label: 'Portfolio', icon: Briefcase },
