@@ -20,6 +20,7 @@ import { MedicareEOCMasterList } from '@/components/pages/MedicareEOCMasterList'
 import { DCMEditPage } from '@/components/pages/DCMEditPage'
 import { Template } from '@/components/pages/Template'
 import { TranslationStudio } from '@/components/pages/TranslationStudio'
+import { ProductDetail } from '@/components/pages/ProductDetail'
 import { RuleData } from '@/lib/types'
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
   const [editingRule, setEditingRule] = useKV<RuleData | null>('dcm-editing-rule', null)
   const [editingFrom, setEditingFrom] = useKV<string>('dcm-editing-from', 'dcm')
   const [rules, setRules] = useKV<RuleData[]>('rule-data', [])
+  const [selectedProductId, setSelectedProductId] = useKV<string>('selected-product-id', '')
 
   const handleRuleCreate = (newRule: RuleData) => {
     setRules((current: RuleData[]) => {
@@ -72,7 +74,18 @@ function App() {
       case 'translation-studio':
         return <TranslationStudio />
       case 'portfolio':
-        return <Portfolio />
+        return <Portfolio 
+          onNavigate={setCurrentPage}
+          onProductSelect={(productId) => {
+            setSelectedProductId(productId)
+            setCurrentPage('product-detail')
+          }}
+        />
+      case 'product-detail':
+        return <ProductDetail 
+          productId={selectedProductId}
+          onNavigate={setCurrentPage}
+        />
       case 'global-content':
         return <GlobalContent />
       case 'collaborate':

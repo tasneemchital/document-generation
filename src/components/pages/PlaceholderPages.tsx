@@ -6034,7 +6034,12 @@ export function AskBenny() {
   )
 }
 
-export function Portfolio() {
+interface PortfolioProps {
+  onNavigate?: (page: string) => void
+  onProductSelect?: (productId: string) => void
+}
+
+export function Portfolio({ onNavigate, onProductSelect }: PortfolioProps) {
   const [sortField, setSortField] = useState<string | null>(null)
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [currentPage, setCurrentPage] = useState(1)
@@ -6535,8 +6540,7 @@ export function Portfolio() {
                           <button 
                             className="text-blue-600 font-mono hover:text-blue-800 hover:underline cursor-pointer transition-colors"
                             onClick={() => {
-                              // Handle portfolio navigation/action here
-                              console.log('Clicked portfolio:', item.portfolioName)
+                              onProductSelect?.(item.id)
                             }}
                           >
                             {item.portfolioName}
@@ -6545,8 +6549,7 @@ export function Portfolio() {
                           <button 
                             className="text-foreground hover:text-blue-600 hover:underline cursor-pointer transition-colors"
                             onClick={() => {
-                              // Handle portfolio navigation/action here
-                              console.log('Clicked portfolio:', item.portfolioName)
+                              onProductSelect?.(item.id)
                             }}
                           >
                             {item.portfolioName}
