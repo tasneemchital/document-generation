@@ -6255,8 +6255,8 @@ export function Portfolio() {
           <p className="text-muted-foreground mt-1">View and manage your product portfolios and document collections</p>
         </div>
         
-        {/* Product Search, Radio Buttons, and New Button - moved to top right */}
-        <div className="flex items-center gap-6">
+        {/* Product Search and New Button */}
+        <div className="flex items-center gap-4">
           <div className="relative">
             <Input
               id="product-search"
@@ -6275,36 +6275,6 @@ export function Portfolio() {
             </Button>
           </div>
           
-          {/* View Mode Radio Buttons */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center space-x-2">
-              <input
-                type="radio"
-                id="view-interested"
-                name="view-mode"
-                checked={viewMode === 'interested'}
-                onChange={() => setViewMode('interested')}
-                className="w-4 h-4 text-blue-600"
-              />
-              <Label htmlFor="view-interested" className="text-sm cursor-pointer">
-                View interested
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <input
-                type="radio"
-                id="view-all"
-                name="view-mode"
-                checked={viewMode === 'all'}
-                onChange={() => setViewMode('all')}
-                className="w-4 h-4 text-blue-600"
-              />
-              <Label htmlFor="view-all" className="text-sm cursor-pointer">
-                View all
-              </Label>
-            </div>
-          </div>
-          
           <Button 
             variant="default"
             className="h-9 px-4 font-medium"
@@ -6312,6 +6282,38 @@ export function Portfolio() {
             <Plus size={16} className="mr-1.5" />
             New
           </Button>
+        </div>
+      </div>
+
+      {/* View Mode Radio Buttons - New row */}
+      <div className="flex justify-end">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center space-x-2">
+            <input
+              type="radio"
+              id="view-interested"
+              name="view-mode"
+              checked={viewMode === 'interested'}
+              onChange={() => setViewMode('interested')}
+              className="w-4 h-4 text-blue-600"
+            />
+            <Label htmlFor="view-interested" className="text-sm cursor-pointer">
+              View interested
+            </Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <input
+              type="radio"
+              id="view-all"
+              name="view-mode"
+              checked={viewMode === 'all'}
+              onChange={() => setViewMode('all')}
+              className="w-4 h-4 text-blue-600"
+            />
+            <Label htmlFor="view-all" className="text-sm cursor-pointer">
+              View all
+            </Label>
+          </div>
         </div>
       </div>
 
