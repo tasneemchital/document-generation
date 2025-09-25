@@ -4754,7 +4754,7 @@ export function Generate() {
   const [currentTab, setCurrentTab] = useState('generate-collateral')
   const [selectedDocuments, setSelectedDocuments] = useKV('generate-selected-docs', [] as string[])
   const [collateralName, setCollateralName] = useState('')
-  const [selectedCollaterals, setSelectedCollaterals] = useKV('generate-selected-collaterals', [] as string[])
+  const [selectedCollateral, setSelectedCollateral] = useKV('generate-selected-collateral', '' as string)
   
   // Document grid state with enhanced filtering
   const [sortField, setSortField] = useState<string | null>(null)
@@ -4898,18 +4898,14 @@ export function Generate() {
     }
   }
 
-  // Get current documents based on selected collaterals
+  // Get current documents based on selected collateral
   const documents = useMemo(() => {
-    if (selectedCollaterals.length === 0) {
+    if (!selectedCollateral) {
       return []
     }
     
-    // Combine documents from all selected collaterals
-    const combinedDocs = selectedCollaterals.flatMap(collateral => 
-      getDocumentsForCollateral(collateral)
-    )
-    return combinedDocs
-  }, [selectedCollaterals])
+    return getDocumentsForCollateral(selectedCollateral)
+  }, [selectedCollateral])
 
   
   // Filter and sort documents with enhanced filtering
@@ -5026,10 +5022,8 @@ export function Generate() {
   
 
   
-  const handleCollateralSelect = (collateral: string, checked: boolean) => {
-    setSelectedCollaterals((current: string[]) => 
-      checked ? [...current, collateral] : current.filter(c => c !== collateral)
-    )
+  const handleCollateralSelect = (collateral: string) => {
+    setSelectedCollateral(collateral)
   }
   
   const isAllVisibleSelected = currentPageDocuments.length > 0 && 
@@ -5158,9 +5152,7 @@ export function Generate() {
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base flex items-center justify-between">
                     Generate Collaterals List
-                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                      <X size={14} />
-                    </Button>
+                    <span className="text-xs font-normal text-muted-foreground">(Select One)</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
@@ -5174,22 +5166,35 @@ export function Generate() {
                     />
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {collateralOptions.map((collateral) => (
-                      <div key={collateral} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={collateral}
-                          checked={selectedCollaterals.includes(collateral)}
-                          onCheckedChange={(checked) => 
-                            handleCollateralSelect(collateral, checked as boolean)
+                      <div 
+                        key={collateral}
+                        onClick={() => handleCollateralSelect(collateral)}
+                        className={`
+                          cursor-pointer p-4 rounded-xl border-2 transition-all duration-200 hover:shadow-lg
+                          ${selectedCollateral === collateral 
+                            ? 'border-primary bg-gradient-to-r from-primary/10 to-primary/5 shadow-md ring-2 ring-primary/20' 
+                            : 'border-border bg-card hover:border-primary/50 hover:bg-primary/5'
                           }
-                        />
-                        <Label 
-                          htmlFor={collateral}
-                          className="text-sm cursor-pointer flex-1"
-                        >
-                          {collateral}
-                        </Label>
+                        `}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex flex-col">
+                            <span className="text-sm font-semibold text-foreground">{collateral}</span>
+                            <span className="text-xs text-muted-foreground mt-0.5">
+                              {collateral === 'Medicare ANOC' ? 'Annual Notice of Change' :
+                               collateral === 'Medicare EOC' ? 'Evidence of Coverage' :
+                               collateral === 'Medicare SB' ? 'Summary of Benefits' : ''
+                              }
+                            </span>
+                          </div>
+                          {selectedCollateral === collateral && (
+                            <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary">
+                              <div className="w-2 h-2 rounded-full bg-white"></div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -5444,7 +5449,9 @@ export function Generate() {
                         {currentPageDocuments.length === 0 ? (
                           <TableRow>
                             <TableCell colSpan={Object.values(visibleColumns).filter(Boolean).length + 1} className="text-center py-8 text-muted-foreground">
-                              {(Object.values(columnFilters).some(filter => filter !== '') || productNameSearch)
+                              {!selectedCollateral
+                                ? "Please select a collateral type to view available documents"
+                                : (Object.values(columnFilters).some(filter => filter !== '') || productNameSearch)
                                 ? "No documents match the current filters" 
                                 : "No documents available"
                               }
