@@ -57,10 +57,10 @@ const navigationItems: NavigationItem[] = [
       { id: 'translation-studio', label: 'Translation Studio', icon: Translate }
     ]
   },
-  { id: 'template', label: 'Template', icon: File },
   { id: 'ask-benny', label: 'Ask Benny', icon: Robot },
   { id: 'admin-settings', label: 'Admin Settings', icon: Gear },
-  { id: 'design-studio', label: 'Design Studio', icon: Palette }
+  { id: 'design-studio', label: 'Design Studio', icon: Palette },
+  { id: 'template', label: 'Template', icon: File }
 ]
 
 export function Navigation({ currentPage, onNavigate, isCollapsed }: NavigationProps) {
