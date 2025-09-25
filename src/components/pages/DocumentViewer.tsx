@@ -1,18 +1,19 @@
 import { useState, useEffect, useRef } from 'react'
-import { useKV } from '@github/spark/hooks'
+import { Card, CardContent, CardHeader, Car
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { 
-  ArrowLeft, 
-  FileText, 
-  ChevronRight,
+  ChevronDown
   Save,
-  Download,
   Print,
-  Maximize,
+  Settings,
+  BookO
+  Unlock
+
+  id: strin
   Settings,
   Search,
   BookOpen,
@@ -30,25 +31,27 @@ interface DocumentSection {
   children?: DocumentSection[]
 }
 
-interface DocumentViewerProps {
-  documentId: string
-  documentName: string
-  onNavigate: (page: string) => void
-}
-
-// Mock document structure based on the document type
-const generateDocumentStructure = (documentType: string, documentName: string): DocumentSection[] => {
-  if (documentType === 'EOC') {
     return [
-      {
         id: 'cover',
-        title: 'Cover Page',
         level: 1,
-        content: `<h1>${documentName}</h1>\n<p>Evidence of Coverage for Plan Year 2025</p>\n<p>Effective Date: January 1, 2025</p>\n<br/>\n<p>This document contains important information about your Medicare health benefits. Please read it carefully and keep it for future reference.</p>`,
         isExpanded: false,
-        hasContent: true
+ 
+
+        level: 1,
+        isExpanded: false,
       },
-      {
+
+        level: 1,
+        isEx
+      }
+        id: 'chapter
+        level: 1,
+        isExpande
+      },
+        id: 'chapter4',
+        level: 1,
+      },
+       
         id: 'chapter1',
         title: 'Chapter 1: Getting Started as a Member',
         level: 1,
@@ -180,19 +183,19 @@ const generateDocumentStructure = (documentType: string, documentName: string): 
         hasContent: true
       },
       {
-        id: 'section3',
-        title: 'Section 3: Deciding Which Plan to Choose',
-        level: 1,
-        content: `<h2>Section 3: Deciding Which Plan to Choose</h2>\n<br/>\n<p>If you want to stay in our plan for 2025, you don't need to do anything. You will stay enrolled.</p>\n<br/>\n<p>If you want to change plans, you can switch during Open Enrollment (October 15 - December 7, 2024).</p>`,
-        isExpanded: false,
-        hasContent: true
-      }
-    ]
-  }
+      level: 1,
+      isExpanded: false,
+    }
+}
+export function DocumentVi
+  const [isEditing, setI
+  const
+  // 
+   
 
-  // Default structure for other document types
-  return [
-    {
+    effectiveDate: '1/1/2025',
+    lastMo
+
       id: 'section1',
       title: 'Introduction',
       level: 1,
@@ -237,6 +240,222 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
   }
 
   const documentStructure = generateDocumentStructure(documentData.type, documentData.name)
+
+  // Initialize content if not exists
+  useEffect(() => {
+    if (Object.keys(documentContent).length === 0) {
+      const initialContent: { [key: string]: string } = {}
+      documentStructure.forEach(section => {
+        initialContent[section.id] = section.content
+      })
+      setDocumentContent(initialContent)
+    }
+  }, [documentStructure, documentContent, setDocumentContent])
+
+  const currentSection = documentStructure.find(section => section.id === selectedSection)
+  const currentContent = documentContent[selectedSection] || currentSection?.content || ''
+
+  const handleSave = () => {
+    if (editorRef.current && selectedSection) {
+      const newContent = { ...documentContent }
+      newContent[selectedSection] = editorRef.current.value
+      setDocumentContent(newContent)
+      setIsEditing(false)
+    }
+  }
+
+  const handleSectionSelect = (sectionId: string) => {
+    // Save current content before switching
+    if (isEditing && editorRef.current && selectedSection) {
+      const newContent = { ...documentContent }
+      newContent[selectedSection] = editorRef.current.value
+      setDocumentContent(newContent)
+    }
+    setSelectedSection(sectionId)
+    setIsEditing(false)
+  }
+
+  return (
+    <div className="flex h-screen bg-background">
+      {/* Left Sidebar - Document Hierarchy */}
+      <div className="w-80 border-r border-border bg-card">
+        <div className="p-4 border-b border-border">
+          <div className="flex items-center justify-between mb-4">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => onNavigate('documents')}
+              className="p-0 h-auto"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Documents
+            </Button>
+          </div>
+          
+          <div className="space-y-2">
+            <h2 className="text-lg font-semibold line-clamp-2">{documentData.name}</h2>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary">{documentData.version}</Badge>
+              <Badge variant="outline">{documentData.effectiveDate}</Badge>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <FileText className="w-4 h-4" />
+              <span>{documentData.type} Document</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Document Structure Navigation */}
+        <ScrollArea className="flex-1">
+          <div className="p-4">
+            <h3 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
+              <BookOpen className="w-4 h-4" />
+              Document Structure
+            </h3>
+            <div className="space-y-1">
+              {documentStructure.map((section) => (
+                <Button
+                  key={section.id}
+                  variant={selectedSection === section.id ? "secondary" : "ghost"}
+                  size="sm"
+                  className="w-full justify-start h-auto py-3 px-3"
+                  onClick={() => handleSectionSelect(section.id)}
+                >
+                  <div className="flex items-start gap-2 text-left w-full">
+                    <div className="flex-shrink-0 mt-0.5">
+                      {section.hasContent ? (
+                        <FileText className="w-3 h-3" />
+                      ) : (
+                        <ChevronRight className="w-3 h-3" />
+                      )}
+                    </div>
+                    <span className="text-sm line-clamp-2 leading-5">
+                      {section.title}
+                    </span>
+                  </div>
+                </Button>
+              ))}
+            </div>
+          </div>
+        </ScrollArea>
+
+        {/* Sidebar Footer */}
+        <div className="p-4 border-t border-border bg-muted/30">
+          <div className="text-xs text-muted-foreground space-y-1">
+            <div>Last modified: {documentData.lastModified}</div>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span>Status: {documentData.status}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Content Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Content Header */}
+        <div className="p-4 border-b border-border bg-card">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl font-semibold">{currentSection?.title}</h1>
+              <div className="flex items-center gap-1">
+                {isEditing ? (
+                  <Unlock className="w-4 h-4 text-amber-500" />
+                ) : (
+                  <Lock className="w-4 h-4 text-muted-foreground" />
+                )}
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm">
+                <Search className="w-4 h-4 mr-2" />
+                Find
+              </Button>
+              <Separator orientation="vertical" className="h-6" />
+              {isEditing ? (
+                <>
+                  <Button onClick={handleSave} size="sm">
+                    <Save className="w-4 h-4 mr-2" />
+                    Save
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setIsEditing(false)}
+                  >
+                    Cancel
+                  </Button>
+                </>
+              ) : (
+                <Button 
+                  onClick={() => setIsEditing(true)}
+                  size="sm"
+                >
+                  Edit Section
+                </Button>
+              )}
+              <Separator orientation="vertical" className="h-6" />
+              <Button variant="outline" size="sm">
+                <Print className="w-4 h-4" />
+              </Button>
+              <Button variant="outline" size="sm">
+                <Download className="w-4 h-4" />
+              </Button>
+              <Button variant="outline" size="sm">
+                <Maximize className="w-4 h-4" />
+              </Button>
+              <Button variant="outline" size="sm">
+                <Settings className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Content Editor/Viewer */}
+        <div className="flex-1 p-6">
+          <Card className="h-full">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-lg">Content</CardTitle>
+                  {isEditing && (
+                    <Badge variant="outline" className="text-xs">
+                      Editing Mode
+                    </Badge>
+                  )}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Document ID: {documentData.id}
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="h-[calc(100%-8rem)]">
+              <ScrollArea className="h-full">
+                {isEditing ? (
+                  <textarea
+                    ref={editorRef}
+                    defaultValue={currentContent}
+                    className="w-full h-full min-h-[600px] p-4 border border-input rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+                    placeholder="Enter document content..."
+                  />
+                ) : (
+                  <div className="prose prose-sm max-w-none">
+                    <div 
+                      dangerouslySetInnerHTML={{ 
+                        __html: currentContent.replace(/\n/g, '<br/>') 
+                      }} 
+                    />
+                  </div>
+                )}
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  )
+}  const documentStructure = generateDocumentStructure(documentData.type, documentData.name)
 
   // Initialize content if not exists
   useEffect(() => {
