@@ -11,10 +11,13 @@ import {
   File,
   Translate,
   Briefcase,
-  Globe
+  Globe,
+  CaretDown,
+  CaretRight
 } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { useState } from 'react'
 
 interface NavigationProps {
   currentPage: string
@@ -22,14 +25,27 @@ interface NavigationProps {
   isCollapsed: boolean
 }
 
-const navigationItems = [
+interface NavigationItem {
+  id: string
+  label: string
+  icon: any
+  children?: NavigationItem[]
+}
+
+const navigationItems: NavigationItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: House },
   { id: 'global-template', label: 'Global Template', icon: Globe },
   { id: 'template', label: 'Template', icon: File },
   { id: 'translation-studio', label: 'Translation Studio', icon: Translate },
-  { id: 'dcm', label: 'Digital Content Manager', icon: FolderOpen },
   { id: 'portfolio', label: 'Portfolio', icon: Briefcase },
-  { id: 'global-content', label: 'Global Content', icon: Globe },
+  { 
+    id: 'global-content', 
+    label: 'Global Content', 
+    icon: Globe,
+    children: [
+      { id: 'dcm', label: 'Digital Content Manager', icon: FolderOpen }
+    ]
+  },
   { id: 'masterlist', label: 'Master List', icon: ListBullets },
   { id: 'collaborate', label: 'Collaborate', icon: Users },
   { id: 'generate', label: 'Generate', icon: FilePdf },
@@ -40,6 +56,69 @@ const navigationItems = [
 ]
 
 export function Navigation({ currentPage, onNavigate, isCollapsed }: NavigationProps) {
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set(['global-content']))
+
+  const toggleExpanded = (itemId: string) => {
+    setExpandedItems(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(itemId)) {
+        newSet.delete(itemId)
+      } else {
+        newSet.add(itemId)
+      }
+      return newSet
+    })
+  }
+
+  const renderNavigationItem = (item: NavigationItem, level = 0) => {
+    const Icon = item.icon
+    const isActive = currentPage === item.id
+    const isExpanded = expandedItems.has(item.id)
+    const hasChildren = item.children && item.children.length > 0
+    const isChildActive = item.children?.some(child => currentPage === child.id)
+    
+    return (
+      <li key={item.id}>
+        <Button
+          variant={isActive || isChildActive ? "default" : "ghost"}
+          className={cn(
+            "w-full justify-start h-9 transition-all duration-200",
+            isActive || isChildActive
+              ? "bg-primary text-primary-foreground hover:bg-primary/90" 
+              : "hover:bg-muted text-muted-foreground hover:text-foreground",
+            isCollapsed && "px-2",
+            level > 0 && "ml-4 w-[calc(100%-1rem)]"
+          )}
+          onClick={() => {
+            if (hasChildren && !isCollapsed) {
+              toggleExpanded(item.id)
+            } else if (!hasChildren) {
+              onNavigate(item.id)
+            }
+          }}
+        >
+          <Icon size={18} className="shrink-0" />
+          {!isCollapsed && (
+            <>
+              <span className="ml-3 truncate flex-1 text-left">{item.label}</span>
+              {hasChildren && (
+                isExpanded ? 
+                  <CaretDown size={16} className="shrink-0" /> : 
+                  <CaretRight size={16} className="shrink-0" />
+              )}
+            </>
+          )}
+        </Button>
+        
+        {hasChildren && !isCollapsed && isExpanded && (
+          <ul className="mt-1 space-y-1">
+            {item.children?.map(child => renderNavigationItem(child, level + 1))}
+          </ul>
+        )}
+      </li>
+    )
+  }
+
   return (
     <aside className={cn(
       "bg-card border-r border-border transition-all duration-300 ease-in-out flex flex-col",
@@ -47,31 +126,7 @@ export function Navigation({ currentPage, onNavigate, isCollapsed }: NavigationP
     )}>      
       <nav className="flex-1 px-2 py-3">
         <ul className="space-y-1">
-          {navigationItems.map((item) => {
-            const Icon = item.icon
-            const isActive = currentPage === item.id
-            
-            return (
-              <li key={item.id}>
-                <Button
-                  variant={isActive ? "default" : "ghost"}
-                  className={cn(
-                    "w-full justify-start h-9 transition-all duration-200",
-                    isActive 
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90" 
-                      : "hover:bg-muted text-muted-foreground hover:text-foreground",
-                    isCollapsed && "px-2"
-                  )}
-                  onClick={() => onNavigate(item.id)}
-                >
-                  <Icon size={18} className="shrink-0" />
-                  {!isCollapsed && (
-                    <span className="ml-3 truncate">{item.label}</span>
-                  )}
-                </Button>
-              </li>
-            )
-          })}
+          {navigationItems.map((item) => renderNavigationItem(item))}
         </ul>
       </nav>
     </aside>
