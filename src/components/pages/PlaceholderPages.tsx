@@ -6637,9 +6637,6 @@ export function GlobalContent() {
     </div>
   )
 }
-    </div>
-  )
-}
 
 export function Manage() {
   return (
