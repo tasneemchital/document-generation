@@ -1,24 +1,31 @@
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import { 
   House, 
-  FolderOpen, 
-  Users, 
   FilePdf, 
-  Export, 
   Gear, 
-  Palette,
+  File,
   Robot,
   ListBullets,
-  File,
   Translate,
   Briefcase,
   Globe,
   CaretDown,
   CaretRight,
-  FolderGear
+  FolderGear,
+  PaintBrush,
+  Users,
+  Sparkle,
+  Plus
 } from '@phosphor-icons/react'
-import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import React, { useState } from 'react'
+
+interface NavigationItem {
+  id: string
+  label: string
+  icon: React.ComponentType<any>
+  children?: NavigationItem[]
+}
 
 interface NavigationProps {
   currentPage: string
@@ -26,67 +33,53 @@ interface NavigationProps {
   isCollapsed: boolean
 }
 
-interface NavigationItem {
-  id: string
-  label: string
-  icon: any
-  children?: NavigationItem[]
-}
-
 const navigationItems: NavigationItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: House },
-  { 
-    id: 'global-content', 
-    label: 'Create', 
-    icon: Globe,
-    children: [
-      { id: 'dcm', label: 'Digital Content Manager', icon: FolderOpen },
-      { id: 'global-template', label: 'Global Template', icon: Globe },
-      { id: 'masterlist', label: 'Master List', icon: ListBullets }
-    ]
-  },
-  { id: 'portfolio', label: 'Review', icon: Briefcase },
   { 
     id: 'manage', 
     label: 'Manage', 
     icon: FolderGear,
     children: [
-      { id: 'collaborate', label: 'Collaborate', icon: Users },
-      { id: 'generate', label: 'Generate', icon: FilePdf },
-      { id: 'publish', label: 'Publish', icon: Export },
-      { id: 'translation-studio', label: 'Translation Studio', icon: Translate }
+      { id: 'global-template', label: 'Global Template', icon: FilePdf },
+      { id: 'dcm', label: 'Digital Content Manager', icon: File },
     ]
   },
+  { id: 'template', label: 'Template', icon: File },
+  { id: 'design-studio', label: 'Design Studio', icon: PaintBrush },
+  { id: 'translation-studio', label: 'Translation Studio', icon: Translate },
+  { id: 'portfolio', label: 'Review', icon: Briefcase },
+  { 
+    id: 'global-content', 
+    label: 'Global Content', 
+    icon: Globe,
+    children: [
+      { id: 'masterlist', label: 'Master List', icon: ListBullets },
+    ]
+  },
+  { id: 'collaborate', label: 'Collaborate', icon: Users },
+  { id: 'generate', label: 'Generate', icon: Sparkle },
+  { id: 'publish', label: 'Publish', icon: Plus },
   { id: 'ask-benny', label: 'Ask Benny', icon: Robot },
   { id: 'admin-settings', label: 'Admin Settings', icon: Gear },
-  { id: 'design-studio', label: 'Design Studio', icon: Palette },
-  { id: 'template', label: 'Template', icon: File }
 ]
 
-export function Navigation({ currentPage, onNavigate, isCollapsed }: NavigationProps) {
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(() => {
-    // Auto-expand parent items if a child is currently active
-    const initialExpanded = new Set<string>()
-    navigationItems.forEach(item => {
-      if (item.children?.some(child => currentPage === child.id)) {
-        initialExpanded.add(item.id)
-      }
-    })
-    // Also expand global-content and manage by default
-    initialExpanded.add('global-content')
-    initialExpanded.add('manage')
-    return initialExpanded
-  })
+interface NavigationItemComponentProps {
+  item: NavigationItem
+  currentPage: string
+  onNavigate: (page: string) => void
+  isCollapsed: boolean
+  level?: number
+}
 
-  // Auto-expand parent when navigating to a child page
-  React.useEffect(() => {
-    navigationItems.forEach(item => {
-      if (item.children?.some(child => currentPage === child.id)) {
-        setExpandedItems(prev => new Set([...prev, item.id]))
-      }
-    })
-  }, [currentPage])
-
+function NavigationItemComponent({ 
+  item, 
+  currentPage, 
+  onNavigate, 
+  isCollapsed, 
+  level = 0 
+}: NavigationItemComponentProps) {
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
+  
   const toggleExpanded = (itemId: string) => {
     setExpandedItems(prev => {
       const newSet = new Set(prev)
@@ -99,63 +92,85 @@ export function Navigation({ currentPage, onNavigate, isCollapsed }: NavigationP
     })
   }
 
-  const renderNavigationItem = (item: NavigationItem, level = 0) => {
-    const Icon = item.icon
-    const isActive = currentPage === item.id
-    const isExpanded = expandedItems.has(item.id)
-    const hasChildren = item.children && item.children.length > 0
-    const isChildActive = item.children?.some(child => currentPage === child.id)
-    
-    return (
-      <li key={item.id}>
-        <Button
-          variant={isActive || isChildActive ? "default" : "ghost"}
-          className={cn(
-            "w-full justify-start h-9 transition-all duration-200",
-            isActive || isChildActive
-              ? "bg-primary text-primary-foreground hover:bg-primary/90" 
-              : "hover:bg-muted text-muted-foreground hover:text-foreground",
-            isCollapsed && "px-2",
-            level > 0 && "ml-4 w-[calc(100%-1rem)]"
-          )}
-          onClick={() => {
-            if (hasChildren && !isCollapsed) {
-              toggleExpanded(item.id)
-            } else if (!hasChildren) {
-              onNavigate(item.id)
-            }
-          }}
-        >
-          <Icon size={18} className="shrink-0" />
-          {!isCollapsed && (
-            <>
-              <span className="ml-3 truncate flex-1 text-left">{item.label}</span>
-              {hasChildren && (
-                isExpanded ? 
-                  <CaretDown size={16} className="shrink-0" /> : 
-                  <CaretRight size={16} className="shrink-0" />
-              )}
-            </>
-          )}
-        </Button>
-        
-        {hasChildren && !isCollapsed && isExpanded && (
-          <ul className="mt-1 space-y-1">
-            {item.children?.map(child => renderNavigationItem(child, level + 1))}
-          </ul>
-        )}
-      </li>
-    )
-  }
+  const hasChildren = item.children && item.children.length > 0
+  const isActive = currentPage === item.id
+  const isExpanded = expandedItems.has(item.id)
+  const isChildActive = item.children?.some(child => currentPage === child.id)
+
+  const Icon = item.icon
 
   return (
+    <li>
+      <Button
+        variant="ghost"
+        className={cn(
+          "w-full justify-start font-normal transition-colors",
+          isActive || isChildActive 
+            ? "bg-primary text-primary-foreground hover:bg-primary/90" 
+            : "hover:bg-muted text-muted-foreground hover:text-foreground",
+          level > 0 && "ml-4 w-[calc(100%-1rem)]",
+          isCollapsed && "px-2"
+        )}
+        onClick={() => {
+          if (hasChildren) {
+            toggleExpanded(item.id)
+          } else {
+            onNavigate(item.id)
+          }
+        }}
+      >
+        <Icon size={18} className="shrink-0" />
+        {!isCollapsed && (
+          <>
+            <span className="ml-2 truncate">{item.label}</span>
+            {hasChildren && (
+              <div className="ml-auto">
+                {isExpanded ? (
+                  <CaretDown size={16} className="shrink-0" />
+                ) : (
+                  <CaretRight size={16} className="shrink-0" />
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </Button>
+      
+      {hasChildren && isExpanded && !isCollapsed && (
+        <ul className="mt-1 space-y-1">
+          {item.children?.map((child) => (
+            <NavigationItemComponent
+              key={child.id}
+              item={child}
+              currentPage={currentPage}
+              onNavigate={onNavigate}
+              isCollapsed={isCollapsed}
+              level={level + 1}
+            />
+          ))}
+        </ul>
+      )}
+    </li>
+  )
+}
+
+export function Navigation({ currentPage, onNavigate, isCollapsed }: NavigationProps) {
+  return (
     <aside className={cn(
-      "bg-card border-r border-border transition-all duration-300 ease-in-out flex flex-col",
-      isCollapsed ? "w-16" : "w-72"
-    )}>      
-      <nav className="flex-1 px-2 py-3">
-        <ul className="space-y-1">
-          {navigationItems.map((item) => renderNavigationItem(item))}
+      "bg-card border-r border-border transition-all duration-300",
+      isCollapsed ? "w-16" : "w-64"
+    )}>
+      <nav className="p-4">
+        <ul className="space-y-2">
+          {navigationItems.map((item) => (
+            <NavigationItemComponent
+              key={item.id}
+              item={item}
+              currentPage={currentPage}
+              onNavigate={onNavigate}
+              isCollapsed={isCollapsed}
+            />
+          ))}
         </ul>
       </nav>
     </aside>
