@@ -5215,7 +5215,7 @@ export function Generate() {
           <div className="space-y-4">
             {/* Global Filters */}
             <Card>
-              <CardContent className="pt-4 pb-4">
+              <CardContent className="pt-4">
                 <div className="grid grid-cols-5 gap-3">
                   <div className="space-y-1">
                     <Label className="text-sm font-medium">
