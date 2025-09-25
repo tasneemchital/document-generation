@@ -6285,23 +6285,12 @@ export function Portfolio({ onNavigate, onProductSelect }: PortfolioProps) {
         
         {/* Product Search and New Button */}
         <div className="flex items-center gap-4">
-          <div className="relative">
-            <Input
-              id="product-search"
-              placeholder="Search Products"
-              value={productNameSearch}
-              onChange={(e) => setProductNameSearch(e.target.value)}
-              className="w-64 h-9 pr-10"
-            />
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0 hover:bg-gray-100"
-              title="Search"
-            >
-              <MagnifyingGlass size={16} />
-            </Button>
-          </div>
+          <SmartSearchBar
+            placeholder="Search Products"
+            value={productNameSearch}
+            onChange={setProductNameSearch}
+            className="w-64"
+          />
           
           <Button 
             variant="default"
