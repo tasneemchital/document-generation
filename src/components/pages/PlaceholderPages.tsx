@@ -5024,6 +5024,18 @@ export function Generate() {
   
   const handleCollateralSelect = (collateral: string) => {
     setSelectedCollateral(collateral)
+    // Clear selected documents when changing collateral type
+    setSelectedDocuments([])
+    // Reset filters when changing collateral
+    setColumnFilters({
+      documentName: '',
+      planType: '',
+      egwp: '',
+      folderName: '',
+      folderVersion: ''
+    })
+    setProductNameSearch('')
+    setCurrentPage(1)
   }
   
   const isAllVisibleSelected = currentPageDocuments.length > 0 && 
@@ -5243,6 +5255,11 @@ export function Generate() {
                   
                   <CardTitle className="text-base mt-3">
                     Select Documents
+                    {selectedCollateral && (
+                      <span className="text-xs font-normal text-muted-foreground ml-2">
+                        ({filteredAndSortedDocuments.length} available)
+                      </span>
+                    )}
                   </CardTitle>
                 </CardHeader>
                 
