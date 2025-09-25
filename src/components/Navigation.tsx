@@ -11,7 +11,8 @@ import {
   ListBullets,
   File,
   Translate,
-  Briefcase
+  Briefcase,
+  Globe
 } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -30,6 +31,7 @@ const navigationItems = [
   { id: 'translation-studio', label: 'Translation Studio', icon: Translate },
   { id: 'portfolio', label: 'Portfolio', icon: Briefcase },
   { id: 'masterlist', label: 'Master List', icon: ListBullets },
+  { id: 'global-content', label: 'Global Content', icon: Globe },
   { id: 'collaborate', label: 'Collaborate', icon: Users },
   { id: 'generate', label: 'Generate', icon: FilePdf },
   { id: 'publish', label: 'Publish', icon: Export },

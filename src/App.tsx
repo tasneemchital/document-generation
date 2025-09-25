@@ -11,7 +11,8 @@ import {
   AdminSettings, 
   DesignStudio,
   AskBenny,
-  Portfolio
+  Portfolio,
+  GlobalContent
 } from '@/components/pages/PlaceholderPages'
 import { DigitalContentManager } from '@/components/pages/DigitalContentManager'
 import { MedicareEOCMasterList } from '@/components/pages/MedicareEOCMasterList'
@@ -69,6 +70,8 @@ function App() {
         return <TranslationStudio />
       case 'portfolio':
         return <Portfolio />
+      case 'global-content':
+        return <GlobalContent />
       case 'collaborate':
         return <Collaborate />
         case 'masterlist':
