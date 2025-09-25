@@ -6532,9 +6532,25 @@ export function Portfolio() {
                     >
                       <TableCell className="border-r p-3 text-sm font-medium">
                         {item.portfolioName.includes('H') ? (
-                          <span className="text-blue-600 font-mono">{item.portfolioName}</span>
+                          <button 
+                            className="text-blue-600 font-mono hover:text-blue-800 hover:underline cursor-pointer transition-colors"
+                            onClick={() => {
+                              // Handle portfolio navigation/action here
+                              console.log('Clicked portfolio:', item.portfolioName)
+                            }}
+                          >
+                            {item.portfolioName}
+                          </button>
                         ) : (
-                          <span>{item.portfolioName}</span>
+                          <button 
+                            className="text-foreground hover:text-blue-600 hover:underline cursor-pointer transition-colors"
+                            onClick={() => {
+                              // Handle portfolio navigation/action here
+                              console.log('Clicked portfolio:', item.portfolioName)
+                            }}
+                          >
+                            {item.portfolioName}
+                          </button>
                         )}
                       </TableCell>
                       <TableCell className="border-r p-3 text-sm text-center">
