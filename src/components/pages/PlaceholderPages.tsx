@@ -6255,22 +6255,26 @@ export function Portfolio() {
       </div>
       
       <div className="space-y-4">
-        {/* Product Name Search */}
+        {/* Product Search */}
         <div className="flex items-center gap-4">
-          <Label htmlFor="product-name" className="text-sm font-medium whitespace-nowrap">
-            Product Name:
-          </Label>
           <div className="flex items-center gap-2">
-            <Input
-              id="product-name"
-              placeholder="Type here"
-              value={productNameSearch}
-              onChange={(e) => setProductNameSearch(e.target.value)}
-              className="w-64 h-9"
-            />
-            <Button variant="default" className="bg-blue-800 hover:bg-blue-900 h-9 px-6">
-              Search
-            </Button>
+            <div className="relative">
+              <Input
+                id="product-search"
+                placeholder="Search Products"
+                value={productNameSearch}
+                onChange={(e) => setProductNameSearch(e.target.value)}
+                className="w-64 h-9 pr-10"
+              />
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0 hover:bg-gray-100"
+                title="Search"
+              >
+                <MagnifyingGlass size={16} />
+              </Button>
+            </div>
             <Button variant="outline" className="h-9 px-6">
               Clear
             </Button>
