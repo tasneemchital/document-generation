@@ -4763,27 +4763,63 @@ export function Generate() {
   // Smart search state
   const [productNameSearch, setProductNameSearch] = useState('')
   
-  // Column filters for search and filtering
-  const [columnFilters, setColumnFilters] = useState({
-    documentName: '',
-    planType: '',
-    egwp: '',
-    folderName: '',
-    folderVersion: ''
-  })
+  // Column filters for search and filtering - dynamic based on collateral type
+  const getInitialColumnFilters = (collateralType: string) => {
+    switch (collateralType) {
+      case 'Medicare ANOC':
+        return {
+          documentName: '',
+          planType: '',
+          benefitPackage: '',
+          region: '',
+          folderName: '',
+          folderVersionNumber: ''
+        }
+      case 'Medicare EOC':
+        return {
+          documentName: '',
+          planType: '',
+          coverage: '',
+          networkSize: '',
+          folderName: '',
+          folderVersionNumber: ''
+        }
+      case 'Medicare SB':
+        return {
+          documentName: '',
+          planType: '',
+          summaryType: '',
+          language: '',
+          folderName: '',
+          folderVersionNumber: ''
+        }
+      default:
+        return {
+          documentName: '',
+          planType: '',
+          folderName: '',
+          folderVersionNumber: ''
+        }
+    }
+  }
+
+  const [columnFilters, setColumnFilters] = useState(getInitialColumnFilters(''))
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   
-  // Column visibility state
-  const [visibleColumns, setVisibleColumns] = useKV('generate-visible-columns', {
-    documentName: true,
-    planType: true,
-    egwp: true,
-    folderName: true,
-    folderVersion: true
-  })
+  // Column visibility state - dynamic based on collateral type
+  const getInitialColumnVisibility = (collateralType: string) => {
+    const columns = getColumnsForCollateral(collateralType)
+    const visibility: { [key: string]: boolean } = {}
+    columns.forEach(col => {
+      visibility[col.key] = true
+    })
+    return visibility
+  }
+
+  const [visibleColumns, setVisibleColumns] = useKV('generate-visible-columns', getInitialColumnVisibility(''))
   
   // Get column configuration for current collateral type
   const getColumnsForCollateral = (collateralType: string) => {
@@ -4795,7 +4831,7 @@ export function Generate() {
           { key: 'benefitPackage', label: 'Benefit Package' },
           { key: 'region', label: 'Region' },
           { key: 'folderName', label: 'Folder Name' },
-          { key: 'folderVersion', label: 'Folder Version Number' }
+          { key: 'folderVersionNumber', label: 'Folder Version Number' }
         ]
       case 'Medicare EOC':
         return [
@@ -4804,7 +4840,7 @@ export function Generate() {
           { key: 'coverage', label: 'Coverage Type' },
           { key: 'networkSize', label: 'Network Size' },
           { key: 'folderName', label: 'Folder Name' },
-          { key: 'folderVersion', label: 'Folder Version Number' }
+          { key: 'folderVersionNumber', label: 'Folder Version Number' }
         ]
       case 'Medicare SB':
         return [
@@ -4813,26 +4849,22 @@ export function Generate() {
           { key: 'summaryType', label: 'Summary Type' },
           { key: 'language', label: 'Language' },
           { key: 'folderName', label: 'Folder Name' },
-          { key: 'folderVersion', label: 'Folder Version Number' }
+          { key: 'folderVersionNumber', label: 'Folder Version Number' }
         ]
       default:
         return [
           { key: 'documentName', label: 'Document Name' },
           { key: 'planType', label: 'Plan Type' },
           { key: 'folderName', label: 'Folder Name' },
-          { key: 'folderVersion', label: 'Folder Version Number' }
+          { key: 'folderVersionNumber', label: 'Folder Version Number' }
         ]
     }
   }
 
-  // Available columns configuration
-  const availableColumns = [
-    { key: 'documentName', label: 'Document Name' },
-    { key: 'planType', label: 'Plan Type' },
-    { key: 'egwp', label: 'EGWP' },
-    { key: 'folderName', label: 'Folder Name' },
-    { key: 'folderVersion', label: 'Folder Version Number' }
-  ]
+  // Get available columns for current collateral type
+  const availableColumns = useMemo(() => {
+    return getColumnsForCollateral(selectedCollateral)
+  }, [selectedCollateral])
   
   const toggleColumnVisibility = (columnKey: string) => {
     setVisibleColumns((current: any) => ({
@@ -4848,50 +4880,52 @@ export function Generate() {
     'Medicare SB'
   ]
   
-  // Different document sets for each collateral type based on the image provided
+  // Different document sets for each collateral type with unique data
   const getDocumentsForCollateral = (collateralType: string) => {
     switch (collateralType) {
       case 'Medicare ANOC':
         return [
-          { id: 'H2406064000', documentName: 'H2406064000', planType: '', egwp: 'No', folderName: 'H2406064000', folderVersionNumber: '2026_0.01' },
-          { id: 'H2406084000', documentName: 'H2406084000', planType: 'Local PPO', egwp: 'No', folderName: 'H2406084000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169001000', documentName: 'H0169001000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169001000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169002000', documentName: 'H0169002000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169002000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169003000', documentName: 'H0169003000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169003000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169004000', documentName: 'H0169004000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169004000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169006000', documentName: 'H0169006000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169006000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169008000', documentName: 'H0169008000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169008000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169009000', documentName: 'H0169009000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169009000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0251002000', documentName: 'H0251002000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0251002000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0251004000', documentName: 'H0251004000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0251004000', folderVersionNumber: '2026_0.01' }
+          { id: 'anoc_H2406064000', documentName: 'ANOC H2406064000 - Health Choice', planType: 'HMO', benefitPackage: 'Basic', region: 'Region 1', folderName: 'ANOC_H2406064000', folderVersionNumber: '2026_1.01' },
+          { id: 'anoc_H2406084000', documentName: 'ANOC H2406084000 - PPO Plus', planType: 'Local PPO', benefitPackage: 'Premium', region: 'Region 2', folderName: 'ANOC_H2406084000', folderVersionNumber: '2026_1.02' },
+          { id: 'anoc_H0169001000', documentName: 'ANOC H0169001000 - Advantage Care', planType: 'HMOPOS', benefitPackage: 'Standard', region: 'Region 3', folderName: 'ANOC_H0169001000', folderVersionNumber: '2026_1.03' },
+          { id: 'anoc_H0169002000', documentName: 'ANOC H0169002000 - Premier Plan', planType: 'HMOPOS', benefitPackage: 'Enhanced', region: 'Region 1', folderName: 'ANOC_H0169002000', folderVersionNumber: '2026_1.04' },
+          { id: 'anoc_H0169003000', documentName: 'ANOC H0169003000 - Select Network', planType: 'HMOPOS', benefitPackage: 'Basic', region: 'Region 2', folderName: 'ANOC_H0169003000', folderVersionNumber: '2026_1.05' },
+          { id: 'anoc_H0169004000', documentName: 'ANOC H0169004000 - Complete Care', planType: 'HMOPOS', benefitPackage: 'Comprehensive', region: 'Region 4', folderName: 'ANOC_H0169004000', folderVersionNumber: '2026_1.06' },
+          { id: 'anoc_H0169006000', documentName: 'ANOC H0169006000 - Value Plan', planType: 'HMOPOS', benefitPackage: 'Value', region: 'Region 1', folderName: 'ANOC_H0169006000', folderVersionNumber: '2026_1.07' },
+          { id: 'anoc_H0169008000', documentName: 'ANOC H0169008000 - Elite Choice', planType: 'HMOPOS', benefitPackage: 'Elite', region: 'Region 3', folderName: 'ANOC_H0169008000', folderVersionNumber: '2026_1.08' },
+          { id: 'anoc_H0169009000', documentName: 'ANOC H0169009000 - Gold Standard', planType: 'HMOPOS', benefitPackage: 'Gold', region: 'Region 2', folderName: 'ANOC_H0169009000', folderVersionNumber: '2026_1.09' },
+          { id: 'anoc_H0251002000', documentName: 'ANOC H0251002000 - Preferred Network', planType: 'HMOPOS', benefitPackage: 'Preferred', region: 'Region 4', folderName: 'ANOC_H0251002000', folderVersionNumber: '2026_1.10' },
+          { id: 'anoc_H0251004000', documentName: 'ANOC H0251004000 - Advanced Care', planType: 'HMOPOS', benefitPackage: 'Advanced', region: 'Region 3', folderName: 'ANOC_H0251004000', folderVersionNumber: '2026_1.11' },
+          { id: 'anoc_H5421001000', documentName: 'ANOC H5421001000 - Community Health', planType: 'HMO', benefitPackage: 'Community', region: 'Region 1', folderName: 'ANOC_H5421001000', folderVersionNumber: '2026_1.12' }
         ]
       case 'Medicare EOC':
         return [
-          { id: 'H2406064000', documentName: 'H2406064000', planType: '', egwp: 'No', folderName: 'H2406064000', folderVersionNumber: '2026_0.01' },
-          { id: 'H2406084000', documentName: 'H2406084000', planType: 'Local PPO', egwp: 'No', folderName: 'H2406084000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169001000', documentName: 'H0169001000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169001000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169002000', documentName: 'H0169002000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169002000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169003000', documentName: 'H0169003000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169003000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169004000', documentName: 'H0169004000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169004000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169006000', documentName: 'H0169006000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169006000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169008000', documentName: 'H0169008000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169008000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169009000', documentName: 'H0169009000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169009000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0251002000', documentName: 'H0251002000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0251002000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0251004000', documentName: 'H0251004000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0251004000', folderVersionNumber: '2026_0.01' }
+          { id: 'eoc_H2406064000', documentName: 'EOC H2406064000 - Health Choice Coverage', planType: 'HMO', coverage: 'Medical + Rx', networkSize: 'Large', folderName: 'EOC_H2406064000', folderVersionNumber: '2026_2.01' },
+          { id: 'eoc_H2406084000', documentName: 'EOC H2406084000 - PPO Plus Coverage', planType: 'Local PPO', coverage: 'Medical Only', networkSize: 'Medium', folderName: 'EOC_H2406084000', folderVersionNumber: '2026_2.02' },
+          { id: 'eoc_H0169001000', documentName: 'EOC H0169001000 - Advantage Coverage', planType: 'HMOPOS', coverage: 'Medical + Rx + Dental', networkSize: 'Large', folderName: 'EOC_H0169001000', folderVersionNumber: '2026_2.03' },
+          { id: 'eoc_H0169002000', documentName: 'EOC H0169002000 - Premier Coverage', planType: 'HMOPOS', coverage: 'Medical + Rx + Vision', networkSize: 'Extra Large', folderName: 'EOC_H0169002000', folderVersionNumber: '2026_2.04' },
+          { id: 'eoc_H0169003000', documentName: 'EOC H0169003000 - Select Coverage', planType: 'HMOPOS', coverage: 'Medical + Rx', networkSize: 'Medium', folderName: 'EOC_H0169003000', folderVersionNumber: '2026_2.05' },
+          { id: 'eoc_H0169004000', documentName: 'EOC H0169004000 - Complete Coverage', planType: 'HMOPOS', coverage: 'Comprehensive', networkSize: 'Large', folderName: 'EOC_H0169004000', folderVersionNumber: '2026_2.06' },
+          { id: 'eoc_H0169006000', documentName: 'EOC H0169006000 - Value Coverage', planType: 'HMOPOS', coverage: 'Medical + Rx', networkSize: 'Small', folderName: 'EOC_H0169006000', folderVersionNumber: '2026_2.07' },
+          { id: 'eoc_H0169008000', documentName: 'EOC H0169008000 - Elite Coverage', planType: 'HMOPOS', coverage: 'Medical + Rx + Wellness', networkSize: 'Large', folderName: 'EOC_H0169008000', folderVersionNumber: '2026_2.08' },
+          { id: 'eoc_H0169009000', documentName: 'EOC H0169009000 - Gold Coverage', planType: 'HMOPOS', coverage: 'Medical + Rx + Specialty', networkSize: 'Extra Large', folderName: 'EOC_H0169009000', folderVersionNumber: '2026_2.09' },
+          { id: 'eoc_H0251002000', documentName: 'EOC H0251002000 - Preferred Coverage', planType: 'HMOPOS', coverage: 'Medical + Rx + Dental + Vision', networkSize: 'Large', folderName: 'EOC_H0251002000', folderVersionNumber: '2026_2.10' },
+          { id: 'eoc_H0251004000', documentName: 'EOC H0251004000 - Advanced Coverage', planType: 'HMOPOS', coverage: 'Full Spectrum', networkSize: 'Extra Large', folderName: 'EOC_H0251004000', folderVersionNumber: '2026_2.11' }
         ]
       case 'Medicare SB':
         return [
-          { id: 'H2406064000', documentName: 'H2406064000', planType: '', egwp: 'No', folderName: 'H2406064000', folderVersionNumber: '2026_0.01' },
-          { id: 'H2406084000', documentName: 'H2406084000', planType: 'Local PPO', egwp: 'No', folderName: 'H2406084000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169001000', documentName: 'H0169001000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169001000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169002000', documentName: 'H0169002000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169002000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169003000', documentName: 'H0169003000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169003000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169004000', documentName: 'H0169004000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169004000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169006000', documentName: 'H0169006000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169006000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169008000', documentName: 'H0169008000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169008000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0169009000', documentName: 'H0169009000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0169009000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0251002000', documentName: 'H0251002000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0251002000', folderVersionNumber: '2026_0.01' },
-          { id: 'H0251004000', documentName: 'H0251004000', planType: 'HMOPOS', egwp: 'No', folderName: 'H0251004000', folderVersionNumber: '2026_0.01' }
+          { id: 'sb_H2406064000', documentName: 'SB H2406064000 - Health Choice Summary', planType: 'HMO', summaryType: 'Standard', language: 'English', folderName: 'SB_H2406064000', folderVersionNumber: '2026_3.01' },
+          { id: 'sb_H2406064000_es', documentName: 'SB H2406064000 - Health Choice Resumen', planType: 'HMO', summaryType: 'Standard', language: 'Spanish', folderName: 'SB_H2406064000_ES', folderVersionNumber: '2026_3.01' },
+          { id: 'sb_H2406084000', documentName: 'SB H2406084000 - PPO Plus Summary', planType: 'Local PPO', summaryType: 'Enhanced', language: 'English', folderName: 'SB_H2406084000', folderVersionNumber: '2026_3.02' },
+          { id: 'sb_H0169001000', documentName: 'SB H0169001000 - Advantage Summary', planType: 'HMOPOS', summaryType: 'Comprehensive', language: 'English', folderName: 'SB_H0169001000', folderVersionNumber: '2026_3.03' },
+          { id: 'sb_H0169001000_zh', documentName: 'SB H0169001000 - Advantage 摘要', planType: 'HMOPOS', summaryType: 'Comprehensive', language: 'Chinese', folderName: 'SB_H0169001000_ZH', folderVersionNumber: '2026_3.03' },
+          { id: 'sb_H0169002000', documentName: 'SB H0169002000 - Premier Summary', planType: 'HMOPOS', summaryType: 'Premium', language: 'English', folderName: 'SB_H0169002000', folderVersionNumber: '2026_3.04' },
+          { id: 'sb_H0169003000', documentName: 'SB H0169003000 - Select Summary', planType: 'HMOPOS', summaryType: 'Basic', language: 'English', folderName: 'SB_H0169003000', folderVersionNumber: '2026_3.05' },
+          { id: 'sb_H0169004000', documentName: 'SB H0169004000 - Complete Summary', planType: 'HMOPOS', summaryType: 'Full', language: 'English', folderName: 'SB_H0169004000', folderVersionNumber: '2026_3.06' },
+          { id: 'sb_H0169004000_es', documentName: 'SB H0169004000 - Resumen Completo', planType: 'HMOPOS', summaryType: 'Full', language: 'Spanish', folderName: 'SB_H0169004000_ES', folderVersionNumber: '2026_3.06' },
+          { id: 'sb_H0169006000', documentName: 'SB H0169006000 - Value Summary', planType: 'HMOPOS', summaryType: 'Value', language: 'English', folderName: 'SB_H0169006000', folderVersionNumber: '2026_3.07' },
+          { id: 'sb_H0169008000', documentName: 'SB H0169008000 - Elite Summary', planType: 'HMOPOS', summaryType: 'Elite', language: 'English', folderName: 'SB_H0169008000', folderVersionNumber: '2026_3.08' },
+          { id: 'sb_H0169009000', documentName: 'SB H0169009000 - Gold Summary', planType: 'HMOPOS', summaryType: 'Gold', language: 'English', folderName: 'SB_H0169009000', folderVersionNumber: '2026_3.09' }
         ]
       default:
         return []
@@ -4912,29 +4946,52 @@ export function Generate() {
   const filteredAndSortedDocuments = useMemo(() => {
     let filtered = documents.filter(document => {
       // Apply smart search filter first
-      if (productNameSearch && !document.documentName.toLowerCase().includes(productNameSearch.toLowerCase()) &&
-          !document.planType.toLowerCase().includes(productNameSearch.toLowerCase()) &&
-          !document.folderName.toLowerCase().includes(productNameSearch.toLowerCase()) &&
-          !document.folderVersionNumber.toLowerCase().includes(productNameSearch.toLowerCase())) {
+      const searchableFields = Object.values(document).join(' ').toLowerCase()
+      if (productNameSearch && !searchableFields.includes(productNameSearch.toLowerCase())) {
         return false
       }
       
-      // Apply column filters
+      // Apply column filters based on collateral type
       if (columnFilters.documentName && !document.documentName.toLowerCase().includes(columnFilters.documentName.toLowerCase())) {
         return false
       }
       if (columnFilters.planType && !document.planType.toLowerCase().includes(columnFilters.planType.toLowerCase())) {
         return false
       }
-      if (columnFilters.egwp && columnFilters.egwp !== 'all' && document.egwp !== columnFilters.egwp) {
-        return false
-      }
       if (columnFilters.folderName && !document.folderName.toLowerCase().includes(columnFilters.folderName.toLowerCase())) {
         return false
       }
-      if (columnFilters.folderVersion && !document.folderVersionNumber.toLowerCase().includes(columnFilters.folderVersion.toLowerCase())) {
+      if (columnFilters.folderVersionNumber && !document.folderVersionNumber.toLowerCase().includes(columnFilters.folderVersionNumber.toLowerCase())) {
         return false
       }
+
+      // Apply specific filters based on collateral type
+      if (selectedCollateral === 'Medicare ANOC') {
+        const anocDoc = document as any
+        if (columnFilters.benefitPackage && anocDoc.benefitPackage && !anocDoc.benefitPackage.toLowerCase().includes(columnFilters.benefitPackage.toLowerCase())) {
+          return false
+        }
+        if (columnFilters.region && anocDoc.region && !anocDoc.region.toLowerCase().includes(columnFilters.region.toLowerCase())) {
+          return false
+        }
+      } else if (selectedCollateral === 'Medicare EOC') {
+        const eocDoc = document as any
+        if (columnFilters.coverage && eocDoc.coverage && !eocDoc.coverage.toLowerCase().includes(columnFilters.coverage.toLowerCase())) {
+          return false
+        }
+        if (columnFilters.networkSize && eocDoc.networkSize && !eocDoc.networkSize.toLowerCase().includes(columnFilters.networkSize.toLowerCase())) {
+          return false
+        }
+      } else if (selectedCollateral === 'Medicare SB') {
+        const sbDoc = document as any
+        if (columnFilters.summaryType && sbDoc.summaryType && !sbDoc.summaryType.toLowerCase().includes(columnFilters.summaryType.toLowerCase())) {
+          return false
+        }
+        if (columnFilters.language && sbDoc.language && !sbDoc.language.toLowerCase().includes(columnFilters.language.toLowerCase())) {
+          return false
+        }
+      }
+      
       return true
     })
     
@@ -4952,7 +5009,7 @@ export function Generate() {
     }
     
     return filtered
-  }, [documents, sortField, sortDirection, columnFilters, productNameSearch])
+  }, [documents, sortField, sortDirection, columnFilters, productNameSearch, selectedCollateral])
   
   // Pagination calculations
   const totalPages = Math.ceil(filteredAndSortedDocuments.length / pageSize)
@@ -5010,13 +5067,7 @@ export function Generate() {
   }
 
   const clearAllFilters = () => {
-    setColumnFilters({
-      documentName: '',
-      planType: '',
-      egwp: '',
-      folderName: '',
-      folderVersion: ''
-    })
+    setColumnFilters(getInitialColumnFilters(selectedCollateral))
     setProductNameSearch('')
   }
   
@@ -5027,15 +5078,11 @@ export function Generate() {
     // Clear selected documents when changing collateral type
     setSelectedDocuments([])
     // Reset filters when changing collateral
-    setColumnFilters({
-      documentName: '',
-      planType: '',
-      egwp: '',
-      folderName: '',
-      folderVersion: ''
-    })
+    setColumnFilters(getInitialColumnFilters(collateral))
     setProductNameSearch('')
     setCurrentPage(1)
+    // Update column visibility for new collateral type
+    setVisibleColumns(getInitialColumnVisibility(collateral))
   }
   
   const isAllVisibleSelected = currentPageDocuments.length > 0 && 
@@ -5308,46 +5355,21 @@ export function Generate() {
                               </div>
                             </TableHead>
                           )}
-                          {visibleColumns.planType && (
-                            <TableHead className="border-r h-10">
-                              <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('planType')}>
-                                Plan Type
-                                {sortField === 'planType' && (
-                                  sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
-                                )}
-                              </div>
-                            </TableHead>
-                          )}
-                          {visibleColumns.egwp && (
-                            <TableHead className="border-r h-10">
-                              <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('egwp')}>
-                                EGWP
-                                {sortField === 'egwp' && (
-                                  sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
-                                )}
-                              </div>
-                            </TableHead>
-                          )}
-                          {visibleColumns.folderName && (
-                            <TableHead className="border-r h-10">
-                              <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('folderName')}>
-                                Folder Name
-                                {sortField === 'folderName' && (
-                                  sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
-                                )}
-                              </div>
-                            </TableHead>
-                          )}
-                          {visibleColumns.folderVersion && (
-                            <TableHead className="h-10">
-                              <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('folderVersionNumber')}>
-                                Folder Version Number
-                                {sortField === 'folderVersionNumber' && (
-                                  sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
-                                )}
-                              </div>
-                            </TableHead>
-                          )}
+                          {availableColumns.slice(1).map((column, index) => (
+                            visibleColumns[column.key] && (
+                              <TableHead 
+                                key={column.key}
+                                className={`${index < availableColumns.slice(1).length - 1 ? 'border-r' : ''} h-10`}
+                              >
+                                <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort(column.key)}>
+                                  {column.label}
+                                  {sortField === column.key && (
+                                    sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
+                                  )}
+                                </div>
+                              </TableHead>
+                            )
+                          ))}
                         </TableRow>
 
                         {/* Filter Row */}
@@ -5399,67 +5421,33 @@ export function Generate() {
                               </div>
                             </TableHead>
                           )}
-                          {visibleColumns.egwp && (
-                            <TableHead className="p-1 border-r">
-                              <Select 
-                                value={columnFilters.egwp || 'all'} 
-                                onValueChange={(value) => updateColumnFilter('egwp', value === 'all' ? '' : value)}
+                          {availableColumns.slice(1).map((column, index) => (
+                            visibleColumns[column.key] && (
+                              <TableHead 
+                                key={`filter-${column.key}`}
+                                className={`p-1 ${index < availableColumns.slice(1).length - 1 ? 'border-r' : ''}`}
                               >
-                                <SelectTrigger className="h-7 text-sm">
-                                  <SelectValue placeholder="Filter EGWP" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="all">All</SelectItem>
-                                  <SelectItem value="Yes">Yes</SelectItem>
-                                  <SelectItem value="No">No</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </TableHead>
-                          )}
-                          {visibleColumns.folderName && (
-                            <TableHead className="p-1 border-r">
-                              <div className="relative">
-                                <MagnifyingGlass size={12} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                                <Input
-                                  value={columnFilters.folderName}
-                                  onChange={(e) => updateColumnFilter('folderName', e.target.value)}
-                                  className="pl-7 h-7 text-sm"
-                                />
-                                {columnFilters.folderName && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5 p-0"
-                                    onClick={() => clearColumnFilter('folderName')}
-                                  >
-                                    <X size={10} />
-                                  </Button>
-                                )}
-                              </div>
-                            </TableHead>
-                          )}
-                          {visibleColumns.folderVersion && (
-                            <TableHead className="p-1">
-                              <div className="relative">
-                                <MagnifyingGlass size={12} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                                <Input
-                                  value={columnFilters.folderVersion}
-                                  onChange={(e) => updateColumnFilter('folderVersion', e.target.value)}
-                                  className="pl-7 h-7 text-sm"
-                                />
-                                {columnFilters.folderVersion && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5 p-0"
-                                    onClick={() => clearColumnFilter('folderVersion')}
-                                  >
-                                    <X size={10} />
-                                  </Button>
-                                )}
-                              </div>
-                            </TableHead>
-                          )}
+                                <div className="relative">
+                                  <MagnifyingGlass size={12} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                                  <Input
+                                    value={columnFilters[column.key] || ''}
+                                    onChange={(e) => updateColumnFilter(column.key, e.target.value)}
+                                    className="pl-7 h-7 text-sm"
+                                  />
+                                  {columnFilters[column.key] && (
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5 p-0"
+                                      onClick={() => clearColumnFilter(column.key)}
+                                    >
+                                      <X size={10} />
+                                    </Button>
+                                  )}
+                                </div>
+                              </TableHead>
+                            )
+                          ))}
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -5492,44 +5480,40 @@ export function Generate() {
                                   }
                                 />
                               </TableCell>
-                              {visibleColumns.documentName && (
-                                <TableCell className="font-mono text-blue-600 font-medium border-r p-2 text-sm">
-                                  {document.documentName}
-                                </TableCell>
-                              )}
-                              {visibleColumns.planType && (
-                                <TableCell className="border-r p-2">
-                                  {document.planType ? (
-                                    <Badge variant="outline" className="font-medium text-xs">
-                                      {document.planType}
-                                    </Badge>
-                                  ) : (
-                                    <span className="text-muted-foreground text-sm italic">—</span>
-                                  )}
-                                </TableCell>
-                              )}
-                              {visibleColumns.egwp && (
-                                <TableCell className="border-r p-2">
-                                  <Badge 
-                                    variant={document.egwp === 'Yes' ? 'default' : 'secondary'}
-                                    className={`text-xs ${document.egwp === 'Yes' ? 'bg-green-100 text-green-800 border-green-300' : ''}`}
+                              {availableColumns.map((column, colIndex) => (
+                                visibleColumns[column.key] && (
+                                  <TableCell 
+                                    key={column.key}
+                                    className={`${colIndex < availableColumns.length - 1 ? 'border-r' : ''} p-2 text-sm`}
                                   >
-                                    {document.egwp}
-                                  </Badge>
-                                </TableCell>
-                              )}
-                              {visibleColumns.folderName && (
-                                <TableCell className="font-mono text-sm border-r p-2">
-                                  {document.folderName}
-                                </TableCell>
-                              )}
-                              {visibleColumns.folderVersion && (
-                                <TableCell className="font-mono text-sm p-2">
-                                  <Badge variant="outline" className="font-mono text-xs">
-                                    {document.folderVersionNumber}
-                                  </Badge>
-                                </TableCell>
-                              )}
+                                    {column.key === 'documentName' ? (
+                                      <span className="font-mono text-blue-600 font-medium">
+                                        {(document as any)[column.key]}
+                                      </span>
+                                    ) : column.key === 'planType' ? (
+                                      (document as any)[column.key] ? (
+                                        <Badge variant="outline" className="font-medium text-xs">
+                                          {(document as any)[column.key]}
+                                        </Badge>
+                                      ) : (
+                                        <span className="text-muted-foreground text-sm italic">—</span>
+                                      )
+                                    ) : column.key === 'folderName' ? (
+                                      <span className="font-mono">
+                                        {(document as any)[column.key]}
+                                      </span>
+                                    ) : column.key === 'folderVersionNumber' ? (
+                                      <Badge variant="outline" className="font-mono text-xs">
+                                        {(document as any)[column.key]}
+                                      </Badge>
+                                    ) : (
+                                      <span>
+                                        {(document as any)[column.key] || '—'}
+                                      </span>
+                                    )}
+                                  </TableCell>
+                                )
+                              ))}
                             </TableRow>
                           ))
                         )}
