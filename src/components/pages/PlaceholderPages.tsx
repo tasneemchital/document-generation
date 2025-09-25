@@ -5563,7 +5563,6 @@ export function Generate() {
       </Tabs>
     </div>
   )
-}
 
 export function MasterList() {
   const [searchTerm, setSearchTerm] = useState('')
