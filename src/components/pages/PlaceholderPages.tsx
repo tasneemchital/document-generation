@@ -2955,6 +2955,7 @@ function CollaborateMain() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+        </div>
       </div>
       
       {layoutMode === 'card' ? renderCardLayout() : (
@@ -3737,10 +3738,10 @@ function CollaborateMain() {
         </CardContent>
       </Card>
       )}
-      )}
+    </div>
   )
 }
-}
+
 function LogsTab() {
   const [sortField, setSortField] = useState<string | null>(null)
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
