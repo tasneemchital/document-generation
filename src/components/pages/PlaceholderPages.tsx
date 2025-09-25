@@ -5072,15 +5072,7 @@ export function Generate() {
     setColumnFilters(getInitialColumnFilters(selectedCollateral))
     setProductNameSearch('')
   }
-  
 
-  
-    setColumnFilters(getInitialColumnFilters(selectedCollateral))
-    setCurrentPage(1)
-    // Update column visibility for new collateral type
-    setVisibleColumns(getInitialColumnVisibility(collateral))
-  }
-  
   const isAllVisibleSelected = currentPageDocuments.length > 0 && 
     currentPageDocuments.every(doc => selectedDocuments.includes(doc.id))
   
@@ -5370,7 +5362,7 @@ export function Generate() {
 
                         {/* Filter Row */}
                         <TableRow className="bg-muted/30">
-                          <TableHead className="w-10 border-r p-1"></TableHead>
+                          <TableHead className="w-10 border-r p-1" />
                           {visibleColumns.documentName && (
                             <TableHead className="border-r p-1">
                               <div className="relative">
