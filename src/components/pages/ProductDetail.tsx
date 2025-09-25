@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Eye, Download } from "@phosphor-i
 import { ArrowLeft, Eye, Download } from "@phosphor-icons/react"
-interface ProductDetailProps {
+import { Separator } from "@/components/ui/separator"
 
+interface ProductDetailProps {
+  productId?: string
   productName?: string
+  onNavigate: (page: string) => void
 }
 
-export function ProductDetail({ productId, productName, onNavigate }: ProductDetailProps) {
 export function ProductDetail({ productId, productName, onNavigate }: ProductDetailProps) {
   const productData = {
     id: productId,
