@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from '@/components/ui/separator'
 import { ArrowLeft, Download, Eye } from '@phosphor-icons/react'
 
@@ -65,92 +64,7 @@ export function ProductDetail({ productId, productName, onNavigate }: ProductDet
 
       {/* Content */}
       <div className="flex-1 overflow-auto p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Product Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Product Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Product ID</label>
-                <p className="text-foreground mt-1">{productData.id}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Status</label>
-                <p className="text-foreground mt-1">{productData.status}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Version</label>
-                <p className="text-foreground mt-1">{productData.version}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Last Modified</label>
-                <p className="text-foreground mt-1">{productData.lastModified}</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Description */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Description</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-foreground">{productData.description}</p>
-            </CardContent>
-          </Card>
-
-          {/* Document History */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Document History</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 border border-border rounded-lg">
-                  <div className="flex-1">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium text-foreground">Version 2.1</span>
-                      <span className="text-sm text-muted-foreground">{productData.lastModified}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">Current version - Active</p>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between p-3 border border-border rounded-lg opacity-60">
-                  <div className="flex-1">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium text-foreground">Version 2.0</span>
-                      <span className="text-sm text-muted-foreground">2024-11-15</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">Previous version</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Team Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Team Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Created By</label>
-                <p className="text-foreground mt-1">{productData.createdBy}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Reviewed By</label>
-                <p className="text-foreground mt-1">{productData.reviewedBy}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Team Lead</label>
-                <p className="text-foreground mt-1">{productData.teamLead}</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Content area now empty - cards removed as requested */}
       </div>
     </div>
   )
