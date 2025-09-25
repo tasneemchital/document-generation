@@ -2405,6 +2405,9 @@ function CollaborateMain() {
   const [pageSize, setPageSize] = useState(10)
   const [selectedRows, setSelectedRows] = useKV('collaborate-selected-rows', [] as string[])
   
+  // Layout mode state - grid (table) or card view
+  const [layoutMode, setLayoutMode] = useKV('collaborate-layout-mode', 'grid' as 'grid' | 'card')
+  
   // Column filters for search
   const [columnFilters, setColumnFilters] = useState({
     id: '',
@@ -2806,6 +2809,104 @@ function CollaborateMain() {
   
   const isSomeVisibleSelected = currentPageData.some(item => selectedRows.includes(item.id))
   
+  // Render card layout
+  const renderCardLayout = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {currentPageData.map((item, index) => (
+        <Card key={`${item.id}-${index}`} className="hover:shadow-md transition-shadow duration-200">
+          <CardHeader className="pb-3">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <Checkbox
+                    checked={selectedRows.includes(`${item.id}-${index}`)}
+                    onCheckedChange={(checked) => 
+                      handleRowSelect(`${item.id}-${index}`, checked as boolean)
+                    }
+                  />
+                  <CardTitle className="text-sm font-medium text-blue-600 truncate" title={item.id}>
+                    {item.id}
+                  </CardTitle>
+                </div>
+                <div className="flex items-center gap-2 mb-1">
+                  <Badge variant="outline" className="text-xs font-medium">
+                    {item.collateralType}
+                  </Badge>
+                  <Badge variant="secondary" className="text-xs">
+                    {item.fontType}
+                  </Badge>
+                </div>
+                <p className="text-sm font-mono text-muted-foreground truncate" title={item.productName}>
+                  {item.productName}
+                </p>
+              </div>
+              <Badge className={`text-xs font-medium ${getStatusColor(item.workflowStage)}`}>
+                {item.workflowStage}
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="space-y-2">
+              <div className="text-sm">
+                <p className="font-medium truncate" title={item.folderName}>
+                  {item.folderName}
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                <div>
+                  <span className="font-medium">Effective:</span> {item.effectiveDate}
+                </div>
+                <div>
+                  <span className="font-medium">Version:</span> {item.version}
+                </div>
+                <div>
+                  <span className="font-medium">Est. Complete:</span> {item.estimatedDate}
+                </div>
+                <div>
+                  <span className="font-medium">Collaborators:</span> {item.collaborators}
+                </div>
+              </div>
+
+              <div className="pt-2 border-t">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-medium text-muted-foreground">Reviewers:</span>
+                  <Badge variant="outline" className="text-xs">
+                    {item.totalReviewCount}
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground truncate" title={item.reviewersInvolved}>
+                  {item.reviewersInvolved}
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between pt-2">
+                <div className="flex items-center gap-1">
+                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-blue-600 hover:bg-blue-50" title="View Product">
+                    <Link size={12} />
+                  </Button>
+                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-blue-600 hover:bg-blue-50" title="View Draftable Compare">
+                    <Link size={12} />
+                  </Button>
+                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-gray-600 hover:bg-gray-50" title="Email Status">
+                    <Eye size={12} />
+                  </Button>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  <span className="font-medium">By:</span> {item.queuedBy}
+                </div>
+              </div>
+              
+              <div className="text-xs text-muted-foreground">
+                <span className="font-medium">Queued:</span> {item.queuedDate}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
+  
   const getStatusColor = (stage: string) => {
     switch (stage) {
       case 'Collection Updates In Progress':
@@ -2857,16 +2958,17 @@ function CollaborateMain() {
         </div>
       </div>
       
-      {/* Data Grid */}
-      <Card>
-        <CardContent className="p-0">
-          <div className="border rounded-lg">
-            <Table>
-              <TableHeader>
-                {/* Column Headers with Sort */}
-                <TableRow className="bg-muted/30">
-                  <TableHead className="w-12 border-r h-11">
-                    <Checkbox
+      {/* Conditional Layout Rendering */}
+      {layoutMode === 'card' ? renderCardLayout() : (
+        <Card>
+          <CardContent className="p-0">
+            <div className="border rounded-lg">
+              <Table>
+                <TableHeader>
+                  {/* Column Headers with Sort */}
+                  <TableRow className="bg-muted/30">
+                    <TableHead className="w-12 border-r h-11">
+                      <Checkbox
                       checked={isAllVisibleSelected}
                       onCheckedChange={handleSelectAll}
                       ref={(el) => {
@@ -3636,6 +3738,7 @@ function CollaborateMain() {
           </div>
         </CardContent>
       </Card>
+      )}
     </div>
   )
 }
