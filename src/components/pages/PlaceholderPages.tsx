@@ -5476,11 +5476,11 @@ export function Generate() {
                             <Checkbox
                               checked={isAllVisibleSelected}
                               onCheckedChange={handleSelectAll}
-                              ref={(el) => {
-                                if (el) el.indeterminate = isSomeVisibleSelected && !isAllVisibleSelected
-                              }}
-                            />
-                          </TableHead>
+                  <div className="border rounded-lg">
+                    <Table>
+                      <TableHeader>
+                        {/* Column Headers with Sort */}
+                        <TableRow className="bg-muted/50">
                           {visibleColumns.documentName && (
                             <TableHead className="border-r h-10">
                               <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('documentName')}>
