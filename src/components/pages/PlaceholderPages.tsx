@@ -4865,6 +4865,11 @@ export function Generate() {
   const availableColumns = useMemo(() => {
     return getColumnsForCollateral(selectedCollateral)
   }, [selectedCollateral])
+
+  // Column visibility toggle function
+  const toggleColumnVisibility = (columnKey: string) => {
+    setVisibleColumns((current: any) => ({
+      ...current,
       [columnKey]: !current[columnKey]
     }))
   }
@@ -4946,26 +4951,22 @@ export function Generate() {
       if (productNameSearch && !searchableFields.includes(productNameSearch.toLowerCase())) {
         return false
       }
-      const searchableFields = Object.values(document).join(' ').toLowerCase()
-      if (productNameSearch && !searchableFields.includes(productNameSearch.toLowerCase())) {
+      
+      // Apply common column filters
+      if (columnFilters.documentName && !document.documentName.toLowerCase().includes(columnFilters.documentName.toLowerCase())) {
+        return false
       }
       if (columnFilters.planType && !document.planType.toLowerCase().includes(columnFilters.planType.toLowerCase())) {
         return false
-      // Apply column filters based on collateral type
+      }
       if (columnFilters.folderName && !document.folderName.toLowerCase().includes(columnFilters.folderName.toLowerCase())) {
         return false
       }
       if (columnFilters.folderVersionNumber && !document.folderVersionNumber.toLowerCase().includes(columnFilters.folderVersionNumber.toLowerCase())) {
         return false
       }
-      if (columnFilters.folderName && !document.folderName.toLowerCase().includes(columnFilters.folderName.toLowerCase())) {
-      // Apply specific filters based on collateral type
-      if (selectedCollateral === 'Medicare ANOC') {
-      if (columnFilters.folderVersion && !document.folderVersionNumber.toLowerCase().includes(columnFilters.folderVersion.toLowerCase())) {
-        if (columnFilters.benefitPackage && anocDoc.benefitPackage && !anocDoc.benefitPackage.toLowerCase().includes(columnFilters.benefitPackage.toLowerCase())) {
-          return false
 
-      // Apply specific filters based on collateral typerCase().includes(columnFilters.region.toLowerCase())) {
+      // Apply specific filters based on collateral type
       if (selectedCollateral === 'Medicare ANOC') {
         const anocDoc = document as any
         if (columnFilters.benefitPackage && anocDoc.benefitPackage && !anocDoc.benefitPackage.toLowerCase().includes(columnFilters.benefitPackage.toLowerCase())) {
@@ -4990,8 +4991,15 @@ export function Generate() {
         if (columnFilters.language && sbDoc.language && !sbDoc.language.toLowerCase().includes(columnFilters.language.toLowerCase())) {
           return false
         }
-      filtered.sort((a, b) => {
+      }
       
+      return true
+    })
+    
+    // Apply sorting
+    if (sortField) {
+      filtered.sort((a, b) => {
+        const aValue = a[sortField as keyof typeof a] || ''
         const bValue = b[sortField as keyof typeof b] || ''
         
         if (sortDirection === 'asc') {
@@ -5009,7 +5017,7 @@ export function Generate() {
   const totalPages = Math.ceil(filteredAndSortedDocuments.length / pageSize)
   const startIndex = (currentPage - 1) * pageSize
   const endIndex = startIndex + pageSize
-  }, [documents, sortField, sortDirection, columnFilters, productNameSearch, selectedCollateral])
+  const currentPageDocuments = filteredAndSortedDocuments.slice(startIndex, endIndex)
   
   // Reset to page 1 when sort or filters change
   useEffect(() => {
