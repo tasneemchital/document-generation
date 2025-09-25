@@ -4763,58 +4763,36 @@ export function Generate() {
   // Smart search state
   const [productNameSearch, setProductNameSearch] = useState('')
   
-  // Get current available columns based on selected collateral
-  const availableColumns = useMemo(() => {
-    if (selectedCollaterals.length === 1) {
-      return getColumnsForCollateral(selectedCollaterals[0])
-    } else if (selectedCollaterals.length > 1) {
-      // If multiple collaterals selected, show common columns
-      return [
-        { key: 'documentName', label: 'Document Name' },
-        { key: 'planType', label: 'Plan Type' },
-        { key: 'folderName', label: 'Folder Name' },
-        { key: 'folderVersion', label: 'Folder Version Number' }
-      ]
-    }
-    return []
-  }, [selectedCollaterals])
-
-  // Dynamic column filters based on available columns
-  const [columnFilters, setColumnFilters] = useState(() => {
-    const initialFilters: Record<string, string> = {}
-    availableColumns.forEach(col => {
-      initialFilters[col.key] = ''
-    })
-    return initialFilters
+  // Column filters for search and filtering
+  const [columnFilters, setColumnFilters] = useState({
+    documentName: '',
+    planType: '',
+    egwp: '',
+    folderName: '',
+    folderVersion: ''
   })
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   
-  // Dynamic column visibility state
-  const [visibleColumns, setVisibleColumns] = useKV('generate-visible-columns', () => {
-    const initialVisibility: Record<string, boolean> = {}
-    availableColumns.forEach(col => {
-      initialVisibility[col.key] = true
-    })
-    return initialVisibility
+  // Column visibility state
+  const [visibleColumns, setVisibleColumns] = useKV('generate-visible-columns', {
+    documentName: true,
+    planType: true,
+    egwp: true,
+    folderName: true,
+    folderVersion: true
   })
-
-  // Update column filters and visibility when collateral selection changes
-  useEffect(() => {
-    const newFilters: Record<string, string> = {}
-    const newVisibility: Record<string, boolean> = {}
-    
-    availableColumns.forEach(col => {
-      newFilters[col.key] = columnFilters[col.key] || ''
-      newVisibility[col.key] = visibleColumns[col.key] !== false
-    })
-    
-    setColumnFilters(newFilters)
-    setVisibleColumns(newVisibility)
-    setCurrentPage(1) // Reset to first page when collateral changes
-  }, [availableColumns])
+  
+  // Available columns configuration
+  const availableColumns = [
+    { key: 'documentName', label: 'Document Name' },
+    { key: 'planType', label: 'Plan Type' },
+    { key: 'egwp', label: 'EGWP' },
+    { key: 'folderName', label: 'Folder Name' },
+    { key: 'folderVersion', label: 'Folder Version Number' }
+  ]
   
   const toggleColumnVisibility = (columnKey: string) => {
     setVisibleColumns((current: any) => ({
@@ -4933,32 +4911,37 @@ export function Generate() {
   // Filter and sort documents with enhanced filtering
   const filteredAndSortedDocuments = useMemo(() => {
     let filtered = documents.filter(document => {
-      // Apply smart search filter first - search across all document properties
-      if (productNameSearch) {
-        const searchTerm = productNameSearch.toLowerCase()
-        const searchableFields = Object.values(document).join(' ').toLowerCase()
-        if (!searchableFields.includes(searchTerm)) {
-          return false
-        }
+      // Apply smart search filter first
+      if (productNameSearch && !document.name.toLowerCase().includes(productNameSearch.toLowerCase()) &&
+          !document.planType.toLowerCase().includes(productNameSearch.toLowerCase()) &&
+          !document.folderName.toLowerCase().includes(productNameSearch.toLowerCase()) &&
+          !document.folderVersion.toLowerCase().includes(productNameSearch.toLowerCase())) {
+        return false
       }
       
-      // Apply column filters dynamically
-      for (const [column, filterValue] of Object.entries(columnFilters)) {
-        if (filterValue && filterValue !== '' && filterValue !== 'all') {
-          const documentValue = (document as any)[column === 'documentName' ? 'name' : column]
-          if (!documentValue || !documentValue.toLowerCase().includes(filterValue.toLowerCase())) {
-            return false
-          }
-        }
+      // Apply column filters
+      if (columnFilters.documentName && !document.name.toLowerCase().includes(columnFilters.documentName.toLowerCase())) {
+        return false
       }
-      
+      if (columnFilters.planType && !document.planType.toLowerCase().includes(columnFilters.planType.toLowerCase())) {
+        return false
+      }
+      if (columnFilters.egwp && columnFilters.egwp !== 'all' && document.egwp !== columnFilters.egwp) {
+        return false
+      }
+      if (columnFilters.folderName && !document.folderName.toLowerCase().includes(columnFilters.folderName.toLowerCase())) {
+        return false
+      }
+      if (columnFilters.folderVersion && !document.folderVersion.toLowerCase().includes(columnFilters.folderVersion.toLowerCase())) {
+        return false
+      }
       return true
     })
     
     if (sortField) {
       filtered.sort((a, b) => {
-        const aValue = (a as any)[sortField === 'documentName' ? 'name' : sortField] || ''
-        const bValue = (b as any)[sortField === 'documentName' ? 'name' : sortField] || ''
+        const aValue = a[sortField as keyof typeof a] || ''
+        const bValue = b[sortField as keyof typeof b] || ''
         
         if (sortDirection === 'asc') {
           return aValue.toString().localeCompare(bValue.toString())
@@ -5027,11 +5010,13 @@ export function Generate() {
   }
 
   const clearAllFilters = () => {
-    const clearedFilters: Record<string, string> = {}
-    availableColumns.forEach(col => {
-      clearedFilters[col.key] = ''
+    setColumnFilters({
+      documentName: '',
+      planType: '',
+      egwp: '',
+      folderName: '',
+      folderVersion: ''
     })
-    setColumnFilters(clearedFilters)
     setProductNameSearch('')
   }
   
@@ -5247,16 +5232,6 @@ export function Generate() {
                   
                   <CardTitle className="text-base mt-3">
                     Select Documents
-                    {selectedCollaterals.length === 1 && (
-                      <span className="text-sm font-normal text-muted-foreground ml-2">
-                        for {selectedCollaterals[0]}
-                      </span>
-                    )}
-                    {selectedCollaterals.length > 1 && (
-                      <span className="text-sm font-normal text-muted-foreground ml-2">
-                        for {selectedCollaterals.length} collateral types
-                      </span>
-                    )}
                   </CardTitle>
                 </CardHeader>
                 
@@ -5295,22 +5270,56 @@ export function Generate() {
                               }}
                             />
                           </TableHead>
-                          {availableColumns.map(column => {
-                            if (!visibleColumns[column.key]) return null
-                            
-                            const sortKey = column.key === 'documentName' ? 'name' : column.key
-                            
-                            return (
-                              <TableHead key={column.key} className="border-r h-10">
-                                <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort(sortKey)}>
-                                  {column.label}
-                                  {sortField === sortKey && (
-                                    sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
-                                  )}
-                                </div>
-                              </TableHead>
-                            )
-                          })}
+                          {visibleColumns.documentName && (
+                            <TableHead className="border-r h-10">
+                              <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('name')}>
+                                Document Name
+                                {sortField === 'name' && (
+                                  sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
+                                )}
+                              </div>
+                            </TableHead>
+                          )}
+                          {visibleColumns.planType && (
+                            <TableHead className="border-r h-10">
+                              <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('planType')}>
+                                Plan Type
+                                {sortField === 'planType' && (
+                                  sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
+                                )}
+                              </div>
+                            </TableHead>
+                          )}
+                          {visibleColumns.egwp && (
+                            <TableHead className="border-r h-10">
+                              <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('egwp')}>
+                                EGWP
+                                {sortField === 'egwp' && (
+                                  sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
+                                )}
+                              </div>
+                            </TableHead>
+                          )}
+                          {visibleColumns.folderName && (
+                            <TableHead className="border-r h-10">
+                              <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('folderName')}>
+                                Folder Name
+                                {sortField === 'folderName' && (
+                                  sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
+                                )}
+                              </div>
+                            </TableHead>
+                          )}
+                          {visibleColumns.folderVersion && (
+                            <TableHead className="h-10">
+                              <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('folderVersion')}>
+                                Folder Version Number
+                                {sortField === 'folderVersion' && (
+                                  sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
+                                )}
+                              </div>
+                            </TableHead>
+                          )}
                         </TableRow>
 
                         {/* Filter Row */}
@@ -5318,44 +5327,120 @@ export function Generate() {
                           <TableHead className="p-1 border-r">
                             {/* Empty cell for checkbox column */}
                           </TableHead>
-                          {availableColumns.map(column => {
-                            if (!visibleColumns[column.key]) return null
-                            
-                            return (
-                              <TableHead key={column.key} className="p-1 border-r">
-                                <div className="relative">
-                                  <MagnifyingGlass size={12} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                                  <Input
-                                    value={columnFilters[column.key] || ''}
-                                    onChange={(e) => updateColumnFilter(column.key, e.target.value)}
-                                    className="pl-7 h-7 text-sm"
-                                    placeholder={`Filter ${column.label}`}
-                                  />
-                                  {columnFilters[column.key] && (
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5 p-0"
-                                      onClick={() => clearColumnFilter(column.key)}
-                                    >
-                                      <X size={10} />
-                                    </Button>
-                                  )}
-                                </div>
-                              </TableHead>
-                            )
-                          })}
+                          {visibleColumns.documentName && (
+                            <TableHead className="p-1 border-r">
+                              <div className="relative">
+                                <MagnifyingGlass size={12} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                                <Input
+                                  value={columnFilters.documentName}
+                                  onChange={(e) => updateColumnFilter('documentName', e.target.value)}
+                                  className="pl-7 h-7 text-sm"
+                                />
+                                {columnFilters.documentName && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5 p-0"
+                                    onClick={() => clearColumnFilter('documentName')}
+                                  >
+                                    <X size={10} />
+                                  </Button>
+                                )}
+                              </div>
+                            </TableHead>
+                          )}
+                          {visibleColumns.planType && (
+                            <TableHead className="p-1 border-r">
+                              <div className="relative">
+                                <MagnifyingGlass size={12} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                                <Input
+                                  value={columnFilters.planType}
+                                  onChange={(e) => updateColumnFilter('planType', e.target.value)}
+                                  className="pl-7 h-7 text-sm"
+                                />
+                                {columnFilters.planType && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5 p-0"
+                                    onClick={() => clearColumnFilter('planType')}
+                                  >
+                                    <X size={10} />
+                                  </Button>
+                                )}
+                              </div>
+                            </TableHead>
+                          )}
+                          {visibleColumns.egwp && (
+                            <TableHead className="p-1 border-r">
+                              <Select 
+                                value={columnFilters.egwp || 'all'} 
+                                onValueChange={(value) => updateColumnFilter('egwp', value === 'all' ? '' : value)}
+                              >
+                                <SelectTrigger className="h-7 text-sm">
+                                  <SelectValue placeholder="Filter EGWP" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="all">All</SelectItem>
+                                  <SelectItem value="Yes">Yes</SelectItem>
+                                  <SelectItem value="No">No</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </TableHead>
+                          )}
+                          {visibleColumns.folderName && (
+                            <TableHead className="p-1 border-r">
+                              <div className="relative">
+                                <MagnifyingGlass size={12} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                                <Input
+                                  value={columnFilters.folderName}
+                                  onChange={(e) => updateColumnFilter('folderName', e.target.value)}
+                                  className="pl-7 h-7 text-sm"
+                                />
+                                {columnFilters.folderName && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5 p-0"
+                                    onClick={() => clearColumnFilter('folderName')}
+                                  >
+                                    <X size={10} />
+                                  </Button>
+                                )}
+                              </div>
+                            </TableHead>
+                          )}
+                          {visibleColumns.folderVersion && (
+                            <TableHead className="p-1">
+                              <div className="relative">
+                                <MagnifyingGlass size={12} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                                <Input
+                                  value={columnFilters.folderVersion}
+                                  onChange={(e) => updateColumnFilter('folderVersion', e.target.value)}
+                                  className="pl-7 h-7 text-sm"
+                                />
+                                {columnFilters.folderVersion && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5 p-0"
+                                    onClick={() => clearColumnFilter('folderVersion')}
+                                  >
+                                    <X size={10} />
+                                  </Button>
+                                )}
+                              </div>
+                            </TableHead>
+                          )}
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {currentPageDocuments.length === 0 ? (
                           <TableRow>
-                            <TableCell colSpan={availableColumns.length + 1} className="text-center py-8 text-muted-foreground">
-                              {selectedCollaterals.length === 0 
-                                ? "Select a collateral type to view documents"
-                                : (Object.values(columnFilters).some(filter => filter !== '') || productNameSearch)
+                            <TableCell colSpan={Object.values(visibleColumns).filter(Boolean).length + 1} className="text-center py-8 text-muted-foreground">
+                              {(Object.values(columnFilters).some(filter => filter !== '') || productNameSearch)
                                 ? "No documents match the current filters" 
-                                : "No documents available for selected collateral type(s)"
+                                : "No documents available"
                               }
                             </TableCell>
                           </TableRow>
@@ -5377,39 +5462,44 @@ export function Generate() {
                                   }
                                 />
                               </TableCell>
-                              {availableColumns.map(column => {
-                                if (!visibleColumns[column.key]) return null
-                                
-                                const value = (document as any)[column.key === 'documentName' ? 'name' : column.key]
-                                
-                                return (
-                                  <TableCell key={column.key} className="border-r p-2 text-sm">
-                                    {column.key === 'documentName' ? (
-                                      <span className="font-mono text-blue-600 font-medium">{value}</span>
-                                    ) : column.key === 'planType' && value ? (
-                                      <Badge variant="outline" className="font-medium text-xs">
-                                        {value}
-                                      </Badge>
-                                    ) : column.key === 'folderVersion' ? (
-                                      <Badge variant="outline" className="font-mono text-xs">
-                                        {value}
-                                      </Badge>
-                                    ) : column.key.includes('language') || column.key.includes('summaryType') || column.key.includes('benefitPackage') || column.key.includes('coverage') || column.key.includes('region') || column.key.includes('networkSize') ? (
-                                      value ? (
-                                        <Badge variant="secondary" className="text-xs">
-                                          {value}
-                                        </Badge>
-                                      ) : (
-                                        <span className="text-muted-foreground italic">—</span>
-                                      )
-                                    ) : (
-                                      <span className={column.key === 'folderName' ? 'font-mono' : ''}>
-                                        {value || <span className="text-muted-foreground italic">—</span>}
-                                      </span>
-                                    )}
-                                  </TableCell>
-                                )
-                              })}
+                              {visibleColumns.documentName && (
+                                <TableCell className="font-mono text-blue-600 font-medium border-r p-2 text-sm">
+                                  {document.name}
+                                </TableCell>
+                              )}
+                              {visibleColumns.planType && (
+                                <TableCell className="border-r p-2">
+                                  {document.planType ? (
+                                    <Badge variant="outline" className="font-medium text-xs">
+                                      {document.planType}
+                                    </Badge>
+                                  ) : (
+                                    <span className="text-muted-foreground text-sm italic">—</span>
+                                  )}
+                                </TableCell>
+                              )}
+                              {visibleColumns.egwp && (
+                                <TableCell className="border-r p-2">
+                                  <Badge 
+                                    variant={document.egwp === 'Yes' ? 'default' : 'secondary'}
+                                    className={`text-xs ${document.egwp === 'Yes' ? 'bg-green-100 text-green-800 border-green-300' : ''}`}
+                                  >
+                                    {document.egwp}
+                                  </Badge>
+                                </TableCell>
+                              )}
+                              {visibleColumns.folderName && (
+                                <TableCell className="font-mono text-sm border-r p-2">
+                                  {document.folderName}
+                                </TableCell>
+                              )}
+                              {visibleColumns.folderVersion && (
+                                <TableCell className="font-mono text-sm p-2">
+                                  <Badge variant="outline" className="font-mono text-xs">
+                                    {document.folderVersion}
+                                  </Badge>
+                                </TableCell>
+                              )}
                             </TableRow>
                           ))
                         )}
