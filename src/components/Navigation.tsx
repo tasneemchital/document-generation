@@ -54,7 +54,7 @@ const navigationItems: NavigationItem[] = [
     icon: Globe,
     children: [
       { id: 'dcm', label: 'Digital Content Manager', icon: FolderOpen },
-      { id: 'global-template', label: 'Create', icon: Globe },
+      { id: 'global-template', label: 'Global Template', icon: Globe },
       { id: 'masterlist', label: 'Master List', icon: ListBullets }
     ]
   },
