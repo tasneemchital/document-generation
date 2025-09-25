@@ -4760,6 +4760,9 @@ export function Generate() {
   const [sortField, setSortField] = useState<string | null>(null)
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   
+  // Smart search state
+  const [productNameSearch, setProductNameSearch] = useState('')
+  
   // Column filters for search and filtering
   const [columnFilters, setColumnFilters] = useState({
     documentName: '',
@@ -4842,6 +4845,14 @@ export function Generate() {
   // Filter and sort documents with enhanced filtering
   const filteredAndSortedDocuments = useMemo(() => {
     let filtered = documents.filter(document => {
+      // Apply smart search filter first
+      if (productNameSearch && !document.name.toLowerCase().includes(productNameSearch.toLowerCase()) &&
+          !document.planType.toLowerCase().includes(productNameSearch.toLowerCase()) &&
+          !document.folderName.toLowerCase().includes(productNameSearch.toLowerCase()) &&
+          !document.folderVersion.toLowerCase().includes(productNameSearch.toLowerCase())) {
+        return false
+      }
+      
       // Apply column filters
       if (columnFilters.documentName && !document.name.toLowerCase().includes(columnFilters.documentName.toLowerCase())) {
         return false
@@ -4875,7 +4886,7 @@ export function Generate() {
     }
     
     return filtered
-  }, [documents, sortField, sortDirection, columnFilters])
+  }, [documents, sortField, sortDirection, columnFilters, productNameSearch])
   
   // Pagination calculations
   const totalPages = Math.ceil(filteredAndSortedDocuments.length / pageSize)
@@ -4886,7 +4897,7 @@ export function Generate() {
   // Reset to page 1 when sort or filters change
   useEffect(() => {
     setCurrentPage(1)
-  }, [sortField, sortDirection, columnFilters])
+  }, [sortField, sortDirection, columnFilters, productNameSearch])
   
   const handleDocumentSelect = (docId: string, checked: boolean) => {
     setSelectedDocuments((current: string[]) => 
@@ -4940,6 +4951,7 @@ export function Generate() {
       folderName: '',
       folderVersion: ''
     })
+    setProductNameSearch('')
   }
   
   const handleCollateralSelect = (collateral: string, checked: boolean) => {
@@ -5115,29 +5127,41 @@ export function Generate() {
               {/* Right Panel - Document Selection */}
               <Card>
                 <CardHeader className="pb-2">
-                  <div className="flex items-center justify-end gap-2">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="flex items-center gap-2 h-8">
-                          <Columns size={14} />
-                          Columns
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48">
-                        {availableColumns.map((column) => (
-                          <DropdownMenuCheckboxItem
-                            key={column.key}
-                            checked={visibleColumns[column.key]}
-                            onCheckedChange={() => toggleColumnVisibility(column.key)}
-                          >
-                            {column.label}
-                          </DropdownMenuCheckboxItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    <Button className="bg-blue-600 hover:bg-blue-700 h-8">
-                      Queue
-                    </Button>
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <SmartSearchBar
+                        placeholder="Search documents..."
+                        value={productNameSearch}
+                        onChange={setProductNameSearch}
+                        onSearch={(query) => setProductNameSearch(query)}
+                        className="max-w-md"
+                      />
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" size="sm" className="flex items-center gap-2 h-8">
+                            <Columns size={14} />
+                            Columns
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          {availableColumns.map((column) => (
+                            <DropdownMenuCheckboxItem
+                              key={column.key}
+                              checked={visibleColumns[column.key]}
+                              onCheckedChange={() => toggleColumnVisibility(column.key)}
+                            >
+                              {column.label}
+                            </DropdownMenuCheckboxItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                      <Button className="bg-blue-600 hover:bg-blue-700 h-8">
+                        Queue
+                      </Button>
+                    </div>
                   </div>
                   
                   <CardTitle className="text-base mt-3">
@@ -5147,12 +5171,12 @@ export function Generate() {
                 
                 <CardContent className="p-3">
                   {/* Filter Summary and Clear All */}
-                  {Object.values(columnFilters).some(filter => filter !== '') && (
+                  {(Object.values(columnFilters).some(filter => filter !== '') || productNameSearch) && (
                     <div className="flex items-center justify-between mb-3 p-2 bg-blue-50 rounded-lg border">
                       <div className="flex items-center gap-2">
                         <Funnel size={14} className="text-blue-600" />
                         <span className="text-sm font-medium text-blue-800">
-                          Active Filters: {Object.values(columnFilters).filter(filter => filter !== '').length}
+                          Active Filters: {Object.values(columnFilters).filter(filter => filter !== '').length + (productNameSearch ? 1 : 0)}
                         </span>
                       </div>
                       <Button 
@@ -5348,7 +5372,7 @@ export function Generate() {
                         {currentPageDocuments.length === 0 ? (
                           <TableRow>
                             <TableCell colSpan={Object.values(visibleColumns).filter(Boolean).length + 1} className="text-center py-8 text-muted-foreground">
-                              {Object.values(columnFilters).some(filter => filter !== '') 
+                              {(Object.values(columnFilters).some(filter => filter !== '') || productNameSearch)
                                 ? "No documents match the current filters" 
                                 : "No documents available"
                               }
