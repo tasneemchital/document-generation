@@ -16,7 +16,8 @@ import {
   PaintBrush,
   Users,
   Sparkle,
-  Plus
+  Plus,
+  FileText
 } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 
@@ -47,6 +48,7 @@ const navigationItems: NavigationItem[] = [
   { id: 'template', label: 'Template', icon: File },
   { id: 'design-studio', label: 'Design Studio', icon: PaintBrush },
   { id: 'translation-studio', label: 'Translation Studio', icon: Translate },
+  { id: 'documents', label: 'Documents', icon: FileText },
   { id: 'portfolio', label: 'Review', icon: Briefcase },
   { 
     id: 'global-content', 

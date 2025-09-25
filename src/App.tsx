@@ -21,6 +21,7 @@ import { DCMEditPage } from '@/components/pages/DCMEditPage'
 import { Template } from '@/components/pages/Template'
 import { TranslationStudio } from '@/components/pages/TranslationStudio'
 import { ProductDetail } from '@/components/pages/ProductDetail'
+import { Documents } from '@/components/pages/Documents'
 import { RuleData } from '@/lib/types'
 
 function App() {
@@ -74,6 +75,8 @@ function App() {
         />
       case 'translation-studio':
         return <TranslationStudio />
+      case 'documents':
+        return <Documents onNavigate={setCurrentPage} />
       case 'portfolio':
         return <Portfolio 
           onNavigate={setCurrentPage}

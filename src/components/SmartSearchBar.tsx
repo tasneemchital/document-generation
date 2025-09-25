@@ -24,17 +24,19 @@ interface SmartSearchBarProps {
   value?: string
   onChange?: (value: string) => void
   className?: string
+  storageKey?: string
 }
 
 export function SmartSearchBar({ 
   placeholder = "Search...", 
   value = "",
   onChange,
-  className = ""
+  className = "",
+  storageKey = "smart-search"
 }: SmartSearchBarProps) {
   const [searchQuery, setSearchQuery] = useState(value)
-  const [recentQueries, setRecentQueries] = useKV<string[]>('smart-search-recent', [])
-  const [savedQueries, setSavedQueries] = useKV<SavedQuery[]>('smart-search-favorites', [])
+  const [recentQueries, setRecentQueries] = useKV<string[]>(`${storageKey}-recent`, [])
+  const [savedQueries, setSavedQueries] = useKV<SavedQuery[]>(`${storageKey}-favorites`, [])
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [showSaveDialog, setShowSaveDialog] = useState(false)
   const [saveLabel, setSaveLabel] = useState("")
