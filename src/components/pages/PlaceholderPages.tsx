@@ -5024,26 +5024,7 @@ export function Generate() {
     setProductNameSearch('')
   }
   
-  const handleDocumentSelect = (documentId: string, checked: boolean) => {
-    setSelectedDocuments((current: string[]) => 
-      checked ? [...current, documentId] : current.filter(id => id !== documentId)
-    )
-  }
-  
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      const allVisibleIds = currentPageDocuments.map(doc => doc.id)
-      setSelectedDocuments((current: string[]) => [
-        ...current.filter(id => !allVisibleIds.includes(id)),
-        ...allVisibleIds
-      ])
-    } else {
-      const visibleIds = currentPageDocuments.map(doc => doc.id)
-      setSelectedDocuments((current: string[]) => 
-        current.filter(id => !visibleIds.includes(id))
-      )
-    }
-  }
+
   
   const handleCollateralSelect = (collateral: string, checked: boolean) => {
     setSelectedCollaterals((current: string[]) => 
