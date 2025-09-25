@@ -5097,7 +5097,7 @@ export function Generate() {
         </div>
       </div>
       
-      <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">,
+      <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="generate-collateral" className="flex items-center gap-2">
             <FileText size={16} />
