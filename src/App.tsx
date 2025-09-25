@@ -74,7 +74,7 @@ function App() {
         return <GlobalContent />
       case 'collaborate':
         return <Collaborate />
-        case 'masterlist':
+      case 'masterlist':
         return <MasterList />
       case 'generate':
         return <Generate />

@@ -17,7 +17,7 @@ import {
 } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 interface NavigationProps {
   currentPage: string
@@ -56,7 +56,27 @@ const navigationItems: NavigationItem[] = [
 ]
 
 export function Navigation({ currentPage, onNavigate, isCollapsed }: NavigationProps) {
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set(['global-content']))
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(() => {
+    // Auto-expand parent items if a child is currently active
+    const initialExpanded = new Set<string>()
+    navigationItems.forEach(item => {
+      if (item.children?.some(child => currentPage === child.id)) {
+        initialExpanded.add(item.id)
+      }
+    })
+    // Also expand global-content by default
+    initialExpanded.add('global-content')
+    return initialExpanded
+  })
+
+  // Auto-expand parent when navigating to a child page
+  React.useEffect(() => {
+    navigationItems.forEach(item => {
+      if (item.children?.some(child => currentPage === child.id)) {
+        setExpandedItems(prev => new Set([...prev, item.id]))
+      }
+    })
+  }, [currentPage])
 
   const toggleExpanded = (itemId: string) => {
     setExpandedItems(prev => {
