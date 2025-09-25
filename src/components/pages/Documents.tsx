@@ -248,14 +248,14 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
 
   const clearAllFilters = () => {
     setDocumentNameFilter('')
-    setPlanTypeFilter('')
+    setPlanTypeFilter('all')
     setInstanceNameFilter('')
     setEffectiveDateFilter('')
     setVersionNumberFilter('')
-    setStatusFilter('')
-    setDocumentTypeFilter('')
+    setStatusFilter('all')
+    setDocumentTypeFilter('all')
     setLastModifiedFilter('')
-    setCreatedByFilter('')
+    setCreatedByFilter('all')
     setSortColumn('')
     setSortDirection('asc')
   }
