@@ -4809,18 +4809,6 @@ export function Generate() {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   
-  // Column visibility state - dynamic based on collateral type
-  const getInitialColumnVisibility = (collateralType: string) => {
-    const columns = getColumnsForCollateral(collateralType)
-    const visibility: { [key: string]: boolean } = {}
-    columns.forEach(col => {
-      visibility[col.key] = true
-    })
-    return visibility
-  }
-
-  const [visibleColumns, setVisibleColumns] = useKV('generate-visible-columns', getInitialColumnVisibility(''))
-  
   // Get column configuration for current collateral type
   const getColumnsForCollateral = (collateralType: string) => {
     switch (collateralType) {
@@ -4860,6 +4848,18 @@ export function Generate() {
         ]
     }
   }
+
+  // Column visibility state - dynamic based on collateral type
+  const getInitialColumnVisibility = (collateralType: string) => {
+    const columns = getColumnsForCollateral(collateralType)
+    const visibility: { [key: string]: boolean } = {}
+    columns.forEach(col => {
+      visibility[col.key] = true
+    })
+    return visibility
+  }
+
+  const [visibleColumns, setVisibleColumns] = useKV('generate-visible-columns', getInitialColumnVisibility(''))
 
   // Get available columns for current collateral type
   const availableColumns = useMemo(() => {
@@ -5071,6 +5071,14 @@ export function Generate() {
   const clearAllFilters = () => {
     setColumnFilters(getInitialColumnFilters(selectedCollateral))
     setProductNameSearch('')
+  }
+
+  const handleCollateralSelect = (collateral: string) => {
+    setSelectedCollateral(collateral)
+    // Reset filters when collateral type changes
+    setColumnFilters(getInitialColumnFilters(collateral))
+    setProductNameSearch('')
+    setCurrentPage(1)
   }
 
   const isAllVisibleSelected = currentPageDocuments.length > 0 && 
@@ -5447,7 +5455,7 @@ export function Generate() {
                               </TableCell>
                               {visibleColumns.documentName && (
                                 <TableCell className="border-r p-2 text-sm font-medium">
-                                  {document.name}
+                                  {document.documentName}
                                 </TableCell>
                               )}
                               {availableColumns.slice(1).map((column, colIndex) => (
@@ -5456,7 +5464,7 @@ export function Generate() {
                                     key={column.key}
                                     className={`p-2 text-sm ${colIndex < availableColumns.slice(1).length - 1 ? 'border-r' : ''}`}
                                   >
-                                    {document[column.key]}
+                                    {document[column.key as keyof typeof document]}
                                   </TableCell>
                                 )
                               ))}
