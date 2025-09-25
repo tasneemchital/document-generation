@@ -42,9 +42,9 @@ const navigationItems: NavigationItem[] = [
     label: 'Global Content', 
     icon: Globe,
     children: [
+      { id: 'dcm', label: 'Digital Content Manager', icon: FolderOpen },
       { id: 'global-template', label: 'Global Template', icon: Globe },
-      { id: 'masterlist', label: 'Master List', icon: ListBullets },
-      { id: 'dcm', label: 'Digital Content Manager', icon: FolderOpen }
+      { id: 'masterlist', label: 'Master List', icon: ListBullets }
     ]
   },
   { id: 'collaborate', label: 'Collaborate', icon: Users },
