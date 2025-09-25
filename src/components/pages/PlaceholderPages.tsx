@@ -2955,10 +2955,10 @@ function CollaborateMain() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+          )}
         </div>
       </div>
       
-      {/* Conditional Layout Rendering */}
       {layoutMode === 'card' ? renderCardLayout() : (
         <Card>
           <CardContent className="p-0">
@@ -2970,8 +2970,8 @@ function CollaborateMain() {
                     <TableHead className="w-12 border-r h-11">
                       <Checkbox
                       checked={isAllVisibleSelected}
+                      checked={isAllVisibleSelected}
                       onCheckedChange={handleSelectAll}
-                      ref={(el) => {
                         if (el) el.indeterminate = isSomeVisibleSelected && !isAllVisibleSelected
                       }}
                     />
@@ -3739,10 +3739,10 @@ function CollaborateMain() {
         </CardContent>
       </Card>
       )}
-    </div>
+      )}
   )
 }
-
+}
 function LogsTab() {
   const [sortField, setSortField] = useState<string | null>(null)
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
