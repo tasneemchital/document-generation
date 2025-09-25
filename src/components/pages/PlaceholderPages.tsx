@@ -5402,10 +5402,10 @@ export function Generate() {
                         className="max-w-md"
                       />
                     </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+                  </div>
+                  
+                  <CardTitle className="text-base mt-3">
+                    Select Documents
                           <Button variant="outline" size="sm" className="flex items-center gap-2 h-8">
                             <Columns size={14} />
                             Columns
