@@ -6248,15 +6248,15 @@ export function Portfolio() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header Section with Search */}
+      {/* Header Section */}
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Portfolio</h1>
           <p className="text-muted-foreground mt-1">View and manage your product portfolios and document collections</p>
         </div>
         
-        {/* Product Search and New Button - moved to top right */}
-        <div className="flex items-center gap-3">
+        {/* Product Search, Radio Buttons, and New Button - moved to top right */}
+        <div className="flex items-center gap-6">
           <div className="relative">
             <Input
               id="product-search"
@@ -6274,6 +6274,37 @@ export function Portfolio() {
               <MagnifyingGlass size={16} />
             </Button>
           </div>
+          
+          {/* View Mode Radio Buttons */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center space-x-2">
+              <input
+                type="radio"
+                id="view-interested"
+                name="view-mode"
+                checked={viewMode === 'interested'}
+                onChange={() => setViewMode('interested')}
+                className="w-4 h-4 text-blue-600"
+              />
+              <Label htmlFor="view-interested" className="text-sm cursor-pointer">
+                View interested
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="radio"
+                id="view-all"
+                name="view-mode"
+                checked={viewMode === 'all'}
+                onChange={() => setViewMode('all')}
+                className="w-4 h-4 text-blue-600"
+              />
+              <Label htmlFor="view-all" className="text-sm cursor-pointer">
+                View all
+              </Label>
+            </div>
+          </div>
+          
           <Button 
             variant="default"
             className="h-9 px-4 font-medium"
@@ -6281,43 +6312,6 @@ export function Portfolio() {
             <Plus size={16} className="mr-1.5" />
             New
           </Button>
-        </div>
-      </div>
-      
-      <div className="space-y-4">
-        {/* View Mode and Portfolio Search */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Label className="text-base font-semibold">Portfolio Search</Label>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id="view-interested"
-                  name="view-mode"
-                  checked={viewMode === 'interested'}
-                  onChange={() => setViewMode('interested')}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <Label htmlFor="view-interested" className="text-sm cursor-pointer">
-                  View interested
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id="view-all"
-                  name="view-mode"
-                  checked={viewMode === 'all'}
-                  onChange={() => setViewMode('all')}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <Label htmlFor="view-all" className="text-sm cursor-pointer">
-                  View all
-                </Label>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
