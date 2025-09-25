@@ -4773,7 +4773,7 @@ export function Generate() {
           benefitPackage: '',
           region: '',
           folderName: '',
-          folderVersionNumber: ''
+          folderVersion: ''
         }
       case 'Medicare EOC':
         return {
@@ -4782,7 +4782,7 @@ export function Generate() {
           coverage: '',
           networkSize: '',
           folderName: '',
-          folderVersionNumber: ''
+          folderVersion: ''
         }
       case 'Medicare SB':
         return {
@@ -4791,14 +4791,14 @@ export function Generate() {
           summaryType: '',
           language: '',
           folderName: '',
-          folderVersionNumber: ''
+          folderVersion: ''
         }
       default:
         return {
           documentName: '',
           planType: '',
           folderName: '',
-          folderVersionNumber: ''
+          folderVersion: ''
         }
     }
   }
@@ -4865,10 +4865,6 @@ export function Generate() {
   const availableColumns = useMemo(() => {
     return getColumnsForCollateral(selectedCollateral)
   }, [selectedCollateral])
-  
-  const toggleColumnVisibility = (columnKey: string) => {
-    setVisibleColumns((current: any) => ({
-      ...current,
       [columnKey]: !current[columnKey]
     }))
   }
@@ -4950,22 +4946,26 @@ export function Generate() {
       if (productNameSearch && !searchableFields.includes(productNameSearch.toLowerCase())) {
         return false
       }
-      
-      // Apply column filters based on collateral type
-      if (columnFilters.documentName && !document.documentName.toLowerCase().includes(columnFilters.documentName.toLowerCase())) {
-        return false
+      const searchableFields = Object.values(document).join(' ').toLowerCase()
+      if (productNameSearch && !searchableFields.includes(productNameSearch.toLowerCase())) {
       }
       if (columnFilters.planType && !document.planType.toLowerCase().includes(columnFilters.planType.toLowerCase())) {
         return false
-      }
+      // Apply column filters based on collateral type
       if (columnFilters.folderName && !document.folderName.toLowerCase().includes(columnFilters.folderName.toLowerCase())) {
         return false
       }
       if (columnFilters.folderVersionNumber && !document.folderVersionNumber.toLowerCase().includes(columnFilters.folderVersionNumber.toLowerCase())) {
         return false
       }
-
+      if (columnFilters.folderName && !document.folderName.toLowerCase().includes(columnFilters.folderName.toLowerCase())) {
       // Apply specific filters based on collateral type
+      if (selectedCollateral === 'Medicare ANOC') {
+      if (columnFilters.folderVersion && !document.folderVersionNumber.toLowerCase().includes(columnFilters.folderVersion.toLowerCase())) {
+        if (columnFilters.benefitPackage && anocDoc.benefitPackage && !anocDoc.benefitPackage.toLowerCase().includes(columnFilters.benefitPackage.toLowerCase())) {
+          return false
+
+      // Apply specific filters based on collateral typerCase().includes(columnFilters.region.toLowerCase())) {
       if (selectedCollateral === 'Medicare ANOC') {
         const anocDoc = document as any
         if (columnFilters.benefitPackage && anocDoc.benefitPackage && !anocDoc.benefitPackage.toLowerCase().includes(columnFilters.benefitPackage.toLowerCase())) {
@@ -4990,14 +4990,8 @@ export function Generate() {
         if (columnFilters.language && sbDoc.language && !sbDoc.language.toLowerCase().includes(columnFilters.language.toLowerCase())) {
           return false
         }
-      }
-      
-      return true
-    })
-    
-    if (sortField) {
       filtered.sort((a, b) => {
-        const aValue = a[sortField as keyof typeof a] || ''
+      
         const bValue = b[sortField as keyof typeof b] || ''
         
         if (sortDirection === 'asc') {
@@ -5015,7 +5009,7 @@ export function Generate() {
   const totalPages = Math.ceil(filteredAndSortedDocuments.length / pageSize)
   const startIndex = (currentPage - 1) * pageSize
   const endIndex = startIndex + pageSize
-  const currentPageDocuments = filteredAndSortedDocuments.slice(startIndex, endIndex)
+  }, [documents, sortField, sortDirection, columnFilters, productNameSearch, selectedCollateral])
   
   // Reset to page 1 when sort or filters change
   useEffect(() => {
@@ -5073,13 +5067,7 @@ export function Generate() {
   
 
   
-  const handleCollateralSelect = (collateral: string) => {
-    setSelectedCollateral(collateral)
-    // Clear selected documents when changing collateral type
-    setSelectedDocuments([])
-    // Reset filters when changing collateral
-    setColumnFilters(getInitialColumnFilters(collateral))
-    setProductNameSearch('')
+    setColumnFilters(getInitialColumnFilters(selectedCollateral))
     setCurrentPage(1)
     // Update column visibility for new collateral type
     setVisibleColumns(getInitialColumnVisibility(collateral))
@@ -5090,17 +5078,11 @@ export function Generate() {
   
   const isSomeVisibleSelected = currentPageDocuments.some(doc => selectedDocuments.includes(doc.id))
 
-  return (
-    <div className="p-4">
-      <div className="mb-4">
-        <h1 className="text-2xl font-semibold text-foreground mb-2">
-          Generate
-        </h1>
-        <p className="text-muted-foreground">
+    setColumnFilters(getInitialColumnFilters(collateral))
           Generate PDF documents and manage collateral
         </p>
-      </div>
-
+    // Update column visibility for new collateral type
+    setVisibleColumns(getInitialColumnVisibility(collateral))
       <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="generate-collateral" className="flex items-center gap-2">
@@ -5373,46 +5355,21 @@ export function Generate() {
                         </TableRow>
 
                         {/* Filter Row */}
-                        <TableRow className="bg-white border-b-2">
-                          <TableHead className="p-1 border-r">
-                            {/* Empty cell for checkbox column */}
-                          </TableHead>
-                          {visibleColumns.documentName && (
-                            <TableHead className="p-1 border-r">
-                              <div className="relative">
-                                <MagnifyingGlass size={12} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                                <Input
-                                  value={columnFilters.documentName}
-                                  onChange={(e) => updateColumnFilter('documentName', e.target.value)}
-                                  className="pl-7 h-7 text-sm"
-                                />
-                                {columnFilters.documentName && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5 p-0"
-                                    onClick={() => clearColumnFilter('documentName')}
-                                  >
-                                    <X size={10} />
-                                  </Button>
-                                )}
-                              </div>
-                            </TableHead>
-                          )}
-                          {visibleColumns.planType && (
-                            <TableHead className="p-1 border-r">
-                              <div className="relative">
-                                <MagnifyingGlass size={12} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                                <Input
-                                  value={columnFilters.planType}
-                                  onChange={(e) => updateColumnFilter('planType', e.target.value)}
-                                  className="pl-7 h-7 text-sm"
-                                />
-                                {columnFilters.planType && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5 p-0"
+                          {availableColumns.slice(1).map((column, index) => (
+                            visibleColumns[column.key] && (
+                              <TableHead 
+                                key={column.key}
+                                className={`${index < availableColumns.slice(1).length - 1 ? 'border-r' : ''} h-10`}
+                              >
+                                <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort(column.key)}>
+                                  {column.label}2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                                  {sortField === column.key && (
+                                    sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
+                                  )}.target.value)}
+                                </div>
+                              </TableHead>
+                            )
+                          ))}
                                     onClick={() => clearColumnFilter('planType')}
                                   >
                                     <X size={10} />
@@ -5464,67 +5421,33 @@ export function Generate() {
                           </TableRow>
                         ) : (
                           currentPageDocuments.map((document, index) => (
-                            <TableRow 
-                              key={document.id} 
-                              className={`
-                                ${selectedDocuments.includes(document.id) ? 'bg-blue-50 border-blue-200' : 'hover:bg-muted/30'}
-                                ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}
+                          {availableColumns.slice(1).map((column, index) => (
+                            visibleColumns[column.key] && (
+                              <TableHead 
+                                key={`filter-${column.key}`}
+                                className={`p-1 ${index < availableColumns.slice(1).length - 1 ? 'border-r' : ''}`}
                                 border-b transition-colors h-9
-                              `}
-                            >
-                              <TableCell className="border-r p-2">
-                                <Checkbox
-                                  checked={selectedDocuments.includes(document.id)}
-                                  onCheckedChange={(checked) => 
-                                    handleDocumentSelect(document.id, checked as boolean)
-                                  }
-                                />
-                              </TableCell>
-                              {availableColumns.map((column, colIndex) => (
-                                visibleColumns[column.key] && (
-                                  <TableCell 
-                                    key={column.key}
-                                    className={`${colIndex < availableColumns.length - 1 ? 'border-r' : ''} p-2 text-sm`}
-                                  >
-                                    {column.key === 'documentName' ? (
-                                      <span className="font-mono text-blue-600 font-medium">
-                                        {(document as any)[column.key]}
-                                      </span>
-                                    ) : column.key === 'planType' ? (
-                                      (document as any)[column.key] ? (
-                                        <Badge variant="outline" className="font-medium text-xs">
-                                          {(document as any)[column.key]}
-                                        </Badge>
-                                      ) : (
-                                        <span className="text-muted-foreground text-sm italic">—</span>
-                                      )
-                                    ) : column.key === 'folderName' ? (
-                                      <span className="font-mono">
-                                        {(document as any)[column.key]}
-                                      </span>
-                                    ) : column.key === 'folderVersionNumber' ? (
-                                      <Badge variant="outline" className="font-mono text-xs">
-                                        {(document as any)[column.key]}
-                                      </Badge>
-                                    ) : (
-                                      <span>
-                                        {(document as any)[column.key] || '—'}
-                                      </span>
-                                    )}
-                                  </TableCell>
-                                )
-                              ))}
-                            </TableRow>
-                          ))
-                        )}
-                      </TableBody>
-                    </Table>
-                  </div>
-                  
-                  {/* Enhanced Pagination Controls */}
-                  <div className="flex items-center justify-between mt-3 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-3">
-                      <span>
+                                <div className="relative">
+                                  <MagnifyingGlass size={12} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                                  <Input
+                                    value={columnFilters[column.key] || ''}
+                                    onChange={(e) => updateColumnFilter(column.key, e.target.value)}
+                                    className="pl-7 h-7 text-sm"
+                                  />
+                                  {columnFilters[column.key] && (
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5 p-0"
+                                      onClick={() => clearColumnFilter(column.key)}
+                                    >
+                                      <X size={10} />
+                                    </Button>
+                                  )}
+                                </div>
+                              </TableHead>
+                            )
+                          ))}
                         Showing {startIndex + 1} - {Math.min(endIndex, filteredAndSortedDocuments.length)} of {filteredAndSortedDocuments.length}
                         {documents.length !== filteredAndSortedDocuments.length && (
                           <span className="text-blue-600 font-medium">
