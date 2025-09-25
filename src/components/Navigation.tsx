@@ -25,13 +25,13 @@ interface NavigationProps {
 
 const navigationItems = [
   { id: 'dashboard', label: 'Dashboard', icon: House },
+  { id: 'global-content', label: 'Global Content', icon: Globe },
   { id: 'dcm', label: 'Digital Content Manager', icon: Palette },
   { id: 'global-template', label: 'Global Template', icon: FolderOpen },
   { id: 'template', label: 'Template', icon: File },
   { id: 'translation-studio', label: 'Translation Studio', icon: Translate },
   { id: 'portfolio', label: 'Portfolio', icon: Briefcase },
   { id: 'masterlist', label: 'Master List', icon: ListBullets },
-  { id: 'global-content', label: 'Global Content', icon: Globe },
   { id: 'collaborate', label: 'Collaborate', icon: Users },
   { id: 'generate', label: 'Generate', icon: FilePdf },
   { id: 'publish', label: 'Publish', icon: Export },
