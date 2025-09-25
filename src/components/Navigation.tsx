@@ -53,7 +53,7 @@ const navigationItems: NavigationItem[] = [
     label: 'Global Content', 
     icon: Globe,
     children: [
-      { id: 'masterlist', label: 'Master List', icon: ListBullets },
+      { id: 'masterlist', label: 'Collections', icon: ListBullets },
     ]
   },
   { id: 'collaborate', label: 'Collaborate', icon: Users },

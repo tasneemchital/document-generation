@@ -394,7 +394,7 @@ function QueuedCollateral() {
   const availableColumns = [
     { key: 'batchId', label: 'BatchId' },
     { key: 'source', label: 'Source' },
-    { key: 'mlType', label: 'ML Type' },
+    { key: 'mlType', label: 'Collection Type' },
     { key: 'collateralName', label: 'Collateral Name' },
     { key: 'fontType', label: 'Font Type' },
     { key: 'productName', label: 'Product Name' },
@@ -557,7 +557,7 @@ function QueuedCollateral() {
               onCheckedChange={() => toggleViewFilter('userGeneratedReleased')}
             />
             <Label htmlFor="view-user-generated-released" className="cursor-pointer font-medium">
-              View User Generated - Released ML
+              View User Generated - Released Collections
             </Label>
           </div>
           <div className="flex items-center gap-2">
@@ -567,7 +567,7 @@ function QueuedCollateral() {
               onCheckedChange={() => toggleViewFilter('userGeneratedInProgress')}
             />
             <Label htmlFor="view-user-generated-progress" className="cursor-pointer font-medium">
-              View User Generated - In Progress ML
+              View User Generated - In Progress Collections
             </Label>
           </div>
           <div className="flex items-center gap-2">
@@ -717,7 +717,7 @@ function QueuedCollateral() {
                   {visibleColumns.mlType && (
                     <TableHead className="border-r h-12 min-w-[100px]">
                       <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('mlType')}>
-                        ML Type
+                        Collection Type
                         {sortField === 'mlType' && (
                           sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
                         )}
@@ -2460,7 +2460,7 @@ function CollaborateMain() {
       folderName: 'Term_H4801-015_Blue Cross Medicare Advantage Saver Plus',
       effectiveDate: '01/01/2026',
       version: '2025_0.02',
-      workflowStage: 'ML Updates In Progress',
+      workflowStage: 'Collection Updates In Progress',
       estimatedDate: '06/06/2025',
       collaborators: '1.00',
       productLink: '🔗',
@@ -2807,7 +2807,7 @@ function CollaborateMain() {
   
   const getStatusColor = (stage: string) => {
     switch (stage) {
-      case 'ML Updates In Progress':
+      case 'Collection Updates In Progress':
         return 'bg-blue-100 text-blue-800 border-blue-300'
       case 'Ready For Review':
         return 'bg-orange-100 text-orange-800 border-orange-300'
@@ -5510,11 +5510,11 @@ export function MasterList() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedMasterList, setSelectedMasterList] = useState<any>(null)
 
-  // Master Lists organized by categories
+  // Collections organized by categories
   const masterListCategories = [
     {
       id: 'cascade',
-      title: 'Cascade Master List',
+      title: 'Cascade Collections',
       description: 'Prescription packages and tiers management',
       icon: '🔄',
       color: 'bg-blue-50 border-blue-200 hover:bg-blue-100',
@@ -5587,7 +5587,7 @@ export function MasterList() {
     },
     {
       id: 'mapping',
-      title: 'Mapping Master List',
+      title: 'Mapping Collections',
       description: 'API configuration and field mapping management',
       icon: '🗂️',
       color: 'bg-green-50 border-green-200 hover:bg-green-100',
@@ -5693,7 +5693,7 @@ export function MasterList() {
     },
     {
       id: 'integration',
-      title: 'Integration Master Lists',
+      title: 'Integration Collections',
       description: 'Integration mappings and system synchronization',
       icon: '🔗',
       color: 'bg-orange-50 border-orange-200 hover:bg-orange-100',
@@ -5735,7 +5735,7 @@ export function MasterList() {
   ]
 
   const generateMasterListData = (masterList: any) => {
-    // Generate sample data based on masterlist type
+    // Generate sample data based on collections type
     const baseData = []
     for (let i = 1; i <= Math.min(50, masterList.records); i++) {
       baseData.push({
@@ -5786,7 +5786,7 @@ export function MasterList() {
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Master Lists
+            Back to Collections
           </Button>
           <div>
             <h1 className="text-2xl font-semibold text-foreground">{selectedMasterList.name}</h1>
@@ -5798,7 +5798,7 @@ export function MasterList() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Master List Data</CardTitle>
+                <CardTitle>Collection Data</CardTitle>
                 <div className="flex items-center gap-4 mt-2">
                   <p className="text-sm text-muted-foreground">
                     Effective Date: <span className="font-semibold text-foreground">1/1/2026</span>, Version No. <span className="font-semibold text-foreground">2026_14.0</span>
@@ -5898,15 +5898,15 @@ export function MasterList() {
     <div className="p-4">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Master Lists</h1>
-          <p className="text-muted-foreground mt-1">Manage your master lists organized by category</p>
+          <h1 className="text-2xl font-semibold text-foreground">Collections</h1>
+          <p className="text-muted-foreground mt-1">Manage your collections organized by category</p>
         </div>
         
         <div className="flex items-center gap-3">
           <div className="relative">
             <MagnifyingGlass size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search master lists..."
+              placeholder="Search collections..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 w-64"
@@ -5976,9 +5976,9 @@ export function MasterList() {
       {filteredCategories.length === 0 && searchTerm && (
         <div className="text-center py-12">
           <MagnifyingGlass size={48} className="mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold text-foreground mb-2">No master lists found</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-2">No collections found</h3>
           <p className="text-muted-foreground">
-            No master lists match your search for "{searchTerm}"
+            No collections match your search for "{searchTerm}"
           </p>
         </div>
       )}
