@@ -5434,7 +5434,7 @@ export function Generate() {
                       >
                         Queue
                       </Button>
-                      {selectedCollateral === 'Medicare SB' && (
+                      {(selectedCollateral === 'Medicare SB' || selectedCollateral === 'SOB Med Filling') && (
                         <Button 
                           onClick={handleQueueCombined}
                           className="bg-green-600 hover:bg-green-700 h-8"
