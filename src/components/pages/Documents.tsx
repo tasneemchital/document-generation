@@ -260,9 +260,15 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
     setSortDirection('asc')
   }
 
-  const hasActiveFilters = documentNameFilter || planTypeFilter || instanceNameFilter || 
-    effectiveDateFilter || versionNumberFilter || statusFilter || documentTypeFilter || 
-    lastModifiedFilter || createdByFilter
+  const hasActiveFilters = documentNameFilter || 
+    (planTypeFilter && planTypeFilter !== 'all') || 
+    instanceNameFilter || 
+    effectiveDateFilter || 
+    versionNumberFilter || 
+    (statusFilter && statusFilter !== 'all') || 
+    (documentTypeFilter && documentTypeFilter !== 'all') || 
+    lastModifiedFilter || 
+    (createdByFilter && createdByFilter !== 'all')
 
   const getSortIcon = (column: keyof DocumentData) => {
     if (sortColumn === column) {
