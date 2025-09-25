@@ -6035,37 +6035,573 @@ export function AskBenny() {
 }
 
 export function Portfolio() {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [sortField, setSortField] = useState<string | null>(null)
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(20)
+  
+  // Search filters
+  const [productNameSearch, setProductNameSearch] = useState('')
+  
+  // View mode state
+  const [viewMode, setViewMode] = useState<'interested' | 'all'>('interested')
+  
+  // Column filters for search
+  const [columnFilters, setColumnFilters] = useState({
+    portfolioName: '',
+    effectiveDate: '',
+    folderVersionNumber: '',
+    status: '',
+    lastUpdated: '',
+    updatedBy: ''
+  })
+  
+  // Sample data matching the screenshot
+  const portfolioData = [
+    {
+      id: 'H9042008000',
+      portfolioName: 'H9042008000',
+      effectiveDate: '01/01/2026',
+      folderVersionNumber: '2026_0.12',
+      status: 'PSoT Preparation',
+      lastUpdated: '09/25/2025',
+      updatedBy: 'Shivani Vidhate',
+      interested: 'No'
+    },
+    {
+      id: 'H6529004000',
+      portfolioName: 'H6529004000',
+      effectiveDate: '01/01/2026',
+      folderVersionNumber: '2026_0.12',
+      status: 'PSoT Preparation',
+      lastUpdated: '09/25/2025',
+      updatedBy: 'Kiran Raskar',
+      interested: 'No'
+    },
+    {
+      id: 'H9042007000',
+      portfolioName: 'H9042007000',
+      effectiveDate: '01/01/2026',
+      folderVersionNumber: '2026_0.12',
+      status: 'PSoT Preparation',
+      lastUpdated: '09/25/2025',
+      updatedBy: 'Prasad Jadhav',
+      interested: 'No'
+    },
+    {
+      id: 'H9042004000',
+      portfolioName: 'H9042004000',
+      effectiveDate: '01/01/2026',
+      folderVersionNumber: '2026_0.12',
+      status: 'PSoT Preparation',
+      lastUpdated: '09/25/2025',
+      updatedBy: 'Prasad Jadhav',
+      interested: 'No'
+    },
+    {
+      id: '2026 Crosswalks',
+      portfolioName: '2026 Crosswalks',
+      effectiveDate: '01/01/2026',
+      folderVersionNumber: '2026_0.01',
+      status: 'PSoT Preparation',
+      lastUpdated: '09/17/2025',
+      updatedBy: 'Shivani Vidhate',
+      interested: 'No'
+    },
+    {
+      id: 'Test Crosswalk Plans',
+      portfolioName: 'Test Crosswalk Plans',
+      effectiveDate: '01/01/2026',
+      folderVersionNumber: '2026_0.01',
+      status: 'PSoT Preparation',
+      lastUpdated: '07/29/2025',
+      updatedBy: 'Prasad Jadhav',
+      interested: 'No'
+    },
+    {
+      id: 'H6529002000',
+      portfolioName: 'H6529002000',
+      effectiveDate: '01/01/2025',
+      folderVersionNumber: '2025_1.03',
+      status: 'PSoT Preparation',
+      lastUpdated: '07/24/2025',
+      updatedBy: 'Piyush Dixit',
+      interested: 'No'
+    },
+    {
+      id: 'H9042003001 Copy',
+      portfolioName: 'H9042003001 Copy',
+      effectiveDate: '01/01/2025',
+      folderVersionNumber: '2025_0.01',
+      status: 'PSoT Preparation',
+      lastUpdated: '07/23/2025',
+      updatedBy: 'Aarati Parakkal',
+      interested: 'No'
+    },
+    {
+      id: 'H9042003001',
+      portfolioName: 'H9042003001',
+      effectiveDate: '01/01/2025',
+      folderVersionNumber: '2025_1.03',
+      status: 'PSoT Preparation',
+      lastUpdated: '07/17/2025',
+      updatedBy: 'Piyush Dixit',
+      interested: 'No'
+    },
+    {
+      id: 'H9042003002',
+      portfolioName: 'H9042003002',
+      effectiveDate: '01/01/2025',
+      folderVersionNumber: '2025_0.08',
+      status: 'PSoT Preparation',
+      lastUpdated: '07/17/2025',
+      updatedBy: 'Piyush Dixit',
+      interested: 'No'
+    },
+    {
+      id: 'H9042002001',
+      portfolioName: 'H9042002001',
+      effectiveDate: '01/01/2025',
+      folderVersionNumber: '2025_1.03',
+      status: 'PSoT Preparation',
+      lastUpdated: '07/17/2025',
+      updatedBy: 'Piyush Dixit',
+      interested: 'No'
+    }
+  ]
+  
+  // Filter and sort data
+  const filteredAndSortedData = useMemo(() => {
+    let filtered = portfolioData.filter(item => {
+      // Apply product name search
+      if (productNameSearch && !item.portfolioName.toLowerCase().includes(productNameSearch.toLowerCase())) {
+        return false
+      }
+      
+      // Apply column filters
+      if (columnFilters.portfolioName && !item.portfolioName.toLowerCase().includes(columnFilters.portfolioName.toLowerCase())) {
+        return false
+      }
+      if (columnFilters.effectiveDate && !item.effectiveDate.toLowerCase().includes(columnFilters.effectiveDate.toLowerCase())) {
+        return false
+      }
+      if (columnFilters.folderVersionNumber && !item.folderVersionNumber.toLowerCase().includes(columnFilters.folderVersionNumber.toLowerCase())) {
+        return false
+      }
+      if (columnFilters.status && !item.status.toLowerCase().includes(columnFilters.status.toLowerCase())) {
+        return false
+      }
+      if (columnFilters.lastUpdated && !item.lastUpdated.toLowerCase().includes(columnFilters.lastUpdated.toLowerCase())) {
+        return false
+      }
+      if (columnFilters.updatedBy && !item.updatedBy.toLowerCase().includes(columnFilters.updatedBy.toLowerCase())) {
+        return false
+      }
+      
+      return true
+    })
+    
+    if (sortField) {
+      filtered.sort((a, b) => {
+        const aValue = a[sortField as keyof typeof a] || ''
+        const bValue = b[sortField as keyof typeof b] || ''
+        
+        if (sortDirection === 'asc') {
+          return aValue.toString().localeCompare(bValue.toString())
+        } else {
+          return bValue.toString().localeCompare(aValue.toString())
+        }
+      })
+    }
+    
+    return filtered
+  }, [portfolioData, sortField, sortDirection, columnFilters, productNameSearch])
+  
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredAndSortedData.length / pageSize)
+  const startIndex = (currentPage - 1) * pageSize
+  const endIndex = startIndex + pageSize
+  const currentPageData = filteredAndSortedData.slice(startIndex, endIndex)
+  
+  const handleSort = (field: string) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortField(field)
+      setSortDirection('asc')
+    }
+  }
+
+  const updateColumnFilter = (column: string, value: string) => {
+    setColumnFilters(prev => ({
+      ...prev,
+      [column]: value
+    }))
+  }
+
+  const clearColumnFilter = (column: string) => {
+    setColumnFilters(prev => ({
+      ...prev,
+      [column]: ''
+    }))
+  }
 
   return (
-    <div className="p-4">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">Review</h1>
-          <p className="text-muted-foreground mt-1">Review and manage your documents</p>
-        </div>
-        
-        {/* Search and Button in top right */}
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <MagnifyingGlass size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+    <div className="p-6 space-y-6">
+      {/* Header Section */}
+      <div className="space-y-4">
+        {/* Product Name Search */}
+        <div className="flex items-center gap-4">
+          <Label htmlFor="product-name" className="text-sm font-medium whitespace-nowrap">
+            Product Name:
+          </Label>
+          <div className="flex items-center gap-2">
             <Input
-              placeholder="Search documents..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 w-64"
+              id="product-name"
+              placeholder="Type here"
+              value={productNameSearch}
+              onChange={(e) => setProductNameSearch(e.target.value)}
+              className="w-64 h-9"
             />
+            <Button variant="default" className="bg-blue-800 hover:bg-blue-900 h-9 px-6">
+              Search
+            </Button>
+            <Button variant="outline" className="h-9 px-6">
+              Clear
+            </Button>
           </div>
-          <Button className="bg-primary hover:bg-primary/90">
-            <Plus size={16} className="mr-2" />
-            New Review
-          </Button>
+        </div>
+
+        {/* View Mode and Portfolio Search */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <Label className="text-base font-semibold">Portfolio Search</Label>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  id="view-interested"
+                  name="view-mode"
+                  checked={viewMode === 'interested'}
+                  onChange={() => setViewMode('interested')}
+                  className="w-4 h-4 text-blue-600"
+                />
+                <Label htmlFor="view-interested" className="text-sm cursor-pointer">
+                  View interested
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  id="view-all"
+                  name="view-mode"
+                  checked={viewMode === 'all'}
+                  onChange={() => setViewMode('all')}
+                  className="w-4 h-4 text-blue-600"
+                />
+                <Label htmlFor="view-all" className="text-sm cursor-pointer">
+                  View all
+                </Label>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      
-      <div className="bg-card rounded-lg border border-border p-8 text-center">
-        <p className="text-muted-foreground">Document review features coming soon...</p>
-      </div>
+
+      {/* Data Table */}
+      <Card>
+        <CardContent className="p-0">
+          <div className="border rounded-lg overflow-x-auto">
+            <Table>
+              <TableHeader>
+                {/* Column Headers with Sort */}
+                <TableRow className="bg-muted/30">
+                  <TableHead className="border-r h-12 min-w-[200px]">
+                    <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('portfolioName')}>
+                      Portfolio Name
+                      {sortField === 'portfolioName' && (
+                        sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
+                      )}
+                    </div>
+                  </TableHead>
+                  <TableHead className="border-r h-12 min-w-[130px]">
+                    <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('effectiveDate')}>
+                      Effective Date
+                      {sortField === 'effectiveDate' && (
+                        sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
+                      )}
+                    </div>
+                  </TableHead>
+                  <TableHead className="border-r h-12 min-w-[160px]">
+                    <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('folderVersionNumber')}>
+                      Folder Version Number
+                      {sortField === 'folderVersionNumber' && (
+                        sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
+                      )}
+                    </div>
+                  </TableHead>
+                  <TableHead className="border-r h-12 min-w-[120px]">
+                    <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('status')}>
+                      Status
+                      {sortField === 'status' && (
+                        sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
+                      )}
+                    </div>
+                  </TableHead>
+                  <TableHead className="border-r h-12 min-w-[120px]">
+                    <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('lastUpdated')}>
+                      Last Updated
+                      {sortField === 'lastUpdated' && (
+                        sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
+                      )}
+                    </div>
+                  </TableHead>
+                  <TableHead className="border-r h-12 min-w-[140px]">
+                    <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('updatedBy')}>
+                      Updated By
+                      {sortField === 'updatedBy' && (
+                        sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
+                      )}
+                    </div>
+                  </TableHead>
+                  <TableHead className="h-12 min-w-[100px]">
+                    <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('interested')}>
+                      Interested
+                      {sortField === 'interested' && (
+                        sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
+                      )}
+                    </div>
+                  </TableHead>
+                </TableRow>
+
+                {/* Filter Row */}
+                <TableRow className="bg-white border-b-2">
+                  <TableHead className="p-2 border-r">
+                    <div className="relative">
+                      <MagnifyingGlass size={14} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        value={columnFilters.portfolioName}
+                        onChange={(e) => updateColumnFilter('portfolioName', e.target.value)}
+                        className="pl-9 h-8 text-sm"
+                      />
+                      {columnFilters.portfolioName && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                          onClick={() => clearColumnFilter('portfolioName')}
+                        >
+                          <X size={12} />
+                        </Button>
+                      )}
+                    </div>
+                  </TableHead>
+                  <TableHead className="p-2 border-r">
+                    <div className="relative">
+                      <MagnifyingGlass size={14} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        value={columnFilters.effectiveDate}
+                        onChange={(e) => updateColumnFilter('effectiveDate', e.target.value)}
+                        className="pl-9 h-8 text-sm"
+                      />
+                      {columnFilters.effectiveDate && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                          onClick={() => clearColumnFilter('effectiveDate')}
+                        >
+                          <X size={12} />
+                        </Button>
+                      )}
+                    </div>
+                  </TableHead>
+                  <TableHead className="p-2 border-r">
+                    <div className="relative">
+                      <MagnifyingGlass size={14} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        value={columnFilters.folderVersionNumber}
+                        onChange={(e) => updateColumnFilter('folderVersionNumber', e.target.value)}
+                        className="pl-9 h-8 text-sm"
+                      />
+                      {columnFilters.folderVersionNumber && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                          onClick={() => clearColumnFilter('folderVersionNumber')}
+                        >
+                          <X size={12} />
+                        </Button>
+                      )}
+                    </div>
+                  </TableHead>
+                  <TableHead className="p-2 border-r">
+                    <div className="relative">
+                      <MagnifyingGlass size={14} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        value={columnFilters.status}
+                        onChange={(e) => updateColumnFilter('status', e.target.value)}
+                        className="pl-9 h-8 text-sm"
+                      />
+                      {columnFilters.status && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                          onClick={() => clearColumnFilter('status')}
+                        >
+                          <X size={12} />
+                        </Button>
+                      )}
+                    </div>
+                  </TableHead>
+                  <TableHead className="p-2 border-r">
+                    <div className="relative">
+                      <MagnifyingGlass size={14} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        value={columnFilters.lastUpdated}
+                        onChange={(e) => updateColumnFilter('lastUpdated', e.target.value)}
+                        className="pl-9 h-8 text-sm"
+                      />
+                      {columnFilters.lastUpdated && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                          onClick={() => clearColumnFilter('lastUpdated')}
+                        >
+                          <X size={12} />
+                        </Button>
+                      )}
+                    </div>
+                  </TableHead>
+                  <TableHead className="p-2 border-r">
+                    <div className="relative">
+                      <MagnifyingGlass size={14} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        value={columnFilters.updatedBy}
+                        onChange={(e) => updateColumnFilter('updatedBy', e.target.value)}
+                        className="pl-9 h-8 text-sm"
+                      />
+                      {columnFilters.updatedBy && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                          onClick={() => clearColumnFilter('updatedBy')}
+                        >
+                          <X size={12} />
+                        </Button>
+                      )}
+                    </div>
+                  </TableHead>
+                  <TableHead className="p-2">
+                    {/* Empty for Interested column */}
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {currentPageData.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                      {Object.values(columnFilters).some(filter => filter !== '') || productNameSearch 
+                        ? "No portfolios match the current filters" 
+                        : "No portfolio data available"
+                      }
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  currentPageData.map((item, index) => (
+                    <TableRow 
+                      key={item.id} 
+                      className={`
+                        hover:bg-muted/30
+                        ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}
+                        border-b transition-colors h-11
+                      `}
+                    >
+                      <TableCell className="border-r p-3 text-sm font-medium">
+                        {item.portfolioName.includes('H') ? (
+                          <span className="text-blue-600 font-mono">{item.portfolioName}</span>
+                        ) : (
+                          <span>{item.portfolioName}</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="border-r p-3 text-sm text-center">
+                        {item.effectiveDate}
+                      </TableCell>
+                      <TableCell className="border-r p-3 text-center">
+                        <Badge variant="outline" className="font-mono text-xs">
+                          {item.folderVersionNumber}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="border-r p-3">
+                        <Badge 
+                          variant="outline" 
+                          className="text-xs font-medium bg-blue-50 text-blue-700 border-blue-300"
+                        >
+                          {item.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="border-r p-3 text-sm text-center">
+                        {item.lastUpdated}
+                      </TableCell>
+                      <TableCell className="border-r p-3 text-sm">
+                        {item.updatedBy}
+                      </TableCell>
+                      <TableCell className="p-3 text-center">
+                        <Badge 
+                          variant="outline" 
+                          className="text-xs font-medium"
+                        >
+                          {item.interested}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+          
+          {/* Pagination Controls */}
+          <div className="flex items-center justify-between mt-4 px-4 pb-4 text-sm text-muted-foreground border-t bg-muted/20">
+            <div className="flex items-center gap-4">
+              <span className="font-medium">
+                Page {currentPage} of {Math.max(1, totalPages)}
+              </span>
+              <span className="font-medium">
+                View 1 - 20 of 22
+              </span>
+            </div>
+            
+            {totalPages > 1 && (
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                  className="h-8 w-8 p-0"
+                >
+                  <CaretLeft size={14} />
+                </Button>
+                
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  disabled={currentPage === totalPages}
+                  className="h-8 w-8 p-0"
+                >
+                  <CaretRight size={14} />
+                </Button>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
