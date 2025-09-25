@@ -5215,7 +5215,7 @@ export function Generate() {
           <div className="space-y-4">
             {/* Global Filters */}
             <Card>
-              <CardContent className="pt-4">
+              <CardContent className="pt-4 pb-4">
                 <div className="grid grid-cols-5 gap-3">
                   <div className="space-y-1">
                     <Label className="text-sm font-medium">
@@ -5299,10 +5299,10 @@ export function Generate() {
             </Card>
             
             {/* Main Content Area */}
-            <div className="grid grid-cols-[320px_1fr] gap-4">
+            <div className="grid grid-cols-[280px_1fr] gap-4">
               {/* Left Panel - Collateral Selection */}
-              <Card>
-                <CardHeader className="pb-2">
+              <Card className="h-fit">
+                <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center justify-between">
                     Generate Collaterals List
                     <span className="text-xs font-normal text-muted-foreground">(Select One)</span>
@@ -5319,23 +5319,23 @@ export function Generate() {
                     />
                   </div>
                   
-                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                  <div className="space-y-2 max-h-[calc(100vh-320px)] overflow-y-auto pr-1">
                     {collateralOptions.map((collateral) => (
                       <div 
                         key={collateral}
                         onClick={() => handleCollateralSelect(collateral)}
                         className={`
-                          cursor-pointer p-4 rounded-xl border-2 transition-all duration-200 hover:shadow-lg
+                          cursor-pointer p-3 rounded-lg border transition-all duration-200 hover:shadow-sm
                           ${selectedCollateral === collateral 
-                            ? 'border-primary bg-gradient-to-r from-primary/10 to-primary/5 shadow-md ring-2 ring-primary/20' 
+                            ? 'border-primary bg-primary/10 shadow-sm ring-1 ring-primary/30' 
                             : 'border-border bg-card hover:border-primary/50 hover:bg-primary/5'
                           }
                         `}
                       >
                         <div className="flex items-center justify-between">
-                          <div className="flex flex-col">
-                            <span className="text-sm font-semibold text-foreground">{collateral}</span>
-                            <span className="text-xs text-muted-foreground mt-0.5">
+                          <div className="flex flex-col min-w-0 flex-1">
+                            <span className="text-sm font-medium text-foreground truncate">{collateral}</span>
+                            <span className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
                               {collateral === 'Medicare ANOC' ? 'Annual Notice of Change' :
                                collateral === 'Medicare EOC' ? 'Evidence of Coverage' :
                                collateral === 'Medicare SB' ? 'Summary of Benefits' :
@@ -5353,7 +5353,7 @@ export function Generate() {
                             </span>
                           </div>
                           {selectedCollateral === collateral && (
-                            <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary">
+                            <div className="flex items-center justify-center w-5 h-5 rounded-full bg-primary ml-2 flex-shrink-0">
                               <div className="w-2 h-2 rounded-full bg-white"></div>
                             </div>
                           )}
