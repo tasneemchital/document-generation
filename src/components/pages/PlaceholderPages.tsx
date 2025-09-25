@@ -475,7 +475,7 @@ function QueuedCollateral() {
   const currentPageData = filteredAndSortedData.slice(startIndex, endIndex)
   
   // Reset to page 1 when sort or filters change
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1)
   }, [sortField, sortDirection, columnFilters])
   
@@ -1575,7 +1575,7 @@ export function Publish() {
   const currentPageData = filteredAndSortedData.slice(startIndex, endIndex)
   
   // Reset to page 1 when sort or filters change
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1)
   }, [sortField, sortDirection, columnFilters, globalFilters])
   
@@ -2745,7 +2745,7 @@ function CollaborateMain() {
   const currentPageData = filteredAndSortedData.slice(startIndex, endIndex)
   
   // Reset to page 1 when sort or filters change
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1)
   }, [sortField, sortDirection, columnFilters])
   
@@ -3834,7 +3834,7 @@ function LogsTab() {
   const currentPageData = filteredAndSortedData.slice(startIndex, endIndex)
   
   // Reset to page 1 when sort or filters change
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1)
   }, [sortField, sortDirection, columnFilters])
   
@@ -4343,7 +4343,7 @@ function UserManagementTab() {
   const currentPageData = filteredAndSortedData.slice(startIndex, endIndex)
   
   // Reset to page 1 when sort or filters change
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1)
   }, [sortField, sortDirection, columnFilters])
   
@@ -4883,7 +4883,7 @@ export function Generate() {
   const currentPageDocuments = filteredAndSortedDocuments.slice(startIndex, endIndex)
   
   // Reset to page 1 when sort or filters change
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1)
   }, [sortField, sortDirection, columnFilters])
   
