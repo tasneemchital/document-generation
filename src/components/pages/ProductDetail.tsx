@@ -69,51 +69,24 @@ export function ProductDetail({ productId, productName, onNavigate }: ProductDet
       {/* Content */}
       <div className="p-6">
         <div className="grid grid-cols-3 gap-6 h-full">
-          {/* Left Column - Accordions (1/3 width) */}
+          {/* Left Column - Document Index (1/3 width) */}
           <div className="col-span-1">
             <div className="bg-card border border-border rounded-lg p-4">
+              <h3 className="font-semibold text-foreground mb-4">Document Index</h3>
               <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="overview">
-                  <AccordionTrigger>Overview</AccordionTrigger>
+                <AccordionItem value="cover-page">
+                  <AccordionTrigger>1. Cover Page</AccordionTrigger>
                   <AccordionContent>
-                    <div className="space-y-2 text-sm">
-                      <p>Product overview and general information</p>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="details">
-                  <AccordionTrigger>Details</AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-2 text-sm">
-                      <p>Detailed product specifications</p>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="configuration">
-                  <AccordionTrigger>Configuration</AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-2 text-sm">
-                      <p>Product configuration settings</p>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="history">
-                  <AccordionTrigger>History</AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-2 text-sm">
-                      <p>Version history and changes</p>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="permissions">
-                  <AccordionTrigger>Permissions</AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-2 text-sm">
-                      <p>Access controls and permissions</p>
+                    <div className="space-y-2 text-sm pl-4">
+                      <div className="flex items-center justify-between py-1 hover:bg-muted/50 rounded px-2 cursor-pointer">
+                        <span>Title Page</span>
+                      </div>
+                      <div className="flex items-center justify-between py-1 hover:bg-muted/50 rounded px-2 cursor-pointer">
+                        <span>Plan Information</span>
+                      </div>
+                      <div className="flex items-center justify-between py-1 hover:bg-muted/50 rounded px-2 cursor-pointer">
+                        <span>Contact Information</span>
+                      </div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
