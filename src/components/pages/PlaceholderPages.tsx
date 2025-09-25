@@ -6255,22 +6255,31 @@ export function Portfolio() {
           <p className="text-muted-foreground mt-1">View and manage your product portfolios and document collections</p>
         </div>
         
-        {/* Product Search - moved to top right */}
-        <div className="relative">
-          <Input
-            id="product-search"
-            placeholder="Search Products"
-            value={productNameSearch}
-            onChange={(e) => setProductNameSearch(e.target.value)}
-            className="w-64 h-9 pr-10"
-          />
+        {/* Product Search and New Button - moved to top right */}
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Input
+              id="product-search"
+              placeholder="Search Products"
+              value={productNameSearch}
+              onChange={(e) => setProductNameSearch(e.target.value)}
+              className="w-64 h-9 pr-10"
+            />
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0 hover:bg-gray-100"
+              title="Search"
+            >
+              <MagnifyingGlass size={16} />
+            </Button>
+          </div>
           <Button 
-            variant="ghost" 
-            size="sm" 
-            className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0 hover:bg-gray-100"
-            title="Search"
+            variant="default"
+            className="h-9 px-4 font-medium"
           >
-            <MagnifyingGlass size={16} />
+            <Plus size={16} className="mr-1.5" />
+            New
           </Button>
         </div>
       </div>
