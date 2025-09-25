@@ -1,6 +1,12 @@
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Eye, Download } from "@phosphor-icons/react"
 import { Separator } from "@/components/ui/separator"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 interface ProductDetailProps {
   productId?: string
@@ -62,84 +68,63 @@ export function ProductDetail({ productId, productName, onNavigate }: ProductDet
 
       {/* Content */}
       <div className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Status Overview */}
-          <div className="bg-card p-6 rounded-lg border border-border">
-            <h3 className="text-lg font-medium text-card-foreground mb-4">Status Overview</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Status:</span>
-                <span className="px-2 py-1 bg-green-100 text-green-800 rounded-md text-sm">
-                  {productData.status}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Version:</span>
-                <span className="text-card-foreground font-medium">{productData.version}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Last Updated:</span>
-                <span className="text-card-foreground">{productData.lastUpdated}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Compliance:</span>
-                <span className="text-card-foreground">{productData.compliance}</span>
-              </div>
+        <div className="grid grid-cols-3 gap-6 h-full">
+          {/* Left Column - Accordions (1/3 width) */}
+          <div className="col-span-1">
+            <div className="bg-card border border-border rounded-lg p-4">
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="overview">
+                  <AccordionTrigger>Overview</AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-2 text-sm">
+                      <p>Product overview and general information</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="details">
+                  <AccordionTrigger>Details</AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-2 text-sm">
+                      <p>Detailed product specifications</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="configuration">
+                  <AccordionTrigger>Configuration</AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-2 text-sm">
+                      <p>Product configuration settings</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="history">
+                  <AccordionTrigger>History</AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-2 text-sm">
+                      <p>Version history and changes</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="permissions">
+                  <AccordionTrigger>Permissions</AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-2 text-sm">
+                      <p>Access controls and permissions</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
           </div>
-
-          {/* File Details */}
-          <div className="bg-card p-6 rounded-lg border border-border">
-            <h3 className="text-lg font-medium text-card-foreground mb-4">File Details</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Format:</span>
-                <span className="text-card-foreground font-medium">{productData.format}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Size:</span>
-                <span className="text-card-foreground">{productData.fileSize}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Language:</span>
-                <span className="text-card-foreground">{productData.language}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Region:</span>
-                <span className="text-card-foreground">{productData.region}</span>
-              </div>
-            </div>
-          </div>
-
-
-        </div>
-
-        {/* Recent Activity */}
-        <div className="mt-8">
-          <div className="bg-card p-6 rounded-lg border border-border">
-            <h3 className="text-lg font-medium text-card-foreground mb-4">Recent Activity</h3>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-md">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm text-card-foreground">Document updated to version {productData.version}</p>
-                  <p className="text-xs text-muted-foreground">2 hours ago by {productData.teamLead}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-md">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm text-card-foreground">Document approved by compliance team</p>
-                  <p className="text-xs text-muted-foreground">1 day ago by {productData.approvedBy}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-md">
-                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm text-card-foreground">Document review completed</p>
-                  <p className="text-xs text-muted-foreground">3 days ago by {productData.reviewedBy}</p>
-                </div>
-              </div>
+          
+          {/* Right Column - Blank (2/3 width) */}
+          <div className="col-span-2">
+            <div className="bg-card border border-border rounded-lg p-6 h-full min-h-96">
+              {/* Blank content area */}
             </div>
           </div>
         </div>
