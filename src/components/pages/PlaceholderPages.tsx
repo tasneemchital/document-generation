@@ -5478,6 +5478,9 @@ export function Generate() {
                               onCheckedChange={handleSelectAll}
                             />
                           </TableHead>
+                          {visibleColumns.documentName && (
+                            <TableHead className="border-r h-10">
+                              <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort('documentName')}>
                                 Document Name
                                 {sortField === 'documentName' && (
                                   sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
