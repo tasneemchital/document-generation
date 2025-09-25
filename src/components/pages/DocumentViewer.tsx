@@ -10,8 +10,8 @@ import {
   ChevronDown,
   ChevronRight,
   Save,
-  Print,
-  Settings,
+  Printer,
+  Gear,
   BookOpen,
   Lock,
   Unlock,
@@ -448,13 +448,13 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
                 </Select>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm">
-                  <Print size={16} />
+                <Button variant="outline" size="sm" title="Print document">
+                  <Printer size={16} />
                 </Button>
-                <Button variant="outline" size="sm">
-                  <Settings size={16} />
+                <Button variant="outline" size="sm" title="Document settings">
+                  <Gear size={16} />
                 </Button>
-                <Button size="sm">
+                <Button size="sm" title="Save document">
                   <Save size={16} className="mr-2" />
                   Save
                 </Button>
