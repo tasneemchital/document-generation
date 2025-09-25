@@ -5404,8 +5404,13 @@ export function Generate() {
                     </div>
                   </div>
                   
-                  <CardTitle className="text-base mt-3">
-                    Select Documents
+                  <div className="flex items-center justify-between mt-3">
+                    <CardTitle className="text-base">
+                      Select Documents
+                    </CardTitle>
+                    <div className="flex items-center gap-2">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
                           <Button variant="outline" size="sm" className="flex items-center gap-2 h-8">
                             <Columns size={14} />
                             Columns
@@ -5439,15 +5444,6 @@ export function Generate() {
                       )}
                     </div>
                   </div>
-                  
-                  <CardTitle className="text-base mt-3">
-                    Select Documents
-                    {selectedCollateral && (
-                      <span className="text-xs font-normal text-muted-foreground ml-2">
-                        ({filteredAndSortedDocuments.length} available)
-                      </span>
-                    )}
-                  </CardTitle>
                 </CardHeader>
                 
                 <CardContent className="p-3">
