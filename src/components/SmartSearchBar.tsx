@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useKV } from '@github/spark/hooks'
 import { Search, Star, Clock, X, BookmarkPlus, Heart } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -32,8 +33,8 @@ export function SmartSearchBar({
   className = ""
 }: SmartSearchBarProps) {
   const [searchQuery, setSearchQuery] = useState(value)
-  const [recentQueries, setRecentQueries] = useState<string[]>([])
-  const [savedQueries, setSavedQueries] = useState<SavedQuery[]>([])
+  const [recentQueries, setRecentQueries] = useKV<string[]>('smart-search-recent', [])
+  const [savedQueries, setSavedQueries] = useKV<SavedQuery[]>('smart-search-favorites', [])
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [showSaveDialog, setShowSaveDialog] = useState(false)
   const [saveLabel, setSaveLabel] = useState("")
@@ -52,8 +53,9 @@ export function SmartSearchBar({
   const handleSearch = () => {
     if (!searchQuery.trim()) return
     
-    // Add to recent queries
+    // Add to recent queries using functional update
     setRecentQueries((current: string[]) => {
+      if (!Array.isArray(current)) current = []
       const filtered = current.filter(q => q !== searchQuery)
       return [searchQuery, ...filtered].slice(0, 5)
     })
@@ -79,22 +81,29 @@ export function SmartSearchBar({
       isFavorite: true
     }
 
-    setSavedQueries((current: SavedQuery[]) => [newQuery, ...current])
+    setSavedQueries((current: SavedQuery[]) => {
+      if (!Array.isArray(current)) current = []
+      return [newQuery, ...current]
+    })
     setSaveLabel("")
     setShowSaveDialog(false)
     setIsPopoverOpen(false)
   }
 
   const removeSavedQuery = (id: string) => {
-    setSavedQueries((current: SavedQuery[]) => current.filter(q => q.id !== id))
+    setSavedQueries((current: SavedQuery[]) => {
+      if (!Array.isArray(current)) current = []
+      return current.filter(q => q.id !== id)
+    })
   }
 
   const toggleFavorite = (id: string) => {
-    setSavedQueries((current: SavedQuery[]) => 
-      current.map(q => 
+    setSavedQueries((current: SavedQuery[]) => {
+      if (!Array.isArray(current)) current = []
+      return current.map(q => 
         q.id === id ? { ...q, isFavorite: !q.isFavorite } : q
       )
-    )
+    })
   }
 
   const markRecentAsFavorite = (query: string) => {
@@ -106,18 +115,24 @@ export function SmartSearchBar({
       isFavorite: true
     }
 
-    setSavedQueries((current: SavedQuery[]) => [newFavorite, ...current])
+    setSavedQueries((current: SavedQuery[]) => {
+      if (!Array.isArray(current)) current = []
+      return [newFavorite, ...current]
+    })
     
     // Remove from recent searches
-    setRecentQueries((current: string[]) => current.filter(q => q !== query))
+    setRecentQueries((current: string[]) => {
+      if (!Array.isArray(current)) current = []
+      return current.filter(q => q !== query)
+    })
   }
 
   const clearRecentQueries = () => {
     setRecentQueries([])
   }
 
-  const favoriteQueries = savedQueries.filter(q => q.isFavorite)
-  const allSavedQueries = savedQueries.filter(q => !q.isFavorite)
+  const favoriteQueries = Array.isArray(savedQueries) ? savedQueries.filter(q => q.isFavorite) : []
+  const allSavedQueries = Array.isArray(savedQueries) ? savedQueries.filter(q => !q.isFavorite) : []
 
   return (
     <div className={`relative ${className}`}>
@@ -217,7 +232,7 @@ export function SmartSearchBar({
                 </div>
               )}
 
-              {recentQueries.length > 0 && (
+              {Array.isArray(recentQueries) && recentQueries.length > 0 && (
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-muted-foreground">Recent</span>
@@ -258,7 +273,7 @@ export function SmartSearchBar({
                 </div>
               )}
 
-              {favoriteQueries.length === 0 && recentQueries.length === 0 && (
+              {favoriteQueries.length === 0 && (!Array.isArray(recentQueries) || recentQueries.length === 0) && (
                 <div className="text-center py-6 text-muted-foreground">
                   <Star className="h-8 w-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">No saved or recent searches</p>
