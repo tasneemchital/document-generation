@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { FileText, Clock, BarChart3, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus, TextAa, Rows, CopySimple, XCircle, FrameCorners, FileXls, CloudArrowUp, ArrowsClockwise, FloppyDisk } from "@phosphor-icons/react"
+import { FileText, Clock, BarChart3, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus, TextAa, Rows, CopySimple, XCircle, FrameCorners, FileXls, CloudArrowUp, ArrowsClockwise, FloppyDisk, List, SquaresFour } from "@phosphor-icons/react"
 import { SmartSearchBar } from "@/components/SmartSearchBar"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
@@ -2936,6 +2936,28 @@ function CollaborateMain() {
         </div>
         
         <div className="flex items-center gap-3">
+          {/* Layout Mode Toggle */}
+          <div className="flex items-center border rounded-md">
+            <Button
+              variant={layoutMode === 'grid' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setLayoutMode('grid')}
+              className="h-9 px-3 rounded-r-none border-0"
+              title="Grid View"
+            >
+              <List size={16} />
+            </Button>
+            <Button
+              variant={layoutMode === 'card' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setLayoutMode('card')}
+              className="h-9 px-3 rounded-l-none border-0"
+              title="Card View"
+            >
+              <SquaresFour size={16} />
+            </Button>
+          </div>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="flex items-center gap-2 h-9">
