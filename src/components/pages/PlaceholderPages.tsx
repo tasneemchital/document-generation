@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { FileText, Clock, BarChart3, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus, TextAa, Rows, CopySimple, XCircle, FrameCorners, FileXls, CloudArrowUp, ArrowsClockwise, FloppyDisk } from "@phosphor-icons/react"
+import { SmartSearchBar } from "@/components/SmartSearchBar"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -5903,15 +5904,13 @@ export function MasterList() {
         </div>
         
         <div className="flex items-center gap-3">
-          <div className="relative">
-            <MagnifyingGlass size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search collections..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 w-64"
-            />
-          </div>
+          <SmartSearchBar
+            placeholder="Search collections..."
+            value={searchTerm}
+            onChange={setSearchTerm}
+            onSearch={(query) => setSearchTerm(query)}
+            className="w-80"
+          />
         </div>
       </div>
 
