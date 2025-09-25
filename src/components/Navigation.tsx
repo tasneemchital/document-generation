@@ -45,6 +45,7 @@ const navigationItems: NavigationItem[] = [
       { id: 'masterlist', label: 'Master List', icon: ListBullets }
     ]
   },
+  { id: 'portfolio', label: 'Review', icon: Briefcase },
   { 
     id: 'manage', 
     label: 'Manage', 
@@ -57,7 +58,6 @@ const navigationItems: NavigationItem[] = [
     ]
   },
   { id: 'template', label: 'Template', icon: File },
-  { id: 'portfolio', label: 'Review', icon: Briefcase },
   { id: 'ask-benny', label: 'Ask Benny', icon: Robot },
   { id: 'admin-settings', label: 'Admin Settings', icon: Gear },
   { id: 'design-studio', label: 'Design Studio', icon: Palette }
