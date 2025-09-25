@@ -6248,6 +6248,12 @@ export function Portfolio() {
 
   return (
     <div className="p-6 space-y-6">
+      {/* Title and Description */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-semibold text-foreground mb-2">Portfolio/Review</h1>
+        <p className="text-muted-foreground">Review and manage your portfolio items</p>
+      </div>
+
       {/* Header Section */}
       <div className="space-y-4">
         {/* Product Name Search */}
