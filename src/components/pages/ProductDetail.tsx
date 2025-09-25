@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { Separator } from '@/components/ui/separator'
+import { ArrowLeft, Eye, Download } from "@phosphor-icons/react"
 interface ProductDetailProps {
-
+  productId?: string
   productName?: string
   onNavigate: (page: string) => void
 }
