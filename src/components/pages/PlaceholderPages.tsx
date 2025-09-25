@@ -6036,7 +6036,7 @@ export function AskBenny() {
 
 interface PortfolioProps {
   onNavigate?: (page: string) => void
-  onProductSelect?: (productId: string) => void
+  onProductSelect?: (productId: string, productName: string) => void
 }
 
 export function Portfolio({ onNavigate, onProductSelect }: PortfolioProps) {
@@ -6540,7 +6540,7 @@ export function Portfolio({ onNavigate, onProductSelect }: PortfolioProps) {
                           <button 
                             className="text-blue-600 font-mono hover:text-blue-800 hover:underline cursor-pointer transition-colors"
                             onClick={() => {
-                              onProductSelect?.(item.id)
+                              onProductSelect?.(item.id, item.portfolioName)
                             }}
                           >
                             {item.portfolioName}
@@ -6549,7 +6549,7 @@ export function Portfolio({ onNavigate, onProductSelect }: PortfolioProps) {
                           <button 
                             className="text-foreground hover:text-blue-600 hover:underline cursor-pointer transition-colors"
                             onClick={() => {
-                              onProductSelect?.(item.id)
+                              onProductSelect?.(item.id, item.portfolioName)
                             }}
                           >
                             {item.portfolioName}

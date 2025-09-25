@@ -30,6 +30,7 @@ function App() {
   const [editingFrom, setEditingFrom] = useKV<string>('dcm-editing-from', 'dcm')
   const [rules, setRules] = useKV<RuleData[]>('rule-data', [])
   const [selectedProductId, setSelectedProductId] = useKV<string>('selected-product-id', '')
+  const [selectedProductName, setSelectedProductName] = useKV<string>('selected-product-name', '')
 
   const handleRuleCreate = (newRule: RuleData) => {
     setRules((current: RuleData[]) => {
@@ -76,14 +77,16 @@ function App() {
       case 'portfolio':
         return <Portfolio 
           onNavigate={setCurrentPage}
-          onProductSelect={(productId) => {
+          onProductSelect={(productId, productName) => {
             setSelectedProductId(productId)
+            setSelectedProductName(productName)
             setCurrentPage('product-detail')
           }}
         />
       case 'product-detail':
         return <ProductDetail 
           productId={selectedProductId}
+          productName={selectedProductName}
           onNavigate={setCurrentPage}
         />
       case 'global-content':
