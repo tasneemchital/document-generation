@@ -5086,12 +5086,18 @@ export function Generate() {
   
   const isSomeVisibleSelected = currentPageDocuments.some(doc => selectedDocuments.includes(doc.id))
 
-    setColumnFilters(getInitialColumnFilters(collateral))
-          Generate PDF documents and manage collateral
-        </p>
-    // Update column visibility for new collateral type
-    setVisibleColumns(getInitialColumnVisibility(collateral))
-      <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
+  return (
+    <div className="p-4">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-foreground">Generate</h1>
+          <p className="text-muted-foreground mt-1">
+            Generate Documents in word, Print X, 508 and large print in English and other languages
+          </p>
+        </div>
+      </div>
+      
+      <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">,
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="generate-collateral" className="flex items-center gap-2">
             <FileText size={16} />
