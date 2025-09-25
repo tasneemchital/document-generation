@@ -5369,22 +5369,24 @@ export function Generate() {
                         </TableRow>
 
                         {/* Filter Row */}
-                          {availableColumns.slice(1).map((column, index) => (
-                            visibleColumns[column.key] && (
-                              <TableHead 
-                                key={column.key}
-                                className={`${index < availableColumns.slice(1).length - 1 ? 'border-r' : ''} h-10`}
-                              >
-                                <div className="flex items-center gap-1 cursor-pointer select-none font-semibold" onClick={() => handleSort(column.key)}>
-                                  {column.label}2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                                  {sortField === column.key && (
-                                    sortDirection === 'asc' ? <CaretUp size={12} /> : <CaretDown size={12} />
-                                  )}.target.value)}
-                                </div>
-                              </TableHead>
-                            )
-                          ))}
-                                    onClick={() => clearColumnFilter('planType')}
+                        <TableRow className="bg-muted/30">
+                          <TableHead className="w-10 border-r p-1"></TableHead>
+                          {visibleColumns.documentName && (
+                            <TableHead className="border-r p-1">
+                              <div className="relative">
+                                <MagnifyingGlass size={12} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                                <Input
+                                  value={productNameSearch}
+                                  onChange={(e) => setProductNameSearch(e.target.value)}
+                                  placeholder="Filter documents..."
+                                  className="pl-7 h-7 text-sm"
+                                />
+                                {productNameSearch && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5 p-0"
+                                    onClick={() => setProductNameSearch('')}
                                   >
                                     <X size={10} />
                                   </Button>
@@ -5435,33 +5437,48 @@ export function Generate() {
                           </TableRow>
                         ) : (
                           currentPageDocuments.map((document, index) => (
-                          {availableColumns.slice(1).map((column, index) => (
-                            visibleColumns[column.key] && (
-                              <TableHead 
-                                key={`filter-${column.key}`}
-                                className={`p-1 ${index < availableColumns.slice(1).length - 1 ? 'border-r' : ''}`}
-                                border-b transition-colors h-9
-                                <div className="relative">
-                                  <MagnifyingGlass size={12} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                                  <Input
-                                    value={columnFilters[column.key] || ''}
-                                    onChange={(e) => updateColumnFilter(column.key, e.target.value)}
-                                    className="pl-7 h-7 text-sm"
-                                  />
-                                  {columnFilters[column.key] && (
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5 p-0"
-                                      onClick={() => clearColumnFilter(column.key)}
-                                    >
-                                      <X size={10} />
-                                    </Button>
-                                  )}
-                                </div>
-                              </TableHead>
-                            )
-                          ))}
+                            <TableRow 
+                              key={document.id} 
+                              className="border-b transition-colors h-9 hover:bg-muted/50"
+                            >
+                              <TableCell className="w-10 border-r p-2">
+                                <Checkbox
+                                  checked={selectedDocuments.includes(document.id)}
+                                  onCheckedChange={(checked) => {
+                                    if (checked) {
+                                      setSelectedDocuments([...selectedDocuments, document.id])
+                                    } else {
+                                      setSelectedDocuments(selectedDocuments.filter(id => id !== document.id))
+                                    }
+                                  }}
+                                />
+                              </TableCell>
+                              {visibleColumns.documentName && (
+                                <TableCell className="border-r p-2 text-sm font-medium">
+                                  {document.name}
+                                </TableCell>
+                              )}
+                              {availableColumns.slice(1).map((column, colIndex) => (
+                                visibleColumns[column.key] && (
+                                  <TableCell 
+                                    key={column.key}
+                                    className={`p-2 text-sm ${colIndex < availableColumns.slice(1).length - 1 ? 'border-r' : ''}`}
+                                  >
+                                    {document[column.key]}
+                                  </TableCell>
+                                )
+                              ))}
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+
+                  {/* Enhanced Pagination Controls */}
+                  <div className="flex items-center justify-between mt-4 px-4 pb-4 text-sm text-muted-foreground border-t bg-muted/20">
+                    <div className="flex items-center gap-4">
+                      <span className="font-medium">
                         Showing {startIndex + 1} - {Math.min(endIndex, filteredAndSortedDocuments.length)} of {filteredAndSortedDocuments.length}
                         {documents.length !== filteredAndSortedDocuments.length && (
                           <span className="text-blue-600 font-medium">
