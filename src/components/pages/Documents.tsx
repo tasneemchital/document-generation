@@ -169,9 +169,10 @@ const mockDocuments: DocumentData[] = [
 
 interface DocumentsProps {
   onNavigate?: (page: string) => void
+  onDocumentSelect?: (documentId: string, documentName: string) => void
 }
 
-export function Documents({ onNavigate }: DocumentsProps) {
+export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [planTypeFilter, setPlanTypeFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState('all')
@@ -330,6 +331,12 @@ export function Documents({ onNavigate }: DocumentsProps) {
       {/* Documents Table */}
       <Card>
         <CardContent className="p-0">
+          <div className="p-4 bg-muted/30 border-b border-border">
+            <p className="text-sm text-muted-foreground flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              Double-click any document name to open the full document viewer
+            </p>
+          </div>
           <Table>
             <TableHeader>
               <TableRow>
@@ -347,9 +354,20 @@ export function Documents({ onNavigate }: DocumentsProps) {
             </TableHeader>
             <TableBody>
               {filteredDocuments.map(doc => (
-                <TableRow key={doc.id} className="hover:bg-muted/50">
+                <TableRow 
+                  key={doc.id} 
+                  className="hover:bg-muted/50 cursor-pointer"
+                  onDoubleClick={() => onDocumentSelect?.(doc.id, doc.documentName)}
+                >
                   <TableCell>
-                    <div className="flex items-center gap-2">
+                    <div 
+                      className="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors"
+                      onDoubleClick={(e) => {
+                        e.stopPropagation()
+                        onDocumentSelect?.(doc.id, doc.documentName)
+                      }}
+                      title="Double-click to open document"
+                    >
                       <FileText className="w-4 h-4 text-muted-foreground" />
                       {doc.documentName}
                     </div>

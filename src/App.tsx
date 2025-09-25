@@ -22,6 +22,7 @@ import { Template } from '@/components/pages/Template'
 import { TranslationStudio } from '@/components/pages/TranslationStudio'
 import { ProductDetail } from '@/components/pages/ProductDetail'
 import { Documents } from '@/components/pages/Documents'
+import { DocumentViewer } from '@/components/pages/DocumentViewer'
 import { RuleData } from '@/lib/types'
 
 function App() {
@@ -32,6 +33,8 @@ function App() {
   const [rules, setRules] = useKV<RuleData[]>('rule-data', [])
   const [selectedProductId, setSelectedProductId] = useKV<string>('selected-product-id', '')
   const [selectedProductName, setSelectedProductName] = useKV<string>('selected-product-name', '')
+  const [selectedDocumentId, setSelectedDocumentId] = useKV<string>('selected-document-id', '')
+  const [selectedDocumentName, setSelectedDocumentName] = useKV<string>('selected-document-name', '')
 
   const handleRuleCreate = (newRule: RuleData) => {
     setRules((current: RuleData[]) => {
@@ -76,7 +79,20 @@ function App() {
       case 'translation-studio':
         return <TranslationStudio />
       case 'documents':
-        return <Documents onNavigate={setCurrentPage} />
+        return <Documents 
+          onNavigate={setCurrentPage}
+          onDocumentSelect={(documentId, documentName) => {
+            setSelectedDocumentId(documentId)
+            setSelectedDocumentName(documentName)
+            setCurrentPage('document-viewer')
+          }}
+        />
+      case 'document-viewer':
+        return <DocumentViewer
+          documentId={selectedDocumentId}
+          documentName={selectedDocumentName}
+          onNavigate={setCurrentPage}
+        />
       case 'portfolio':
         return <Portfolio 
           onNavigate={setCurrentPage}
