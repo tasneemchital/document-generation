@@ -1,35 +1,33 @@
 import { ArrowLeft, Download, Eye, Calendar, User, FileText, Settings } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
-interface ProductDetailProps {
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 
 interface ProductDetailProps {
   productId?: string
-        id: 'H9042008000',
+  onNavigate: (page: string) => void
 }
 
 export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
   // Mock data - in real app this would be fetched based on productId
   const productData = {
-        userName
+    id: 'H9042008000',
+    productName: 'Medicare Advantage PDP',
+    collateralName: 'Medicare EOC',
+    folderName: 'Medicare Documents 2025',
+    status: 'Complete',
+    versionNumber: '2025_1.0',
     batchId: '47720',
-        language: 'Engl
-        lastModified: '
-        reviewedBy: 'shivani.vidhate
-      },
-        id: 'H6529004000',
-        source: 'Portfolio Management',
-        collateralName: 'Medic
-        productName: 'H
-        versionNumber: '2026_0.12',
-        queuedDate: '09/20/2025 09:45 AM'
-        userName: 'kiran.raskar
-        fileSize: '18.7 MB',
-        language: 'Engl
-        lastModifi
-        reviewedBy: 'kir
-      },
+    mlType: 'Classification Model',
+    fontType: 'Arial Standard',
+    fileSize: '24.5 MB',
+    pageCount: 145,
+    language: 'English (US)',
+    compliance: 'CMS Compliant',
+    description: 'Medicare Advantage Prescription Drug Plan Evidence of Coverage document for 2025 benefit year. Contains comprehensive plan information, coverage details, and member benefits.',
+    queuedDate: '09/20/2025 09:45 AM',
+    processedDate: '09/20/2025 11:30 AM',
     lastModified: '07/02/2025 01:45 PM',
     createdBy: 'System Generator',
     reviewedBy: 'fatima.gavandi',
@@ -56,7 +54,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
           <p className="text-sm text-muted-foreground mt-1">
             {productData.folderName}
           </p>
-      productN
+        </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" className="flex items-center gap-2">
             <Eye size={16} />
@@ -64,11 +62,11 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
           </Button>
           <Button variant="outline" size="sm" className="flex items-center gap-2">
             <Download size={16} />
-          <h1 classN
+            Download
           </Button>
           <Button variant="outline" size="sm" className="flex items-center gap-2">
             <Settings size={16} />
-          <Button va
+            Settings
           </Button>
         </div>
       </div>
@@ -76,10 +74,10 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
       {/* Content */}
       <div className="flex-1 overflow-auto p-6">
         <div className="max-w-6xl mx-auto space-y-6">
-      <div className="flex-1 overflow-a
+          {/* Status Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card>
-                <CardTitle className="text-
+              <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Status</CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
@@ -87,13 +85,13 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                   {productData.status}
                 </Badge>
               </CardContent>
-
+            </Card>
 
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Version</CardTitle>
               </CardHeader>
-                <CardTitle className="text-s
+              <CardContent className="pt-0">
                 <span className="text-lg font-semibold">{productData.versionNumber}</span>
               </CardContent>
             </Card>
@@ -108,29 +106,29 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
             </Card>
           </div>
 
-                  </div>
+          {/* Product Information */}
           <Card>
-                  </div>
+            <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText size={20} />
                 Product Information
               </CardTitle>
             </CardHeader>
-                    <label className="text-sm f
+            <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <label className="text-
+                <div className="space-y-4">
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">Product Name</label>
                     <p className="text-foreground font-medium">{productData.productName}</p>
-                <p class
+                  </div>
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">Collateral Name</label>
                     <p className="text-foreground">{productData.collateralName}</p>
-              <CardTitle
+                  </div>
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">ML Type</label>
                     <p className="text-foreground">{productData.mlType}</p>
-                  <div c
+                  </div>
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">Font Type</label>
                     <p className="text-foreground">{productData.fontType}</p>
@@ -154,23 +152,25 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                     <p className="text-foreground">{productData.compliance}</p>
                   </div>
                 </div>
-          </Card>
-              <Separator />
-            <CardHe
+              </div>
+              
+              <Separator className="my-6" />
+              
+              <div>
                 <label className="text-sm font-medium text-muted-foreground">Description</label>
                 <p className="text-foreground mt-1">{productData.description}</p>
               </div>
-                <div>
+            </CardContent>
           </Card>
 
           {/* Processing Timeline */}
-                
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar size={20} />
-      </div>
+                Processing Timeline
               </CardTitle>
-
+            </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
@@ -182,9 +182,10 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                     </div>
                     <p className="text-sm text-muted-foreground">Document queued in processing pipeline</p>
                   </div>
+                </div>
 
                 <div className="flex items-start gap-4">
-
+                  <div className="w-2 h-2 bg-primary rounded-full mt-2"></div>
                   <div className="flex-1">
                     <div className="flex justify-between items-center">
                       <span className="font-medium">Processing Completed</span>
@@ -192,6 +193,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                     </div>
                     <p className="text-sm text-muted-foreground">Document successfully processed and validated</p>
                   </div>
+                </div>
 
                 <div className="flex items-start gap-4">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
@@ -202,13 +204,13 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                     </div>
                     <p className="text-sm text-muted-foreground">Document ready for distribution</p>
                   </div>
-
+                </div>
               </div>
-
+            </CardContent>
           </Card>
 
           {/* Team Information */}
-
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <User size={20} />
@@ -220,19 +222,20 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">Created By</label>
                   <p className="text-foreground font-medium">{productData.createdBy}</p>
-
+                </div>
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">Reviewed By</label>
                   <p className="text-foreground font-medium">{productData.reviewedBy}</p>
-
+                </div>
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">Approved By</label>
                   <p className="text-foreground font-medium">{productData.approvedBy}</p>
                 </div>
               </div>
-
+            </CardContent>
           </Card>
-
+        </div>
       </div>
-
+    </div>
   )
+}
