@@ -4,6 +4,7 @@ import { SmartSearchBar } from '@/components/SmartSearchBar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import { 
   Table, 
   TableBody,
@@ -23,12 +24,13 @@ import {
   Filter,
   Eye,
   Calendar,
-  Building,
   FileText,
-  Tag,
   Download,
   Settings,
-  Edit
+  Edit,
+  CaretUp,
+  CaretDown,
+  MagnifyingGlass
 } from '@phosphor-icons/react'
 
 interface DocumentData {
@@ -174,30 +176,102 @@ interface DocumentsProps {
 
 export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
   const [searchTerm, setSearchTerm] = useState('')
-  const [planTypeFilter, setPlanTypeFilter] = useState('all')
-  const [statusFilter, setStatusFilter] = useState('all')
-  const [documentTypeFilter, setDocumentTypeFilter] = useState('all')
   const [documents] = useKV<DocumentData[]>('documents-data', mockDocuments)
+  
+  // Column filters
+  const [documentNameFilter, setDocumentNameFilter] = useState('')
+  const [planTypeFilter, setPlanTypeFilter] = useState('')
+  const [instanceNameFilter, setInstanceNameFilter] = useState('')
+  const [effectiveDateFilter, setEffectiveDateFilter] = useState('')
+  const [versionNumberFilter, setVersionNumberFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [documentTypeFilter, setDocumentTypeFilter] = useState('')
+  const [lastModifiedFilter, setLastModifiedFilter] = useState('')
+  const [createdByFilter, setCreatedByFilter] = useState('')
+  
+  // Sorting
+  const [sortColumn, setSortColumn] = useState<keyof DocumentData | ''>('')
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
 
   // Get unique values for filters
-  const uniquePlanTypes = Array.from(new Set(documents.map(doc => doc.planType)))
-  const uniqueStatuses = Array.from(new Set(documents.map(doc => doc.status)))
-  const uniqueDocumentTypes = Array.from(new Set(documents.map(doc => doc.documentType)))
+  const uniquePlanTypes = Array.from(new Set(documents.map(doc => doc.planType))).sort()
+  const uniqueStatuses = Array.from(new Set(documents.map(doc => doc.status))).sort()
+  const uniqueDocumentTypes = Array.from(new Set(documents.map(doc => doc.documentType))).sort()
+  const uniqueCreatedBy = Array.from(new Set(documents.map(doc => doc.createdBy))).sort()
 
-  // Filter documents based on search and filters
-  const filteredDocuments = documents.filter(doc => {
-    const matchesSearch = searchTerm === '' || 
-      doc.documentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doc.instanceName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doc.planType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doc.documentType.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filter documents based on search and column filters
+  const filteredDocuments = documents
+    .filter(doc => {
+      const matchesSearch = searchTerm === '' || 
+        Object.values(doc).some(value => 
+          value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        )
 
-    const matchesPlanType = planTypeFilter === 'all' || doc.planType === planTypeFilter
-    const matchesStatus = statusFilter === 'all' || doc.status === statusFilter  
-    const matchesDocumentType = documentTypeFilter === 'all' || doc.documentType === documentTypeFilter
-    
-    return matchesSearch && matchesPlanType && matchesStatus && matchesDocumentType
-  })
+      const matchesDocumentName = documentNameFilter === '' || 
+        doc.documentName.toLowerCase().includes(documentNameFilter.toLowerCase())
+      const matchesPlanType = planTypeFilter === '' || doc.planType === planTypeFilter
+      const matchesInstanceName = instanceNameFilter === '' || 
+        doc.instanceName.toLowerCase().includes(instanceNameFilter.toLowerCase())
+      const matchesEffectiveDate = effectiveDateFilter === '' || 
+        doc.effectiveDate.includes(effectiveDateFilter)
+      const matchesVersionNumber = versionNumberFilter === '' || 
+        doc.versionNumber.toLowerCase().includes(versionNumberFilter.toLowerCase())
+      const matchesStatus = statusFilter === '' || doc.status === statusFilter
+      const matchesDocumentType = documentTypeFilter === '' || doc.documentType === documentTypeFilter
+      const matchesLastModified = lastModifiedFilter === '' || 
+        doc.lastModified.includes(lastModifiedFilter)
+      const matchesCreatedBy = createdByFilter === '' || doc.createdBy === createdByFilter
+      
+      return matchesSearch && matchesDocumentName && matchesPlanType && 
+             matchesInstanceName && matchesEffectiveDate && matchesVersionNumber && 
+             matchesStatus && matchesDocumentType && matchesLastModified && matchesCreatedBy
+    })
+    .sort((a, b) => {
+      if (!sortColumn) return 0
+      
+      const aValue = a[sortColumn]
+      const bValue = b[sortColumn]
+      
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1
+      return 0
+    })
+
+  const handleSort = (column: keyof DocumentData) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortColumn(column)
+      setSortDirection('asc')
+    }
+  }
+
+  const clearAllFilters = () => {
+    setDocumentNameFilter('')
+    setPlanTypeFilter('')
+    setInstanceNameFilter('')
+    setEffectiveDateFilter('')
+    setVersionNumberFilter('')
+    setStatusFilter('')
+    setDocumentTypeFilter('')
+    setLastModifiedFilter('')
+    setCreatedByFilter('')
+    setSortColumn('')
+    setSortDirection('asc')
+  }
+
+  const hasActiveFilters = documentNameFilter || planTypeFilter || instanceNameFilter || 
+    effectiveDateFilter || versionNumberFilter || statusFilter || documentTypeFilter || 
+    lastModifiedFilter || createdByFilter
+
+  const getSortIcon = (column: keyof DocumentData) => {
+    if (sortColumn === column) {
+      return sortDirection === 'asc' ? 
+        <CaretUp className="w-4 h-4" /> : 
+        <CaretDown className="w-4 h-4" />
+    }
+    return <CaretUp className="w-4 h-4 opacity-30" />
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -237,80 +311,23 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
       {/* Smart Search Bar */}
       <Card>
         <CardContent className="p-4">
-          <SmartSearchBar
-            value={searchTerm}
-            onChange={setSearchTerm}
-            placeholder="Search documents by name, instance, plan type..."
-            storageKey="documents-search"
-          />
-        </CardContent>
-      </Card>
-
-      {/* Global Filters */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm font-medium">Filters:</span>
+          <div className="flex items-center justify-between">
+            <div className="flex-1 max-w-md">
+              <SmartSearchBar
+                value={searchTerm}
+                onChange={setSearchTerm}
+                placeholder="Search documents by name, instance, plan type..."
+                storageKey="documents-search"
+              />
             </div>
-            
-            <div className="flex items-center gap-2">
-              <Building className="w-4 h-4 text-muted-foreground" />
-              <Select value={planTypeFilter} onValueChange={setPlanTypeFilter}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Plan Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Plan Types</SelectItem>
-                  {uniquePlanTypes.map(type => (
-                    <SelectItem key={type} value={type}>{type}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Tag className="w-4 h-4 text-muted-foreground" />
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  {uniqueStatuses.map(status => (
-                    <SelectItem key={status} value={status}>{status}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-muted-foreground" />
-              <Select value={documentTypeFilter} onValueChange={setDocumentTypeFilter}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Document Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  {uniqueDocumentTypes.map(type => (
-                    <SelectItem key={type} value={type}>{type}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {(planTypeFilter !== 'all' || statusFilter !== 'all' || documentTypeFilter !== 'all') && (
+            {hasActiveFilters && (
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => {
-                  setPlanTypeFilter('all')
-                  setStatusFilter('all')
-                  setDocumentTypeFilter('all')
-                }}
+                onClick={clearAllFilters}
+                className="ml-4"
               >
-                Clear Filters
+                Clear All Filters
               </Button>
             )}
           </div>
@@ -340,15 +357,215 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Document Name</TableHead>
-                <TableHead>Plan Type</TableHead>
-                <TableHead>Instance Name</TableHead>
-                <TableHead>Effective Date</TableHead>
-                <TableHead>Version Number</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Document Type</TableHead>
-                <TableHead>Last Modified</TableHead>
-                <TableHead>Created By</TableHead>
+                <TableHead className="w-64">
+                  <div className="flex items-center justify-between">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleSort('documentName')}
+                      className="flex items-center gap-2 p-0 h-auto font-semibold"
+                    >
+                      Document Name
+                      {getSortIcon('documentName')}
+                    </Button>
+                  </div>
+                  <div className="mt-2">
+                    <Input
+                      placeholder="Filter..."
+                      value={documentNameFilter}
+                      onChange={(e) => setDocumentNameFilter(e.target.value)}
+                      className="h-8 text-xs"
+                    />
+                  </div>
+                </TableHead>
+                <TableHead>
+                  <div className="flex items-center justify-between">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleSort('planType')}
+                      className="flex items-center gap-2 p-0 h-auto font-semibold"
+                    >
+                      Plan Type
+                      {getSortIcon('planType')}
+                    </Button>
+                  </div>
+                  <div className="mt-2">
+                    <Select value={planTypeFilter} onValueChange={setPlanTypeFilter}>
+                      <SelectTrigger className="h-8 text-xs">
+                        <SelectValue placeholder="Filter..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All</SelectItem>
+                        {uniquePlanTypes.map(type => (
+                          <SelectItem key={type} value={type}>{type}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </TableHead>
+                <TableHead>
+                  <div className="flex items-center justify-between">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleSort('instanceName')}
+                      className="flex items-center gap-2 p-0 h-auto font-semibold"
+                    >
+                      Instance Name
+                      {getSortIcon('instanceName')}
+                    </Button>
+                  </div>
+                  <div className="mt-2">
+                    <Input
+                      placeholder="Filter..."
+                      value={instanceNameFilter}
+                      onChange={(e) => setInstanceNameFilter(e.target.value)}
+                      className="h-8 text-xs"
+                    />
+                  </div>
+                </TableHead>
+                <TableHead>
+                  <div className="flex items-center justify-between">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleSort('effectiveDate')}
+                      className="flex items-center gap-2 p-0 h-auto font-semibold"
+                    >
+                      Effective Date
+                      {getSortIcon('effectiveDate')}
+                    </Button>
+                  </div>
+                  <div className="mt-2">
+                    <Input
+                      placeholder="Filter..."
+                      value={effectiveDateFilter}
+                      onChange={(e) => setEffectiveDateFilter(e.target.value)}
+                      className="h-8 text-xs"
+                    />
+                  </div>
+                </TableHead>
+                <TableHead>
+                  <div className="flex items-center justify-between">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleSort('versionNumber')}
+                      className="flex items-center gap-2 p-0 h-auto font-semibold"
+                    >
+                      Version Number
+                      {getSortIcon('versionNumber')}
+                    </Button>
+                  </div>
+                  <div className="mt-2">
+                    <Input
+                      placeholder="Filter..."
+                      value={versionNumberFilter}
+                      onChange={(e) => setVersionNumberFilter(e.target.value)}
+                      className="h-8 text-xs"
+                    />
+                  </div>
+                </TableHead>
+                <TableHead>
+                  <div className="flex items-center justify-between">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleSort('status')}
+                      className="flex items-center gap-2 p-0 h-auto font-semibold"
+                    >
+                      Status
+                      {getSortIcon('status')}
+                    </Button>
+                  </div>
+                  <div className="mt-2">
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                      <SelectTrigger className="h-8 text-xs">
+                        <SelectValue placeholder="Filter..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All</SelectItem>
+                        {uniqueStatuses.map(status => (
+                          <SelectItem key={status} value={status}>{status}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </TableHead>
+                <TableHead>
+                  <div className="flex items-center justify-between">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleSort('documentType')}
+                      className="flex items-center gap-2 p-0 h-auto font-semibold"
+                    >
+                      Document Type
+                      {getSortIcon('documentType')}
+                    </Button>
+                  </div>
+                  <div className="mt-2">
+                    <Select value={documentTypeFilter} onValueChange={setDocumentTypeFilter}>
+                      <SelectTrigger className="h-8 text-xs">
+                        <SelectValue placeholder="Filter..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All</SelectItem>
+                        {uniqueDocumentTypes.map(type => (
+                          <SelectItem key={type} value={type}>{type}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </TableHead>
+                <TableHead>
+                  <div className="flex items-center justify-between">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleSort('lastModified')}
+                      className="flex items-center gap-2 p-0 h-auto font-semibold"
+                    >
+                      Last Modified
+                      {getSortIcon('lastModified')}
+                    </Button>
+                  </div>
+                  <div className="mt-2">
+                    <Input
+                      placeholder="Filter..."
+                      value={lastModifiedFilter}
+                      onChange={(e) => setLastModifiedFilter(e.target.value)}
+                      className="h-8 text-xs"
+                    />
+                  </div>
+                </TableHead>
+                <TableHead>
+                  <div className="flex items-center justify-between">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleSort('createdBy')}
+                      className="flex items-center gap-2 p-0 h-auto font-semibold"
+                    >
+                      Created By
+                      {getSortIcon('createdBy')}
+                    </Button>
+                  </div>
+                  <div className="mt-2">
+                    <Select value={createdByFilter} onValueChange={setCreatedByFilter}>
+                      <SelectTrigger className="h-8 text-xs">
+                        <SelectValue placeholder="Filter..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All</SelectItem>
+                        {uniqueCreatedBy.map(user => (
+                          <SelectItem key={user} value={user}>{user}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
