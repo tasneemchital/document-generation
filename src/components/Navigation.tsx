@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { 
   House, 
   FolderOpen, 
@@ -14,8 +13,8 @@ import {
   Briefcase,
   Globe
 } from '@phosphor-icons/react'
-import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 interface NavigationProps {
   currentPage: string
@@ -25,12 +24,12 @@ interface NavigationProps {
 
 const navigationItems = [
   { id: 'dashboard', label: 'Dashboard', icon: House },
-  { id: 'global-content', label: 'Global Content', icon: Globe },
-  { id: 'dcm', label: 'Digital Content Manager', icon: Palette },
-  { id: 'global-template', label: 'Global Template', icon: FolderOpen },
+  { id: 'global-template', label: 'Global Template', icon: Globe },
   { id: 'template', label: 'Template', icon: File },
   { id: 'translation-studio', label: 'Translation Studio', icon: Translate },
+  { id: 'dcm', label: 'Digital Content Manager', icon: FolderOpen },
   { id: 'portfolio', label: 'Portfolio', icon: Briefcase },
+  { id: 'global-content', label: 'Global Content', icon: Globe },
   { id: 'masterlist', label: 'Master List', icon: ListBullets },
   { id: 'collaborate', label: 'Collaborate', icon: Users },
   { id: 'generate', label: 'Generate', icon: FilePdf },
@@ -65,15 +64,9 @@ export function Navigation({ currentPage, onNavigate, isCollapsed }: NavigationP
                   )}
                   onClick={() => onNavigate(item.id)}
                 >
-                  <Icon 
-                    size={16} 
-                    className={cn(
-                      "flex-shrink-0",
-                      !isCollapsed && "mr-2"
-                    )} 
-                  />
+                  <Icon size={18} className="shrink-0" />
                   {!isCollapsed && (
-                    <span className="text-sm font-medium">{item.label}</span>
+                    <span className="ml-3 truncate">{item.label}</span>
                   )}
                 </Button>
               </li>
