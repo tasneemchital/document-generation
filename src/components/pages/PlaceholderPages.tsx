@@ -2955,8 +2955,6 @@ function CollaborateMain() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          )}
-        </div>
       </div>
       
       {layoutMode === 'card' ? renderCardLayout() : (
@@ -2969,12 +2967,12 @@ function CollaborateMain() {
                   <TableRow className="bg-muted/30">
                     <TableHead className="w-12 border-r h-11">
                       <Checkbox
-                      checked={isAllVisibleSelected}
-                      checked={isAllVisibleSelected}
-                      onCheckedChange={handleSelectAll}
-                        if (el) el.indeterminate = isSomeVisibleSelected && !isAllVisibleSelected
-                      }}
-                    />
+                        checked={isAllVisibleSelected}
+                        onCheckedChange={handleSelectAll}
+                        ref={(el) => {
+                          if (el) el.indeterminate = isSomeVisibleSelected && !isAllVisibleSelected
+                        }}
+                      />
                   </TableHead>
                   {visibleColumns.id && (
                     <TableHead className="border-r h-11 min-w-[80px]">
