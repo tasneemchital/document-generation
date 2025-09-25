@@ -5184,6 +5184,36 @@ export function Generate() {
   
   const isSomeVisibleSelected = currentPageDocuments.some(doc => selectedDocuments.includes(doc.id))
 
+  const handleQueueCombined = () => {
+    if (selectedDocuments.length === 0) {
+      alert('Please select at least one document to queue combined.')
+      return
+    }
+    
+    // Show confirmation for Queue Combined action
+    const confirmed = confirm(`Queue ${selectedDocuments.length} document(s) as combined collateral for ${selectedCollateral}?`)
+    if (confirmed) {
+      alert(`Successfully queued ${selectedDocuments.length} documents as combined collateral for ${selectedCollateral}.`)
+      // Clear selection after successful queue
+      setSelectedDocuments([])
+    }
+  }
+
+  const handleQueue = () => {
+    if (selectedDocuments.length === 0) {
+      alert('Please select at least one document to queue.')
+      return
+    }
+    
+    // Show confirmation for regular Queue action
+    const confirmed = confirm(`Queue ${selectedDocuments.length} document(s) for ${selectedCollateral}?`)
+    if (confirmed) {
+      alert(`Successfully queued ${selectedDocuments.length} documents for ${selectedCollateral}.`)
+      // Clear selection after successful queue
+      setSelectedDocuments([])
+    }
+  }
+
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
@@ -5393,9 +5423,20 @@ export function Generate() {
                           ))}
                         </DropdownMenuContent>
                       </DropdownMenu>
-                      <Button className="bg-blue-600 hover:bg-blue-700 h-8">
+                      <Button 
+                        onClick={handleQueue}
+                        className="bg-blue-600 hover:bg-blue-700 h-8"
+                      >
                         Queue
                       </Button>
+                      {selectedCollateral === 'Medicare SB' && (
+                        <Button 
+                          onClick={handleQueueCombined}
+                          className="bg-green-600 hover:bg-green-700 h-8"
+                        >
+                          Queue Combined
+                        </Button>
+                      )}
                     </div>
                   </div>
                   
