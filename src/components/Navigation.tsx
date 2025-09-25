@@ -35,9 +35,18 @@ interface NavigationItem {
 
 const navigationItems: NavigationItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: House },
-  { id: 'manage', label: 'Manage', icon: FolderGear },
+  { 
+    id: 'manage', 
+    label: 'Manage', 
+    icon: FolderGear,
+    children: [
+      { id: 'collaborate', label: 'Collaborate', icon: Users },
+      { id: 'generate', label: 'Generate', icon: FilePdf },
+      { id: 'publish', label: 'Publish', icon: Export },
+      { id: 'translation-studio', label: 'Translation Studio', icon: Translate }
+    ]
+  },
   { id: 'template', label: 'Template', icon: File },
-  { id: 'translation-studio', label: 'Translation Studio', icon: Translate },
   { id: 'portfolio', label: 'Portfolio', icon: Briefcase },
   { 
     id: 'global-content', 
@@ -49,9 +58,6 @@ const navigationItems: NavigationItem[] = [
       { id: 'masterlist', label: 'Master List', icon: ListBullets }
     ]
   },
-  { id: 'collaborate', label: 'Collaborate', icon: Users },
-  { id: 'generate', label: 'Generate', icon: FilePdf },
-  { id: 'publish', label: 'Publish', icon: Export },
   { id: 'ask-benny', label: 'Ask Benny', icon: Robot },
   { id: 'admin-settings', label: 'Admin Settings', icon: Gear },
   { id: 'design-studio', label: 'Design Studio', icon: Palette }
@@ -66,8 +72,9 @@ export function Navigation({ currentPage, onNavigate, isCollapsed }: NavigationP
         initialExpanded.add(item.id)
       }
     })
-    // Also expand global-content by default
+    // Also expand global-content and manage by default
     initialExpanded.add('global-content')
+    initialExpanded.add('manage')
     return initialExpanded
   })
 
