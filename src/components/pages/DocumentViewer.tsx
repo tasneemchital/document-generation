@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
+import { useKV } from '@github/spark/hooks'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { 
   ChevronDown,
   ChevronRight,
@@ -13,7 +15,8 @@ import {
   BookOpen,
   Lock,
   Unlock,
-  ArrowLeft
+  ArrowLeft,
+  Translate
 } from '@phosphor-icons/react'
 
 interface DocumentSection {
@@ -21,6 +24,7 @@ interface DocumentSection {
   title: string
   level: number
   content: string
+  contentSpanish: string
   isExpanded: boolean
   hasContent: boolean
   children?: DocumentSection[]
@@ -35,6 +39,7 @@ interface DocumentViewerProps {
 export function DocumentViewer({ documentId, documentName, onNavigate }: DocumentViewerProps) {
   const [sections, setSections] = useState<DocumentSection[]>([])
   const [selectedSectionId, setSelectedSectionId] = useState<string>('')
+  const [selectedLanguage, setSelectedLanguage] = useKV('document-language', 'english')
   const contentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -55,6 +60,16 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
               <p style="font-size: 1rem; color: #6b7280;">Please read and keep this document for your records.</p>
             </div>
           </div>`,
+          contentSpanish: `<div style="text-align: center; padding: 40px;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 20px; color: #1f2937;">Evidencia de Cobertura de Medicare</h1>
+            <h2 style="font-size: 1.8rem; margin-bottom: 30px; color: #374151;">H1234 - Simplify HMO MAPD</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 20px;">Fecha Efectiva: 1 de enero de 2025</p>
+            <p style="font-size: 1rem; color: #6b7280;">Versión: 2025_14.0</p>
+            <div style="margin-top: 50px;">
+              <p style="font-size: 1.1rem; margin-bottom: 10px;">Este documento contiene información importante sobre su cobertura de salud y medicamentos recetados de Medicare.</p>
+              <p style="font-size: 1rem; color: #6b7280;">Por favor, lea y mantenga este documento para sus registros.</p>
+            </div>
+          </div>`,
           isExpanded: false,
           hasContent: true
         },
@@ -72,6 +87,16 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
           <br/>
           <h3>Section 1.3: Getting Help</h3>
           <p>If you have questions about your coverage, contact Customer Service at 1-800-XXX-XXXX. Our representatives are available 8 AM to 8 PM, 7 days a week.</p>`,
+          contentSpanish: `<h2>Capítulo 1: Comenzar como Miembro</h2>
+          <br/>
+          <h3>Sección 1.1: Introducción</h3>
+          <p>Bienvenido a su plan de salud de Medicare. Este capítulo proporciona información esencial sobre su membresía y cómo comenzar con sus beneficios.</p>
+          <br/>
+          <h3>Sección 1.2: Su Tarjeta de Identificación de Miembro</h3>
+          <p>Su tarjeta de identificación de miembro es su clave para acceder a los servicios de atención médica. Siempre traiga su tarjeta de identificación cuando busque atención médica.</p>
+          <br/>
+          <h3>Sección 1.3: Obtener Ayuda</h3>
+          <p>Si tiene preguntas sobre su cobertura, comuníquese con Servicio al Cliente al 1-800-XXX-XXXX. Nuestros representantes están disponibles de 8 AM a 8 PM, los 7 días de la semana.</p>`,
           isExpanded: false,
           hasContent: true
         },
@@ -93,6 +118,20 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
           <h3>Pharmacy Services</h3>
           <p><strong>Phone:</strong> 1-800-XXX-XXXX</p>
           <p><strong>Hours:</strong> 24 hours a day, 7 days a week</p>`,
+          contentSpanish: `<h2>Capítulo 2: Números de Teléfono Importantes y Recursos</h2>
+          <br/>
+          <h3>Servicio al Cliente</h3>
+          <p><strong>Teléfono:</strong> 1-800-XXX-XXXX</p>
+          <p><strong>TTY:</strong> 711</p>
+          <p><strong>Horas:</strong> 8 AM a 8 PM, 7 días a la semana</p>
+          <br/>
+          <h3>Línea de Enfermería las 24 Horas</h3>
+          <p><strong>Teléfono:</strong> 1-800-XXX-XXXX</p>
+          <p>Disponible las 24 horas del día, los 7 días de la semana</p>
+          <br/>
+          <h3>Servicios de Farmacia</h3>
+          <p><strong>Teléfono:</strong> 1-800-XXX-XXXX</p>
+          <p><strong>Horas:</strong> 24 horas del día, 7 días de la semana</p>`,
           isExpanded: false,
           hasContent: true
         },
@@ -110,6 +149,16 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
           <br/>
           <h3>Section 3.3: Referrals and Prior Authorization</h3>
           <p>Some services require referrals from your PCP or prior authorization from the plan. Check your member materials or contact Customer Service for details.</p>`,
+          contentSpanish: `<h2>Capítulo 3: Uso de la Cobertura del Plan para Servicios Médicos</h2>
+          <br/>
+          <h3>Sección 3.1: Descripción General</h3>
+          <p>Este capítulo explica cómo usar la cobertura de su plan para servicios médicos, incluyendo cómo acceder a la atención y qué costos puede ser responsable de pagar.</p>
+          <br/>
+          <h3>Sección 3.2: Proveedor de Atención Primaria</h3>
+          <p>Como miembro de HMO, debe elegir un Proveedor de Atención Primaria (PCP) que coordinará su atención y proporcionará referencias a especialistas cuando sea necesario.</p>
+          <br/>
+          <h3>Sección 3.3: Referencias y Autorización Previa</h3>
+          <p>Algunos servicios requieren referencias de su PCP o autorización previa del plan. Verifique sus materiales de miembro o comuníquese con Servicio al Cliente para obtener detalles.</p>`,
           isExpanded: false,
           hasContent: true
         },
@@ -150,6 +199,39 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
               </tr>
             </tbody>
           </table>`,
+          contentSpanish: `<h2>Capítulo 4: Tabla de Beneficios Médicos</h2>
+          <br/>
+          <table style="width:100%; border-collapse: collapse; border: 1px solid #ddd; margin: 20px 0;">
+            <thead>
+              <tr style="background-color: #f5f5f5;">
+                <th style="border: 1px solid #ddd; padding: 12px; text-align: left; font-weight: 600;">Servicio</th>
+                <th style="border: 1px solid #ddd; padding: 12px; text-align: left; font-weight: 600;">Costo del Miembro</th>
+                <th style="border: 1px solid #ddd; padding: 12px; text-align: left; font-weight: 600;">Autorización Requerida</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Visita de Atención Primaria</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">$0 copago</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">No</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Visita al Especialista</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">$15 copago</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">Referencia requerida</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Sala de Emergencias</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">$120 copago</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">No</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Atención Urgente</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">$65 copago</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">No</td>
+              </tr>
+            </tbody>
+          </table>`,
           isExpanded: false,
           hasContent: true
         },
@@ -167,6 +249,16 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
           <br/>
           <h3>Section 5.3: Pharmacy Network</h3>
           <p>You can fill your prescriptions at any pharmacy in our network. Use our online pharmacy locator or call Customer Service to find network pharmacies near you.</p>`,
+          contentSpanish: `<h2>Capítulo 5: Uso de la Cobertura del Plan para Medicamentos Recetados</h2>
+          <br/>
+          <h3>Sección 5.1: Introducción a la Cobertura de Medicamentos Recetados</h3>
+          <p>Este capítulo explica cómo funciona su cobertura de medicamentos recetados de Medicare, incluyendo información sobre el formulario del plan y el reparto de costos.</p>
+          <br/>
+          <h3>Sección 5.2: Formulario</h3>
+          <p>El formulario es una lista de medicamentos recetados cubiertos. El formulario incluye medicamentos de marca y genéricos organizados en diferentes niveles.</p>
+          <br/>
+          <h3>Sección 5.3: Red de Farmacias</h3>
+          <p>Puede surtir sus recetas en cualquier farmacia de nuestra red. Use nuestro localizador de farmacias en línea o llame a Servicio al Cliente para encontrar farmacias de la red cerca de usted.</p>`,
           isExpanded: false,
           hasContent: true
         },
@@ -186,6 +278,19 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
             
             <h4 style="color: #1f2937; margin: 20px 0 10px 0;">Catastrophic Coverage Stage</h4>
             <p style="margin-left: 20px;">You pay the greater of 5% coinsurance or $4.15/$10.35 copay</p>
+          </div>`,
+          contentSpanish: `<h2>Capítulo 6: Lo que Paga por Medicamentos Recetados</h2>
+          <br/>
+          <h3>Etapas de Cobertura</h3>
+          <div style="margin: 20px 0;">
+            <h4 style="color: #1f2937; margin-bottom: 10px;">Etapa de Cobertura Inicial</h4>
+            <p style="margin-left: 20px;">Usted paga su copago o coseguro hasta que los costos totales de medicamentos alcancen $5,030</p>
+            
+            <h4 style="color: #1f2937; margin: 20px 0 10px 0;">Etapa de Brecha de Cobertura</h4>
+            <p style="margin-left: 20px;">Usted paga el 25% del costo por medicamentos cubiertos</p>
+            
+            <h4 style="color: #1f2937; margin: 20px 0 10px 0;">Etapa de Cobertura Catastrófica</h4>
+            <p style="margin-left: 20px;">Usted paga el mayor de 5% de coseguro o $4.15/$10.35 copago</p>
           </div>`,
           isExpanded: false,
           hasContent: true
@@ -207,6 +312,19 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
           <br/>
           <h3>How to Submit a Reimbursement Request</h3>
           <p>To request reimbursement, send us the completed claim form along with your receipts and any other required documentation.</p>`,
+          contentSpanish: `<h2>Capítulo 7: Pidiéndonos que Paguemos Nuestra Parte de la Factura</h2>
+          <br/>
+          <h3>Cuando Puede Necesitar Pedir Reembolso</h3>
+          <p>Generalmente, no necesitará pagar por servicios cubiertos y luego pedirnos reembolso. Sin embargo, hay algunas situaciones donde puede necesitar pagar primero y luego solicitar reembolso:</p>
+          <br/>
+          <ul style="margin-left: 20px; margin-bottom: 20px;">
+            <li style="margin-bottom: 10px;">Atención de emergencia o urgente cuando esté fuera del área de servicio del plan</li>
+            <li style="margin-bottom: 10px;">Cuando reciba servicios de un proveedor fuera de la red en ciertas circunstancias</li>
+            <li style="margin-bottom: 10px;">Cuando pague por medicamentos recetados en una farmacia que no esté en la red</li>
+          </ul>
+          <br/>
+          <h3>Cómo Enviar una Solicitud de Reembolso</h3>
+          <p>Para solicitar reembolso, envíenos el formulario de reclamo completado junto con sus recibos y cualquier otra documentación requerida.</p>`,
           isExpanded: false,
           hasContent: true
         }
@@ -234,7 +352,14 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
   }
 
   const getSelectedSection = () => {
-    return sections.find(section => section.id === selectedSectionId)
+    const section = sections.find(section => section.id === selectedSectionId)
+    if (!section) return null
+    
+    // Return section with appropriate content based on selected language
+    return {
+      ...section,
+      content: selectedLanguage === 'spanish' ? section.contentSpanish : section.content
+    }
   }
 
   const selectedSection = getSelectedSection()
@@ -308,17 +433,32 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
                 {selectedSection?.title || 'Select a section'}
               </h2>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
-                <Print size={16} />
-              </Button>
-              <Button variant="outline" size="sm">
-                <Settings size={16} />
-              </Button>
-              <Button size="sm">
-                <Save size={16} className="mr-2" />
-                Save
-              </Button>
+            <div className="flex items-center gap-3">
+              {/* Language Selector */}
+              <div className="flex items-center gap-2">
+                <Translate size={16} className="text-muted-foreground" />
+                <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+                  <SelectTrigger className="w-32">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="english">English</SelectItem>
+                    <SelectItem value="spanish">Español</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm">
+                  <Print size={16} />
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Settings size={16} />
+                </Button>
+                <Button size="sm">
+                  <Save size={16} className="mr-2" />
+                  Save
+                </Button>
+              </div>
             </div>
           </div>
         </div>
