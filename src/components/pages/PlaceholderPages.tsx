@@ -5352,11 +5352,6 @@ export function Generate() {
                               }
                             </span>
                           </div>
-                          {selectedCollateral === collateral && (
-                            <div className="flex items-center justify-center w-5 h-5 rounded-full bg-primary ml-2 flex-shrink-0">
-                              <div className="w-2 h-2 rounded-full bg-white"></div>
-                            </div>
-                          )}
                         </div>
                       </div>
                     ))}
