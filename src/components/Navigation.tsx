@@ -36,7 +36,7 @@ const navigationItems = [
   { id: 'publish', label: 'Publish', icon: Export },
   { id: 'ask-benny', label: 'Ask Benny', icon: Robot },
   { id: 'admin-settings', label: 'Admin Settings', icon: Gear },
-  { id: 'design-studio', label: 'Design Studio', icon: Palette },
+  { id: 'design-studio', label: 'Design Studio', icon: Palette }
 ]
 
 export function Navigation({ currentPage, onNavigate, isCollapsed }: NavigationProps) {
