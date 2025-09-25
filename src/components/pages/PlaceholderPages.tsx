@@ -6248,34 +6248,29 @@ export function Portfolio() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Title and Description */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-foreground mb-2">Portfolio/Review</h1>
-        <p className="text-muted-foreground">Review and manage your portfolio items</p>
-      </div>
-
       {/* Header Section */}
+      <div>
+        <h1 className="text-2xl font-semibold text-foreground">Portfolio</h1>
+        <p className="text-muted-foreground mt-1">View and manage your product portfolios and document collections</p>
+      </div>
+      
       <div className="space-y-4">
-        {/* Product Search */}
+        {/* Product Name Search */}
         <div className="flex items-center gap-4">
+          <Label htmlFor="product-name" className="text-sm font-medium whitespace-nowrap">
+            Product Name:
+          </Label>
           <div className="flex items-center gap-2">
-            <div className="relative">
-              <Input
-                id="product-name"
-                placeholder="Search Products"
-                value={productNameSearch}
-                onChange={(e) => setProductNameSearch(e.target.value)}
-                className="w-64 h-9 pr-10"
-              />
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0"
-                title="Search"
-              >
-                <MagnifyingGlass size={16} />
-              </Button>
-            </div>
+            <Input
+              id="product-name"
+              placeholder="Type here"
+              value={productNameSearch}
+              onChange={(e) => setProductNameSearch(e.target.value)}
+              className="w-64 h-9"
+            />
+            <Button variant="default" className="bg-blue-800 hover:bg-blue-900 h-9 px-6">
+              Search
+            </Button>
             <Button variant="outline" className="h-9 px-6">
               Clear
             </Button>
