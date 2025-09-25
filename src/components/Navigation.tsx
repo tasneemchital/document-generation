@@ -36,6 +36,16 @@ interface NavigationItem {
 const navigationItems: NavigationItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: House },
   { 
+    id: 'global-content', 
+    label: 'Create', 
+    icon: Globe,
+    children: [
+      { id: 'dcm', label: 'Digital Content Manager', icon: FolderOpen },
+      { id: 'global-template', label: 'Global Template', icon: Globe },
+      { id: 'masterlist', label: 'Master List', icon: ListBullets }
+    ]
+  },
+  { 
     id: 'manage', 
     label: 'Manage', 
     icon: FolderGear,
@@ -48,16 +58,6 @@ const navigationItems: NavigationItem[] = [
   },
   { id: 'template', label: 'Template', icon: File },
   { id: 'portfolio', label: 'Review', icon: Briefcase },
-  { 
-    id: 'global-content', 
-    label: 'Create', 
-    icon: Globe,
-    children: [
-      { id: 'dcm', label: 'Digital Content Manager', icon: FolderOpen },
-      { id: 'global-template', label: 'Global Template', icon: Globe },
-      { id: 'masterlist', label: 'Master List', icon: ListBullets }
-    ]
-  },
   { id: 'ask-benny', label: 'Ask Benny', icon: Robot },
   { id: 'admin-settings', label: 'Admin Settings', icon: Gear },
   { id: 'design-studio', label: 'Design Studio', icon: Palette }
