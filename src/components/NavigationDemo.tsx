@@ -1,389 +1,273 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { 
   Globe,
-  FolderG
-  FilePdf
+  FolderOpen,
+  FilePdf,
   Users,
   Plus,
   FileText,
-  Robot
-  CaretDow
+  Robot,
+  CaretDown,
   CheckCircle,
-} from '
+} from '@phosphor-icons/react'
 
-  onNav
+interface NavigationDemoProps {
+  onNavigate: (page: string) => void
+}
 
-  const [ex
+export function NavigationDemo({ onNavigate }: NavigationDemoProps) {
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
+  const [selectedPage, setSelectedPage] = useState('dashboard')
 
-    setE
-      i
-      } else
+  const toggleSection = (sectionId: string) => {
+    setExpandedSections(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(sectionId)) {
+        newSet.delete(sectionId)
+      } else {
+        newSet.add(sectionId)
       }
+      return newSet
     })
+  }
 
+  const handleNavigate = (pageId: string) => {
     setSelectedPage(pageId)
-    if (['dcm', 'generate', 'col
-
+    if (['dcm', 'generate', 'collaborate', 'documents', 'portfolio', 'translation-studio', 'masterlist', 'template'].includes(pageId)) {
+      onNavigate(pageId)
     } else {
-      console.log(`Demo: Selected ${p
- 
+      console.log(`Demo: Selected ${pageId}`)
+    }
+  }
 
+  const navigationItems = [
     {
+      id: 'dashboard',
       label: 'Dashboard',
       description: 'Central overview and task management',
-
+      icon: Globe,
+      isSection: false
+    },
+    {
       id: 'create',
+      label: 'Create',
       icon: Globe,
       isSection: true,
-        {
-          label: 'Digital Conten
-          desc
-        },
-       
-          icon: Fil
-      
-   
-
-          description: 'Master lists and data co
-        }
-    },
-   
-
-      features: ['Smart search', 'Produ
-    {
-     
-      description: 'Ri
-    },
-      id: 'design-
-      icon: PaintBrush,
-      features: ['Layout design', 'Branding', 'Visual themes', 'Asset management']
-    {
-     
-      description: 
-      children: [
-      icon: Globe,
-      description: 'Content creation and management tools',
-      isSection: true,
-      children: [
+      items: [
         {
           id: 'dcm',
           label: 'Digital Content Manager',
-          icon: File,
-          description: 'Rule-based content management system',
-          features: ['Rule creation & editing', 'AI-powered conditions', 'Template management', 'Version control']
+          description: 'Manage content rules and templates',
+          icon: FileText
         },
-         
-          id: 'global-template',
-          label: 'Global Template',
-          icon: FilePdf,
-          description: 'Master template management',
-          features: ['Template library', 'Cross-reference management', 'Standardization', 'Global updates']
+        {
+          id: 'template',
+          label: 'Global Template',  
+          description: 'Document template management',
+          icon: FilePdf
         },
         {
           id: 'masterlist',
           label: 'Collections',
-          icon: ListBullets,
           description: 'Master lists and data collections',
-          features: ['Cascade collections', 'Mapping collections', 'Certificates & specs', 'Integration collections']
+          icon: FolderOpen
+        }
+      ]
+    },
+    {
+      id: 'manage',
+      label: 'Manage',
+      icon: Users,
+      isSection: true,
+      items: [
+        {
+          id: 'collaborate',
+          label: 'Collaborate',
+          description: 'Team collaboration tools',
+          icon: Users
+        },
+        {
+          id: 'generate',
+          label: 'Generate',
+          description: 'Generate documents and reports', 
+          icon: FilePdf
+        },
+        {
+          id: 'publish',
+          label: 'Integrate',
+          description: 'Integration and publishing tools',
+          icon: Globe
+        },
+        {
+          id: 'translation-studio',
+          label: 'Translation Studio',
+          description: 'Document translation management',
+          icon: Globe
         }
       ]
     },
     {
       id: 'portfolio',
       label: 'Review',
-      icon: Briefcase,
-      description: 'Portfolio and document review management',
-      features: ['Smart search', 'Product filtering', 'Status tracking', 'Portfolio details']
+      description: 'Review and manage portfolios',
+      icon: FolderOpen,
+      isSection: false
     },
-    {
-      id: 'template',
-      label: 'Template',
-      icon: File,
-      description: 'Rich text document editing with rule integration',
-      features: ['WYSIWYG editor', 'Rule embedding', 'Multi-language support', 'Real-time preview']
-    },
-    {
-      id: 'design-studio',
-      label: 'Design Studio',
-      icon: PaintBrush,
-      description: 'Visual design and customization tools',
-      features: ['Layout design', 'Branding', 'Visual themes', 'Asset management']
-    },
-    {
-      id: 'manage',
-      label: 'Manage',
-      icon: FolderGear,
-      description: 'Workflow and process management tools',
-      isSection: true,
-      children: [
-        {
-          id: 'collaborate',
-          label: 'Collaborate',
-          icon: Users,
-          description: 'Team collaboration with grid/card layouts',
-          features: ['Multi-view support', 'Review workflows', 'User management', 'Activity logs']
-        },
-        {
-          id: 'generate',
-          label: 'Generate',
-          icon: Sparkle,
-          description: 'Document generation with collateral selection',
-          features: ['Multi-format output', 'Batch processing', 'Smart filters', 'Queue management']
-        },
-        {
-          id: 'publish',
-          label: 'Publish',
-          icon: Plus,
-          description: 'Content publishing and distribution',
-          features: ['JSON management', 'Audit trails', 'Global filters', 'Publish tracking']
-        },
-        {
-          id: 'translation-studio',
-          label: 'Translation Studio',
-          icon: Translate,
-              <div className="flex items-start gap-3 flex-1">
-          features: ['Document queuing', 'Status tracking', 'Language management', 'Audit trails']
-         
-      ]
-      
     {
       id: 'documents',
       label: 'Documents',
-                     
-      description: 'Document library with viewer capabilities',
-      features: ['Document viewer', 'Multi-language support', 'Search & filter', 'Hierarchical navigation']
-    },
-     
-      id: 'ask-benny',
-                  <p clas
-      icon: Robot,
-                  {item.features && (
-      features: ['Natural language queries', 'Smart suggestions', 'Context awareness', 'Learning capabilities']
-      
-    {
-      id: 'admin-settings',
-      label: 'Admin Settings',
-                 
-      description: 'System configuration and administration',
-      features: ['User management', 'System settings', 'Security config', 'Integration setup']
+      description: 'Document management and viewing',
+      icon: FileText,
+      isSection: false
     }
-   
+  ]
 
-                  <Button
-    // Different status colors for demonstration
-                    
-      'dashboard': 'bg-green-100 text-green-800',
-      'dcm': 'bg-blue-100 text-blue-800',
-      'generate': 'bg-purple-100 text-purple-800',
-      'collaborate': 'bg-orange-100 text-orange-800',
-      'documents': 'bg-indigo-100 text-indigo-800'
-     
-    return colors[itemId as keyof typeof colors] || 'bg-gray-100 text-gray-800'
-   
-
-  const renderNavigationItem = (item: any, level = 0) => {
-    const Icon = item.icon
-    const isExpanded = expandedSections.has(item.id)
-    const isSelected = selectedPage === item.id
-    const hasChildren = item.children && item.children.length > 0
-
+  return (
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="text-center space-y-2">
+        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Globe className="w-8 h-8 text-primary" />
+        </div>
+        <h1 className="text-3xl font-bold text-foreground">SimplifyDocs</h1>
+        <p className="text-muted-foreground text-lg">
+          Streamline your document management workflow
+        </p>
       </div>
-      <div key={item.id} className="space-y-1">
 
-          className={cn(
-            "cursor-pointer transition-all duration-200 hover:shadow-md",
-            isSelected ? "ring-2 ring-primary shadow-md bg-primary/5" : "hover:bg-muted/50",
-            level > 0 && "ml-6"
-          )}
-          onClick={() => {
-            if (hasChildren) {
-              toggleSection(item.id)
-            } else {
-              handlePageSelect(item.id)
-            }
-
-        >
-          <CardContent className="p-4">
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-3 flex-1">
-                <div className={cn(
-                  "flex items-center justify-center w-10 h-10 rounded-lg",
-                  isSelected ? "bg-primary text-primary-foreground" : "bg-muted"
-                <p 
-                  <Icon size={20} />
-                  or u
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-semibold text-foreground">{item.label}</h3>
-
-                      <Badge className={cn("text-xs", getStatusColor(item.id))}>
-            <CardContent class
-                      </Badge>
-                    )}
-                    {hasChildren && (
-                      <Badge variant="outline" className="text-xs">
-                        {item.children?.length} items
-                      </Badge>
-                    )}
+      {/* Navigation Cards */}
+      <div className="space-y-4">
+        {navigationItems.map((item) => (
+          <div key={item.id} className="space-y-2">
+            {item.isSection ? (
+              <>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-between h-auto p-4 border border-border/50 hover:border-primary/50"
+                  onClick={() => toggleSection(item.id)}
+                >
+                  <div className="flex items-center space-x-3">
+                    <item.icon className="w-5 h-5 text-primary" />
+                    <span className="font-medium">{item.label}</span>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {item.description}
-                  </p>
-          
-                    <div className="flex flex-wrap gap-1">
-                      {item.features.slice(0, 3).map((feature: string, index: number) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {feature}
-                        </Badge>
-                      ))}
-                      {item.features.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{item.features.length - 3} more
-                        </Badge>
-                      )}
+                  <CaretDown 
+                    className={`w-4 h-4 transition-transform ${
+                      expandedSections.has(item.id) ? 'rotate-180' : ''
+                    }`} 
+                  />
+                </Button>
+                
+                {expandedSections.has(item.id) && item.items && (
+                  <div className="ml-4 space-y-2">
+                    {item.items.map((subItem) => (
+                      <Button
+                        key={subItem.id}
+                        variant={selectedPage === subItem.id ? "default" : "ghost"}
+                        className="w-full justify-start h-auto p-4 border border-border/30"
+                        onClick={() => handleNavigate(subItem.id)}
+                      >
+                        <div className="flex items-center space-x-3 text-left">
+                          <subItem.icon className="w-4 h-4 flex-shrink-0" />
+                          <div>
+                            <div className="font-medium">{subItem.label}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {subItem.description}
+                            </div>
+                          </div>
+                        </div>
+                      </Button>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <Button
+                key={item.id}
+                variant={selectedPage === item.id ? "default" : "ghost"}
+                className="w-full justify-start h-auto p-4 border border-border/50 hover:border-primary/50"
+                onClick={() => handleNavigate(item.id)}
+              >
+                <div className="flex items-center space-x-3 text-left">
+                  <item.icon className="w-5 h-5 flex-shrink-0" />
+                  <div>
+                    <div className="font-medium">{item.label}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {item.description}
                     </div>
-                  )}
+                  </div>
+                </div>
+              </Button>
+            )}
+          </div>
+        ))}
       </div>
-              </div>
-      <Card className="border-2 border-primary/20 bg-primary
-                {!hasChildren && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0"
-                    onClick={(e) => {
-                      e.stopPropagation()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      {/* Quick Actions */}
+      <Card>
+        <CardContent className="p-4">
+          <h3 className="font-semibold mb-3">Quick Actions</h3>
+          <div className="grid grid-cols-2 gap-3">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => handleNavigate('dcm')}
+              className="h-auto p-3 flex flex-col items-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="text-xs">New Rule</span>
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => handleNavigate('generate')}
+              className="h-auto p-3 flex flex-col items-center gap-2"
+            >
+              <FilePdf className="w-4 h-4" />
+              <span className="text-xs">Generate</span>
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => handleNavigate('collaborate')}
+              className="h-auto p-3 flex flex-col items-center gap-2"
+            >
+              <Users className="w-4 h-4" />
+              <span className="text-xs">Collaborate</span>
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => handleNavigate('documents')}
+              className="h-auto p-3 flex flex-col items-center gap-2"
+            >
+              <FileText className="w-4 h-4" />
+              <span className="text-xs">Documents</span>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Feature Status */}
+      <Card>
+        <CardContent className="p-4">
+          <h3 className="font-semibold mb-3 flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-green-500" />
+            Available Features
+          </h3>
+          <div className="text-sm text-muted-foreground space-y-1">
+            <div>✅ Digital Content Manager</div>
+            <div>✅ Documents Viewer</div>
+            <div>✅ Generate Module</div> 
+            <div>✅ Collaborate Module</div>
+            <div>✅ Portfolio/Review</div>
+            <div>✅ Translation Studio</div>
+            <div>✅ Global Template</div>
+            <div>✅ Collections (Master Lists)</div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
