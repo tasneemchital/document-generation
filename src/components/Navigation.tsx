@@ -12,7 +12,7 @@ import {
   Globe,
   CaretDown,
   CaretRight,
-  FolderGear,
+  FolderOpen,
   PaintBrush,
   Users,
   Sparkle,
@@ -52,7 +52,7 @@ const navigationItems: NavigationItem[] = [
   { 
     id: 'manage', 
     label: 'Manage', 
-    icon: FolderGear,
+    icon: FolderOpen,
     children: [
       { id: 'collaborate', label: 'Collaborate', icon: Users },
       { id: 'generate', label: 'Generate', icon: Sparkle },
