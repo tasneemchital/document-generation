@@ -42,7 +42,6 @@ const navigationItems: NavigationItem[] = [
     icon: FolderGear,
     children: [
       { id: 'global-template', label: 'Global Template', icon: FilePdf },
-      { id: 'dcm', label: 'Digital Content Manager', icon: File },
     ]
   },
   { id: 'template', label: 'Template', icon: File },
@@ -55,6 +54,7 @@ const navigationItems: NavigationItem[] = [
     label: 'Global Content', 
     icon: Globe,
     children: [
+      { id: 'dcm', label: 'Digital Content Manager', icon: File },
       { id: 'masterlist', label: 'Collections', icon: ListBullets },
     ]
   },
