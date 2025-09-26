@@ -8,8 +8,8 @@ import "./main.css"
 import "./styles/theme.css"
 import "./index.css"
 
-// Import Spark after React is fully loaded
-import "@github/spark/spark"
+// Initialize mock spark implementation
+import './lib/spark-mock.ts'
 
 createRoot(document.getElementById('root')!).render(
   <ErrorBoundary FallbackComponent={ErrorFallback}>

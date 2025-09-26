@@ -50,23 +50,9 @@ function App() {
       }
     }
     
+    setRefreshKey(prev => prev + 1)
     window.addEventListener('keydown', handleKeyPress)
     return () => window.removeEventListener('keydown', handleKeyPress)
-  }, [])
-  
-  const [currentPage, setCurrentPage] = useKV('sda-current-page', 'dashboard')
-  const [isCollapsed, setIsCollapsed] = useKV('sda-sidebar-collapsed', false)
-  const [editingRule, setEditingRule] = useKV<RuleData | null>('dcm-editing-rule', null)
-  const [editingFrom, setEditingFrom] = useKV<string>('dcm-editing-from', 'dcm')
-  const [rules, setRules] = useKV<RuleData[]>('rule-data', [])
-  const [selectedProductId, setSelectedProductId] = useKV<string>('selected-product-id', '')
-  const [selectedProductName, setSelectedProductName] = useKV<string>('selected-product-name', '')
-  const [selectedDocumentId, setSelectedDocumentId] = useKV<string>('selected-document-id', '')
-  const [selectedDocumentName, setSelectedDocumentName] = useKV<string>('selected-document-name', '')
-
-  // Force refresh on mount
-  useEffect(() => {
-    setRefreshKey(prev => prev + 1)
   }, [])
 
   const handleRuleCreate = (newRule: RuleData) => {
