@@ -23,6 +23,7 @@ import { TranslationStudio } from '@/components/pages/TranslationStudio'
 import { ProductDetail } from '@/components/pages/ProductDetail'
 import { Documents } from '@/components/pages/Documents'
 import { DocumentViewer } from '@/components/pages/DocumentViewer'
+import { NavigationDemo } from '@/components/NavigationDemo'
 import { RuleData } from '@/lib/types'
 
 function App() {
@@ -60,6 +61,10 @@ function App() {
     try {
       switch (currentPage) {
         case 'dashboard':
+          return <NavigationDemo onNavigate={setCurrentPage} />
+        case 'navigation-demo':
+          return <NavigationDemo onNavigate={setCurrentPage} />
+        case 'real-dashboard':
           return <Dashboard onNavigate={setCurrentPage} />
         case 'manage':
           return <Manage />
