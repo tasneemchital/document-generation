@@ -37,30 +37,30 @@ interface NavigationProps {
 const navigationItems: NavigationItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: House },
   { 
+    id: 'create', 
+    label: 'Create', 
+    icon: Globe,
+    children: [
+      { id: 'dcm', label: 'Digital Content Manager', icon: File },
+      { id: 'global-template', label: 'Global Template', icon: FilePdf },
+      { id: 'masterlist', label: 'Collections', icon: ListBullets },
+    ]
+  },
+  { id: 'portfolio', label: 'Review', icon: Briefcase },
+  { id: 'template', label: 'Template', icon: File },
+  { id: 'design-studio', label: 'Design Studio', icon: PaintBrush },
+  { 
     id: 'manage', 
     label: 'Manage', 
     icon: FolderGear,
     children: [
-      { id: 'global-template', label: 'Global Template', icon: FilePdf },
-      { id: 'dcm', label: 'Digital Content Manager', icon: File },
+      { id: 'collaborate', label: 'Collaborate', icon: Users },
+      { id: 'generate', label: 'Generate', icon: Sparkle },
+      { id: 'publish', label: 'Publish', icon: Plus },
+      { id: 'translation-studio', label: 'Translation Studio', icon: Translate },
     ]
   },
-  { id: 'template', label: 'Template', icon: File },
-  { id: 'design-studio', label: 'Design Studio', icon: PaintBrush },
-  { id: 'translation-studio', label: 'Translation Studio', icon: Translate },
   { id: 'documents', label: 'Documents', icon: FileText },
-  { id: 'portfolio', label: 'Review', icon: Briefcase },
-  { 
-    id: 'global-content', 
-    label: 'Global Content', 
-    icon: Globe,
-    children: [
-      { id: 'masterlist', label: 'Collections', icon: ListBullets },
-    ]
-  },
-  { id: 'collaborate', label: 'Collaborate', icon: Users },
-  { id: 'generate', label: 'Generate', icon: Sparkle },
-  { id: 'publish', label: 'Publish', icon: Plus },
   { id: 'ask-benny', label: 'Ask Benny', icon: Robot },
   { id: 'admin-settings', label: 'Admin Settings', icon: Gear },
 ]
@@ -80,7 +80,9 @@ function NavigationItemComponent({
   isCollapsed, 
   level = 0 
 }: NavigationItemComponentProps) {
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(
+    new Set(['create', 'manage']) // Start with some items expanded
+  )
   
   const toggleExpanded = (itemId: string) => {
     setExpandedItems(prev => {
