@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 import { useState } from 'react'
-import { Plus, FileText, Users, TrendingUp, FolderOpen, FilePdf, ShareNetwork, Robot, PaintBrush, ArrowsClockwise, Eye, Calendar, Funnel, CaretDown, Clock } from '@phosphor-icons/react'
+import { Plus, FileText, Users, TrendUp, FolderOpen, FilePdf, ShareNetwork, Robot, PaintBrush, ArrowsClockwise, Eye, Calendar, Funnel, CaretDown, Clock } from '@phosphor-icons/react'
 
 interface DashboardProps {
   onNavigate?: (page: string) => void
@@ -159,7 +159,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
         <Card className="min-h-[100px]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Documents Generated</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <TrendUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent className="pt-0">
             <div className="text-2xl font-bold">89</div>
