@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ChevronDown, MagnifyingGlass, Pencil, Lock, MoreHorizontal } from '@phosphor-icons/react';
+import { ChevronDown, MagnifyingGlass, Pencil, Lock, DotsThree } from '@phosphor-icons/react';
 
 interface MedicareEOCMasterListProps {
   onNavigate: (page: string) => void;
@@ -55,7 +55,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
           <div className="flex items-center gap-2">
             <Pencil size={16} className="text-muted-foreground" />
             <Lock size={16} className="text-muted-foreground" />
-            <MoreHorizontal size={16} className="text-muted-foreground" />
+            <DotsThree size={16} className="text-muted-foreground" />
           </div>
         </div>
 
