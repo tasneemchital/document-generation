@@ -63,16 +63,16 @@ const navigationItems: NavigationItem[] = [
     icon: Gear,
     children: [
       { id: 'dcm', label: 'Digital Content Manager', icon: File },
-      { 
-        id: 'global-template', 
-        label: 'Global Template', 
-        icon: FilePdf,
-        children: [
-          { id: 'medicare-eoc', label: 'Medicare EOC', icon: FileText },
-          { id: 'template-library', label: 'Template Library', icon: FolderOpen },
-        ]
-      },
       { id: 'masterlist', label: 'Collections', icon: ListBullets },
+    ]
+  },
+  { 
+    id: 'global-template', 
+    label: 'Global Template', 
+    icon: FilePdf,
+    children: [
+      { id: 'medicare-eoc', label: 'Medicare EOC', icon: FileText },
+      { id: 'template-library', label: 'Template Library', icon: FolderOpen },
     ]
   },
   { id: 'ask-benny', label: 'Ask Benny', icon: Robot },
