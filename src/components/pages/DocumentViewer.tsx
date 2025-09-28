@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { 
   ChevronDown,
   ChevronRight,
-  Save,
+  FloppyDisk,
   Printer,
   Gear,
   BookOpen,
@@ -455,7 +455,7 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
                   <Gear size={16} />
                 </Button>
                 <Button size="sm" title="Save document">
-                  <Save size={16} className="mr-2" />
+                  <FloppyDisk size={16} className="mr-2" />
                   Save
                 </Button>
               </div>

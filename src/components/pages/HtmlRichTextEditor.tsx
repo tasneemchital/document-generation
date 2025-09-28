@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { 
-  Save, 
+  FloppyDisk, 
   X, 
   Globe, 
   TextAa, 
@@ -435,7 +435,7 @@ export function HtmlRichTextEditor({
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
             disabled={isLoading || !hasUnsavedChanges}
           >
-            <Save size={14} />
+            <FloppyDisk size={14} />
             {isLoading ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>

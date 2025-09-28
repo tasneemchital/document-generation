@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Save, X, Globe, Type, Eye, EyeSlash } from '@phosphor-icons/react';
+import { FloppyDisk, X, Globe, Type, Eye, EyeSlash } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import './tinymce-custom.css';
 
@@ -419,7 +419,7 @@ export function TinyMCEEditor({
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
             disabled={isLoading || !hasUnsavedChanges}
           >
-            <Save size={14} />
+            <FloppyDisk size={14} />
             {isLoading ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>

@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, RotateCcw, Save, Upload, Copy } from '@phosphor-icons/react';
+import { Plus, Trash2, RotateCcw, FloppyDisk, Upload, Copy } from '@phosphor-icons/react';
 import { sanitizeConditionExpression } from '@/lib/content-safety';
 
 interface Condition {
@@ -322,7 +322,7 @@ export function ConfigureRuleDialog({
                     Regenerate
                   </Button>
                   <Button onClick={saveConditions} variant="outline">
-                    <Save className="w-4 h-4 mr-2" />
+                    <FloppyDisk className="w-4 h-4 mr-2" />
                     Save
                   </Button>
                   <Button onClick={loadConditions} variant="outline">
