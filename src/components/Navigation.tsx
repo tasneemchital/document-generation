@@ -63,16 +63,16 @@ const navigationItems: NavigationItem[] = [
     icon: Gear,
     children: [
       { id: 'dcm', label: 'Digital Content Manager', icon: File },
+      { 
+        id: 'global-template', 
+        label: 'Global Template', 
+        icon: FilePdf,
+        children: [
+          { id: 'medicare-eoc', label: 'Medicare EOC', icon: FileText },
+          { id: 'template-library', label: 'Template Library', icon: FolderOpen },
+        ]
+      },
       { id: 'masterlist', label: 'Collections', icon: ListBullets },
-    ]
-  },
-  { 
-    id: 'global-template', 
-    label: 'Global Template', 
-    icon: FilePdf,
-    children: [
-      { id: 'medicare-eoc', label: 'Medicare EOC', icon: FileText },
-      { id: 'template-library', label: 'Template Library', icon: FolderOpen },
     ]
   },
   { id: 'ask-benny', label: 'Ask Benny', icon: Robot },
@@ -137,6 +137,7 @@ function NavigationItemComponent({
             : "hover:bg-muted text-muted-foreground hover:text-foreground",
           level === 1 && "ml-4 w-[calc(100%-1rem)]",
           level === 2 && "ml-8 w-[calc(100%-2rem)]",
+          level === 3 && "ml-12 w-[calc(100%-3rem)]",
           isCollapsed && "px-2"
         )}
         onClick={() => {
