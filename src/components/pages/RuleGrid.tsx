@@ -17,7 +17,7 @@ import {
   ChevronDown, 
   ArrowDown, 
   ArrowUp,
-  Edit, 
+  PencilSimple, 
   FloppyDisk, 
   X, 
   Plus,
@@ -1129,7 +1129,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
               {isRichTextField ? (
                 <PencilSimple size={12} className="text-blue-500" title="Edit with rich text editor" />
               ) : (
-                <Edit size={12} className="text-gray-400" />
+                <PencilSimple size={12} className="text-gray-400" />
               )}
             </div>
           )}
