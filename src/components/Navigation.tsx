@@ -85,6 +85,14 @@ interface NavigationItemComponentProps {
   onNavigate: (page: string) => void
   isCollapsed: boolean
   level?: number
+  expandedItems: Set<string>
+  setExpandedItems: (value: Set<string>) => void
+}
+
+interface NavigationItemComponentProps extends NavigationItemProps {
+  level?: number
+  expandedItems: Set<string>
+  setExpandedItems: (value: Set<string>) => void
 }
 
 function NavigationItemComponent({ 
@@ -92,22 +100,16 @@ function NavigationItemComponent({
   currentPage, 
   onNavigate, 
   isCollapsed, 
-  level = 0 
+  level = 0,
+  expandedItems,
+  setExpandedItems
 }: NavigationItemComponentProps) {
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(
-    new Set(['manage', 'global-content', 'global-template']) // Start with some items expanded
-  )
-  
   const toggleExpanded = (itemId: string) => {
-    setExpandedItems(prev => {
-      const newSet = new Set(prev)
-      if (newSet.has(itemId)) {
-        newSet.delete(itemId)
-      } else {
-        newSet.add(itemId)
-      }
-      return newSet
-    })
+    setExpandedItems(new Set(
+      expandedItems.has(itemId) 
+        ? Array.from(expandedItems).filter(id => id !== itemId)
+        : [...Array.from(expandedItems), itemId]
+    ))
   }
 
   const hasChildren = item.children && item.children.length > 0
@@ -175,6 +177,8 @@ function NavigationItemComponent({
               onNavigate={onNavigate}
               isCollapsed={isCollapsed}
               level={level + 1}
+              expandedItems={expandedItems}
+              setExpandedItems={setExpandedItems}
             />
           ))}
         </ul>
@@ -184,6 +188,11 @@ function NavigationItemComponent({
 }
 
 export function Navigation({ currentPage, onNavigate, isCollapsed }: NavigationProps) {
+  // Move expandedItems state to the parent Navigation component
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(
+    new Set(['manage', 'global-content', 'global-template']) // Start with some items expanded
+  )
+
   return (
     <aside className={cn(
       "bg-card border-r border-border transition-all duration-300",
@@ -198,6 +207,8 @@ export function Navigation({ currentPage, onNavigate, isCollapsed }: NavigationP
               currentPage={currentPage}
               onNavigate={onNavigate}
               isCollapsed={isCollapsed}
+              expandedItems={expandedItems}
+              setExpandedItems={setExpandedItems}
             />
           ))}
         </ul>

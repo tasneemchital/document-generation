@@ -685,10 +685,6 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
                     <TableCell>
                       <div 
                         className="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors"
-                        onDoubleClick={(e) => {
-                          e.stopPropagation()
-                          onDocumentSelect?.(doc.id, doc.documentName)
-                        }}
                         title="Double-click to open document"
                       >
                         <FileText className="w-4 h-4 text-muted-foreground" />
