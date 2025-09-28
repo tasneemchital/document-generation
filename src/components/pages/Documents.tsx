@@ -21,13 +21,13 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import {
-  Filter,
+  Funnel,
   Eye,
   Calendar,
   FileText,
   Download,
-  Settings,
-  Edit,
+  Gear,
+  PencilSimple,
   CaretUp,
   CaretDown,
   MagnifyingGlass,
@@ -360,7 +360,7 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
                 <Eye className="w-3 h-3" />
               </Button>
               <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                <Edit className="w-3 h-3" />
+                <PencilSimple className="w-3 h-3" />
               </Button>
             </div>
           </div>
@@ -406,7 +406,7 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
             Export
           </Button>
           <Button variant="outline" size="sm">
-            <Settings className="w-4 h-4 mr-2" />
+            <Gear className="w-4 h-4 mr-2" />
             Settings
           </Button>
         </div>
@@ -719,7 +719,7 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
                           <Eye className="w-4 h-4" />
                         </Button>
                         <Button variant="ghost" size="sm">
-                          <Edit className="w-4 h-4" />
+                          <PencilSimple className="w-4 h-4" />
                         </Button>
                       </div>
                     </TableCell>

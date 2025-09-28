@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Plus, Calendar, User, Type } from '@phosphor-icons/react';
+import { Plus, Calendar, User, TextT } from '@phosphor-icons/react';
 import { CMSContent } from '@/lib/types';
 import { CreateSnippetDialog } from './CreateSnippetDialog';
 
@@ -33,7 +33,7 @@ export function CMSDataCard({ content, onSnippetCreated }: CMSDataCardProps) {
               <CardDescription className="mt-1">
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
-                    <Type size={14} />
+                    <TextT size={14} />
                     <span className="capitalize">{content.type}</span>
                   </div>
                   <div className="flex items-center gap-1">

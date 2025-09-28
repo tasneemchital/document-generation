@@ -10,12 +10,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
-  Filter, 
+  Funnel, 
   X, 
   MagnifyingGlass, 
   Calendar as CalendarIcon,
   CaretDown,
-  RotateCcw
+  ArrowCounterClockwise
 } from '@phosphor-icons/react';
 import { RuleData } from '@/lib/types';
 
@@ -297,7 +297,7 @@ export function AdvancedFilter({ rules, onFiltersChange }: AdvancedFilterProps) 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <CardTitle className="text-base flex items-center gap-2 text-gray-900">
-              <Filter size={16} />
+              <Funnel size={16} />
               Advanced Filters
             </CardTitle>
             {hasActiveFilters && (
@@ -317,7 +317,7 @@ export function AdvancedFilter({ rules, onFiltersChange }: AdvancedFilterProps) 
                 onClick={clearAllFilters}
                 className="flex items-center gap-1 border-gray-300 hover:bg-gray-50"
               >
-                <RotateCcw size={12} />
+                <ArrowCounterClockwise size={12} />
                 Clear All
               </Button>
             )}
