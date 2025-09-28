@@ -50,7 +50,9 @@ function App() {
       }
     }
     
-    setRefreshKey(prev => prev + 1)
+    // Trigger immediate refresh
+    refreshApp()
+    
     window.addEventListener('keydown', handleKeyPress)
     return () => window.removeEventListener('keydown', handleKeyPress)
   }, [])
