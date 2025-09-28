@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useKV } from '@github/spark/hooks'
-import { MagnifyingGlass, Star, Clock, X, BookmarkPlus, Heart } from '@phosphor-icons/react'
+import { MagnifyingGlass, Star, Clock, X, BookmarkSimple, Heart } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -186,7 +186,7 @@ export function SmartSearchBar({
                   className="text-xs"
                   disabled={!searchQuery.trim()}
                 >
-                  <BookmarkPlus className="h-3 w-3 mr-1" />
+                  <BookmarkSimple className="h-3 w-3 mr-1" />
                   Save Query
                 </Button>
               </div>
