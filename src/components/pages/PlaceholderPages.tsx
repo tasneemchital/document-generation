@@ -6957,17 +6957,17 @@ export function Manage() {
   )
 }
 
-export function GlobalContent() {
+export function Configure() {
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Global Content</h1>
-          <p className="text-muted-foreground mt-1">Manage global content and shared resources</p>
+          <h1 className="text-2xl font-semibold text-foreground">Configure</h1>
+          <p className="text-muted-foreground mt-1">Configure system settings and resources</p>
         </div>
       </div>
       <div className="bg-card rounded-lg border border-border p-8 text-center">
-        <p className="text-muted-foreground">Global content management features coming soon...</p>
+        <p className="text-muted-foreground">Configuration features coming soon...</p>
       </div>
     </div>
   )

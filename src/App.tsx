@@ -12,7 +12,7 @@ import {
   DesignStudio,
   AskBenny,
   Portfolio,
-  GlobalContent,
+  Configure,
   Manage
 } from '@/components/pages/PlaceholderPages'
 import { DigitalContentManager } from '@/components/pages/DigitalContentManager'
@@ -133,7 +133,7 @@ function App() {
             onNavigate={setCurrentPage}
           />
         case 'global-content':
-          return <GlobalContent />
+          return <Configure />
         case 'collaborate':
           return <Collaborate />
         case 'masterlist':
