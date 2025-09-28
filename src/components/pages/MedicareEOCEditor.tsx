@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { ArrowLeft, Search, FileText, Pencil, Lock, MoreHorizontal } from '@phosphor-icons/react';
+import { ArrowLeft, MagnifyingGlass, FileText, Pencil, Lock, MoreHorizontal } from '@phosphor-icons/react';
 
 interface MedicareEOCEditorProps {
   onNavigate: (page: string) => void;
@@ -160,7 +160,7 @@ See R0004 for exclusions and limitations.
             </SelectContent>
           </Select>
           <Button variant="ghost" size="sm">
-            <Search size={16} />
+            <MagnifyingGlass size={16} />
           </Button>
         </div>
 

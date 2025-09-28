@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ChevronDown, Search, Pencil, Lock, MoreHorizontal, Plus } from '@phosphor-icons/react';
+import { ChevronDown, MagnifyingGlass, Pencil, Lock, MoreHorizontal, Plus } from '@phosphor-icons/react';
 import { CMLDialog } from './CMLDialog';
 
 interface MedicareEOCMasterListProps {

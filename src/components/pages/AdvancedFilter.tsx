@@ -12,7 +12,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   Filter, 
   X, 
-  Search, 
+  MagnifyingGlass, 
   Calendar as CalendarIcon,
   ChevronDown,
   RotateCcw
@@ -339,7 +339,7 @@ export function AdvancedFilter({ rules, onFiltersChange }: AdvancedFilterProps) 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
             <div className="relative">
-              <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+              <MagnifyingGlass size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search across all fields..."
                 value={filters.search}
