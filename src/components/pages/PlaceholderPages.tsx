@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { FileText, Clock, BarChart3, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus, TextAa, Rows, CopySimple, XCircle, FrameCorners, FileXls, CloudArrowUp, ArrowsClockwise, FloppyDisk, List, SquaresFour } from "@phosphor-icons/react"
+import { FileText, Clock, ChartBar, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus, TextAa, Rows, CopySimple, XCircle, FrameCorners, FileXls, CloudArrowUp, ArrowsClockwise, FloppyDisk, List, SquaresFour } from "@phosphor-icons/react"
 import { SmartSearchBar } from "@/components/SmartSearchBar"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
@@ -4849,7 +4849,7 @@ export function Collaborate() {
             User Management
           </TabsTrigger>
           <TabsTrigger value="visual-dashboard" className="flex items-center gap-2">
-            <BarChart3 size={16} />
+            <ChartBar size={16} />
             Visual Dashboard
           </TabsTrigger>
         </TabsList>
@@ -5360,7 +5360,7 @@ export function Generate() {
             Queued Collateral
           </TabsTrigger>
           <TabsTrigger value="system-compare" className="flex items-center gap-2">
-            <BarChart3 size={16} />
+            <ChartBar size={16} />
             System Generated Compare
           </TabsTrigger>
         </TabsList>
