@@ -40,11 +40,7 @@ const navigationItems: NavigationItem[] = [
     id: 'create', 
     label: 'Create', 
     icon: Globe,
-    children: [
-      { id: 'dcm', label: 'Digital Content Manager', icon: File },
-      { id: 'global-template', label: 'Global Template', icon: FilePdf },
-      { id: 'masterlist', label: 'Collections', icon: ListBullets },
-    ]
+    children: []
   },
   { id: 'portfolio', label: 'Review', icon: Briefcase },
   { id: 'template', label: 'Template', icon: File },
@@ -61,6 +57,24 @@ const navigationItems: NavigationItem[] = [
     ]
   },
   { id: 'documents', label: 'Documents', icon: FileText },
+  { 
+    id: 'global-content', 
+    label: 'Configure', 
+    icon: Gear,
+    children: [
+      { id: 'dcm', label: 'Digital Content Manager', icon: File },
+      { 
+        id: 'global-template', 
+        label: 'Global Template', 
+        icon: FilePdf,
+        children: [
+          { id: 'medicare-eoc', label: 'Medicare EOC', icon: FileText },
+          { id: 'template-library', label: 'Template Library', icon: FolderOpen },
+        ]
+      },
+      { id: 'masterlist', label: 'Collections', icon: ListBullets },
+    ]
+  },
   { id: 'ask-benny', label: 'Ask Benny', icon: Robot },
   { id: 'admin-settings', label: 'Admin Settings', icon: Gear },
 ]
@@ -81,7 +95,7 @@ function NavigationItemComponent({
   level = 0 
 }: NavigationItemComponentProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(
-    new Set(['create', 'manage']) // Start with some items expanded
+    new Set(['manage', 'global-content', 'global-template']) // Start with some items expanded
   )
   
   const toggleExpanded = (itemId: string) => {
@@ -99,7 +113,16 @@ function NavigationItemComponent({
   const hasChildren = item.children && item.children.length > 0
   const isActive = currentPage === item.id
   const isExpanded = expandedItems.has(item.id)
-  const isChildActive = item.children?.some(child => currentPage === child.id)
+  
+  // Check if this item or any nested child is active
+  const isChildActive = (children?: NavigationItem[]): boolean => {
+    if (!children) return false
+    return children.some(child => 
+      currentPage === child.id || isChildActive(child.children)
+    )
+  }
+  
+  const isNestedChildActive = isChildActive(item.children)
 
   const Icon = item.icon
 
@@ -109,10 +132,11 @@ function NavigationItemComponent({
         variant="ghost"
         className={cn(
           "w-full justify-start font-normal transition-colors",
-          isActive || isChildActive 
+          isActive || isNestedChildActive
             ? "bg-primary text-primary-foreground hover:bg-primary/90" 
             : "hover:bg-muted text-muted-foreground hover:text-foreground",
-          level > 0 && "ml-4 w-[calc(100%-1rem)]",
+          level === 1 && "ml-4 w-[calc(100%-1rem)]",
+          level === 2 && "ml-8 w-[calc(100%-2rem)]",
           isCollapsed && "px-2"
         )}
         onClick={() => {

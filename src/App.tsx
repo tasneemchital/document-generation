@@ -134,6 +134,10 @@ function App() {
           />
         case 'global-content':
           return <Configure />
+        case 'medicare-eoc':
+          return <MedicareEOCMasterList onNavigate={setCurrentPage} />
+        case 'template-library':
+          return <Configure />
         case 'collaborate':
           return <Collaborate />
         case 'masterlist':
