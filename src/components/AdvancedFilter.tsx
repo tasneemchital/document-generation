@@ -14,7 +14,7 @@ import {
   X, 
   MagnifyingGlass, 
   Calendar as CalendarIcon,
-  ChevronDown,
+  CaretDown,
   RotateCcw
 } from '@phosphor-icons/react';
 import { RuleData } from '@/lib/types';
@@ -249,7 +249,7 @@ export function AdvancedFilter({ rules, onFiltersChange }: AdvancedFilterProps) 
           ) : (
             <span className="text-muted-foreground">{placeholder}</span>
           )}
-          <ChevronDown size={14} />
+          <CaretDown size={14} />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-64 p-0">
@@ -328,7 +328,7 @@ export function AdvancedFilter({ rules, onFiltersChange }: AdvancedFilterProps) 
               className="flex items-center gap-1 border-gray-300 hover:bg-gray-50"
             >
               {isExpanded ? 'Collapse' : 'Expand'}
-              <ChevronDown size={12} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+              <CaretDown size={12} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
             </Button>
           </div>
         </div>

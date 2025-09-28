@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ChevronDown, MagnifyingGlass, Pencil, Lock, DotsThree } from '@phosphor-icons/react';
+import { CaretDown, MagnifyingGlass, Pencil, Lock, DotsThree } from '@phosphor-icons/react';
 
 interface MedicareEOCMasterListProps {
   onNavigate: (page: string) => void;
@@ -66,7 +66,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
             <Select value={view} onValueChange={setView}>
               <SelectTrigger className="w-40">
                 <SelectValue />
-                <ChevronDown size={16} />
+                <CaretDown size={16} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Medicare EOC">Medicare EOC</SelectItem>
@@ -79,7 +79,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
             <Select value={instances} onValueChange={setInstances}>
               <SelectTrigger className="w-40">
                 <SelectValue />
-                <ChevronDown size={16} />
+                <CaretDown size={16} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Medicare EOC">Medicare EOC</SelectItem>
@@ -92,7 +92,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
             <Select value={section} onValueChange={setSection}>
               <SelectTrigger className="w-64">
                 <SelectValue />
-                <ChevronDown size={16} />
+                <CaretDown size={16} />
               </SelectTrigger>
               <SelectContent>
                 {sectionOptions.map((option) => (
@@ -218,7 +218,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
           <div className="p-4">
             <div className="flex items-center justify-between mb-4">
               <span className="text-sm font-medium">Page 1</span>
-              <ChevronDown size={16} />
+              <CaretDown size={16} />
             </div>
             
             {/* Chapter Navigation */}

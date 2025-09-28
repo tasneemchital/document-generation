@@ -14,7 +14,7 @@ import { HtmlRichTextEditor } from '@/components/pages/HtmlRichTextEditor';
 import { DatePicker } from '@/components/ui/date-picker';
 import { format, parse, isValid } from 'date-fns';
 import { 
-  ChevronDown, 
+  CaretDown, 
   ArrowDown, 
   ArrowUp,
   PencilSimple, 
