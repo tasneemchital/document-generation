@@ -17,7 +17,8 @@ import {
   Users,
   Sparkle,
   Plus,
-  FileText
+  FileText,
+  Folder
 } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 
@@ -39,7 +40,7 @@ const navigationItems: NavigationItem[] = [
   { 
     id: 'manage', 
     label: 'Manage', 
-    icon: FolderGear,
+    icon: Folder,
     children: [
       { id: 'global-template', label: 'Global Template', icon: FilePdf },
     ]
@@ -77,12 +78,6 @@ interface NavigationItemComponentProps {
   currentPage: string
   onNavigate: (page: string) => void
   isCollapsed: boolean
-  level?: number
-  expandedItems: Set<string>
-  setExpandedItems: (value: Set<string>) => void
-}
-
-interface NavigationItemComponentProps extends NavigationItemProps {
   level?: number
   expandedItems: Set<string>
   setExpandedItems: (value: Set<string>) => void
