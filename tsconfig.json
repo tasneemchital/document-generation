@@ -28,7 +28,6 @@
     }
   },
   "include": [
-    "src",
-    "src/types"
+    "src"
   ]
 }
