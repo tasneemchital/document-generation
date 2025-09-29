@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Eye, MagicWand, CheckCircle, Clock, User, Calendar, Save, X } from '@phosphor-icons/react';
+import { Eye, MagicWand, CheckCircle, Clock, User, Calendar, FloppyDisk, X } from '@phosphor-icons/react';
 import { format, parse, isValid } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -138,7 +138,7 @@ export function RuleEditDialog({ open, onOpenChange, rule, onSave }: RuleEditDia
                 Cancel
               </Button>
               <Button size="sm" onClick={handleSave} className="bg-gradient-to-r from-primary to-primary/90">
-                <Save size={16} className="mr-2" />
+                <FloppyDisk size={16} className="mr-2" />
                 Save Changes
               </Button>
             </div>

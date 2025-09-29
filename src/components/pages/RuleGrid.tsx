@@ -14,11 +14,11 @@ import { HtmlRichTextEditor } from '@/components/pages/HtmlRichTextEditor';
 import { DatePicker } from '@/components/ui/date-picker';
 import { format, parse, isValid } from 'date-fns';
 import { 
-  ChevronDown, 
+  CaretDown, 
   ArrowDown, 
   ArrowUp,
-  Edit, 
-  Save, 
+  PencilSimple, 
+  FloppyDisk, 
   X, 
   Plus,
   CaretLeft,
@@ -1086,7 +1086,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
           )}
           <div className="flex gap-1 flex-shrink-0">
             <Button size="sm" variant="outline" onClick={handleSaveEdit} className="h-6 w-6 p-0 border-green-300 hover:bg-green-50">
-              <Save size={10} className="text-green-600" />
+              <FloppyDisk size={10} className="text-green-600" />
             </Button>
             <Button size="sm" variant="outline" onClick={handleCancelEdit} className="h-6 w-6 p-0 border-gray-300 hover:bg-gray-50">
               <X size={10} className="text-gray-500" />
@@ -1129,7 +1129,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
               {isRichTextField ? (
                 <PencilSimple size={12} className="text-blue-500" title="Edit with rich text editor" />
               ) : (
-                <Edit size={12} className="text-gray-400" />
+                <PencilSimple size={12} className="text-gray-400" />
               )}
             </div>
           )}

@@ -7,9 +7,9 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { 
-  ChevronDown,
+  CaretDown,
   ChevronRight,
-  Save,
+  FloppyDisk,
   Printer,
   Gear,
   BookOpen,
@@ -455,7 +455,7 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
                   <Gear size={16} />
                 </Button>
                 <Button size="sm" title="Save document">
-                  <Save size={16} className="mr-2" />
+                  <FloppyDisk size={16} className="mr-2" />
                   Save
                 </Button>
               </div>

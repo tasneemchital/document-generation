@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Funnel, X, Search } from '@phosphor-icons/react';
+import { Funnel, X, MagnifyingGlass } from '@phosphor-icons/react';
 
 interface ColumnFilterProps {
   columnKey: string;
@@ -142,7 +142,7 @@ export function ColumnFilter({
           )}
         </div>
         <div className="relative">
-          <Search size={14} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <MagnifyingGlass size={14} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <Input
             placeholder="Search values..."
             value={searchTerm}

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Clock, User, FileText, Edit, Eye, Trash2, X, CaretUp } from '@phosphor-icons/react';
+import { Clock, User, FileText, PencilSimple, Eye, Trash, X, CaretUp } from '@phosphor-icons/react';
 
 export interface ActivityLogEntry {
   id: string;
@@ -62,8 +62,8 @@ export function ActivityLog({ isCollapsed = false, onToggle }: ActivityLogProps)
   const getActionIcon = (action: ActivityLogEntry['action']) => {
     switch (action) {
       case 'view': return <Eye size={14} className="text-blue-500" />;
-      case 'edit': return <Edit size={14} className="text-green-500" />;
-      case 'delete': return <Trash2 size={14} className="text-red-500" />;
+      case 'edit': return <PencilSimple size={14} className="text-green-500" />;
+      case 'delete': return <Trash size={14} className="text-red-500" />;
       case 'create': return <FileText size={14} className="text-purple-500" />;
       case 'export': return <FileText size={14} className="text-orange-500" />;
       case 'filter': return <Eye size={14} className="text-gray-500" />;

@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Plus } from '@phosphor-icons/react';
+import { MagnifyingGlass, Plus } from '@phosphor-icons/react';
 import { RuleData } from '@/lib/types';
 import { generateMockRuleData } from '@/lib/mockRuleData';
 
@@ -98,7 +98,7 @@ export function CMLDialog({ open, onClose, onInsert }: CMLDialogProps) {
           {/* Search and Filter Controls */}
           <div className="flex items-center gap-4 flex-shrink-0">
             <div className="relative flex-1">
-              <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+              <MagnifyingGlass size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search rules by name, description, or ID..."
                 value={searchQuery}
