@@ -25,7 +25,6 @@ import {
   CaretRight,
   CaretDoubleLeft,
   CaretDoubleRight,
-  PencilSimple,
   Eye,
   Trash,
   DownloadSimple,

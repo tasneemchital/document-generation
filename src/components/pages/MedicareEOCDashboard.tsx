@@ -2,8 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
   FileText, 
-  Edit,
-  Settings,
+  PencilSimple as Edit,
+  Gear as Settings,
   Eye,
   BookOpen,
   Shield,

@@ -1,7 +1,7 @@
 export interface RuleData {
   id: string;
   ruleId: string;
-  ruleName: string;
+  ruleName?: string;
   effectiveDate: string;
   version: string;
   benefitType: string;

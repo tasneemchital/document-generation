@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "kill": "fuser -k 5000/tcp",
-    "build": "vite build",
+    "build": "tsc -b --noCheck && vite build",
     "lint": "eslint .",
     "optimize": "vite optimize",
     "preview": "vite preview"
@@ -53,7 +53,6 @@
     "d3": "^7.9.0",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.5.2",
-    "eslint-visitor-keys": "^4.2.1",
     "framer-motion": "^12.6.2",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.484.0",

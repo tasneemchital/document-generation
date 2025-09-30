@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 import { 
-  LayoutDashboard, 
+  SquaresFour as LayoutDashboard, 
   List, 
   Users, 
   FileText, 
   Share, 
-  Settings, 
+  Gear as Settings, 
   Palette,
   CaretLeft,
   CaretRight,

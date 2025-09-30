@@ -160,6 +160,7 @@ ENDIF
           {
             id: 'rule-sample-1',
             ruleId: 'R0001',
+            ruleName: 'Primary Care Copay Rule',
             effectiveDate: '01/01/2026',
             version: '2026',
             benefitType: 'Copayment',
@@ -180,6 +181,7 @@ ENDIF
           {
             id: 'rule-sample-2',
             ruleId: 'R0002',
+            ruleName: 'Specialist Deductible Rule',
             effectiveDate: '01/01/2026',
             version: '2026',
             benefitType: 'Deductible',
@@ -200,6 +202,7 @@ ENDIF
           {
             id: 'rule-sample-3',
             ruleId: 'R0003',
+            ruleName: 'Emergency Care Coinsurance Rule',
             effectiveDate: '01/01/2026',
             version: '2026',
             benefitType: 'Coinsurance',
