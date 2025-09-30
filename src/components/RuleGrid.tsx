@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
@@ -28,7 +27,6 @@ import {
   Eye,
   Trash,
   DownloadSimple,
-  Columns,
   Copy,
   Upload
 } from '@phosphor-icons/react';
@@ -1089,78 +1087,16 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
               <h2 className="text-base font-semibold text-gray-900">Digital Content Manager - ANOC-EOC</h2>
             </div>
             <div className="flex items-center gap-3">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button 
-                    size="sm" 
-                    variant="outline"
-                    className="w-8 h-8 p-0 border-gray-600 text-gray-600 hover:bg-gray-50"
-                    title="Column visibility"
-                  >
-                    <Columns size={16} />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-64 p-4" align="end">
-                  <div className="space-y-2">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Column Visibility</h3>
-                    <div className="space-y-2 max-h-64 overflow-y-auto">
-                      {Object.entries(columnVisibility).map(([key, visible]) => (
-                        <div key={key} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`column-${key}`}
-                            checked={visible}
-                            onCheckedChange={(checked) => handleColumnVisibilityToggle(key, checked as boolean)}
-                          />
-                          <label
-                            htmlFor={`column-${key}`}
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                          >
-                            {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="pt-2 border-t border-gray-200">
-                      <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          onClick={() => {
-                            const allVisible = Object.fromEntries(
-                              Object.keys(columnVisibility).map(key => [key, true])
-                            );
-                            setColumnVisibility(allVisible);
-                          }}
-                          className="flex-1 h-7 text-xs"
-                        >
-                          Show All
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          onClick={() => {
-                            const allHidden = Object.fromEntries(
-                              Object.keys(columnVisibility).map(key => [key, key === 'ruleId'])
-                            );
-                            setColumnVisibility(allHidden);
-                          }}
-                          className="flex-1 h-7 text-xs"
-                        >
-                          Hide All
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
               <Button 
                 size="sm" 
                 variant="outline"
-                className="w-8 h-8 p-0 border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+                className="w-8 h-8 p-0 border-emerald-600 text-emerald-600 hover:bg-emerald-50 group relative"
                 onClick={handleDownloadExcel}
-                title="Download to Excel"
               >
                 <DownloadSimple size={16} />
+                <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                  Download to Excel
+                </span>
               </Button>
               <Button 
                 size="sm" 
