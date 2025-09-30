@@ -298,6 +298,8 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="medicare-eoc">Medicare EOC</SelectItem>
+                      <SelectItem value="medicare-anoc">Medicare ANOC</SelectItem>
+                      <SelectItem value="medicare-sb">Medicare SB</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -310,6 +312,9 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="hmo-mapd">HMO MAPD</SelectItem>
+                      <SelectItem value="ppo-mapd">PPO MAPD</SelectItem>
+                      <SelectItem value="pdp">PDP</SelectItem>
+                      <SelectItem value="dsnp">DSNP</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
