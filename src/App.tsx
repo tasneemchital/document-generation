@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useKV } from '@github/spark/hooks'
 import { Navigation } from '@/components/Navigation'
 import { TopBar } from '@/components/TopBar'
@@ -12,7 +12,7 @@ import {
   DesignStudio,
   AskBenny,
   Portfolio,
-  GlobalContent,
+  Configure,
   Manage
 } from '@/components/pages/PlaceholderPages'
 import { DigitalContentManager } from '@/components/pages/DigitalContentManager'
@@ -23,10 +23,15 @@ import { TranslationStudio } from '@/components/pages/TranslationStudio'
 import { ProductDetail } from '@/components/pages/ProductDetail'
 import { Documents } from '@/components/pages/Documents'
 import { DocumentViewer } from '@/components/pages/DocumentViewer'
+import { NavigationDemo } from '@/components/NavigationDemo'
 import { RuleData } from '@/lib/types'
+import { refreshApp } from '@/lib/refresh'
 
 function App() {
-  const [currentPage, setCurrentPage] = useKV('sda-current-page', 'portfolio')
+  // Force a complete refresh by incrementing a key on mount
+  const [refreshKey, setRefreshKey] = useState(Date.now())
+  
+  const [currentPage, setCurrentPage] = useKV('sda-current-page', 'dashboard')
   const [isCollapsed, setIsCollapsed] = useKV('sda-sidebar-collapsed', false)
   const [editingRule, setEditingRule] = useKV<RuleData | null>('dcm-editing-rule', null)
   const [editingFrom, setEditingFrom] = useKV<string>('dcm-editing-from', 'dcm')
@@ -35,6 +40,22 @@ function App() {
   const [selectedProductName, setSelectedProductName] = useKV<string>('selected-product-name', '')
   const [selectedDocumentId, setSelectedDocumentId] = useKV<string>('selected-document-id', '')
   const [selectedDocumentName, setSelectedDocumentName] = useKV<string>('selected-document-name', '')
+
+  // Force refresh on mount and add keyboard shortcut
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault()
+        refreshApp()
+      }
+    }
+    
+    // Trigger immediate refresh
+    refreshApp()
+    
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [])
 
   const handleRuleCreate = (newRule: RuleData) => {
     setRules((current: RuleData[]) => {
@@ -57,109 +78,122 @@ function App() {
   };
 
   const renderCurrentPage = () => {
-    switch (currentPage) {
-      case 'dashboard':
-        return <Dashboard onNavigate={setCurrentPage} />
-      case 'manage':
-        return <Manage />
-      case 'global-template':
-        return <MedicareEOCMasterList onNavigate={setCurrentPage} />
-      case 'template':
-        return <Template 
-          onNavigate={setCurrentPage} 
-          onEditRule={(ruleId) => {
-            const rule = rules.find(r => r.id === ruleId)
-            if (rule) {
+    try {
+      switch (currentPage) {
+        case 'dashboard':
+          return <NavigationDemo onNavigate={setCurrentPage} />
+        case 'navigation-demo':
+          return <NavigationDemo onNavigate={setCurrentPage} />
+        case 'real-dashboard':
+          return <Dashboard onNavigate={setCurrentPage} />
+        case 'manage':
+          return <Manage />
+        case 'global-template':
+          return <MedicareEOCMasterList onNavigate={setCurrentPage} />
+        case 'template':
+          return <Template 
+            onNavigate={setCurrentPage} 
+            onEditRule={(ruleId) => {
+              const rule = rules.find(r => r.id === ruleId)
+              if (rule) {
+                setEditingRule(rule)
+                setEditingFrom('template')
+                setCurrentPage('edit-rule')
+              }
+            }} 
+          />
+        case 'translation-studio':
+          return <TranslationStudio />
+        case 'documents':
+          return <Documents 
+            onNavigate={setCurrentPage}
+            onDocumentSelect={(documentId, documentName) => {
+              setSelectedDocumentId(documentId)
+              setSelectedDocumentName(documentName)
+              setCurrentPage('document-viewer')
+            }}
+          />
+        case 'document-viewer':
+          return <DocumentViewer
+            documentId={selectedDocumentId}
+            documentName={selectedDocumentName}
+            onNavigate={setCurrentPage}
+          />
+        case 'portfolio':
+          return <Portfolio 
+            onNavigate={setCurrentPage}
+            onProductSelect={(productId, productName) => {
+              setSelectedProductId(productId)
+              setSelectedProductName(productName)
+              setCurrentPage('product-detail')
+            }}
+          />
+        case 'product-detail':
+          return <ProductDetail 
+            productId={selectedProductId}
+            productName={selectedProductName}
+            onNavigate={setCurrentPage}
+          />
+        case 'global-content':
+          return <Configure />
+        case 'medicare-eoc':
+          return <MedicareEOCMasterList onNavigate={setCurrentPage} />
+        case 'template-library':
+          return <Configure />
+        case 'collaborate':
+          return <Collaborate />
+        case 'masterlist':
+          return <MasterList />
+        case 'generate':
+          return <Generate />
+        case 'publish':
+          return <Publish />
+        case 'ask-benny':
+          return <AskBenny />
+        case 'admin-settings':
+          return <AdminSettings />
+        case 'design-studio':
+          return <DesignStudio />
+        case 'dcm':
+          return <DigitalContentManager 
+            onNavigate={setCurrentPage}
+            onEditRule={(rule) => {
               setEditingRule(rule)
-              setEditingFrom('template')
+              setEditingFrom('dcm')
               setCurrentPage('edit-rule')
-            }
-          }} 
-        />
-      case 'translation-studio':
-        return <TranslationStudio />
-      case 'documents':
-        return <Documents 
-          onNavigate={setCurrentPage}
-          onDocumentSelect={(documentId, documentName) => {
-            setSelectedDocumentId(documentId)
-            setSelectedDocumentName(documentName)
-            setCurrentPage('document-viewer')
-          }}
-        />
-      case 'document-viewer':
-        return <DocumentViewer
-          documentId={selectedDocumentId}
-          documentName={selectedDocumentName}
-          onNavigate={setCurrentPage}
-        />
-      case 'portfolio':
-        return <Portfolio 
-          onNavigate={setCurrentPage}
-          onProductSelect={(productId, productName) => {
-            setSelectedProductId(productId)
-            setSelectedProductName(productName)
-            setCurrentPage('product-detail')
-          }}
-        />
-      case 'product-detail':
-        return <ProductDetail 
-          productId={selectedProductId}
-          productName={selectedProductName}
-          onNavigate={setCurrentPage}
-        />
-      case 'global-content':
-        return <GlobalContent />
-      case 'collaborate':
-        return <Collaborate />
-      case 'masterlist':
-        return <MasterList />
-      case 'generate':
-        return <Generate />
-      case 'publish':
-        return <Publish />
-      case 'ask-benny':
-        return <AskBenny />
-      case 'admin-settings':
-        return <AdminSettings />
-      case 'design-studio':
-        return <DesignStudio />
-      case 'dcm':
-        return <DigitalContentManager 
-          onNavigate={setCurrentPage}
-          onEditRule={(rule) => {
-            setEditingRule(rule)
-            setEditingFrom('dcm')
-            setCurrentPage('edit-rule')
-          }}
-        />
-      case 'create-rule':
-        return <DCMEditPage 
-          rule={null}
-          onNavigate={setCurrentPage}
-          onSave={(rule) => {
-            handleRuleCreate(rule);
-            setCurrentPage('dcm');
-          }}
-          mode="create"
-        />
-      case 'edit-rule':
-        return <DCMEditPage 
-          rule={editingRule}
-          onNavigate={setCurrentPage}
-          onSave={(rule) => {
-            handleRuleUpdate(rule);
-            setCurrentPage(editingFrom === 'template' ? 'template' : 'dcm');
-          }}
-          mode="edit"
-        />
-      default:
-        return <Dashboard onNavigate={setCurrentPage} />
+            }}
+          />
+        case 'create-rule':
+          return <DCMEditPage 
+            rule={null}
+            onNavigate={setCurrentPage}
+            onSave={(rule) => {
+              handleRuleCreate(rule);
+              setCurrentPage('dcm');
+            }}
+            mode="create"
+          />
+        case 'edit-rule':
+          return <DCMEditPage 
+            rule={editingRule}
+            onNavigate={setCurrentPage}
+            onSave={(rule) => {
+              handleRuleUpdate(rule);
+              setCurrentPage(editingFrom === 'template' ? 'template' : 'dcm');
+            }}
+            mode="edit"
+          />
+        default:
+          return <Dashboard onNavigate={setCurrentPage} />
+      }
+    } catch (error) {
+      console.error('Error rendering page:', error)
+      return <Dashboard onNavigate={setCurrentPage} />
     }
   }
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div key={refreshKey} className="flex flex-col h-screen bg-background">
       <TopBar onToggleSidebar={() => setIsCollapsed(!isCollapsed)} />
       <div className="flex flex-1 overflow-hidden">
         <Navigation 

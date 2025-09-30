@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ArrowUp, ArrowDown, X, Plus, Download, Save } from '@phosphor-icons/react';
+import { ArrowUp, ArrowDown, X, Plus, Download, FloppyDisk } from '@phosphor-icons/react';
 import { ContentSnippet, Document, DocumentSnippet } from '@/lib/types';
 import { incrementSnippetUsage } from '@/lib/snippetUtils';
 import { toast } from 'sonner';
@@ -279,7 +279,7 @@ export function DocumentComposer({
               onClick={saveDocument}
               disabled={!title.trim() || documentSnippets.length === 0}
             >
-              <Save size={16} />
+              <FloppyDisk size={16} />
               Save Draft
             </Button>
             <Button

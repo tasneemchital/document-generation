@@ -6,10 +6,10 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { 
-  Save, 
+  FloppyDisk, 
   X, 
   Globe, 
-  Type, 
+  TextAa, 
   Eye, 
   EyeSlash,
   TextB,
@@ -352,7 +352,7 @@ export function HtmlRichTextEditor({
             <Card className="flex flex-col h-full">
               <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Type size={16} className="text-amber-600" />
+                  <TextAa size={16} className="text-amber-600" />
                   <span className="font-medium text-gray-900">Spanish Content</span>
                 </div>
                 {getStatusBadge(spanishStatus, 'Spanish')}
@@ -435,7 +435,7 @@ export function HtmlRichTextEditor({
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
             disabled={isLoading || !hasUnsavedChanges}
           >
-            <Save size={14} />
+            <FloppyDisk size={14} />
             {isLoading ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>

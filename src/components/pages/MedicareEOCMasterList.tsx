@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ChevronDown, Search, Pencil, Lock, MoreHorizontal, Plus } from '@phosphor-icons/react';
+import { CaretDown, MagnifyingGlass, Pencil, Lock, DotsThree, Plus } from '@phosphor-icons/react';
 import { CMLDialog } from './CMLDialog';
 
 interface MedicareEOCMasterListProps {
@@ -85,7 +85,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
           <div className="flex items-center gap-2">
             <Pencil size={16} className="text-muted-foreground" />
             <Lock size={16} className="text-muted-foreground" />
-            <MoreHorizontal size={16} className="text-muted-foreground" />
+            <DotsThree size={16} className="text-muted-foreground" />
           </div>
         </div>
 
@@ -96,7 +96,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
             <Select value={view} onValueChange={setView}>
               <SelectTrigger className="w-40">
                 <SelectValue />
-                <ChevronDown size={16} />
+                <CaretDown size={16} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Medicare EOC">Medicare EOC</SelectItem>
@@ -109,7 +109,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
             <Select value={instances} onValueChange={setInstances}>
               <SelectTrigger className="w-40">
                 <SelectValue />
-                <ChevronDown size={16} />
+                <CaretDown size={16} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Medicare EOC">Medicare EOC</SelectItem>
@@ -122,7 +122,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
             <Select value={section} onValueChange={setSection}>
               <SelectTrigger className="w-64">
                 <SelectValue />
-                <ChevronDown size={16} />
+                <CaretDown size={16} />
               </SelectTrigger>
               <SelectContent>
                 {sectionOptions.map((option) => (

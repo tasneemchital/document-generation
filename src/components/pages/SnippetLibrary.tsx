@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Search, Plus, Calendar, Hash, Folder } from '@phosphor-icons/react';
+import { MagnifyingGlass, Plus, Calendar, Hash, Folder } from '@phosphor-icons/react';
 import { ContentSnippet, SnippetFilter } from '@/lib/types';
 import { filterSnippets, getUniqueCategories, getUniqueTags } from '@/lib/snippetUtils';
 
@@ -65,7 +65,7 @@ export function SnippetLibrary({ snippets, onSnippetSelect, onCreateDocument }: 
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+              <MagnifyingGlass size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search snippets..."
                 value={filter.searchQuery || ''}
@@ -150,7 +150,7 @@ export function SnippetLibrary({ snippets, onSnippetSelect, onCreateDocument }: 
               </>
             ) : (
               <>
-                <Search size={48} className="mx-auto mb-4 opacity-50" />
+                <MagnifyingGlass size={48} className="mx-auto mb-4 opacity-50" />
                 <p className="text-lg mb-2">No snippets match your filters</p>
                 <p>Try adjusting your search or filters</p>
               </>

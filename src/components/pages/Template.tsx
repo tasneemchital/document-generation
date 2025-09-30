@@ -8,13 +8,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { 
-  Bold, 
-  Italic, 
-  Underline, 
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  List,
+  TextB, 
+  TextItalic, 
+  TextUnderline, 
+  TextAlignLeft,
+  TextAlignCenter,
+  TextAlignRight,
+  ListBullets,
   ListNumbers,
   Plus,
   ArrowLeft,
@@ -327,33 +327,33 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
                   {/* Text formatting group */}
                   <div className="flex items-center gap-1 border-r pr-2 mr-2">
                     <Button variant="outline" size="sm" title="Bold" className="h-8 w-8 p-0">
-                      <Bold className="h-4 w-4" />
+                      <TextB className="h-4 w-4" />
                     </Button>
                     <Button variant="outline" size="sm" title="Italic" className="h-8 w-8 p-0">
-                      <Italic className="h-4 w-4" />
+                      <TextItalic className="h-4 w-4" />
                     </Button>
                     <Button variant="outline" size="sm" title="Underline" className="h-8 w-8 p-0">
-                      <Underline className="h-4 w-4" />
+                      <TextUnderline className="h-4 w-4" />
                     </Button>
                   </div>
                   
                   {/* Alignment group */}
                   <div className="flex items-center gap-1 border-r pr-2 mr-2">
                     <Button variant="outline" size="sm" title="Align Left" className="h-8 w-8 p-0">
-                      <AlignLeft className="h-4 w-4" />
+                      <TextAlignLeft className="h-4 w-4" />
                     </Button>
                     <Button variant="outline" size="sm" title="Align Center" className="h-8 w-8 p-0">
-                      <AlignCenter className="h-4 w-4" />
+                      <TextAlignCenter className="h-4 w-4" />
                     </Button>
                     <Button variant="outline" size="sm" title="Align Right" className="h-8 w-8 p-0">
-                      <AlignRight className="h-4 w-4" />
+                      <TextAlignRight className="h-4 w-4" />
                     </Button>
                   </div>
                   
                   {/* List group */}
                   <div className="flex items-center gap-1 border-r pr-2 mr-2">
                     <Button variant="outline" size="sm" title="Bullet List" className="h-8 w-8 p-0">
-                      <List className="h-4 w-4" />
+                      <ListBullets className="h-4 w-4" />
                     </Button>
                     <Button variant="outline" size="sm" title="Numbered List" className="h-8 w-8 p-0">
                       <ListNumbers className="h-4 w-4" />
