@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 import { useState } from 'react'
-import { Plus, FileText, Users, TrendUp, FolderOpen, FilePdf, ShareNetwork, Robot, PaintBrush, ArrowsClockwise, Eye, Calendar, Funnel, CaretDown, Clock } from '@phosphor-icons/react'
+import { Plus, FileText, Users, TrendUp, FolderOpen, FilePdf, ShareNetwork, Robot, PaintBrush, ArrowsClockwise, Eye, Calendar, Funnel, CaretDown, Clock, CheckCircle, UsersThree, Sparkle } from '@phosphor-icons/react'
 
 interface DashboardProps {
   onNavigate?: (page: string) => void
@@ -58,265 +58,198 @@ export function Dashboard({ onNavigate }: DashboardProps) {
 
   const navigationTiles = [
     {
-      id: 'master-list',
+      id: 'manage',
       title: 'Manage',
       description: 'Manage collateral content',
       icon: FolderOpen,
-      gradient: 'from-blue-500/20 to-blue-600/20',
       iconColor: 'text-blue-600',
-      bgHover: 'hover:bg-blue-50'
+      bgColor: 'bg-blue-50',
+      borderColor: 'border-blue-200'
     },
     {
       id: 'generate',
       title: 'Generate',
       description: 'Generate Documents',
-      icon: FilePdf,
-      gradient: 'from-purple-500/20 to-purple-600/20',
+      icon: Sparkle,
       iconColor: 'text-purple-600',
-      bgHover: 'hover:bg-purple-50'
+      bgColor: 'bg-purple-50', 
+      borderColor: 'border-purple-200'
     },
     {
       id: 'publish',
       title: 'Publish',
       description: 'Publish content to portal',
       icon: ShareNetwork,
-      gradient: 'from-green-500/20 to-green-600/20',
       iconColor: 'text-green-600',
-      bgHover: 'hover:bg-green-50'
+      bgColor: 'bg-green-50',
+      borderColor: 'border-green-200'
     },
     {
       id: 'ask-benny',
       title: 'Ask Benny',
       description: 'AI assistant help',
       icon: Robot,
-      gradient: 'from-orange-500/20 to-orange-600/20',
       iconColor: 'text-orange-600',
-      bgHover: 'hover:bg-orange-50'
+      bgColor: 'bg-orange-50',
+      borderColor: 'border-orange-200'
     },
     {
       id: 'collaborate',
       title: 'Collaborate',
       description: 'Work together',
-      icon: Users,
-      gradient: 'from-pink-500/20 to-pink-600/20',
+      icon: UsersThree,
       iconColor: 'text-pink-600',
-      bgHover: 'hover:bg-pink-50'
+      bgColor: 'bg-pink-50',
+      borderColor: 'border-pink-200'
+    }
+  ]
+
+  const statsCards = [
+    {
+      title: 'Active Contracts',
+      value: '6',
+      subtitle: 'Medicare contracts',
+      icon: FileText,
+      iconColor: 'text-blue-600',
+      bgColor: 'bg-blue-50'
+    },
+    {
+      title: 'Total Documents',
+      value: '247',
+      subtitle: '+12% from last month',
+      icon: CheckCircle,
+      iconColor: 'text-emerald-600',
+      bgColor: 'bg-emerald-50'
+    },
+    {
+      title: 'Documents Generated',
+      value: '89',
+      subtitle: '+15 this month',
+      icon: TrendUp,
+      iconColor: 'text-purple-600',
+      bgColor: 'bg-purple-50'
+    },
+    {
+      title: 'Collaborate Completed',
+      value: '34',
+      subtitle: '+8 this month',
+      icon: UsersThree,
+      iconColor: 'text-orange-600',
+      bgColor: 'bg-orange-50'
+    }
+  ]
+
+  // Mock recent contracts data
+  const recentContracts = [
+    {
+      id: 'H5523404008',
+      name: 'Medicare Advantage Notice of Coverage',
+      status: 'Published',
+      statusColor: 'bg-green-100 text-green-800'
+    },
+    {
+      id: 'H5239851234',
+      name: 'Medicare Part D Evidence of Coverage',
+      status: 'Review',
+      statusColor: 'bg-yellow-100 text-yellow-800'
+    },
+    {
+      id: 'H8901234567',
+      name: 'Medicare Summary Benefits',
+      status: 'Published',
+      statusColor: 'bg-green-100 text-green-800'
     }
   ]
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Welcome back to SimplifyDocs</p>
+    <div className="p-8 space-y-8 bg-background min-h-full">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard</h1>
+        <p className="text-muted-foreground">Welcome back to SimplifyDocs</p>
       </div>
 
-      {/* Quick Navigation Tiles */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      {/* Quick Navigation Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-12">
         {navigationTiles.map((tile) => {
           const IconComponent = tile.icon
           return (
             <Card 
               key={tile.id}
-              className={`cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg ${tile.bgHover} group min-h-[120px]`}
+              className={`cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg group border ${tile.borderColor} min-h-[140px] ${tile.bgColor}`}
               onClick={() => onNavigate?.(tile.id)}
             >
-              <CardContent className="p-4 text-center h-full flex flex-col justify-center">
-                <div className={`w-12 h-12 mx-auto mb-3 rounded-lg bg-gradient-to-br ${tile.gradient} flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
-                  <IconComponent size={24} className={tile.iconColor} weight="duotone" />
+              <CardContent className="p-6 text-center h-full flex flex-col justify-center items-center">
+                <div className={`w-14 h-14 mx-auto mb-4 rounded-xl ${tile.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
+                  <IconComponent size={28} className={tile.iconColor} weight="duotone" />
                 </div>
-                <h3 className="font-semibold text-sm mb-1 leading-tight">{tile.title}</h3>
-                <p className="text-xs text-muted-foreground leading-tight">{tile.description}</p>
+                <h3 className="font-semibold text-base mb-2 text-foreground leading-tight">{tile.title}</h3>
+                <p className="text-sm text-muted-foreground leading-tight">{tile.description}</p>
               </CardContent>
             </Card>
           )
         })}
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="min-h-[100px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Recent Activity</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-2xl font-bold">4 new</div>
-            <p className="text-xs text-muted-foreground">Latest updates</p>
-          </CardContent>
-        </Card>
-        
-        <Card className="min-h-[100px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Documents</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-2xl font-bold">247</div>
-            <p className="text-xs text-muted-foreground">+12% from last month</p>
-          </CardContent>
-        </Card>
-        
-        <Card className="min-h-[100px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Documents Generated</CardTitle>
-            <TrendUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-2xl font-bold">89</div>
-            <p className="text-xs text-muted-foreground">+15 this month</p>
-          </CardContent>
-        </Card>
-        
-        <Card className="min-h-[100px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Collaborate Completed</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-2xl font-bold">34</div>
-            <p className="text-xs text-muted-foreground">+8 this month</p>
-          </CardContent>
-        </Card>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        {statsCards.map((stat, index) => {
+          const IconComponent = stat.icon
+          return (
+            <Card key={index} className="border-border hover:shadow-md transition-shadow duration-300">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-medium text-muted-foreground">{stat.title}</h3>
+                  <div className={`w-10 h-10 rounded-lg ${stat.bgColor} flex items-center justify-center`}>
+                    <IconComponent size={20} className={stat.iconColor} weight="duotone" />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <div className="text-3xl font-bold text-foreground">{stat.value}</div>
+                  <p className="text-sm text-muted-foreground">{stat.subtitle}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )
+        })}
       </div>
 
-      {/* Work Queue Task Manager */}
-      <Card className="mt-6">
-        <CardHeader className="pb-3">
+      {/* Recent Contracts Section */}
+      <Card className="border-border">
+        <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <CardTitle className="text-lg font-medium">Work Queue (0)</CardTitle>
-              <div className="flex items-center gap-4">
-                <RadioGroup value={selectedTaskFilter} onValueChange={setSelectedTaskFilter} className="flex items-center gap-6">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="open" id="open" />
-                    <Label htmlFor="open" className="text-sm font-normal">Open Tasks (0)</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="completed" id="completed" />
-                    <Label htmlFor="completed" className="text-sm font-normal">Completed Tasks (0)</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="all" id="all" />
-                    <Label htmlFor="all" className="text-sm font-normal">All Tasks (0)</Label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <ArrowsClockwise className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Eye className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Calendar className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Funnel className="h-4 w-4" />
-              </Button>
-            </div>
+            <CardTitle className="text-xl font-semibold text-foreground">Recent Contracts</CardTitle>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => onNavigate?.('documents')}
+              className="text-sm"
+            >
+              View All Documents
+            </Button>
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          {/* Task Table */}
-          <div className="border-t">
-            {/* Table Header */}
-            <div className="grid grid-cols-12 gap-2 p-2 bg-muted/50 border-b text-xs font-medium">
-              <div className="col-span-1 px-2 py-1 text-left">Task #</div>
-              <div className="col-span-1 px-2 py-1 text-left">Folder</div>
-              <div className="col-span-1 px-2 py-1 text-left">Effective Date</div>
-              <div className="col-span-1 px-2 py-1 text-left">Workflow</div>
-              <div className="col-span-1 px-2 py-1 text-left">State</div>
-              <div className="col-span-1 px-2 py-1 text-left">Plan</div>
-              <div className="col-span-1 px-2 py-1 text-left">PlanName</div>
-              <div className="col-span-1 px-2 py-1 text-left">PlanType</div>
-              <div className="col-span-1 px-2 py-1 text-left">View</div>
-              <div className="col-span-1 px-2 py-1 text-left">Task</div>
-              <div className="col-span-1 px-2 py-1 text-left">Status</div>
-              <div className="col-span-1 px-2 py-1 text-left">Star</div>
-            </div>
-
-            {/* Filter Row */}
-            <div className="grid grid-cols-12 gap-2 p-2 bg-white border-b">
-              <div className="col-span-1 px-2">
-                <div className="flex items-center gap-1">
-                  <Input className="h-6 text-xs" placeholder="" />
-                  <CaretDown className="h-3 w-3 text-muted-foreground" />
+          <div className="space-y-0">
+            {recentContracts.map((contract, index) => (
+              <div 
+                key={contract.id}
+                className={`flex items-center justify-between p-6 hover:bg-muted/50 transition-colors duration-200 cursor-pointer ${
+                  index !== recentContracts.length - 1 ? 'border-b border-border' : ''
+                }`}
+                onClick={() => onNavigate?.('documents')}
+              >
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-1">
+                    <span className="text-sm font-mono text-primary font-medium">{contract.id}</span>
+                    <Badge className={`text-xs px-2 py-1 ${contract.statusColor} border-0`}>
+                      {contract.status}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-foreground font-medium">{contract.name}</p>
                 </div>
               </div>
-              <div className="col-span-1 px-2">
-                <div className="flex items-center gap-1">
-                  <Input className="h-6 text-xs" placeholder="" />
-                  <CaretDown className="h-3 w-3 text-muted-foreground" />
-                </div>
-              </div>
-              <div className="col-span-1 px-2">
-                <div className="flex items-center gap-1">
-                  <Input className="h-6 text-xs" placeholder="m/d/yyyy" />
-                  <CaretDown className="h-3 w-3 text-muted-foreground" />
-                </div>
-              </div>
-              <div className="col-span-1 px-2">
-                <div className="flex items-center gap-1">
-                  <Input className="h-6 text-xs" placeholder="" />
-                  <CaretDown className="h-3 w-3 text-muted-foreground" />
-                </div>
-              </div>
-              <div className="col-span-1 px-2">
-                <div className="flex items-center gap-1">
-                  <Input className="h-6 text-xs" placeholder="" />
-                  <CaretDown className="h-3 w-3 text-muted-foreground" />
-                </div>
-              </div>
-              <div className="col-span-1 px-2">
-                <div className="flex items-center gap-1">
-                  <Input className="h-6 text-xs" placeholder="" />
-                  <CaretDown className="h-3 w-3 text-muted-foreground" />
-                </div>
-              </div>
-              <div className="col-span-1 px-2">
-                <div className="flex items-center gap-1">
-                  <Input className="h-6 text-xs" placeholder="" />
-                  <CaretDown className="h-3 w-3 text-muted-foreground" />
-                </div>
-              </div>
-              <div className="col-span-1 px-2">
-                <div className="flex items-center gap-1">
-                  <Input className="h-6 text-xs" placeholder="" />
-                  <CaretDown className="h-3 w-3 text-muted-foreground" />
-                </div>
-              </div>
-              <div className="col-span-1 px-2">
-                <div className="flex items-center gap-1">
-                  <Input className="h-6 text-xs" placeholder="" />
-                  <CaretDown className="h-3 w-3 text-muted-foreground" />
-                </div>
-              </div>
-              <div className="col-span-1 px-2">
-                <div className="flex items-center gap-1">
-                  <Input className="h-6 text-xs" placeholder="" />
-                  <CaretDown className="h-3 w-3 text-muted-foreground" />
-                </div>
-              </div>
-              <div className="col-span-1 px-2">
-                <div className="flex items-center gap-1">
-                  <Input className="h-6 text-xs" placeholder="" />
-                  <CaretDown className="h-3 w-3 text-muted-foreground" />
-                </div>
-              </div>
-              <div className="col-span-1 px-2">
-                <div className="flex items-center gap-1">
-                  <Input className="h-6 text-xs" placeholder="" />
-                  <CaretDown className="h-3 w-3 text-muted-foreground" />
-                </div>
-              </div>
-            </div>
-
-            {/* Empty State */}
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="text-sm text-muted-foreground">No Rows To Show</div>
-            </div>
+            ))}
           </div>
         </CardContent>
       </Card>
