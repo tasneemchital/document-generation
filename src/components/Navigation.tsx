@@ -53,7 +53,7 @@ const navigationItems: NavigationItem[] = [
     label: 'Configure', 
     icon: Gear,
     children: [
-      { id: 'template', label: 'Template', icon: File },
+      { id: 'template', label: 'Global Template', icon: File },
       { id: 'dcm', label: 'Digital Content Manager', icon: File },
       { id: 'masterlist', label: 'Collections', icon: ListBullets },
     ]
