@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useKV } from '@github/spark/hooks'
+import { useKV } from '@/hooks/spark-hooks'
 import { Navigation } from '@/components/Navigation'
 import { TopBar } from '@/components/TopBar'
 import { Dashboard } from '@/components/pages/Dashboard'
