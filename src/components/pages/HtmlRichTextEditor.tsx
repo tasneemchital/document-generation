@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
+import { sanitizeHtml } from '@/lib/content-safety';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -295,7 +296,7 @@ export function HtmlRichTextEditor({
                 {isPreviewMode ? (
                   <div 
                     className="prose prose-sm max-w-none min-h-[300px] p-4 border rounded bg-white"
-                    dangerouslySetInnerHTML={{ __html: englishEditorRef.current?.innerHTML || '<p><em>No content</em></p>' }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(englishEditorRef.current?.innerHTML || '<p><em>No content</em></p>') }}
                   />
                 ) : (
                   <div
@@ -364,7 +365,7 @@ export function HtmlRichTextEditor({
                 {isPreviewMode ? (
                   <div 
                     className="prose prose-sm max-w-none min-h-[300px] p-4 border rounded bg-white"
-                    dangerouslySetInnerHTML={{ __html: spanishEditorRef.current?.innerHTML || '<p><em>No content</em></p>' }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(spanishEditorRef.current?.innerHTML || '<p><em>No content</em></p>') }}
                   />
                 ) : (
                   <div

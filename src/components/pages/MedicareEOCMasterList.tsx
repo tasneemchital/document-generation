@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useKV } from '@github/spark/hooks';
+import { sanitizeHtml } from '@/lib/content-safety';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -238,7 +239,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
               className="space-y-4 min-h-[400px]"
               contentEditable
               suppressContentEditableWarning
-              dangerouslySetInnerHTML={{ __html: documentContent }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(documentContent) }}
               onBlur={(e) => {
                 setDocumentContent(e.currentTarget.innerHTML);
               }}

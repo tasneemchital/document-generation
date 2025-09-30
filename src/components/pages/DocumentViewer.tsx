@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useKV } from '@github/spark/hooks'
+import { sanitizeHtml } from '@/lib/content-safety'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -470,7 +471,7 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
               <div 
                 ref={contentRef}
                 className="prose max-w-none"
-                dangerouslySetInnerHTML={{ __html: selectedSection.content }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(selectedSection.content) }}
               />
             </div>
           ) : (

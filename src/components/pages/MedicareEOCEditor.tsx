@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useKV } from '@github/spark/hooks';
+import { sanitizeHtml } from '@/lib/content-safety';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -343,7 +344,7 @@ See R0004 for exclusions and limitations.
                   </div>
                   <div 
                     className="prose prose-sm max-w-none whitespace-pre-wrap leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: processedContent }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(processedContent) }}
                   />
                 </div>
               </div>
