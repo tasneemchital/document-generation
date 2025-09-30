@@ -6032,9 +6032,9 @@ export function MasterList() {
       ]
     },
     {
-      id: 'certificates',
-      title: 'Certificates & Specifications',
-      description: 'Certificate management and download specifications',
+      id: 'claims-collections',
+      title: 'Claims Collections',
+      description: 'Claims processing and certification management',
       icon: '📋',
       color: 'bg-purple-50 border-purple-200 hover:bg-purple-100',
       masterlists: [
@@ -6081,9 +6081,9 @@ export function MasterList() {
       ]
     },
     {
-      id: 'integration',
-      title: 'Integration Collections',
-      description: 'Integration mappings and system synchronization',
+      id: 'pbp-collections',
+      title: 'PBP Collections',
+      description: 'Plan Benefit Package integration and system synchronization',
       icon: '🔗',
       color: 'bg-orange-50 border-orange-200 hover:bg-orange-100',
       masterlists: [
@@ -6116,6 +6116,39 @@ export function MasterList() {
           name: 'Excel upload mappings',
           description: 'Define mappings for Excel file upload and processing',
           lastModified: '2025-01-12',
+          records: 234,
+          status: 'Active'
+        }
+      ]
+    },
+    {
+      id: 'sda-collections',
+      title: 'SDA Collections',
+      description: 'SimplifyDocs Application configuration and data management',
+      icon: '⚙️',
+      color: 'bg-green-50 border-green-200 hover:bg-green-100',
+      masterlists: [
+        {
+          id: 'design-aliases',
+          name: 'Design Aliases',
+          description: 'Manage design template aliases and configurations',
+          lastModified: '2025-01-15',
+          records: 156,
+          status: 'Active'
+        },
+        {
+          id: 'system-configuration',
+          name: 'System Configuration',
+          description: 'Configure system settings and application parameters',
+          lastModified: '2025-01-14',
+          records: 87,
+          status: 'Active'
+        },
+        {
+          id: 'doc-gen-lite-data',
+          name: 'Doc Gen Lite Data',
+          description: 'Manage document generation lite data and templates',
+          lastModified: '2025-01-13',
           records: 234,
           status: 'Active'
         }
