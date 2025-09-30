@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useKV } from '@github/spark/hooks'
 import { SmartSearchBar } from '@/components/SmartSearchBar'
 import { Card, CardContent } from '@/components/ui/card'
@@ -395,13 +395,13 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
                     variant={viewMode === 'grid' ? 'default' : 'ghost'}
                     size="sm"
                     onClick={() => setViewMode('grid')}
-                    className="rounded-r-none"
+                    className="rounded-r-none px-3"
                   >
                     <Rows className="w-4 h-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Grid View</p>
+                  <p>Grid Layout</p>
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
@@ -410,13 +410,13 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
                     variant={viewMode === 'card' ? 'default' : 'ghost'}
                     size="sm"
                     onClick={() => setViewMode('card')}
-                    className="rounded-l-none"
+                    className="rounded-l-none px-3"
                   >
                     <GridFour className="w-4 h-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Card View</p>
+                  <p>Card Layout</p>
                 </TooltipContent>
               </Tooltip>
             </div>
