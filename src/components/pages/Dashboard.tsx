@@ -118,63 +118,62 @@ export function Dashboard({ onNavigate }: DashboardProps) {
   ]
 
   return (
-    <div className="p-6 bg-background min-h-screen">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="p-4 bg-background min-h-screen">
+      <div className="max-w-7xl mx-auto space-y-4">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6">
           <h1 className="text-2xl font-semibold text-foreground mb-2">Dashboard</h1>
           <p className="text-muted-foreground">Welcome back to SimplifyDocs</p>
         </div>
 
-        {/* Quick Actions Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+        {/* Combined Cards Grid - Side by Side Layout */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 xl:grid-cols-9 gap-3">
+          {/* Quick Actions Cards - Smaller */}
           {navigationTiles.map((tile) => {
             const IconComponent = tile.icon
             return (
               <Card 
                 key={tile.id}
-                className="cursor-pointer hover:shadow-md transition-all duration-200 border border-border bg-white"
+                className="cursor-pointer hover:shadow-md transition-all duration-200 border border-border bg-white hover:scale-105"
                 onClick={() => onNavigate?.(tile.id)}
               >
-                <CardContent className="p-6 text-center">
-                  <div className={`w-12 h-12 mx-auto mb-3 rounded-lg ${tile.bgColor} flex items-center justify-center`}>
-                    <IconComponent size={24} className={tile.iconColor} />
+                <CardContent className="p-3 text-center">
+                  <div className={`w-8 h-8 mx-auto mb-2 rounded-lg ${tile.bgColor} flex items-center justify-center`}>
+                    <IconComponent size={16} className={tile.iconColor} />
                   </div>
-                  <h3 className="font-medium text-foreground mb-1 text-sm">
+                  <h3 className="font-medium text-foreground mb-1 text-xs">
                     {tile.title}
                   </h3>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-[10px] text-muted-foreground line-clamp-2">
                     {tile.description}
                   </p>
                 </CardContent>
               </Card>
             )
           })}
-        </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {/* Stats Cards - Smaller */}
           {statsCards.map((stat, index) => {
             const IconComponent = stat.icon
             return (
-              <Card key={index} className="border border-border bg-white">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`w-10 h-10 rounded-lg ${stat.iconBg} flex items-center justify-center`}>
-                      <IconComponent size={20} className={stat.iconColor} />
+              <Card key={`stat-${index}`} className="border border-border bg-white hover:shadow-md transition-all duration-200">
+                <CardContent className="p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className={`w-6 h-6 rounded-lg ${stat.iconBg} flex items-center justify-center`}>
+                      <IconComponent size={14} className={stat.iconColor} />
                     </div>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                      <DotsThree size={16} className="text-gray-400" />
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                      <DotsThree size={12} className="text-gray-400" />
                     </Button>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground font-medium">
+                    <p className="text-[10px] text-muted-foreground font-medium line-clamp-1">
                       {stat.title}
                     </p>
-                    <p className="text-2xl font-bold text-foreground">
+                    <p className="text-lg font-bold text-foreground">
                       {stat.value}
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-[9px] text-muted-foreground line-clamp-1">
                       {stat.subtitle}
                     </p>
                   </div>
@@ -185,7 +184,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
         </div>
 
         {/* Recent Contracts */}
-        <div>
+        <div className="mt-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-medium text-foreground">Recent Contracts</h2>
             <Button 
@@ -201,7 +200,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
             <CardContent className="p-0">
               <div className="divide-y divide-border">
                 {recentContracts.map((contract) => (
-                  <div key={contract.id} className="p-4 hover:bg-muted/50 transition-colors duration-200">
+                  <div key={contract.id} className="p-3 hover:bg-muted/50 transition-colors duration-200">
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-blue-600 hover:text-blue-800 cursor-pointer">
