@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react"
+import React, { useState, useMemo, useEffect } from "react"
 import { useKV } from '@github/spark/hooks'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -2979,6 +2979,19 @@ function CollaborateMain() {
               >
                 Clear Filters
               </Button>
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  // Simulate sync from repository
+                  alert('Syncing from repository...')
+                  // In a real app, this would trigger an API call to sync data
+                }}
+                className="h-9"
+                title="Sync from repository"
+              >
+                <ArrowsClockwise size={16} className="mr-2" />
+                Sync from Repository
+              </Button>
             </div>
           </div>
           
@@ -3027,29 +3040,6 @@ function CollaborateMain() {
                 {selectedRows.length} selected
               </Badge>
             )}
-          </div>
-          
-          {/* Layout mode toggle */}
-          <div className="flex items-center gap-2">
-            <Label className="text-sm font-medium">View:</Label>
-            <div className="flex items-center border rounded-lg p-1">
-              <Button
-                variant={layoutMode === 'grid' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setLayoutMode('grid')}
-                className="h-7 px-2"
-              >
-                <Rows size={14} />
-              </Button>
-              <Button
-                variant={layoutMode === 'card' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setLayoutMode('card')}
-                className="h-7 px-2"
-              >
-                <FrameCorners size={14} />
-              </Button>
-            </div>
           </div>
         </div>
         

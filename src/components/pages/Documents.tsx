@@ -412,31 +412,27 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
         </div>
       </div>
 
-      {/* Smart Search Bar */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex-1 max-w-md">
-              <SmartSearchBar
-                value={searchTerm}
-                onChange={setSearchTerm}
-                placeholder="Search documents by name, instance, plan type..."
-                storageKey="documents-search"
-              />
-            </div>
-            {hasActiveFilters && (
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={clearAllFilters}
-                className="ml-4"
-              >
-                Clear All Filters
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Smart Search Bar - Simplified without global filters section */}
+      <div className="flex items-center justify-between">
+        <div className="flex-1 max-w-md">
+          <SmartSearchBar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="Search documents by name, instance, plan type..."
+            storageKey="documents-search"
+          />
+        </div>
+        {hasActiveFilters && (
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={clearAllFilters}
+            className="ml-4"
+          >
+            Clear All Filters
+          </Button>
+        )}
+      </div>
 
       {/* Results Summary */}
       <div className="flex items-center justify-between text-sm text-muted-foreground">
