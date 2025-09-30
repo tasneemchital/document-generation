@@ -35,7 +35,6 @@ interface NavigationProps {
 
 const navigationItems: NavigationItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: House },
-  { id: 'template', label: 'Template', icon: File },
   { id: 'design-studio', label: 'Design Studio', icon: PaintBrush },
   { 
     id: 'manage', 
@@ -54,6 +53,7 @@ const navigationItems: NavigationItem[] = [
     label: 'Configure', 
     icon: Gear,
     children: [
+      { id: 'template', label: 'Template', icon: File },
       { id: 'dcm', label: 'Digital Content Manager', icon: File },
       { id: 'masterlist', label: 'Collections', icon: ListBullets },
     ]
