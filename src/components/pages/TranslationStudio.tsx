@@ -284,6 +284,33 @@ export function TranslationStudio() {
         </TabsList>
 
         <TabsContent value="queue-translation" className="space-y-6">
+          {/* Queue Summary and Action - Moved to Top */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Translation Queue Summary</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="text-sm">
+                    <span className="font-medium">{selectedInstances.length}</span> instances selected
+                  </p>
+                  <p className="text-sm">
+                    <span className="font-medium">{selectedLanguages.length}</span> languages selected
+                  </p>
+                </div>
+                <Button 
+                  onClick={handleQueueTranslation}
+                  disabled={selectedInstances.length === 0 || selectedLanguages.length === 0}
+                  className="flex items-center gap-2"
+                >
+                  <Queue className="h-4 w-4" />
+                  Queue for Translation
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Instance Selection */}
             <Card>
@@ -353,36 +380,39 @@ export function TranslationStudio() {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
 
-          {/* Queue Summary and Action */}
+        <TabsContent value="queue-proofreading" className="space-y-6">
+          {/* Proofreading Queue Summary and Action - Moved to Top */}
           <Card>
             <CardHeader>
-              <CardTitle>Translation Queue Summary</CardTitle>
+              <CardTitle>Proofreading Queue Summary</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="text-sm">
-                    <span className="font-medium">{selectedInstances.length}</span> instances selected
+                    <span className="font-medium">{selectedDocuments.length}</span> documents selected
                   </p>
                   <p className="text-sm">
-                    <span className="font-medium">{selectedLanguages.length}</span> languages selected
+                    <span className="font-medium">{selectedProofreadingLanguages.length}</span> languages selected
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Total jobs to create: <span className="font-medium">{selectedDocuments.length * selectedProofreadingLanguages.length}</span>
                   </p>
                 </div>
                 <Button 
-                  onClick={handleQueueTranslation}
-                  disabled={selectedInstances.length === 0 || selectedLanguages.length === 0}
+                  onClick={handleQueueProofreading}
+                  disabled={selectedDocuments.length === 0 || selectedProofreadingLanguages.length === 0}
                   className="flex items-center gap-2"
                 >
-                  <Queue className="h-4 w-4" />
-                  Queue for Translation
+                  <Eye className="h-4 w-4" />
+                  Queue for Proofreading
                 </Button>
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
 
-        <TabsContent value="queue-proofreading" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Document Selection */}
             <Card>
@@ -486,36 +516,6 @@ export function TranslationStudio() {
               </CardContent>
             </Card>
           </div>
-
-          {/* Proofreading Queue Summary and Action */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Proofreading Queue Summary</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-sm">
-                    <span className="font-medium">{selectedDocuments.length}</span> documents selected
-                  </p>
-                  <p className="text-sm">
-                    <span className="font-medium">{selectedProofreadingLanguages.length}</span> languages selected
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Total jobs to create: <span className="font-medium">{selectedDocuments.length * selectedProofreadingLanguages.length}</span>
-                  </p>
-                </div>
-                <Button 
-                  onClick={handleQueueProofreading}
-                  disabled={selectedDocuments.length === 0 || selectedProofreadingLanguages.length === 0}
-                  className="flex items-center gap-2"
-                >
-                  <Eye className="h-4 w-4" />
-                  Queue for Proofreading
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
 
         <TabsContent value="audit-trail" className="space-y-6">
