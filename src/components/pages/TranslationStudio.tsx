@@ -63,7 +63,7 @@ interface DocumentForProofreading {
 }
 
 // Mock data for instances and languages
-const instances = ['HMMAPD', 'PPO MAPD', 'PDP', 'DSNP']
+const instances = ['HMO MAPD', 'PPO MAPD', 'PDP', 'DSNP']
 const languages = ['English', 'Spanish', 'Chinese', 'Vietnamese', 'Korean', 'Tagalog', 'Russian', 'Arabic', 'French', 'Portuguese']
 
 // Mock data for proofreading documents
