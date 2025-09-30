@@ -1,4 +1,4 @@
-import { Search, Bell, User, HelpCircle } from '@phosphor-icons/react'
+import { MagnifyingGlass, Bell, User, Question } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
@@ -36,7 +36,7 @@ export function TopBar({ onToggleSidebar }: TopBarProps) {
       <div className="flex items-center space-x-3">
         {/* Search */}
         <div className="relative hidden md:block">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/60" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/60" />
           <Input 
             placeholder="Search..." 
             className="pl-10 w-64 h-8 bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:bg-white/20"
@@ -53,7 +53,7 @@ export function TopBar({ onToggleSidebar }: TopBarProps) {
         
         {/* Search Icon (mobile) */}
         <button className="md:hidden p-2 hover:bg-white/10 rounded transition-colors">
-          <Search className="w-5 h-5" />
+          <MagnifyingGlass className="w-5 h-5" />
         </button>
         
         {/* Notifications */}

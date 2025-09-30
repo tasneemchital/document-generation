@@ -12,12 +12,13 @@ import {
   Globe,
   CaretDown,
   CaretRight,
-  FolderGear,
+  FolderOpen,
   PaintBrush,
   Users,
   Sparkle,
   Plus,
-  FileText
+  FileText,
+  Folder
 } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 
@@ -39,28 +40,35 @@ const navigationItems: NavigationItem[] = [
   { 
     id: 'manage', 
     label: 'Manage', 
-    icon: FolderGear,
+    icon: Folder,
     children: [
       { id: 'global-template', label: 'Global Template', icon: FilePdf },
-      { id: 'dcm', label: 'Digital Content Manager', icon: File },
     ]
   },
+  { id: 'portfolio', label: 'Review', icon: Briefcase },
   { id: 'template', label: 'Template', icon: File },
   { id: 'design-studio', label: 'Design Studio', icon: PaintBrush },
-  { id: 'translation-studio', label: 'Translation Studio', icon: Translate },
+  { 
+    id: 'manage', 
+    label: 'Manage', 
+    icon: FolderOpen,
+    children: [
+      { id: 'collaborate', label: 'Collaborate', icon: Users },
+      { id: 'generate', label: 'Generate', icon: Sparkle },
+      { id: 'publish', label: 'Publish', icon: Plus },
+      { id: 'translation-studio', label: 'Translation Studio', icon: Translate },
+    ]
+  },
   { id: 'documents', label: 'Documents', icon: FileText },
-  { id: 'portfolio', label: 'Review', icon: Briefcase },
   { 
     id: 'global-content', 
-    label: 'Global Content', 
-    icon: Globe,
+    label: 'Configure', 
+    icon: Gear,
     children: [
+      { id: 'dcm', label: 'Digital Content Manager', icon: File },
       { id: 'masterlist', label: 'Collections', icon: ListBullets },
     ]
   },
-  { id: 'collaborate', label: 'Collaborate', icon: Users },
-  { id: 'generate', label: 'Generate', icon: Sparkle },
-  { id: 'publish', label: 'Publish', icon: Plus },
   { id: 'ask-benny', label: 'Ask Benny', icon: Robot },
   { id: 'admin-settings', label: 'Admin Settings', icon: Gear },
 ]
@@ -71,6 +79,8 @@ interface NavigationItemComponentProps {
   onNavigate: (page: string) => void
   isCollapsed: boolean
   level?: number
+  expandedItems: Set<string>
+  setExpandedItems: (value: Set<string>) => void
 }
 
 function NavigationItemComponent({ 
@@ -78,26 +88,31 @@ function NavigationItemComponent({
   currentPage, 
   onNavigate, 
   isCollapsed, 
-  level = 0 
+  level = 0,
+  expandedItems,
+  setExpandedItems
 }: NavigationItemComponentProps) {
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
-  
   const toggleExpanded = (itemId: string) => {
-    setExpandedItems(prev => {
-      const newSet = new Set(prev)
-      if (newSet.has(itemId)) {
-        newSet.delete(itemId)
-      } else {
-        newSet.add(itemId)
-      }
-      return newSet
-    })
+    setExpandedItems(new Set(
+      expandedItems.has(itemId) 
+        ? Array.from(expandedItems).filter(id => id !== itemId)
+        : [...Array.from(expandedItems), itemId]
+    ))
   }
 
   const hasChildren = item.children && item.children.length > 0
   const isActive = currentPage === item.id
   const isExpanded = expandedItems.has(item.id)
-  const isChildActive = item.children?.some(child => currentPage === child.id)
+  
+  // Check if this item or any nested child is active
+  const isChildActive = (children?: NavigationItem[]): boolean => {
+    if (!children) return false
+    return children.some(child => 
+      currentPage === child.id || isChildActive(child.children)
+    )
+  }
+  
+  const isNestedChildActive = isChildActive(item.children)
 
   const Icon = item.icon
 
@@ -107,10 +122,12 @@ function NavigationItemComponent({
         variant="ghost"
         className={cn(
           "w-full justify-start font-normal transition-colors",
-          isActive || isChildActive 
+          isActive || isNestedChildActive
             ? "bg-primary text-primary-foreground hover:bg-primary/90" 
             : "hover:bg-muted text-muted-foreground hover:text-foreground",
-          level > 0 && "ml-4 w-[calc(100%-1rem)]",
+          level === 1 && "ml-4 w-[calc(100%-1rem)]",
+          level === 2 && "ml-8 w-[calc(100%-2rem)]",
+          level === 3 && "ml-12 w-[calc(100%-3rem)]",
           isCollapsed && "px-2"
         )}
         onClick={() => {
@@ -148,6 +165,8 @@ function NavigationItemComponent({
               onNavigate={onNavigate}
               isCollapsed={isCollapsed}
               level={level + 1}
+              expandedItems={expandedItems}
+              setExpandedItems={setExpandedItems}
             />
           ))}
         </ul>
@@ -157,6 +176,11 @@ function NavigationItemComponent({
 }
 
 export function Navigation({ currentPage, onNavigate, isCollapsed }: NavigationProps) {
+  // Move expandedItems state to the parent Navigation component
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(
+    new Set(['manage', 'global-content', 'global-template']) // Start with some items expanded
+  )
+
   return (
     <aside className={cn(
       "bg-card border-r border-border transition-all duration-300",
@@ -171,6 +195,8 @@ export function Navigation({ currentPage, onNavigate, isCollapsed }: NavigationP
               currentPage={currentPage}
               onNavigate={onNavigate}
               isCollapsed={isCollapsed}
+              expandedItems={expandedItems}
+              setExpandedItems={setExpandedItems}
             />
           ))}
         </ul>

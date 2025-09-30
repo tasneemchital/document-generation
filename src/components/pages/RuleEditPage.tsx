@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Eye, MagicWand, CheckCircle, Clock, User, Calendar, Save, X } from '@phosphor-icons/react';
+import { ArrowLeft, Eye, MagicWand, CheckCircle, Clock, User, Calendar, FloppyDisk, X } from '@phosphor-icons/react';
 import { format, parse, isValid } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -115,7 +115,7 @@ export function RuleEditPage({ rule, onSave, onCancel }: RuleEditPageProps) {
                 Cancel
               </Button>
               <Button size="sm" onClick={handleSave} className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all">
-                <Save size={16} className="mr-2" />
+                <FloppyDisk size={16} className="mr-2" />
                 Save Changes
               </Button>
             </div>

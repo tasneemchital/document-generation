@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react"
+import React, { useState, useMemo, useEffect, useCallback } from "react"
 import { useKV } from '@github/spark/hooks'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { FileText, Clock, BarChart3, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus, TextAa, Rows, CopySimple, XCircle, FrameCorners, FileXls, CloudArrowUp, ArrowsClockwise, FloppyDisk } from "@phosphor-icons/react"
+import { FileText, Clock, ChartBar, X, CaretUp, CaretDown, CaretLeft, CaretRight, Columns, MagnifyingGlass, Funnel, Download, Eye, Gear, ArrowUp, ArrowDown, ArrowLeft, ArrowClockwise, Queue, WarningCircle, UploadSimple, Users, Link, Plus, TextAa, Rows, CopySimple, XCircle, FrameCorners, FileXls, CloudArrowUp, ArrowsClockwise, FloppyDisk, List, SquaresFour } from "@phosphor-icons/react"
 import { SmartSearchBar } from "@/components/SmartSearchBar"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
@@ -3054,6 +3054,28 @@ function CollaborateMain() {
         </div>
         
         <div className="flex items-center gap-3">
+          {/* Layout Mode Toggle */}
+          <div className="flex items-center border rounded-md">
+            <Button
+              variant={layoutMode === 'grid' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setLayoutMode('grid')}
+              className="h-9 px-3 rounded-r-none border-0"
+              title="Grid View"
+            >
+              <List size={16} />
+            </Button>
+            <Button
+              variant={layoutMode === 'card' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setLayoutMode('card')}
+              className="h-9 px-3 rounded-l-none border-0"
+              title="Card View"
+            >
+              <SquaresFour size={16} />
+            </Button>
+          </div>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="flex items-center gap-2 h-9">
@@ -3076,7 +3098,6 @@ function CollaborateMain() {
         </div>
       </div>
       
-      {/* Conditional Layout Rendering */}
       {layoutMode === 'card' ? renderCardLayout() : (
         <Card>
           <CardContent className="p-0">
@@ -3087,12 +3108,12 @@ function CollaborateMain() {
                   <TableRow className="bg-muted/30">
                     <TableHead className="w-12 border-r h-11">
                       <Checkbox
-                      checked={isAllVisibleSelected}
-                      onCheckedChange={handleSelectAll}
-                      ref={(el) => {
-                        if (el) el.indeterminate = isSomeVisibleSelected && !isAllVisibleSelected
-                      }}
-                    />
+                        checked={isAllVisibleSelected}
+                        onCheckedChange={handleSelectAll}
+                        ref={(el) => {
+                          if (el) el.indeterminate = isSomeVisibleSelected && !isAllVisibleSelected
+                        }}
+                      />
                   </TableHead>
                   {visibleColumns.id && (
                     <TableHead className="border-r h-11 min-w-[80px]">
@@ -4946,7 +4967,7 @@ export function Collaborate() {
             User Management
           </TabsTrigger>
           <TabsTrigger value="visual-dashboard" className="flex items-center gap-2">
-            <BarChart3 size={16} />
+            <ChartBar size={16} />
             Visual Dashboard
           </TabsTrigger>
         </TabsList>
@@ -5457,7 +5478,7 @@ export function Generate() {
             Queued Collateral
           </TabsTrigger>
           <TabsTrigger value="system-compare" className="flex items-center gap-2">
-            <BarChart3 size={16} />
+            <ChartBar size={16} />
             System Generated Compare
           </TabsTrigger>
         </TabsList>
@@ -7054,17 +7075,17 @@ export function Manage() {
   )
 }
 
-export function GlobalContent() {
+export function Configure() {
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Global Content</h1>
-          <p className="text-muted-foreground mt-1">Manage global content and shared resources</p>
+          <h1 className="text-2xl font-semibold text-foreground">Configure</h1>
+          <p className="text-muted-foreground mt-1">Configure system settings and resources</p>
         </div>
       </div>
       <div className="bg-card rounded-lg border border-border p-8 text-center">
-        <p className="text-muted-foreground">Global content management features coming soon...</p>
+        <p className="text-muted-foreground">Configuration features coming soon...</p>
       </div>
     </div>
   )

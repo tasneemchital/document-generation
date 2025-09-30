@@ -12,9 +12,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   Filter, 
   X, 
-  Search, 
+  MagnifyingGlass, 
   Calendar as CalendarIcon,
-  ChevronDown,
+  CaretDown,
   RotateCcw
 } from '@phosphor-icons/react';
 import { RuleData } from '@/lib/types';
@@ -249,7 +249,7 @@ export function AdvancedFilter({ rules, onFiltersChange }: AdvancedFilterProps) 
           ) : (
             <span className="text-muted-foreground">{placeholder}</span>
           )}
-          <ChevronDown size={14} />
+          <CaretDown size={14} />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-64 p-0">
@@ -328,7 +328,7 @@ export function AdvancedFilter({ rules, onFiltersChange }: AdvancedFilterProps) 
               className="flex items-center gap-1 border-gray-300 hover:bg-gray-50"
             >
               {isExpanded ? 'Collapse' : 'Expand'}
-              <ChevronDown size={12} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+              <CaretDown size={12} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
             </Button>
           </div>
         </div>
@@ -339,7 +339,7 @@ export function AdvancedFilter({ rules, onFiltersChange }: AdvancedFilterProps) 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
             <div className="relative">
-              <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+              <MagnifyingGlass size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search across all fields..."
                 value={filters.search}

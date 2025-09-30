@@ -17,7 +17,7 @@ import {
   ArrowDown, 
   ArrowUp,
   Edit, 
-  Save, 
+  FloppyDisk, 
   X, 
   Plus,
   CaretLeft,
@@ -1008,7 +1008,7 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
           )}
           <div className="flex gap-1 flex-shrink-0">
             <Button size="sm" variant="outline" onClick={handleSaveEdit} className="h-6 w-6 p-0 border-green-300 hover:bg-green-50">
-              <Save size={10} className="text-green-600" />
+              <FloppyDisk size={10} className="text-green-600" />
             </Button>
             <Button size="sm" variant="outline" onClick={handleCancelEdit} className="h-6 w-6 p-0 border-gray-300 hover:bg-gray-50">
               <X size={10} className="text-gray-500" />
