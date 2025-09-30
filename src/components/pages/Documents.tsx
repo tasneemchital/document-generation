@@ -412,26 +412,72 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
         </div>
       </div>
 
-      {/* Smart Search Bar - Simplified without global filters section */}
-      <div className="flex items-center justify-between">
-        <div className="flex-1 max-w-md">
-          <SmartSearchBar
-            value={searchTerm}
-            onChange={setSearchTerm}
-            placeholder="Search documents by name, instance, plan type..."
-            storageKey="documents-search"
-          />
+      {/* Smart Search Bar */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex-1 max-w-md">
+            <SmartSearchBar
+              value={searchTerm}
+              onChange={setSearchTerm}
+              placeholder="Search documents, contract numbers, or plan names..."
+              storageKey="documents-search"
+            />
+          </div>
+          {hasActiveFilters && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={clearAllFilters}
+              className="ml-4"
+            >
+              Clear All Filters
+            </Button>
+          )}
         </div>
-        {hasActiveFilters && (
-          <Button 
-            variant="outline" 
+
+        {/* Document Type Filter Bubbles */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button
+            variant={documentTypeFilter === 'all' ? 'default' : 'outline'}
             size="sm"
-            onClick={clearAllFilters}
-            className="ml-4"
+            onClick={() => setDocumentTypeFilter('all')}
+            className="rounded-full px-4 py-2 h-auto text-sm font-medium"
           >
-            Clear All Filters
+            All Types
           </Button>
-        )}
+          <Button
+            variant={documentTypeFilter === 'ANOC' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setDocumentTypeFilter('ANOC')}
+            className="rounded-full px-4 py-2 h-auto text-sm font-medium"
+          >
+            ANOC
+          </Button>
+          <Button
+            variant={documentTypeFilter === 'EOC' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setDocumentTypeFilter('EOC')}
+            className="rounded-full px-4 py-2 h-auto text-sm font-medium"
+          >
+            EOC
+          </Button>
+          <Button
+            variant={documentTypeFilter === 'SB' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setDocumentTypeFilter('SB')}
+            className="rounded-full px-4 py-2 h-auto text-sm font-medium"
+          >
+            Summary of Benefits
+          </Button>
+          <Button
+            variant={documentTypeFilter === 'Handbook' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setDocumentTypeFilter('Handbook')}
+            className="rounded-full px-4 py-2 h-auto text-sm font-medium"
+          >
+            Handbook
+          </Button>
+        </div>
       </div>
 
       {/* Results Summary */}
