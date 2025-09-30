@@ -149,11 +149,11 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 flex">
+      <div className="flex-1 flex overflow-hidden">
         {/* Main Editor Area */}
-        <div className="flex-1 bg-white">
+        <div className="flex-1 bg-white flex flex-col overflow-hidden">
           {/* Toolbar */}
-          <div className="border-b border-border px-4 py-2 bg-muted/30">
+          <div className="border-b border-border px-4 py-2 bg-muted/30 flex-shrink-0">
             <div className="flex items-center gap-4 text-sm">
               <span>File</span>
               <span>Edit</span>
@@ -166,7 +166,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
           </div>
 
           {/* Editor Toolbar */}
-          <div className="border-b border-border px-4 py-2 bg-muted/10">
+          <div className="border-b border-border px-4 py-2 bg-muted/10 flex-shrink-0">
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="sm" className="p-1">
                 <span className="text-sm">💬</span>
@@ -232,18 +232,20 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
             </div>
           </div>
 
-          {/* Document Content */}
-          <div className="p-6 bg-white text-black">
-            <div 
-              ref={contentRef}
-              className="space-y-4 min-h-[400px]"
-              contentEditable
-              suppressContentEditableWarning
-              dangerouslySetInnerHTML={{ __html: sanitizeHtml(documentContent) }}
-              onBlur={(e) => {
-                setDocumentContent(e.currentTarget.innerHTML);
-              }}
-            />
+          {/* Document Content - Scrollable */}
+          <div className="flex-1 overflow-y-auto bg-white">
+            <div className="p-6 text-black">
+              <div 
+                ref={contentRef}
+                className="space-y-4 min-h-[400px] focus:outline-none"
+                contentEditable
+                suppressContentEditableWarning
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(documentContent) }}
+                onBlur={(e) => {
+                  setDocumentContent(e.currentTarget.innerHTML);
+                }}
+              />
+            </div>
           </div>
         </div>
 
