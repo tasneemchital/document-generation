@@ -1,75 +1,29 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useState } from 'react'
 import { 
-  FileText, 
   Users, 
+  FileText, 
+  ShareNetwork,
   TrendUp, 
   FolderOpen,
-  ShareNetwork, 
-  Robot, 
+  ArrowRight, 
   Clock, 
   CheckCircle, 
   UsersThree, 
-  Sparkle, 
-  ArrowRight, 
-  Activity, 
-  Lightning, 
+  Calendar,
+  Lightning,
   Target,
-  Folder,
-  Calendar
+  Activity,
+  Sparkle,
+  Robot
 } from '@phosphor-icons/react'
 
 interface DashboardProps {
-  onNavigate?: (page: string) => void
+  onNavigate: (page: string) => void
 }
 
 export function Dashboard({ onNavigate }: DashboardProps) {
-  const [selectedTaskFilter, setSelectedTaskFilter] = useState('open')
-
-  // Mock recent activity data
-  const recentActivities = [
-    { action: 'Document generated', item: 'Medicare Plan SBC', time: '2 minutes ago' },
-    { action: 'Review completed', item: 'EOC Template', time: '15 minutes ago' },
-    { action: 'Published to portal', item: 'EGWP Documents', time: '1 hour ago' },
-    { action: 'Collaboration started', item: 'Annual Notice', time: '2 hours ago' }
-  ]
-
-  // Mock task data
-  const mockTasks = [
-    {
-      id: 1,
-      taskNumber: 'T001',
-      folder: 'EOC Documents',
-      effectiveDate: '01/15/2024',
-      workflow: 'Review',
-      state: 'In Progress',
-      plan: 'Medicare Advantage',
-      planName: 'MA Plan 2024',
-      planType: 'HMO',
-      view: 'PDF',
-      task: 'Content Review',
-      status: 'Active',
-      starred: false
-    },
-    {
-      id: 2,
-      taskNumber: 'T002',
-      folder: 'SBC Templates',
-      effectiveDate: '02/01/2024',
-      workflow: 'Approval',
-      state: 'Pending',
-      plan: 'Individual',
-      planName: 'Silver Plan',
-      planType: 'PPO',
-      view: 'HTML',
-      task: 'Final Review',
-      status: 'Waiting',
-      starred: true
-    }
-  ]
-
   const navigationTiles = [
     {
       id: 'manage',
@@ -109,7 +63,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     },
     {
       id: 'collaborate',
-      title: 'Collaborate',
+      title: 'Collaborate', 
       description: 'Work together',
       icon: UsersThree,
       iconColor: 'text-pink-600',
@@ -144,7 +98,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       bgColor: 'bg-purple-50'
     },
     {
-      title: 'Collaborate Completed',
+      title: 'Tasks Completed',
       value: '34',
       subtitle: '+8 this month',
       icon: UsersThree,
@@ -153,12 +107,11 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     }
   ]
 
-  // Mock recent contracts data
   const recentContracts = [
     {
-      id: 'H5523404008',
+      id: 'H5239001234',
       name: 'Medicare Advantage Notice of Coverage',
-      status: 'Published',
+      status: 'Active',
       statusColor: 'bg-green-100 text-green-800'
     },
     {
@@ -168,122 +121,144 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       statusColor: 'bg-yellow-100 text-yellow-800'
     },
     {
-      id: 'H8901234567',
+      id: 'H5239002468',
       name: 'Medicare Summary Benefits',
-      status: 'Published',
+      status: 'Active',
       statusColor: 'bg-green-100 text-green-800'
     }
   ]
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30">
       <div className="container mx-auto px-6 py-8 max-w-7xl">
-        {/* Header Section */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-foreground mb-2">
-            Dashboard
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Welcome back to SimplifyDocs
-          </p>
+        <div className="mb-10">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-4xl font-bold text-foreground mb-3 tracking-tight">
+                Good morning 👋
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                Ready to simplify your document workflow today?
+              </p>
+            </div>
+            <div className="hidden md:flex items-center gap-4">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-card/50 backdrop-blur-sm rounded-lg px-4 py-2 border border-border/50">
+                <Activity size={16} className="text-emerald-500" />
+                <span>All systems operational</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Quick Actions Grid - Top Navigation Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-          {navigationTiles.map((tile) => {
-            const IconComponent = tile.icon
-            return (
-              <Card 
-                key={tile.id}
-                className="group cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-lg border border-border bg-card"
-                onClick={() => onNavigate?.(tile.id)}
-              >
-                <CardContent className="p-6 text-center h-full flex flex-col justify-center items-center">
-                  <div className={`w-12 h-12 mx-auto mb-3 rounded-lg ${tile.bgColor} flex items-center justify-center`}>
-                    <IconComponent size={24} className={tile.iconColor} weight="duotone" />
-                  </div>
-                  <h3 className="font-medium text-base mb-1 text-foreground">
-                    {tile.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {tile.description}
-                  </p>
-                </CardContent>
-              </Card>
-            )
-          })}
+        {/* Quick Actions Grid */}
+        <div className="mb-12">
+          <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
+            <Lightning size={20} className="text-accent" />
+            Quick Actions
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            {navigationTiles.map((tile) => {
+              const IconComponent = tile.icon
+              return (
+                <Card 
+                  key={tile.id}
+                  className="group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/5 border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden relative"
+                  onClick={() => onNavigate?.(tile.id)}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <CardContent className="p-6 text-center h-full flex flex-col justify-center items-center relative z-10">
+                    <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl ${tile.bgColor} flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-lg group-hover:shadow-xl relative overflow-hidden`}>
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <IconComponent size={28} className={tile.iconColor} weight="duotone" />
+                    </div>
+                    <h3 className="font-semibold text-base mb-2 text-foreground leading-tight group-hover:text-primary transition-colors duration-300">
+                      {tile.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-tight line-clamp-2">
+                      {tile.description}
+                    </p>
+                    <div className="mt-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-1 group-hover:translate-y-0">
+                      <ArrowRight size={16} className="text-primary" />
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
         </div>
 
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          {statsCards.map((stat, index) => {
-            const IconComponent = stat.icon
-            return (
-              <Card 
-                key={index} 
-                className="border border-border bg-card hover:shadow-md transition-shadow duration-200"
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-muted-foreground mb-1">
+        {/* Metrics Overview */}
+        <div className="mb-12">
+          <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
+            <Target size={20} className="text-primary" />
+            Performance Overview
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {statsCards.map((stat, index) => {
+              const IconComponent = stat.icon
+              return (
+                <Card 
+                  key={index} 
+                  className="group border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 hover:border-primary/20 overflow-hidden relative"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/3 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <CardContent className="p-6 relative z-10">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`w-12 h-12 rounded-xl ${stat.bgColor} flex items-center justify-center group-hover:scale-110 transition-all duration-300`}>
+                        <IconComponent size={24} className={stat.iconColor} weight="duotone" />
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-foreground mb-1 group-hover:text-primary transition-colors duration-300">
+                        {stat.value}
+                      </p>
+                      <p className="text-sm font-medium text-foreground mb-1">
                         {stat.title}
                       </p>
-                      <div className="text-2xl font-bold text-foreground mb-1">
-                        {stat.value}
-                      </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         {stat.subtitle}
                       </p>
                     </div>
-                    <div className={`w-10 h-10 rounded-lg ${stat.bgColor} flex items-center justify-center ml-4`}>
-                      <IconComponent size={20} className={stat.iconColor} />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )
-          })}
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
         </div>
 
-        {/* Recent Activity Section */}
-        <Card className="border border-border bg-card">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-foreground">
-              Recent Contracts
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="space-y-0">
-              {recentContracts.map((contract, index) => (
-                <div 
-                  key={contract.id}
-                  className={`group flex items-center justify-between p-4 hover:bg-muted/30 transition-colors duration-200 cursor-pointer ${
-                    index !== recentContracts.length - 1 ? 'border-b border-border' : ''
-                  }`}
-                  onClick={() => onNavigate?.('documents')}
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-1">
-                      <span className="text-sm font-mono text-primary font-medium bg-primary/10 px-2 py-1 rounded">
-                        {contract.id}
-                      </span>
-                      <Badge className={`text-xs px-2 py-1 ${contract.statusColor} border-0`}>
-                        {contract.status}
-                      </Badge>
+        {/* Recent Contracts */}
+        <div>
+          <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
+            <FileText size={20} className="text-primary" />
+            Recent Contracts
+          </h2>
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+            <CardContent className="p-0">
+              <div className="divide-y divide-border/50">
+                {recentContracts.map((contract) => (
+                  <div key={contract.id} className="p-6 hover:bg-muted/30 transition-colors duration-200">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <h3 className="font-medium text-foreground mb-1">
+                          {contract.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          Contract ID: {contract.id}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <Badge className={`${contract.statusColor} border-0`}>
+                          {contract.status}
+                        </Badge>
+                        <ArrowRight size={16} className="text-muted-foreground" />
+                      </div>
                     </div>
-                    <p className="text-sm text-foreground">
-                      {contract.name}
-                    </p>
                   </div>
-                  <Button variant="ghost" size="sm">
-                    View All Documents
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
