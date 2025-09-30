@@ -3,7 +3,6 @@ import { useKV } from '@github/spark/hooks'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -24,7 +23,7 @@ import {
 
 interface TranslationQueue {
   id: string
-  instance: string
+  instances: string[]
   languages: string[]
   status: 'queued' | 'in_progress' | 'completed'
   username: string
@@ -105,7 +104,7 @@ export function TranslationStudio() {
   const [proofreadingQueues, setProofreadingQueues] = useKV<ProofreadingQueue[]>('proofreading-queues', [])
   
   // Queue Translation form state
-  const [selectedInstance, setSelectedInstance] = useState('')
+  const [selectedInstances, setSelectedInstances] = useState<string[]>([])
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
   
   // Queue Proofreading form state  
@@ -129,6 +128,14 @@ export function TranslationStudio() {
     )
   }
 
+  const handleInstanceToggle = (instance: string) => {
+    setSelectedInstances(prev => 
+      prev.includes(instance) 
+        ? prev.filter(inst => inst !== instance)
+        : [...prev, instance]
+    )
+  }
+
   const handleDocumentToggle = (documentId: string) => {
     setSelectedDocuments(prev => 
       prev.includes(documentId) 
@@ -138,14 +145,14 @@ export function TranslationStudio() {
   }
 
   const handleQueueTranslation = () => {
-    if (!selectedInstance || selectedLanguages.length === 0) return
+    if (selectedInstances.length === 0 || selectedLanguages.length === 0) return
 
     // Mock user for now
     const username = 'currentuser'
     
     const newQueue: TranslationQueue = {
       id: `trans-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
-      instance: selectedInstance,
+      instances: [...selectedInstances],
       languages: [...selectedLanguages],
       status: 'queued',
       username: username,
@@ -156,7 +163,7 @@ export function TranslationStudio() {
     setTranslationQueues(current => [...current, newQueue])
     
     // Reset selections
-    setSelectedInstance('')
+    setSelectedInstances([])
     setSelectedLanguages([])
     setActiveTab('audit-trail')
   }
@@ -195,8 +202,8 @@ export function TranslationStudio() {
     ...translationQueues.map(queue => ({
       id: queue.id,
       type: 'translation' as const,
-      itemName: queue.instance,
-      details: `Instance: ${queue.instance}`,
+      itemName: queue.instances.join(', '),
+      details: `Instances: ${queue.instances.join(', ')}`,
       languages: queue.languages,
       status: queue.status,
       username: queue.username,
@@ -284,17 +291,26 @@ export function TranslationStudio() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Select Instance</label>
-                  <Select value={selectedInstance} onValueChange={setSelectedInstance}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose an instance" />
-                    </SelectTrigger>
-                    <SelectContent>
+                  <label className="text-sm font-medium">Select Instances</label>
+                  <div className="border rounded-md p-3 max-h-64 overflow-y-auto">
+                    <div className="space-y-2">
                       {instances.map(instance => (
-                        <SelectItem key={instance} value={instance}>{instance}</SelectItem>
+                        <div key={instance} className="flex items-center space-x-2 p-2 rounded hover:bg-muted/50">
+                          <Checkbox
+                            id={`instance-${instance}`}
+                            checked={selectedInstances.includes(instance)}
+                            onCheckedChange={() => handleInstanceToggle(instance)}
+                          />
+                          <label 
+                            htmlFor={`instance-${instance}`} 
+                            className="text-sm font-medium cursor-pointer flex-1"
+                          >
+                            {instance}
+                          </label>
+                        </div>
                       ))}
-                    </SelectContent>
-                  </Select>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -343,7 +359,7 @@ export function TranslationStudio() {
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="text-sm">
-                    <span className="font-medium">Instance:</span> {selectedInstance || 'None selected'}
+                    <span className="font-medium">{selectedInstances.length}</span> instances selected
                   </p>
                   <p className="text-sm">
                     <span className="font-medium">{selectedLanguages.length}</span> languages selected
@@ -351,7 +367,7 @@ export function TranslationStudio() {
                 </div>
                 <Button 
                   onClick={handleQueueTranslation}
-                  disabled={!selectedInstance || selectedLanguages.length === 0}
+                  disabled={selectedInstances.length === 0 || selectedLanguages.length === 0}
                   className="flex items-center gap-2"
                 >
                   <Queue className="h-4 w-4" />
