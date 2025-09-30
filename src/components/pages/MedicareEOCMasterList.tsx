@@ -67,7 +67,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-full bg-background">
       {/* Header - Fixed */}
       <div className="flex-shrink-0 bg-card border-b border-border px-6 py-4">
         <div className="flex items-center justify-between mb-4">
