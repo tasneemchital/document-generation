@@ -113,6 +113,10 @@ export function TranslationStudio() {
   const [contractNumberFilter, setContractNumberFilter] = useState('')
   const [planNameFilter, setPlanNameFilter] = useState('')
 
+  // Ensure arrays are properly initialized
+  const safeTranslationQueues = Array.isArray(translationQueues) ? translationQueues : []
+  const safeProofreadingQueues = Array.isArray(proofreadingQueues) ? proofreadingQueues : []
+
   // Filter proofreading documents based on search criteria
   const filteredProofreadingDocuments = mockProofreadingDocuments.filter(doc => {
     if (contractNumberFilter && !doc.contractNumber.toLowerCase().includes(contractNumberFilter.toLowerCase())) return false
@@ -160,7 +164,7 @@ export function TranslationStudio() {
       type: 'translation'
     }
 
-    setTranslationQueues(current => [...current, newQueue])
+    setTranslationQueues(current => [...(Array.isArray(current) ? current : []), newQueue])
     
     // Reset selections
     setSelectedInstances([])
@@ -189,7 +193,7 @@ export function TranslationStudio() {
       }
     })
 
-    setProofreadingQueues(current => [...current, ...newQueues])
+    setProofreadingQueues(current => [...(Array.isArray(current) ? current : []), ...newQueues])
     
     // Reset selections
     setSelectedDocuments([])
@@ -199,22 +203,22 @@ export function TranslationStudio() {
 
   // Combine audit trail items
   const auditTrailItems: AuditTrailItem[] = [
-    ...translationQueues.map(queue => ({
+    ...safeTranslationQueues.map(queue => ({
       id: queue.id,
       type: 'translation' as const,
-      itemName: queue.instances.join(', '),
-      details: `Instances: ${queue.instances.join(', ')}`,
-      languages: queue.languages,
+      itemName: Array.isArray(queue.instances) ? queue.instances.join(', ') : 'No instances',
+      details: `Instances: ${Array.isArray(queue.instances) ? queue.instances.join(', ') : 'No instances'}`,
+      languages: Array.isArray(queue.languages) ? queue.languages : [],
       status: queue.status,
       username: queue.username,
       timestamp: queue.timestamp
     })),
-    ...proofreadingQueues.map(queue => ({
+    ...safeProofreadingQueues.map(queue => ({
       id: queue.id,
       type: 'proofreading' as const,
-      itemName: queue.documentName,
-      details: `${queue.contractNumber} - ${queue.planName}`,
-      languages: queue.languages,
+      itemName: queue.documentName || 'Unknown Document',
+      details: `${queue.contractNumber || 'N/A'} - ${queue.planName || 'N/A'}`,
+      languages: Array.isArray(queue.languages) ? queue.languages : [],
       status: queue.status,
       username: queue.username,
       timestamp: queue.timestamp
