@@ -2938,97 +2938,58 @@ function CollaborateMain() {
   
   return (
     <div className="space-y-4">
-      {/* Top-level Filters */}
-      <Card>
-        <CardContent className="pt-4">
-          <div className="flex items-center gap-4">
-            <div className="flex-1 space-y-1">
-              <Label className="text-sm font-medium">Filter by Workflow Stage</Label>
-              <Select value={workflowStageFilter} onValueChange={setWorkflowStageFilter}>
-                <SelectTrigger className="h-9">
-                  <SelectValue placeholder="All workflow stages" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All workflow stages</SelectItem>
-                  <SelectItem value="Collection Updates In Progress">Collection Updates In Progress</SelectItem>
-                  <SelectItem value="Ready For Review">Ready For Review</SelectItem>
-                  <SelectItem value="Updates Ready">Updates Ready</SelectItem>
-                  <SelectItem value="Review Completed">Review Completed</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="flex-1 space-y-1">
-              <Label className="text-sm font-medium">Filter by Collaborator</Label>
-              <Input
-                value={collaboratorFilter}
-                onChange={(e) => setCollaboratorFilter(e.target.value)}
-                placeholder="Search collaborators..."
-                className="h-9"
-              />
-            </div>
-            
-            <div className="flex items-end gap-2">
-              <Button 
-                variant="outline"
-                onClick={() => {
-                  setWorkflowStageFilter('')
-                  setCollaboratorFilter('')
-                }}
-                className="h-9"
-              >
-                Clear Filters
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={() => {
-                  // Simulate sync from repository
-                  alert('Syncing from repository...')
-                  // In a real app, this would trigger an API call to sync data
-                }}
-                className="h-9"
-                title="Sync from repository"
-              >
-                <ArrowsClockwise size={16} className="mr-2" />
-                Sync from Repository
-              </Button>
-            </div>
-          </div>
-          
-          {/* Active filters summary */}
-          {(workflowStageFilter || collaboratorFilter) && (
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t">
-              <span className="text-sm font-medium text-muted-foreground">Active filters:</span>
-              {workflowStageFilter && (
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  Stage: {workflowStageFilter}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-4 w-4 p-0 hover:bg-transparent"
-                    onClick={() => setWorkflowStageFilter('')}
-                  >
-                    <X size={10} />
-                  </Button>
-                </Badge>
-              )}
-              {collaboratorFilter && (
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  Collaborator: {collaboratorFilter}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-4 w-4 p-0 hover:bg-transparent"
-                    onClick={() => setCollaboratorFilter('')}
-                  >
-                    <X size={10} />
-                  </Button>
-                </Badge>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {/* Search Bar and Filter Bubbles */}
+      <div className="space-y-4">
+        {/* Search Bar */}
+        <div className="relative">
+          <MagnifyingGlass size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={collaboratorFilter}
+            onChange={(e) => setCollaboratorFilter(e.target.value)}
+            placeholder="Search documents, contract numbers, or plan names..."
+            className="pl-10 h-12 text-base"
+          />
+        </div>
+
+        {/* Filter Bubble Buttons */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button
+            variant={workflowStageFilter === '' ? 'default' : 'outline'}
+            onClick={() => setWorkflowStageFilter('')}
+            className="h-8 px-4 rounded-full"
+          >
+            All Types
+          </Button>
+          <Button
+            variant={workflowStageFilter === 'Collection Updates In Progress' ? 'default' : 'outline'}
+            onClick={() => setWorkflowStageFilter('Collection Updates In Progress')}
+            className="h-8 px-4 rounded-full"
+          >
+            ANOC
+          </Button>
+          <Button
+            variant={workflowStageFilter === 'Ready For Review' ? 'default' : 'outline'}
+            onClick={() => setWorkflowStageFilter('Ready For Review')}
+            className="h-8 px-4 rounded-full"
+          >
+            EOC
+          </Button>
+          <Button
+            variant={workflowStageFilter === 'Updates Ready' ? 'default' : 'outline'}
+            onClick={() => setWorkflowStageFilter('Updates Ready')}
+            className="h-8 px-4 rounded-full"
+          >
+            SB
+          </Button>
+          <Button
+            variant={workflowStageFilter === 'Review Completed' ? 'default' : 'outline'}
+            onClick={() => setWorkflowStageFilter('Review Completed')}
+            className="h-8 px-4 rounded-full"
+          >
+            Handbook
+          </Button>
+        </div>
+      </div>
 
       {/* Actions and Column Controls */}
       <div className="flex items-center justify-between">
