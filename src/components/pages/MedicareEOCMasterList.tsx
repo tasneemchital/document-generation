@@ -67,9 +67,9 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
   ];
 
   return (
-    <div className="h-full bg-background flex flex-col">
+    <div className="h-full bg-background flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="bg-card border-b border-border px-6 py-4">
+      <div className="bg-card border-b border-border px-6 py-4 flex-shrink-0">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-semibold text-foreground">Global Template</h1>
           <Button variant="outline" size="sm">
@@ -144,7 +144,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
       </div>
 
       {/* Section Title */}
-      <div className="px-6 py-3 border-b border-border">
+      <div className="px-6 py-3 border-b border-border flex-shrink-0">
         <h2 className="text-lg font-medium text-foreground">{section}</h2>
       </div>
 
@@ -253,7 +253,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
       </div>
 
       {/* Bottom Tabs */}
-      <div className="border-t border-border bg-card">
+      <div className="border-t border-border bg-card flex-shrink-0">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="flex items-center justify-between px-6">
             <TabsList className="bg-transparent h-12">
