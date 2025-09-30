@@ -254,74 +254,88 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboard
           </Button>
-          <h1 className="text-2xl font-semibold">Template</h1>
+          <h1 className="text-2xl font-semibold">Global Template</h1>
         </div>
       </div>
 
-      <div className="flex-1 p-6">
-        <Card className="h-full">
-          <div className="p-6 space-y-6">
-            {/* Header Controls */}
-            <div className="flex items-center gap-4 pb-4 border-b">
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium">View:</label>
-                <Select value={selectedView} onValueChange={setSelectedView}>
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Select view" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="medicare-eoc">Medicare EOC</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium">Instance:</label>
-                <Select value={selectedInstance} onValueChange={setSelectedInstance}>
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Select instance" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="hmo-mapd">HMO MAPD</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium">Section:</label>
-                <Select value={selectedSection} onValueChange={handleSectionChange}>
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Select section" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {sectionOptions.map((section) => (
-                      <SelectItem key={section} value={section}>
-                        {section}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <h2 className="text-lg font-semibold ml-4">
-                {selectedSection || 'Chapter 1'}
-              </h2>
-              
-              <div className="ml-auto">
-                <Button 
-                  onClick={handleSave}
-                  disabled={!isModified}
-                  className="bg-primary hover:bg-primary/90"
+      <div className="flex-1 flex overflow-hidden">
+        {/* Left Sidebar - Section Navigation */}
+        <div className="w-64 border-r bg-card">
+          <div className="p-4 border-b">
+            <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Sections</h3>
+          </div>
+          <ScrollArea className="h-full">
+            <div className="p-2 space-y-1">
+              {sectionOptions.map((section) => (
+                <Button
+                  key={section}
+                  variant={selectedSection === section ? "default" : "ghost"}
+                  className={`w-full justify-start text-left h-9 ${
+                    selectedSection === section 
+                      ? "bg-primary text-primary-foreground shadow-sm" 
+                      : "hover:bg-muted"
+                  }`}
+                  onClick={() => handleSectionChange(section)}
                 >
-                  <FloppyDisk className="h-4 w-4 mr-2" />
-                  {isModified ? 'Save Changes' : 'Saved'}
+                  <span className="truncate">{section}</span>
                 </Button>
+              ))}
+            </div>
+          </ScrollArea>
+        </div>
+
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <Card className="flex-1 m-6 flex flex-col">
+            <div className="p-6 border-b flex-shrink-0">
+              {/* Header Controls */}
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium">View:</label>
+                  <Select value={selectedView} onValueChange={setSelectedView}>
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="Select view" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="medicare-eoc">Medicare EOC</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium">Instance:</label>
+                  <Select value={selectedInstance} onValueChange={setSelectedInstance}>
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="Select instance" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="hmo-mapd">HMO MAPD</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="ml-auto">
+                  <Button 
+                    onClick={handleSave}
+                    disabled={!isModified}
+                    className="bg-primary hover:bg-primary/90"
+                  >
+                    <FloppyDisk className="h-4 w-4 mr-2" />
+                    {isModified ? 'Save Changes' : 'Saved'}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold">
+                  {selectedSection || 'Chapter 1'}
+                </h2>
               </div>
             </div>
 
             {/* Editor Section */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-b pb-3">
+            <div className="flex-1 flex flex-col overflow-hidden p-6">
+              <div className="flex items-center justify-between border-b pb-3 mb-4">
                 <h3 className="text-lg font-medium">Content Template</h3>
                 <div className="flex items-center gap-1">
                   {/* Text formatting group */}
@@ -390,7 +404,7 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
                 Select rule text (highlighted blocks containing [RULE-xxx]...[/RULE-xxx]) and click "Edit Rule" to modify rule content.
               </div>
 
-              <div className="h-[500px] border rounded-lg overflow-hidden">
+              <div className="flex-1 border rounded-lg overflow-hidden">
                 <Textarea
                   ref={editorRef}
                   value={editorContent}
@@ -400,8 +414,8 @@ export function Template({ onNavigate, onEditRule }: TemplateProps) {
                 />
               </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </div>
 
       {/* CML Dialog */}
