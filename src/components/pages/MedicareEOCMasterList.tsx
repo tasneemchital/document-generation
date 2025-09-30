@@ -114,16 +114,17 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-foreground">Instances</span>
             <Select value={instances} onValueChange={setInstances}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-48">
                 <SelectValue />
                 <CaretDown size={16} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Medicare EOC">Medicare EOC</SelectItem>
-                <SelectItem value="PPO">PPO</SelectItem>
-                <SelectItem value="MAPD">MAPD</SelectItem>
+                <SelectItem value="PPO MAPD">PPO MAPD</SelectItem>
                 <SelectItem value="PDP">PDP</SelectItem>
                 <SelectItem value="DSNP">DSNP</SelectItem>
+                <SelectItem value="PPO">PPO</SelectItem>
+                <SelectItem value="MAPD">MAPD</SelectItem>
                 <SelectItem value="EGWP">EGWP</SelectItem>
                 <SelectItem value="HMO">HMO</SelectItem>
                 <SelectItem value="Regional PPO">Regional PPO</SelectItem>
