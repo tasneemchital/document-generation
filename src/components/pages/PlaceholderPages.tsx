@@ -2408,6 +2408,10 @@ function CollaborateMain() {
   // Layout mode state - grid (table) or card view
   const [layoutMode, setLayoutMode] = useKV('collaborate-layout-mode', 'grid' as 'grid' | 'card')
   
+  // Top-level filters for workflow stage and collaborator
+  const [workflowStageFilter, setWorkflowStageFilter] = useState<string>('')
+  const [collaboratorFilter, setCollaboratorFilter] = useState<string>('')
+  
   // Column filters for search
   const [columnFilters, setColumnFilters] = useState({
     id: '',
@@ -2673,6 +2677,16 @@ function CollaborateMain() {
   // Filter and sort data
   const filteredAndSortedData = useMemo(() => {
     let filtered = collaborateData.filter(item => {
+      // Apply top-level workflow stage filter
+      if (workflowStageFilter && !item.workflowStage.toLowerCase().includes(workflowStageFilter.toLowerCase())) {
+        return false
+      }
+      
+      // Apply top-level collaborator filter
+      if (collaboratorFilter && !item.reviewersInvolved.toLowerCase().includes(collaboratorFilter.toLowerCase()) && !item.queuedBy.toLowerCase().includes(collaboratorFilter.toLowerCase())) {
+        return false
+      }
+      
       // Apply column filters
       if (columnFilters.id && !item.id.toLowerCase().includes(columnFilters.id.toLowerCase())) {
         return false
@@ -2740,7 +2754,7 @@ function CollaborateMain() {
     }
     
     return filtered
-  }, [collaborateData, sortField, sortDirection, columnFilters])
+  }, [collaborateData, sortField, sortDirection, columnFilters, workflowStageFilter, collaboratorFilter])
   
   // Pagination calculations
   const totalPages = Math.ceil(filteredAndSortedData.length / pageSize)
@@ -2751,7 +2765,7 @@ function CollaborateMain() {
   // Reset to page 1 when sort or filters change
   useEffect(() => {
     setCurrentPage(1)
-  }, [sortField, sortDirection, columnFilters])
+  }, [sortField, sortDirection, columnFilters, workflowStageFilter, collaboratorFilter])
   
   const handleSort = (field: string) => {
     if (sortField === field) {
@@ -2924,15 +2938,119 @@ function CollaborateMain() {
   
   return (
     <div className="space-y-4">
+      {/* Top-level Filters */}
+      <Card>
+        <CardContent className="pt-4">
+          <div className="flex items-center gap-4">
+            <div className="flex-1 space-y-1">
+              <Label className="text-sm font-medium">Filter by Workflow Stage</Label>
+              <Select value={workflowStageFilter} onValueChange={setWorkflowStageFilter}>
+                <SelectTrigger className="h-9">
+                  <SelectValue placeholder="All workflow stages" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All workflow stages</SelectItem>
+                  <SelectItem value="Collection Updates In Progress">Collection Updates In Progress</SelectItem>
+                  <SelectItem value="Ready For Review">Ready For Review</SelectItem>
+                  <SelectItem value="Updates Ready">Updates Ready</SelectItem>
+                  <SelectItem value="Review Completed">Review Completed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="flex-1 space-y-1">
+              <Label className="text-sm font-medium">Filter by Collaborator</Label>
+              <Input
+                value={collaboratorFilter}
+                onChange={(e) => setCollaboratorFilter(e.target.value)}
+                placeholder="Search collaborators..."
+                className="h-9"
+              />
+            </div>
+            
+            <div className="flex items-end gap-2">
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  setWorkflowStageFilter('')
+                  setCollaboratorFilter('')
+                }}
+                className="h-9"
+              >
+                Clear Filters
+              </Button>
+            </div>
+          </div>
+          
+          {/* Active filters summary */}
+          {(workflowStageFilter || collaboratorFilter) && (
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t">
+              <span className="text-sm font-medium text-muted-foreground">Active filters:</span>
+              {workflowStageFilter && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  Stage: {workflowStageFilter}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-4 w-4 p-0 hover:bg-transparent"
+                    onClick={() => setWorkflowStageFilter('')}
+                  >
+                    <X size={10} />
+                  </Button>
+                </Badge>
+              )}
+              {collaboratorFilter && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  Collaborator: {collaboratorFilter}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-4 w-4 p-0 hover:bg-transparent"
+                    onClick={() => setCollaboratorFilter('')}
+                  >
+                    <X size={10} />
+                  </Button>
+                </Badge>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Actions and Column Controls */}
       <div className="flex items-center justify-between">
-        <div className="text-sm text-muted-foreground">
-          {filteredAndSortedData.length} items total
-          {selectedRows.length > 0 && (
-            <Badge variant="secondary" className="ml-3">
-              {selectedRows.length} selected
-            </Badge>
-          )}
+        <div className="flex items-center gap-4">
+          <div className="text-sm text-muted-foreground">
+            {filteredAndSortedData.length} items total
+            {selectedRows.length > 0 && (
+              <Badge variant="secondary" className="ml-3">
+                {selectedRows.length} selected
+              </Badge>
+            )}
+          </div>
+          
+          {/* Layout mode toggle */}
+          <div className="flex items-center gap-2">
+            <Label className="text-sm font-medium">View:</Label>
+            <div className="flex items-center border rounded-lg p-1">
+              <Button
+                variant={layoutMode === 'grid' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setLayoutMode('grid')}
+                className="h-7 px-2"
+              >
+                <Rows size={14} />
+              </Button>
+              <Button
+                variant={layoutMode === 'card' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setLayoutMode('card')}
+                className="h-7 px-2"
+              >
+                <FrameCorners size={14} />
+              </Button>
+            </div>
+          </div>
         </div>
         
         <div className="flex items-center gap-3">
