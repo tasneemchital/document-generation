@@ -8,7 +8,6 @@ import {
   Robot,
   ListBullets,
   Translate,
-  Briefcase,
   Globe,
   CaretDown,
   CaretRight,
@@ -45,7 +44,6 @@ const navigationItems: NavigationItem[] = [
       { id: 'global-template', label: 'Global Template', icon: FilePdf },
     ]
   },
-  { id: 'portfolio', label: 'Review', icon: Briefcase },
   { id: 'template', label: 'Template', icon: File },
   { id: 'design-studio', label: 'Design Studio', icon: PaintBrush },
   { 
