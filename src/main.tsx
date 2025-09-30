@@ -7,7 +7,7 @@ import { ErrorFallback } from './ErrorFallback.tsx'
 import "./main.css"
 import "./index.css"
 
-// Initialize mock spark implementation
+// Initialize spark mock for production
 import './lib/spark-mock.ts'
 
 createRoot(document.getElementById('root')!).render(

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useKV } from '@github/spark/hooks'
 import { Navigation } from '@/components/Navigation'
 import { TopBar } from '@/components/TopBar'
@@ -25,12 +25,8 @@ import { Documents } from '@/components/pages/Documents'
 import { DocumentViewer } from '@/components/pages/DocumentViewer'
 import { NavigationDemo } from '@/components/NavigationDemo'
 import { RuleData } from '@/lib/types'
-import { refreshApp } from '@/lib/refresh'
 
 function App() {
-  // Force a complete refresh by incrementing a key on mount
-  const [refreshKey, setRefreshKey] = useState(Date.now())
-  
   const [currentPage, setCurrentPage] = useKV('sda-current-page', 'dashboard')
   const [isCollapsed, setIsCollapsed] = useKV('sda-sidebar-collapsed', false)
   const [editingRule, setEditingRule] = useKV<RuleData | null>('dcm-editing-rule', null)
@@ -40,22 +36,6 @@ function App() {
   const [selectedProductName, setSelectedProductName] = useKV<string>('selected-product-name', '')
   const [selectedDocumentId, setSelectedDocumentId] = useKV<string>('selected-document-id', '')
   const [selectedDocumentName, setSelectedDocumentName] = useKV<string>('selected-document-name', '')
-
-  // Force refresh on mount and add keyboard shortcut
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === 'r') {
-        e.preventDefault()
-        refreshApp()
-      }
-    }
-    
-    // Trigger immediate refresh
-    refreshApp()
-    
-    window.addEventListener('keydown', handleKeyPress)
-    return () => window.removeEventListener('keydown', handleKeyPress)
-  }, [])
 
   const handleRuleCreate = (newRule: RuleData) => {
     setRules((current: RuleData[]) => {
@@ -193,7 +173,7 @@ function App() {
   }
 
   return (
-    <div key={refreshKey} className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-screen bg-background">
       <TopBar onToggleSidebar={() => setIsCollapsed(!isCollapsed)} />
       <div className="flex flex-1 overflow-hidden">
         <Navigation 
