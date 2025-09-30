@@ -21,6 +21,12 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import {
   Funnel,
   Eye,
   Calendar,
@@ -381,26 +387,40 @@ export function Documents({ onNavigate, onDocumentSelect }: DocumentsProps) {
         </div>
         <div className="flex items-center gap-2">
           {/* Layout Toggle */}
-          <div className="flex items-center border rounded-lg">
-            <Button
-              variant={viewMode === 'grid' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setViewMode('grid')}
-              className="rounded-r-none"
-            >
-              <Rows className="w-4 h-4 mr-2" />
-              Grid
-            </Button>
-            <Button
-              variant={viewMode === 'card' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setViewMode('card')}
-              className="rounded-l-none"
-            >
-              <GridFour className="w-4 h-4 mr-2" />
-              Cards
-            </Button>
-          </div>
+          <TooltipProvider>
+            <div className="flex items-center border rounded-lg">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setViewMode('grid')}
+                    className="rounded-r-none"
+                  >
+                    <Rows className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Grid View</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={viewMode === 'card' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setViewMode('card')}
+                    className="rounded-l-none"
+                  >
+                    <GridFour className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Card View</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
           <Button variant="outline" size="sm">
             <Download className="w-4 h-4 mr-2" />
             Export
