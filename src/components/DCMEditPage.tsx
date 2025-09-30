@@ -26,6 +26,7 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
   const [formData, setFormData] = useState<RuleData>({
     id: '',
     ruleId: '',
+    ruleName: '',
     effectiveDate: '01/01/2025',
     version: '2025',
     benefitType: 'Out of Pocket Maximum',
@@ -203,6 +204,7 @@ export function DCMEditPage({ rule, onNavigate, onSave, mode }: DCMEditPageProps
         setFormData({
           id: '',
           ruleId: '',
+          ruleName: '',
           effectiveDate: '01/01/2025',
           version: '2025',
           benefitType: 'Out of Pocket Maximum',

@@ -80,18 +80,18 @@ export function AdvancedFilter({ rules, onFiltersChange }: AdvancedFilterProps) 
   // Extract unique values for multi-select filters
   const uniqueValues = useMemo(() => {
     return {
-      version: [...new Set(rules.map(r => r.version).filter(v => v && v.trim() !== ''))],
-      templateName: [...new Set(rules.map(r => r.templateName).filter(v => v && v.trim() !== ''))],
-      serviceId: [...new Set(rules.map(r => r.serviceId).filter(v => v && v.trim() !== ''))],
-      chapterName: [...new Set(rules.map(r => r.chapterName).filter(v => v && v.trim() !== ''))],
-      sectionName: [...new Set(rules.map(r => r.sectionName).filter(v => v && v.trim() !== ''))],
-      subsectionName: [...new Set(rules.map(r => r.subsectionName).filter(v => v && v.trim() !== ''))],
-      serviceGroup: [...new Set(rules.map(r => r.serviceGroup).filter(v => v && v.trim() !== ''))],
-      sourceMapping: [...new Set(rules.map(r => r.sourceMapping).filter(v => v && v.trim() !== ''))],
-      tiers: [...new Set(rules.map(r => r.tiers).filter(v => v && v.trim() !== ''))],
-      key: [...new Set(rules.map(r => r.key).filter(v => v && v.trim() !== ''))],
-      englishStatus: [...new Set(rules.map(r => r.englishStatus).filter(v => v && v.trim() !== ''))],
-      spanishStatus: [...new Set(rules.map(r => r.spanishStatus).filter(v => v && v.trim() !== ''))]
+      version: [...new Set(rules.map(r => r.version).filter((v): v is string => v != null && v.trim() !== ''))],
+      templateName: [...new Set(rules.map(r => r.templateName).filter((v): v is string => v != null && v.trim() !== ''))],
+      serviceId: [...new Set(rules.map(r => r.serviceId).filter((v): v is string => v != null && v.trim() !== ''))],
+      chapterName: [...new Set(rules.map(r => r.chapterName).filter((v): v is string => v != null && v.trim() !== ''))],
+      sectionName: [...new Set(rules.map(r => r.sectionName).filter((v): v is string => v != null && v.trim() !== ''))],
+      subsectionName: [...new Set(rules.map(r => r.subsectionName).filter((v): v is string => v != null && v.trim() !== ''))],
+      serviceGroup: [...new Set(rules.map(r => r.serviceGroup).filter((v): v is string => v != null && v.trim() !== ''))],
+      sourceMapping: [...new Set(rules.map(r => r.sourceMapping).filter((v): v is string => v != null && v.trim() !== ''))],
+      tiers: [...new Set(rules.map(r => r.tiers).filter((v): v is string => v != null && v.trim() !== ''))],
+      key: [...new Set(rules.map(r => r.key).filter((v): v is string => v != null && v.trim() !== ''))],
+      englishStatus: [...new Set(rules.map(r => r.englishStatus).filter((v): v is string => v != null && v.trim() !== ''))],
+      spanishStatus: [...new Set(rules.map(r => r.spanishStatus).filter((v): v is string => v != null && v.trim() !== ''))]
     };
   }, [rules]);
 

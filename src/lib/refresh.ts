@@ -1,10 +1,13 @@
 // Refresh utility to clear all caches and force reload
 export const clearAllData = async () => {
   try {
-    // Clear all KV data
-    const keys = await spark.kv.keys()
-    for (const key of keys) {
-      await spark.kv.delete(key)
+    // Check if spark is available before using it
+    if (typeof window !== 'undefined' && window.spark?.kv) {
+      // Clear all KV data
+      const keys = await window.spark.kv.keys()
+      for (const key of keys) {
+        await window.spark.kv.delete(key)
+      }
     }
     
     // Force page refresh

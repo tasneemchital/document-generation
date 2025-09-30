@@ -24,7 +24,7 @@ export function MedicareEOCDashboard({ onNavigate }: MedicareEOCDashboardProps) 
       description: 'Review the current Medicare Evidence of Coverage document',
       icon: Eye,
       color: 'bg-primary text-primary-foreground',
-      action: () => console.log('View EOC clicked')
+      action: () => {} // View EOC placeholder
     },
     {
       id: 'edit-eoc',
@@ -40,7 +40,7 @@ export function MedicareEOCDashboard({ onNavigate }: MedicareEOCDashboardProps) 
       description: 'Organize and manage EOC chapters and sections',
       icon: BookOpen,
       color: 'bg-secondary text-secondary-foreground',
-      action: () => console.log('Chapter Management clicked')
+      action: () => {} // Chapter Management placeholder
     },
     {
       id: 'compliance-review',
@@ -48,7 +48,7 @@ export function MedicareEOCDashboard({ onNavigate }: MedicareEOCDashboardProps) 
       description: 'Verify EOC compliance with Medicare regulations',
       icon: Shield,
       color: 'bg-muted text-muted-foreground',
-      action: () => console.log('Compliance Review clicked')
+      action: () => {} // Compliance Review placeholder
     },
     {
       id: 'member-materials',

@@ -27,7 +27,7 @@ export function DigitalContentManager({ onNavigate, onEditRule }: DigitalContent
       try {
         const mockRules = await generateMockRuleData();
         setRules(mockRules);
-        console.log('Loaded', mockRules.length, 'rules into Digital Content Manager');
+        // Rules loaded successfully
         
         // Show success message for refresh
         toast.success(`Data refreshed! Loaded ${mockRules.length} rules`);

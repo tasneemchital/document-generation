@@ -249,8 +249,13 @@ export async function parseDraftCY2026(): Promise<RuleData[]> {
     const rule: RuleData = {
       id: `rule-${ruleCounter}`,
       ruleId: ruleId,
+      ruleName: `Rule ${ruleCounter} - ${ruleDef.chapter}`,
       effectiveDate: '2026-01-01',
       version: '1.0',
+      benefitType: 'Medical',
+      businessArea: 'Clinical',
+      subBusinessArea: 'Primary Care',
+      description: `Rule for ${ruleDef.chapter} - ${ruleDef.section}`,
       templateName: `CY2026 HMO MAPD Template ${Math.floor(index / 5) + 1}`,
       serviceId: `SRV-${String(ruleCounter).padStart(3, '0')}-01`,
       cmsRegulated: index % 3 !== 0, // Most are CMS regulated

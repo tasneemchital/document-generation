@@ -252,8 +252,8 @@ export function TranslationStudio() {
   const handleQueueTranslation = async () => {
     if (selectedDocuments.length === 0 || selectedLanguages.length === 0) return
 
-    // Get current user info
-    const user = await spark.user()
+    // Get current user info (mock for now)
+    const user = { login: 'currentuser' }
     
     // Create a separate job for each document-language combination
     const newJobs: TranslationJob[] = []

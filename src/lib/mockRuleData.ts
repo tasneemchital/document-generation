@@ -135,6 +135,7 @@ export function generateMockRuleData(): Promise<RuleData[]> {
         rules.push({
           id: `rule-${i + 1}`,
           ruleId: `R${String(i + 1).padStart(4, '0')}`,
+          ruleName: `Rule ${i + 1} - ${item.template}`,
           effectiveDate: '01/01/2025',
           version: `${Math.floor(Math.random() * 3) + 1}.${Math.floor(Math.random() * 10)}`,
           benefitType: benefitTypes[Math.floor(Math.random() * benefitTypes.length)],
@@ -176,6 +177,7 @@ export function generateMockRuleData(): Promise<RuleData[]> {
         rules.push({
           id: `rule-${i + 1}`,
           ruleId: `R${String(i + 1).padStart(4, '0')}`,
+          ruleName: `Rule ${i + 1} - ${template}`,
           effectiveDate: '01/01/2025',
           version: `${Math.floor(Math.random() * 3) + 1}.${Math.floor(Math.random() * 10)}`,
           benefitType: benefitTypes[Math.floor(Math.random() * benefitTypes.length)],
@@ -208,6 +210,7 @@ export function generateMockRuleData(): Promise<RuleData[]> {
       rules.push({
         id: 'rule-175',
         ruleId: '175',
+        ruleName: 'Rule 175 - Test Rule',
         effectiveDate: '01/01/2025',
         version: '1.0',
         benefitType: 'Medical',

@@ -11,7 +11,7 @@ import {
   CalendarCheck, 
   Users,
   Clock,
-  ArrowRepeat,
+  ArrowClockwise,
   Eye,
   Trash,
   FunnelSimple,
@@ -67,7 +67,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       gradient: 'from-amber-500 to-orange-500',
       bgColor: 'bg-gradient-to-br from-amber-50 to-orange-100/50',
       iconBg: 'bg-gradient-to-br from-amber-500 to-orange-500',
-      action: () => console.log('Ask BNI (Benny) clicked')
+      action: () => onNavigate('ask-benny')
     },
     {
       id: 'collaborate',
@@ -246,7 +246,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" size="sm" className="hover:bg-white/50 backdrop-blur-sm transition-all duration-200">
-                    <ArrowRepeat size={16} />
+                    <ArrowClockwise size={16} />
                   </Button>
                   <Button variant="ghost" size="sm" className="hover:bg-white/50 backdrop-blur-sm transition-all duration-200">
                     <Eye size={16} />
