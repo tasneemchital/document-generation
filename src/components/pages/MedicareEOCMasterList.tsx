@@ -67,9 +67,9 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="bg-card border-b border-border px-6 py-4">
+    <div className="h-full flex flex-col bg-background overflow-hidden">
+      {/* Header - Fixed */}
+      <div className="flex-none bg-card border-b border-border px-6 py-4">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-semibold text-foreground">Global Template</h1>
           <Button variant="outline" size="sm">
@@ -143,17 +143,17 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
         </div>
       </div>
 
-      {/* Section Title */}
-      <div className="px-6 py-3 border-b border-border">
+      {/* Section Title - Fixed */}
+      <div className="flex-none px-6 py-3 border-b border-border bg-card">
         <h2 className="text-lg font-medium text-foreground">{section}</h2>
       </div>
 
-      {/* Content Area */}
-      <div className="flex">
+      {/* Main Content Area - Scrollable */}
+      <div className="flex-1 flex overflow-hidden">
         {/* Main Editor Area */}
-        <div className="flex-1 bg-white flex flex-col">
-          {/* Toolbar */}
-          <div className="border-b border-border px-4 py-2 bg-muted/30">
+        <div className="flex-1 flex flex-col bg-white overflow-hidden">
+          {/* Toolbar - Fixed */}
+          <div className="flex-none border-b border-border px-4 py-2 bg-muted/30">
             <div className="flex items-center gap-4 text-sm">
               <span>File</span>
               <span>Edit</span>
@@ -165,8 +165,8 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
             </div>
           </div>
 
-          {/* Editor Toolbar */}
-          <div className="border-b border-border px-4 py-2 bg-muted/10">
+          {/* Editor Toolbar - Fixed */}
+          <div className="flex-none border-b border-border px-4 py-2 bg-muted/10">
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="sm" className="p-1">
                 <span className="text-sm">💬</span>
@@ -232,12 +232,12 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
             </div>
           </div>
 
-          {/* Document Content - Scrollable */}
-          <div className="bg-white">
-            <div className="p-6 text-black">
+          {/* Document Content - Scrollable Area */}
+          <div className="flex-1 overflow-auto bg-white">
+            <div className="p-6 text-black min-h-full">
               <div 
                 ref={contentRef}
-                className="space-y-4 min-h-[800px] focus:outline-none"
+                className="space-y-4 min-h-[1200px] focus:outline-none"
                 contentEditable
                 suppressContentEditableWarning
                 dangerouslySetInnerHTML={{ __html: sanitizeHtml(documentContent) }}
@@ -250,8 +250,8 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
         </div>
       </div>
 
-      {/* Bottom Tabs */}
-      <div className="border-t border-border bg-card">
+      {/* Bottom Tabs - Fixed */}
+      <div className="flex-none border-t border-border bg-card">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="flex items-center justify-between px-6">
             <TabsList className="bg-transparent h-12">
@@ -268,19 +268,19 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
             </div>
           </div>
           
-          <TabsContent value="Errors" className="px-6 py-4">
+          <TabsContent value="Errors" className="px-6 py-4 max-h-32 overflow-auto">
             <div className="text-sm text-muted-foreground">
               No errors found.
             </div>
           </TabsContent>
           
-          <TabsContent value="Activity Log" className="px-6 py-4">
+          <TabsContent value="Activity Log" className="px-6 py-4 max-h-32 overflow-auto">
             <div className="text-sm text-muted-foreground">
               Activity log is empty.
             </div>
           </TabsContent>
           
-          <TabsContent value="Journal" className="px-6 py-4">
+          <TabsContent value="Journal" className="px-6 py-4 max-h-32 overflow-auto">
             <div className="text-sm text-muted-foreground">
               No journal entries.
             </div>
