@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +16,7 @@ import { format, parse, isValid } from 'date-fns';
 import { 
   ArrowDown, 
   ArrowUp,
-  Edit, 
+  PencilSimple as Edit, 
   FloppyDisk, 
   X, 
   Plus,
@@ -26,7 +27,8 @@ import {
   PencilSimple,
   Eye,
   Trash,
-  DownloadSimple,
+  DownloadSimple as Download,
+  Columns,
   Copy,
   Upload
 } from '@phosphor-icons/react';
@@ -385,6 +387,45 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
   const handleLastPage = () => setCurrentPage(totalPages);
   const handlePreviousPage = () => setCurrentPage(Math.max(1, currentPage - 1));
   const handleNextPage = () => setCurrentPage(Math.min(totalPages, currentPage + 1));
+
+  // Export function for downloading rules
+  const handleExportToExcel = () => {
+    try {
+      // Create CSV content
+      const headers = ['Rule ID', 'Effective Date', 'Version', 'Benefit Type', 'Business Area', 'Sub Business Area', 'Description', 'Template Name', 'Service ID', 'Status', 'Published'];
+      const csvContent = [
+        headers.join(','),
+        ...safeRules.map(rule => [
+          rule.ruleId || '',
+          rule.effectiveDate || '',
+          rule.version || '',
+          rule.benefitType || '',
+          rule.businessArea || '',
+          rule.subBusinessArea || '',
+          `"${(rule.description || '').replace(/"/g, '""')}"`,
+          rule.templateName || '',
+          rule.serviceId || '',
+          rule.status || '',
+          rule.published ? 'Yes' : 'No'
+        ].join(','))
+      ].join('\n');
+
+      // Create and download file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `rules_export_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast.success('Rules exported successfully');
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error('Failed to export rules');
+    }
+  };
 
 
   // Column filter handlers
@@ -1087,80 +1128,34 @@ export function RuleGrid({ rules, onRuleUpdate, onRuleCreate, onRuleDelete, onEd
               <h2 className="text-base font-semibold text-gray-900">Digital Content Manager - ANOC-EOC</h2>
             </div>
             <div className="flex items-center gap-3">
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="w-8 h-8 p-0 border-emerald-600 text-emerald-600 hover:bg-emerald-50 group relative"
-                onClick={handleDownloadExcel}
-              >
-                <DownloadSimple size={16} />
-                <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                  Download to Excel
-                </span>
-              </Button>
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="w-8 h-8 p-0 border-orange-600 text-orange-600 hover:bg-orange-50"
-                onClick={handleCopyRow}
-                disabled={selectedRows.size !== 1}
-                title="Copy selected row"
-              >
-                <Copy size={16} />
-              </Button>
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="w-8 h-8 p-0 border-purple-600 text-purple-600 hover:bg-purple-50"
-                onClick={handlePublishRows}
-                disabled={selectedRows.size === 0}
-                title="Release selected row(s)"
-              >
-                <Upload size={16} />
-              </Button>
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="w-8 h-8 p-0 border-blue-600 text-blue-600 hover:bg-blue-50"
-                onClick={handleBulkEdit}
-                disabled={selectedRows.size !== 1 || (selectedRows.size === 1 && safeRules.find(rule => rule.id === Array.from(selectedRows)[0])?.published)}
-                title={
-                  selectedRows.size !== 1 
-                    ? "Select exactly one rule to edit" 
-                    : (selectedRows.size === 1 && safeRules.find(rule => rule.id === Array.from(selectedRows)[0])?.published)
-                      ? "Released rules cannot be edited"
-                      : "Edit selected rule"
-                }
-              >
-                <Edit size={16} />
-              </Button>
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="w-8 h-8 p-0 border-green-600 text-green-600 hover:bg-green-50"
-                onClick={handleBulkPreview}
-                disabled={selectedRows.size !== 1}
-                title="Preview selected rule"
-              >
-                <Eye size={16} />
-              </Button>
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="w-8 h-8 p-0 border-red-600 text-red-600 hover:bg-red-50"
-                onClick={handleBulkDelete}
-                disabled={selectedRows.size === 0}
-                title="Delete selected rule(s)"
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  const selectedRuleIds = Array.from(selectedRows);
+                  if (selectedRuleIds.length === 0) {
+                    toast.error("Please select rules to delete");
+                    return;
+                  }
+                  // Handle bulk delete using the provided onRuleDelete
+                  selectedRuleIds.forEach(ruleId => onRuleDelete(ruleId));
+                  setSelectedRows(new Set());
+                  toast.success(`Deleted ${selectedRuleIds.length} rule(s)`);
+                }}
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
               >
                 <Trash size={16} />
               </Button>
-              <Button 
-                size="sm" 
-                onClick={handleCreateNewRule}
-                className="flex items-center gap-2 bg-purple-600 text-white hover:bg-purple-700"
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExportToExcel}
+                className="flex items-center gap-2 bg-purple-600 text-white hover:bg-purple-700 group relative"
               >
-                <Plus size={14} />
-                New Rule
+                <Download size={16} />
+                <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                  Download to Excel
+                </span>
               </Button>
             </div>
           </div>
