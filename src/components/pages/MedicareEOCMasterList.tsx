@@ -67,7 +67,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
   ];
 
   return (
-    <div className="h-full bg-background flex flex-col">
+    <div className="min-h-full bg-background flex flex-col">
       {/* Header */}
       <div className="bg-card border-b border-border px-6 py-4 flex-shrink-0">
         <div className="flex items-center justify-between mb-4">
@@ -149,9 +149,9 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 flex min-h-0">
+      <div className="flex flex-1 min-h-0">
         {/* Main Editor Area */}
-        <div className="flex-1 bg-white flex flex-col min-h-0">
+        <div className="flex-1 bg-white flex flex-col">
           {/* Toolbar */}
           <div className="border-b border-border px-4 py-2 bg-muted/30 flex-shrink-0">
             <div className="flex items-center gap-4 text-sm">
@@ -233,7 +233,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
           </div>
 
           {/* Document Content - Scrollable */}
-          <div className="flex-1 overflow-y-auto bg-white min-h-0">
+          <div className="flex-1 bg-white">
             <div className="p-6 text-black">
               <div 
                 ref={contentRef}
