@@ -2949,7 +2949,7 @@ function CollaborateMain() {
                   <SelectValue placeholder="All workflow stages" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All workflow stages</SelectItem>
+                  <SelectItem value="all">All workflow stages</SelectItem>
                   <SelectItem value="Collection Updates In Progress">Collection Updates In Progress</SelectItem>
                   <SelectItem value="Ready For Review">Ready For Review</SelectItem>
                   <SelectItem value="Updates Ready">Updates Ready</SelectItem>
