@@ -16,8 +16,7 @@ import {
   Users,
   Sparkle,
   Plus,
-  FileText,
-  Folder
+  FileText
 } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 
@@ -36,14 +35,6 @@ interface NavigationProps {
 
 const navigationItems: NavigationItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: House },
-  { 
-    id: 'manage', 
-    label: 'Manage', 
-    icon: Folder,
-    children: [
-      { id: 'global-template', label: 'Global Template', icon: FilePdf },
-    ]
-  },
   { id: 'template', label: 'Template', icon: File },
   { id: 'design-studio', label: 'Design Studio', icon: PaintBrush },
   { 
