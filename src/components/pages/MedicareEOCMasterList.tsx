@@ -67,9 +67,9 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
   ];
 
   return (
-    <div className="min-h-full bg-background flex flex-col">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-card border-b border-border px-6 py-4 flex-shrink-0">
+      <div className="bg-card border-b border-border px-6 py-4">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-semibold text-foreground">Global Template</h1>
           <Button variant="outline" size="sm">
@@ -144,16 +144,16 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
       </div>
 
       {/* Section Title */}
-      <div className="px-6 py-3 border-b border-border flex-shrink-0">
+      <div className="px-6 py-3 border-b border-border">
         <h2 className="text-lg font-medium text-foreground">{section}</h2>
       </div>
 
       {/* Content Area */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex">
         {/* Main Editor Area */}
-        <div className="flex-1 bg-white flex flex-col overflow-hidden">
+        <div className="flex-1 bg-white flex flex-col">
           {/* Toolbar */}
-          <div className="border-b border-border px-4 py-2 bg-muted/30 flex-shrink-0">
+          <div className="border-b border-border px-4 py-2 bg-muted/30">
             <div className="flex items-center gap-4 text-sm">
               <span>File</span>
               <span>Edit</span>
@@ -166,7 +166,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
           </div>
 
           {/* Editor Toolbar */}
-          <div className="border-b border-border px-4 py-2 bg-muted/10 flex-shrink-0">
+          <div className="border-b border-border px-4 py-2 bg-muted/10">
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="sm" className="p-1">
                 <span className="text-sm">💬</span>
@@ -233,7 +233,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
           </div>
 
           {/* Document Content - Scrollable */}
-          <div className="flex-1 bg-white overflow-y-auto">
+          <div className="bg-white">
             <div className="p-6 text-black">
               <div 
                 ref={contentRef}
@@ -251,7 +251,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
       </div>
 
       {/* Bottom Tabs */}
-      <div className="border-t border-border bg-card flex-shrink-0">
+      <div className="border-t border-border bg-card">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="flex items-center justify-between px-6">
             <TabsList className="bg-transparent h-12">
