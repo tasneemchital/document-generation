@@ -101,6 +101,8 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Medicare EOC">Medicare EOC</SelectItem>
+                <SelectItem value="Medicare ANOC">Medicare ANOC</SelectItem>
+                <SelectItem value="Medicare SB">Medicare SB</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -114,6 +116,10 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Medicare EOC">Medicare EOC</SelectItem>
+                <SelectItem value="PPO">PPO</SelectItem>
+                <SelectItem value="MAPD">MAPD</SelectItem>
+                <SelectItem value="PDP">PDP</SelectItem>
+                <SelectItem value="DSNP">DSNP</SelectItem>
               </SelectContent>
             </Select>
           </div>
