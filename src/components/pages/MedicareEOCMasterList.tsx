@@ -149,9 +149,9 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
       </div>
 
       {/* Content Area */}
-      <div className="flex flex-1 min-h-0">
+      <div className="flex flex-1 overflow-hidden">
         {/* Main Editor Area */}
-        <div className="flex-1 bg-white flex flex-col">
+        <div className="flex-1 bg-white flex flex-col overflow-hidden">
           {/* Toolbar */}
           <div className="border-b border-border px-4 py-2 bg-muted/30 flex-shrink-0">
             <div className="flex items-center gap-4 text-sm">
@@ -233,7 +233,7 @@ export function MedicareEOCMasterList({ onNavigate }: MedicareEOCMasterListProps
           </div>
 
           {/* Document Content - Scrollable */}
-          <div className="flex-1 bg-white">
+          <div className="flex-1 bg-white overflow-y-auto">
             <div className="p-6 text-black">
               <div 
                 ref={contentRef}
