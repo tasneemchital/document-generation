@@ -7027,16 +7027,170 @@ export function Manage() {
 }
 
 export function Configure() {
+  const [selectedSection, setSelectedSection] = useState('cover-page')
+  
+  // Document sections matching the image
+  const documentSections = [
+    { id: 'cover-page', label: '1. Cover Page', icon: '📄' },
+    { id: 'chapter-1', label: '2. Chapter 1: Getting Started as a Member', icon: '📖' },
+    { id: 'chapter-2', label: '3. Chapter 2: Important Phone Numbers and Resources', icon: '📞' },
+    { id: 'chapter-3', label: '4. Chapter 3: Using the Plan\'s Coverage for Medical Services', icon: '🏥' },
+    { id: 'chapter-4', label: '5. Chapter 4: Medical Benefits Chart', icon: '📊' },
+    { id: 'chapter-5', label: '6. Chapter 5: Using the Plan\'s Coverage for Prescription Drugs', icon: '💊' },
+    { id: 'chapter-6', label: '7. Chapter 6: What You Pay for Prescription Drugs', icon: '💰' },
+    { id: 'chapter-7', label: '8. Chapter 7: Asking Us to Pay Our Share of the Bill', icon: '📋' }
+  ]
+
+  const renderSectionContent = () => {
+    const section = documentSections.find(s => s.id === selectedSection)
+    return (
+      <div className="p-6">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-foreground mb-2">
+            {section?.label || 'Select a Section'}
+          </h2>
+          <p className="text-muted-foreground">
+            Configure content and settings for this section of the global template.
+          </p>
+        </div>
+        
+        <Card>
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              <div className="text-sm text-muted-foreground mb-4">
+                Section configuration options will be displayed here.
+              </div>
+              
+              {/* Placeholder content for each section */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Content Template</Label>
+                  <Select defaultValue="default">
+                    <SelectTrigger className="h-9">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="default">Default Template</SelectItem>
+                      <SelectItem value="custom">Custom Template</SelectItem>
+                      <SelectItem value="minimal">Minimal Template</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Layout Style</Label>
+                  <Select defaultValue="standard">
+                    <SelectTrigger className="h-9">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="standard">Standard Layout</SelectItem>
+                      <SelectItem value="compact">Compact Layout</SelectItem>
+                      <SelectItem value="expanded">Expanded Layout</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Include in Output</Label>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="include-section" defaultChecked={true} />
+                    <Label htmlFor="include-section" className="text-sm cursor-pointer">
+                      Include this section in generated documents
+                    </Label>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Version Control</Label>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="track-changes" />
+                    <Label htmlFor="track-changes" className="text-sm cursor-pointer">
+                      Enable change tracking
+                    </Label>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="pt-4 border-t">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-muted-foreground">
+                    Last modified: January 15, 2026 at 10:30 AM
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm">
+                      Preview
+                    </Button>
+                    <Button size="sm">
+                      Save Changes
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="p-4">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">Configure</h1>
-          <p className="text-muted-foreground mt-1">Configure system settings and resources</p>
-        </div>
+      <div className="mb-6">
+        <h1 className="text-2xl font-semibold text-foreground">Configure Module Global Template</h1>
+        <p className="text-muted-foreground mt-1">Configure section templates and content for global document generation</p>
       </div>
-      <div className="bg-card rounded-lg border border-border p-8 text-center">
-        <p className="text-muted-foreground">Configuration features coming soon...</p>
+      
+      <div className="flex gap-6 h-[calc(100vh-200px)]">
+        {/* Left Sidebar - Section Navigation */}
+        <Card className="w-80 flex-shrink-0">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Document Sections</CardTitle>
+            <CardDescription className="text-sm">
+              Select a section to configure
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="space-y-1 max-h-[calc(100vh-320px)] overflow-y-auto">
+              {documentSections.map((section) => (
+                <button
+                  key={section.id}
+                  onClick={() => setSelectedSection(section.id)}
+                  className={`
+                    w-full text-left p-3 rounded-lg transition-all duration-200 hover:bg-muted/50
+                    ${selectedSection === section.id 
+                      ? 'bg-primary/10 border border-primary/30 shadow-sm' 
+                      : 'hover:bg-muted/30'
+                    }
+                  `}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">{section.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className={`text-sm font-medium truncate ${
+                        selectedSection === section.id ? 'text-primary' : 'text-foreground'
+                      }`}>
+                        {section.label}
+                      </div>
+                    </div>
+                    {selectedSection === section.id && (
+                      <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+        
+        {/* Right Content Area */}
+        <Card className="flex-1">
+          <CardContent className="p-0 h-full">
+            <div className="h-full overflow-y-auto">
+              {renderSectionContent()}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
