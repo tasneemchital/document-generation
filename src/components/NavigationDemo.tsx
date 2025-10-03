@@ -14,7 +14,8 @@ import {
   PencilSimple,
   Lightning,
   Palette,
-  BookOpen
+  BookOpen,
+  Robot
 } from '@phosphor-icons/react'
 
 interface NavigationDemoProps {
@@ -113,6 +114,12 @@ export function NavigationDemo({ onNavigate }: NavigationDemoProps) {
           id: 'documents',
           label: 'Documents',
           icon: Files,
+          color: 'text-pink-600'
+        },
+        {
+          id: 'ask-benny',
+          label: 'Ask Benny',
+          icon: Robot,
           color: 'text-pink-600'
         }
       ]
