@@ -15,7 +15,10 @@ import {
   Lightning,
   Palette,
   BookOpen,
-  Robot
+  Robot,
+  Calendar,
+  CheckCircle,
+  Clock
 } from '@phosphor-icons/react'
 
 interface NavigationDemoProps {
@@ -185,37 +188,87 @@ export function NavigationDemo({ onNavigate }: NavigationDemoProps) {
         ))}
       </div>
 
-      {/* Quick Stats */}
+      {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-          <CardContent className="p-4 text-center">
-            <Files className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-blue-900">247</div>
-            <div className="text-sm text-blue-700">Documents</div>
+        <Card className="bg-white border border-border">
+          <CardContent className="p-6 text-center">
+            <FileText className="w-8 h-8 text-blue-500 mx-auto mb-3" />
+            <div className="text-3xl font-bold text-foreground mb-1">24</div>
+            <div className="text-sm text-muted-foreground">Documents</div>
           </CardContent>
         </Card>
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-          <CardContent className="p-4 text-center">
-            <Database className="w-8 h-8 text-green-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-green-900">45</div>
-            <div className="text-sm text-green-700">Active Rules</div>
+        <Card className="bg-white border border-border">
+          <CardContent className="p-6 text-center">
+            <Calendar className="w-8 h-8 text-green-500 mx-auto mb-3" />
+            <div className="text-3xl font-bold text-foreground mb-1">12</div>
+            <div className="text-sm text-muted-foreground">Active Rules</div>
           </CardContent>
         </Card>
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-          <CardContent className="p-4 text-center">
-            <Users className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-purple-900">12</div>
-            <div className="text-sm text-purple-700">Team Members</div>
+        <Card className="bg-white border border-border">
+          <CardContent className="p-6 text-center">
+            <Users className="w-8 h-8 text-purple-500 mx-auto mb-3" />
+            <div className="text-3xl font-bold text-foreground mb-1">8</div>
+            <div className="text-sm text-muted-foreground">Collaborators</div>
           </CardContent>
         </Card>
-        <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
-          <CardContent className="p-4 text-center">
-            <Lightning className="w-8 h-8 text-orange-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-orange-900">89%</div>
-            <div className="text-sm text-orange-700">Efficiency</div>
+        <Card className="bg-white border border-border">
+          <CardContent className="p-6 text-center">
+            <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-3" />
+            <div className="text-3xl font-bold text-foreground mb-1">156</div>
+            <div className="text-sm text-muted-foreground">Completed</div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Recent Activity */}
+      <Card className="bg-white border border-border">
+        <CardHeader className="pb-4">
+          <div className="flex items-center gap-2">
+            <Clock className="w-5 h-5 text-green-500" />
+            <CardTitle className="text-lg text-foreground">Recent Activity</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-0 space-y-4">
+          <div className="flex items-center justify-between py-3 border-b border-border last:border-b-0">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+                <FileText className="w-4 h-4 text-blue-600" />
+              </div>
+              <div>
+                <div className="font-medium text-foreground">New rule created</div>
+                <div className="text-sm text-muted-foreground">Product Documentation</div>
+              </div>
+            </div>
+            <div className="text-sm text-muted-foreground">2m ago</div>
+          </div>
+          
+          <div className="flex items-center justify-between py-3 border-b border-border last:border-b-0">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center">
+                <Files className="w-4 h-4 text-green-600" />
+              </div>
+              <div>
+                <div className="font-medium text-foreground">Document generated</div>
+                <div className="text-sm text-muted-foreground">Medicare EOC Report</div>
+              </div>
+            </div>
+            <div className="text-sm text-muted-foreground">15m ago</div>
+          </div>
+          
+          <div className="flex items-center justify-between py-3">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center">
+                <Users className="w-4 h-4 text-purple-600" />
+              </div>
+              <div>
+                <div className="font-medium text-foreground">Collaboration started</div>
+                <div className="text-sm text-muted-foreground">Team Review Session</div>
+              </div>
+            </div>
+            <div className="text-sm text-muted-foreground">1h ago</div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
