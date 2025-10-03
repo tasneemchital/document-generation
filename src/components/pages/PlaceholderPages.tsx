@@ -2489,7 +2489,7 @@ function CollaborateMain() {
       folderName: 'Term_H4801-014_Blue Cross Medicare Advantage Flex (PPO)',
       effectiveDate: '01/01/2026',
       version: '2025_1.01',
-      workflowStage: 'Ready For Review',
+      workflowStage: 'In Progress',
       estimatedDate: '06/06/2025',
       collaborators: '1.01',
       productLink: '🔗',

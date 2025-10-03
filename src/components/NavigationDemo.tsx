@@ -114,12 +114,6 @@ export function NavigationDemo({ onNavigate }: NavigationDemoProps) {
           label: 'Documents',
           icon: Files,
           color: 'text-pink-600'
-        },
-        {
-          id: 'portfolio',
-          label: 'Review',
-          icon: Eye,
-          color: 'text-pink-600'
         }
       ]
     }
