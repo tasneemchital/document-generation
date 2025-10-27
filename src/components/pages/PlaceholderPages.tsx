@@ -4948,6 +4948,7 @@ export function Generate() {
   const [selectedDocuments, setSelectedDocuments] = useKV('generate-selected-docs', [] as string[])
   const [collateralName, setCollateralName] = useState('')
   const [selectedCollateral, setSelectedCollateral] = useKV('generate-selected-collateral', '' as string)
+  const [effectiveYear, setEffectiveYear] = useKV('generate-effective-year', '2026')
   
   // Document grid state with enhanced filtering
   const [sortField, setSortField] = useState<string | null>(null)
@@ -5244,13 +5245,23 @@ export function Generate() {
     return getDocumentsForCollateral(selectedCollateral)
   }, [selectedCollateral])
 
-  // Get unique version numbers for the current document set
+  // Get unique version numbers for the current document set filtered by effective year
   const getUniqueVersionsForDocument = (documentName: string) => {
     const allDocumentsForCollateral = getDocumentsForCollateral(selectedCollateral)
+    
+    // Filter versions by effective year for Medicare ANOC
     const versionsForDocument = allDocumentsForCollateral
       .filter(doc => doc.documentName === documentName)
       .map(doc => doc.folderVersionNumber)
+      .filter(version => {
+        // For Medicare ANOC, filter by effective year
+        if (selectedCollateral === 'Medicare ANOC') {
+          return version.startsWith(effectiveYear + '_')
+        }
+        return true
+      })
     
+    // Get unique versions and sort them
     const uniqueVersions = Array.from(new Set(versionsForDocument))
     return uniqueVersions.sort()
   }
@@ -5455,7 +5466,7 @@ export function Generate() {
                     <Label className="text-sm font-medium">
                       Effective Year <span className="text-red-500">*</span>
                     </Label>
-                    <Select defaultValue="2026">
+                    <Select value={effectiveYear} onValueChange={setEffectiveYear}>
                       <SelectTrigger className="h-9">
                         <SelectValue />
                       </SelectTrigger>
