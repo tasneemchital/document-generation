@@ -5244,6 +5244,17 @@ export function Generate() {
     return getDocumentsForCollateral(selectedCollateral)
   }, [selectedCollateral])
 
+  // Get unique version numbers for the current document set
+  const getUniqueVersionsForDocument = (documentName: string) => {
+    const allDocumentsForCollateral = getDocumentsForCollateral(selectedCollateral)
+    const versionsForDocument = allDocumentsForCollateral
+      .filter(doc => doc.documentName === documentName)
+      .map(doc => doc.folderVersionNumber)
+    
+    const uniqueVersions = Array.from(new Set(versionsForDocument))
+    return uniqueVersions.sort()
+  }
+
   
   // Filter and sort documents with enhanced filtering
   const filteredAndSortedDocuments = useMemo(() => {
@@ -5800,18 +5811,11 @@ export function Generate() {
                                           <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                          <SelectItem value={document[column.key as keyof typeof document]}>
-                                            {document[column.key as keyof typeof document]}
-                                          </SelectItem>
-                                          <SelectItem value={document[column.key as keyof typeof document].replace(/\d+\.\d+$/, '0.01')}>
-                                            {document[column.key as keyof typeof document].replace(/\d+\.\d+$/, '0.01')}
-                                          </SelectItem>
-                                          <SelectItem value={document[column.key as keyof typeof document].replace(/\d+\.\d+$/, '1.0')}>
-                                            {document[column.key as keyof typeof document].replace(/\d+\.\d+$/, '1.0')}
-                                          </SelectItem>
-                                          <SelectItem value={document[column.key as keyof typeof document].replace(/\d+\.\d+$/, '2.0')}>
-                                            {document[column.key as keyof typeof document].replace(/\d+\.\d+$/, '2.0')}
-                                          </SelectItem>
+                                          {getUniqueVersionsForDocument(document.documentName).map(version => (
+                                            <SelectItem key={version} value={version}>
+                                              {version}
+                                            </SelectItem>
+                                          ))}
                                         </SelectContent>
                                       </Select>
                                     ) : (
