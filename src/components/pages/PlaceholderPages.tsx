@@ -5794,7 +5794,29 @@ export function Generate() {
                                     key={column.key}
                                     className={`p-2 text-sm ${colIndex < availableColumns.slice(1).length - 1 ? 'border-r' : ''}`}
                                   >
-                                    {document[column.key as keyof typeof document]}
+                                    {column.key === 'folderVersionNumber' ? (
+                                      <Select defaultValue={document[column.key as keyof typeof document]}>
+                                        <SelectTrigger className="h-7 text-xs">
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          <SelectItem value={document[column.key as keyof typeof document]}>
+                                            {document[column.key as keyof typeof document]}
+                                          </SelectItem>
+                                          <SelectItem value={document[column.key as keyof typeof document].replace(/\d+\.\d+$/, '0.01')}>
+                                            {document[column.key as keyof typeof document].replace(/\d+\.\d+$/, '0.01')}
+                                          </SelectItem>
+                                          <SelectItem value={document[column.key as keyof typeof document].replace(/\d+\.\d+$/, '1.0')}>
+                                            {document[column.key as keyof typeof document].replace(/\d+\.\d+$/, '1.0')}
+                                          </SelectItem>
+                                          <SelectItem value={document[column.key as keyof typeof document].replace(/\d+\.\d+$/, '2.0')}>
+                                            {document[column.key as keyof typeof document].replace(/\d+\.\d+$/, '2.0')}
+                                          </SelectItem>
+                                        </SelectContent>
+                                      </Select>
+                                    ) : (
+                                      document[column.key as keyof typeof document]
+                                    )}
                                   </TableCell>
                                 )
                               ))}
