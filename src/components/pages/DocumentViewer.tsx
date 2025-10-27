@@ -9,13 +9,11 @@ import { Separator } from '@/components/ui/separator'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { 
   CaretDown,
-  ChevronRight,
   FloppyDisk,
   Printer,
   Gear,
   BookOpen,
   Lock,
-  Unlock,
   ArrowLeft,
   Translate
 } from '@phosphor-icons/react'
@@ -31,20 +29,36 @@ interface DocumentSection {
   children?: DocumentSection[]
 }
 
+interface DocumentVersion {
+  versionNumber: string
+  effectiveDate: string
+  lastModified: string
+}
+
 interface DocumentViewerProps {
   documentId: string
   documentName: string
   onNavigate: (page: string) => void
 }
 
+const availableVersions: DocumentVersion[] = [
+  { versionNumber: '2025_14.0', effectiveDate: '1/1/2025', lastModified: '12/15/2024' },
+  { versionNumber: '2025_13.0', effectiveDate: '1/1/2025', lastModified: '12/10/2024' },
+  { versionNumber: '2025_12.0', effectiveDate: '1/1/2025', lastModified: '12/05/2024' },
+  { versionNumber: '2025_11.0', effectiveDate: '1/1/2025', lastModified: '12/01/2024' },
+  { versionNumber: '2025_10.0', effectiveDate: '1/1/2025', lastModified: '11/28/2024' },
+]
+
 export function DocumentViewer({ documentId, documentName, onNavigate }: DocumentViewerProps) {
   const [sections, setSections] = useState<DocumentSection[]>([])
   const [selectedSectionId, setSelectedSectionId] = useState<string>('')
   const [selectedLanguage, setSelectedLanguage] = useKV('document-language', 'english')
+  const [selectedVersion, setSelectedVersion] = useState<string>(availableVersions[0].versionNumber)
   const contentRef = useRef<HTMLDivElement>(null)
 
+  const currentVersionInfo = availableVersions.find(v => v.versionNumber === selectedVersion) || availableVersions[0]
+
   useEffect(() => {
-    // Initialize document sections based on documentId
     const initializeSections = () => {
       const documentSections: DocumentSection[] = [
         {
@@ -54,8 +68,8 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
           content: `<div style="text-align: center; padding: 40px;">
             <h1 style="font-size: 2.5rem; margin-bottom: 20px; color: #1f2937;">Medicare Evidence of Coverage</h1>
             <h2 style="font-size: 1.8rem; margin-bottom: 30px; color: #374151;">H1234 - Simplify HMO MAPD</h2>
-            <p style="font-size: 1.2rem; margin-bottom: 20px;">Effective Date: January 1, 2025</p>
-            <p style="font-size: 1rem; color: #6b7280;">Version: 2025_14.0</p>
+            <p style="font-size: 1.2rem; margin-bottom: 20px;">Effective Date: ${currentVersionInfo.effectiveDate}</p>
+            <p style="font-size: 1rem; color: #6b7280;">Version: ${selectedVersion}</p>
             <div style="margin-top: 50px;">
               <p style="font-size: 1.1rem; margin-bottom: 10px;">This document contains important information about your Medicare health and prescription drug coverage.</p>
               <p style="font-size: 1rem; color: #6b7280;">Please read and keep this document for your records.</p>
@@ -64,8 +78,8 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
           contentSpanish: `<div style="text-align: center; padding: 40px;">
             <h1 style="font-size: 2.5rem; margin-bottom: 20px; color: #1f2937;">Evidencia de Cobertura de Medicare</h1>
             <h2 style="font-size: 1.8rem; margin-bottom: 30px; color: #374151;">H1234 - Simplify HMO MAPD</h2>
-            <p style="font-size: 1.2rem; margin-bottom: 20px;">Fecha Efectiva: 1 de enero de 2025</p>
-            <p style="font-size: 1rem; color: #6b7280;">Versión: 2025_14.0</p>
+            <p style="font-size: 1.2rem; margin-bottom: 20px;">Fecha Efectiva: ${currentVersionInfo.effectiveDate}</p>
+            <p style="font-size: 1rem; color: #6b7280;">Versión: ${selectedVersion}</p>
             <div style="margin-top: 50px;">
               <p style="font-size: 1.1rem; margin-bottom: 10px;">Este documento contiene información importante sobre su cobertura de salud y medicamentos recetados de Medicare.</p>
               <p style="font-size: 1rem; color: #6b7280;">Por favor, lea y mantenga este documento para sus registros.</p>
@@ -338,7 +352,7 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
     }
 
     initializeSections()
-  }, [documentId])
+  }, [documentId, selectedVersion, currentVersionInfo.effectiveDate])
 
   const toggleSection = (sectionId: string) => {
     setSections(prev => prev.map(section => 
@@ -385,8 +399,8 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
             <h1 className="text-xl font-semibold text-foreground mb-2">{documentName}</h1>
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
               <Badge variant="outline">H1234</Badge>
-              <span>Effective: 1/1/2025</span>
-              <span>Version: 2025_14.0</span>
+              <span>Effective: {currentVersionInfo.effectiveDate}</span>
+              <span>Version: {selectedVersion}</span>
             </div>
           </div>
         </div>
@@ -435,6 +449,23 @@ export function DocumentViewer({ documentId, documentName, onNavigate }: Documen
               </h2>
             </div>
             <div className="flex items-center gap-3">
+              {/* Version Selector */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">Version:</span>
+                <Select value={selectedVersion} onValueChange={setSelectedVersion}>
+                  <SelectTrigger className="w-36">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableVersions.map((version) => (
+                      <SelectItem key={version.versionNumber} value={version.versionNumber}>
+                        {version.versionNumber}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
               {/* Language Selector */}
               <div className="flex items-center gap-2">
                 <Translate size={16} className="text-muted-foreground" />
